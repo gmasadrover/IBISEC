@@ -15,6 +15,7 @@ import org.apache.commons.fileupload.FileUploadException;
 
 import bean.Informe;
 import bean.User;
+import core.ActuacioCore;
 import core.InformeCore;
 import core.TascaCore;
 import core.UsuariCore;
@@ -52,6 +53,7 @@ public class DoAddInformeServlet extends HttpServlet {
 		
 	    int idTasca = Integer.parseInt(multipartParams.getParametres().get("idTasca"));
 	    int idActuacio = Integer.parseInt(multipartParams.getParametres().get("idActuacio"));
+	    int idIncidencia = -1;
 	    int idInformePrevi = Integer.parseInt(multipartParams.getParametres().get("idInformePrevi"));
 	    String guardar = multipartParams.getParametres().get("guardar");
 	    String errorString = null;
@@ -96,8 +98,8 @@ public class DoAddInformeServlet extends HttpServlet {
 		   		InformeCore.nouInforme(conn, informe, Usuari.getIdUsuari());
 		   		String msg = "S'ha afegit l'informe";
 		   		if (idInformePrevi > 0) msg = "S'ha modificat l'informe";	   				
-		   		idComentari = TascaCore.nouHistoric(conn, idTasca, msg, Usuari.getIdUsuari());	   		
-		   		   		
+		   		idComentari = TascaCore.nouHistoric(conn, idTasca, msg, Usuari.getIdUsuari());	
+		   		idIncidencia = ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -112,7 +114,8 @@ public class DoAddInformeServlet extends HttpServlet {
 				TascaCore.nouHistoric(conn, idTasca, "Informe enviat", Usuari.getIdUsuari());
 				TascaCore.reasignar(conn, 900, idTasca);
 				int idUsuari = UsuariCore.findUsuarisByTipus(conn, "CONTA").get(0).getIdUsuari();
-				TascaCore.novaTasca(conn, "resPartida", idUsuari, Usuari.getIdUsuari(), idActuacio, "", String.valueOf(idTasca));
+				TascaCore.novaTasca(conn, "resPartida", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, "", String.valueOf(idTasca));
+				idIncidencia = ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

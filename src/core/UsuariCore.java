@@ -187,6 +187,9 @@ public class UsuariCore {
 			case tasques_list:
 				permision = true;
 				break;
+			case tasques_detalls:
+				permision = true;
+				break;
 			case usuari_detalls:
 				permision = true;
 				break;

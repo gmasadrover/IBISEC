@@ -42,6 +42,7 @@ Connection conn = MyUtils.getStoredConnection(request);
 		
 		//Registrar actuació
 	    int idActuacio = Integer.parseInt(request.getParameter("idActuacio"));
+	    int idIncidencia = Integer.parseInt(request.getParameter("idIncidencia"));
 	    String aprovar = request.getParameter("aprovar");
 	    String tancar = request.getParameter("tancar");	   
 	    User Usuari = MyUtils.getLoginedUser(request.getSession());	   
@@ -63,7 +64,7 @@ Connection conn = MyUtils.getStoredConnection(request);
 					tipus = "liciMenor";
    				}
    				//Registrar incidència nova
-   				TascaCore.novaTasca(conn, tipus, usuariTasca, Usuari.getIdUsuari(), idActuacio, "", "");
+   				TascaCore.novaTasca(conn, tipus, usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "", "");
    				
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block

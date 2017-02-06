@@ -47,7 +47,15 @@
 	                <div class="col-lg-12">	                	
 	                	<jsp:include page="../actuacio/include/_resumActuacio.jsp"></jsp:include>
 	                </div>
-            	</div>            	
+            	</div> 
+            	</c:if>       
+            	<c:if test="${not empty incidencia}">
+				<div class="row">					
+	                <div class="col-lg-12">	                	
+	                	<jsp:include page="../incidencia/include/_resumIncidencia.jsp"></jsp:include>
+	                </div>
+            	</div> 
+            	</c:if>           	
                 <div class="row">
                     <div class="col-lg-12"> 
                         <c:forEach items="${historial}" var="historic" >
@@ -95,6 +103,7 @@
 	                    		<div class="panel-footer">	                    		                  	
 			                    	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddHistoric">
 			                    		<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
+			                    		<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">
 			                    		<div class="row">
 				                    		<div class="col-lg-6">		
 				                    			<div class="row">	 
@@ -137,7 +146,7 @@
 		                </c:if>	
                     </div>                    
                 </div>
-				</c:if>
+				
             </div>
             <!-- /.container-fluid -->
         </div>

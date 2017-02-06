@@ -110,9 +110,9 @@ public class TascaCore {
 	    return list;
 	}
 	
-	public static void novaTasca(Connection conn, String tipus, int idUsuari, int idUsuariComentari, int idActuacio, String comentari, String assumpte) throws SQLException {
+	public static void novaTasca(Connection conn, String tipus, int idUsuari, int idUsuariComentari, int idActuacio, int idIncidencia, String comentari, String assumpte) throws SQLException {
 		
-		String sql = "INSERT INTO public.\"tbl_Tasques\"(\"idTasca\", \"idUsuari\", \"idActuacio\", nom, tipus, activa) VALUES (?, ?, ?, ?, ?, ?);";		 
+		String sql = "INSERT INTO public.\"tbl_Tasques\"(\"idTasca\", \"idUsuari\", \"idActuacio\", nom, tipus, activa, \"idIncidencia\") VALUES (?, ?, ?, ?, ?, ?, ?);";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		int idNovaTasca = idNovaTasca(conn);
 		if ("infPrev".equals(tipus)) {
@@ -137,6 +137,7 @@ public class TascaCore {
 		pstm.setString(4, assumpte);
 		pstm.setString(5, tipus);
 		pstm.setBoolean(6, true);
+		pstm.setInt(7, idIncidencia);
 		pstm.executeUpdate();
 		
 		//Registrar comentari 1

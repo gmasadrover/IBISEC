@@ -56,6 +56,7 @@
 		    			<form class="form-horizontal" method="POST" action="DoCreateTasca">
 		    				<div class="form-group">
 		    					<input type="hidden" name="idActuacio" value="${idActuacio}">
+		    					<input type="hidden" name="idIncidencia" value="${idIncidencia}">
 		    					<input type="hidden" name="tipus" value="${tipus}">
                                 <label class="col-xs-3 control-label">Referència</label>
                                 <div class="col-xs-3">

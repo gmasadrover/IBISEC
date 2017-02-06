@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import bean.Actuacio;
 import bean.Empresa;
 import bean.Historic;
+import bean.Incidencia;
 import bean.Informe;
 import bean.Partida;
 import bean.Tasca;
@@ -57,6 +58,7 @@ public class TascaDetailsServlet extends HttpServlet {
  		   int idTasca = Integer.parseInt(request.getParameter("id"));
  	       String errorString = null;
  	       Actuacio actuacio = new Actuacio();
+ 	       Incidencia incidencia = new Incidencia();
  	       Tasca tasca = new Tasca();
  	       Informe informePrevi = new Informe();
  	       List<Historic> historial = new ArrayList<Historic>();
@@ -66,7 +68,12 @@ public class TascaDetailsServlet extends HttpServlet {
  	       try {
  	    	   tasca = TascaCore.findTascaId(conn, idTasca);
  	    	   actuacio = tasca.getActuacio();
- 	    	   historial = TascaCore.findHistorial(conn, idTasca, actuacio.getReferencia());
+ 	    	   incidencia = tasca.getIncidencia();
+ 	    	   if (actuacio != null) {
+ 	    		  historial = TascaCore.findHistorial(conn, idTasca, actuacio.getReferencia());
+ 	    	   }else{
+ 	    		  historial = TascaCore.findHistorial(conn, idTasca, incidencia.getIdIncidencia());
+ 	    	   } 	    	  
  	    	   String tipusTasca = tasca.getTipus();
  	    	   if ("infPrev".equals(tipusTasca)) {
  	    		  informePrevi = InformeCore.getInformeTasca(conn, idTasca);
@@ -85,6 +92,7 @@ public class TascaDetailsServlet extends HttpServlet {
  	       // Store info in request attribute, before forward to views
  	       request.setAttribute("errorString", errorString);
  	       request.setAttribute("actuacio", actuacio);
+ 	       request.setAttribute("incidencia", incidencia);
  	       request.setAttribute("tasca", tasca);
  	       request.setAttribute("historial", historial);
  	       request.setAttribute("informePrevi", informePrevi);
