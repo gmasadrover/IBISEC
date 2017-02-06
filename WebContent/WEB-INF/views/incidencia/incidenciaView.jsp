@@ -203,7 +203,7 @@
 					      		<c:if test="${incidencia.activa}">
 						      		<div class="row margin_bottom10">
 							    		<div class="col-lg-12 panel">
-											<a href="createTasca?ref=${incidencia.idIncidencia}&tipus=generic" class="btn btn-primary" role="button">Nova tasca</a>
+											<a href="createTasca?idIncidencia=${incidencia.idIncidencia}&tipus=generic" class="btn btn-primary" role="button">Nova tasca</a>
 										</div>
 						    		</div>
 						    	</c:if>
