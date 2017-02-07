@@ -8,8 +8,8 @@ import java.sql.SQLException;
 public class CentreCore {
 	public static String nomCentre(Connection conn, String idCentre) throws SQLException {
 		 
-		String sql = "Select nom from public.\"tbl_Centres\" "
-					+ " where \"idCentre\" = ?";
+		String sql = "SELECT nom from public.tbl_centres"
+					+ " WHERE codi = ?";
 		String nomCentre = "";
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setString(1, idCentre);		

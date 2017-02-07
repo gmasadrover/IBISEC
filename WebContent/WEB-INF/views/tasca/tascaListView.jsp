@@ -81,7 +81,7 @@
                                 <tbody>
                                 	<c:forEach items="${tasquesList}" var="tasca" >
 							          	<tr class="${tasca.activa ? "success" : "danger"}">							          	
-							           		<td><a href="tasca?id=${tasca.idTasca}">${tasca.idTasca} - ${tasca.name}</a></td>
+							           		<td><a href="tasca?id=${tasca.idTasca}">${tasca.idTasca} - ${tasca.descripcio}</a></td>
 							            	<td><a href="actuacionsDetalls?ref=${tasca.actuacio.referencia}">${tasca.actuacio.referencia}</a></td>
 							            	<td><a href="incidenciaDetalls?ref=${tasca.incidencia.idIncidencia}">${tasca.incidencia.idIncidencia}</a></td>
 							            	<td>${tasca.actuacio.nomCentre}</td>							            	

@@ -40,13 +40,19 @@
 	                    <div class="panel panel-${incidencia.activa ? "success" : "danger"}">
 	                        <div class="panel-heading">
 	                           	<div class="row">
-	                        		<div class="col-lg-6">
+	                        		<div class="col-lg-3">
 	                        			 Identificador incidència: ${incidencia.idIncidencia}
+	                        		</div>
+	                        		<div class="col-lg-5">
+	                        			 Centre: ${incidencia.nomCentre}
+	                        		</div>
+	                        		<div class="col-lg-4">
+	                        			 Solicitant: ${incidencia.solicitant}
 	                        		</div>
 	                        	</div>
 	                        </div>
 	                        <div class="panel-body">
-	                            <p>${incidencia.nom}</p>
+	                            <p>${incidencia.descripcio}</p>
 	                        </div>
 	                        <div class="panel-footer">
 	                        	<div class="row">
@@ -121,7 +127,7 @@
 					      	<div class="panel-body">
 					      		<div class="row margin_bottom10">
 						    		<div class="col-lg-12 panel">
-										<a href="novaEntrada?ref=${incidencia.idIncidencia}" class="btn btn-primary" role="button">Nova entrada</a>
+										<a href="novaEntrada?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary" role="button">Nova entrada</a>
 									</div>
 					    		</div>
 					    		<div class="row panel-body">					    		
@@ -161,7 +167,7 @@
 					      	<div class="panel-body">
 					      		<div class="row margin_bottom10">
 						    		<div class="col-lg-12 panel">
-										<a href="novaSortida?ref=${incidencia.idIncidencia}" class="btn btn-primary" role="button">Nova sortida</a>
+										<a href="novaSortida?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary" role="button">Nova sortida</a>
 									</div>
 					    		</div>
 					    		<div class="row panel-body">	
@@ -178,7 +184,7 @@
 				                                <tbody>
 				                                	<c:forEach items="${sortides}" var="sortida" >
 											          	<tr>							          	
-											           		<td>${sortida.id}</td>
+											           		<td><a href="registre?tipus=S&referencia=${sortida.id}">${sortida.id}</a></td>
 											            	<td>${sortida.getDataString()}</td>
 											            	<td>${sortida.remDes}</td>
 											            	<td>${sortida.contingut}</td>						            	
@@ -214,8 +220,7 @@
 			                                    <tr>                                        
 			                                        <th>Tasca</th>
 			                                        <th>id Actuació</th>
-			                                        <th>id Incidència</th>
-			                                        <th>Centre</th>                                        
+			                                        <th>id Incidència</th>			                                                                          
 			                                        <th>Data creació</th>
 			                                        <th>Responsable</th>
 			                                    </tr>
@@ -223,10 +228,9 @@
 			                                <tbody>
 			                                	<c:forEach items="${tasques}" var="tasca" >
 										          	<tr class="${tasca.activa ? "success" : "danger"}">							          	
-										           		<td><a href="tasca?id=${tasca.idTasca}">${tasca.idTasca} - ${tasca.name}</a></td>
+										           		<td><a href="tasca?id=${tasca.idTasca}">${tasca.idTasca} - ${tasca.descripcio}</a></td>
 										            	<td><a href="actuacionsDetalls?ref=${tasca.actuacio.referencia}">${tasca.actuacio.referencia}</a></td>
 										            	<td><a href="incidenciaDetalls?ref=${tasca.incidencia.idIncidencia}">${tasca.incidencia.idIncidencia}</a></td>
-										            	<td>${tasca.actuacio.nomCentre}</td>							            	
 										            	<td>${tasca.getDataCreacioString()}</td>
 										            	<td>${tasca.usuari.getNomComplet()}					            	
 										          	</tr>

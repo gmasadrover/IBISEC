@@ -36,7 +36,7 @@
                 <!-- /.row -->
 				<div class="row">
 	                <div class="col-lg-12">
-	                    <div class="panel panel-${registre.valid ?  "success" : "danger"}">
+	                    <div class="panel panel-success">
 	                        <div class="panel-heading">
 	                           	<div class="row">
 	                        		<div class="col-lg-4">
@@ -44,10 +44,7 @@
 	                        	    </div>
 	                        	    <div class="col-lg-4">
 	                        			 Data entrada: ${registre.getDataString()} 
-	                        	    </div>
-	                        		<div class="col-lg-4">
-	                        			 Estat: ${registre.valid ? "Valid" : "Eliminat"}
-	                        		</div>
+	                        	    </div>	                        		
 	                        	</div>
 	                        </div>
 	                        <div class="panel-body">

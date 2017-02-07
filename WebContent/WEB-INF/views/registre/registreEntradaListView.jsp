@@ -98,7 +98,7 @@
 											        <td></td>
 											    </c:when>    
 											    <c:otherwise>
-											        <td><a href="actuacionsDetalls?ref=${entrada.idIncidencia}">${entrada.idIncidencia}</a></td>
+											        <td><a href="incidenciaDetalls?ref=${entrada.idIncidencia}">${entrada.idIncidencia}</a></td>
 							            	    </c:otherwise>
 											</c:choose>		
 											<td>${entrada.data}</td>					           								            	

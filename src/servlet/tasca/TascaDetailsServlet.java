@@ -78,7 +78,7 @@ public class TascaDetailsServlet extends HttpServlet {
  	    	   if ("infPrev".equals(tipusTasca)) {
  	    		  informePrevi = InformeCore.getInformeTasca(conn, idTasca);
  	    	   }else if ("resPartida".equals(tipusTasca)){
- 	    		  int tascaInforme = Integer.parseInt(tasca.getName().split("-")[1].trim());
+ 	    		  int tascaInforme = Integer.parseInt(tasca.getDescripcio().split("-")[1].trim());
  	    		  informePrevi = InformeCore.getInformeTasca(conn, tascaInforme);
  	    		  partidesList = CreditCore.getPartides(conn, false);
  	    	   }else if ("liciMenor".equals(tipusTasca)){

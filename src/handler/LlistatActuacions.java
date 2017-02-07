@@ -54,7 +54,6 @@ public class LlistatActuacions extends HttpServlet {
         response.setHeader("Access-Control-Allow-Methods", "POST");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type");
         response.setHeader("Access-Control-Max-Age", "86400");
-        System.out.print(request.getParameter("idCentre"));
         String idCentre = request.getParameter("idCentre");
         Gson gson = new Gson(); 
         JsonObject myObj = new JsonObject();

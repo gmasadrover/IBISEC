@@ -15,10 +15,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.Actuacio;
 import bean.Incidencia;
 import bean.Registre;
-import core.ActuacioCore;
 import core.IncidenciaCore;
 import core.RegistreCore;
 import core.UsuariCore;
@@ -46,7 +44,7 @@ public class DoCreateEntradaServlet extends HttpServlet {
 	
 		Connection conn = MyUtils.getStoredConnection(request);
 		
-	    String referencia = request.getParameter("referencia");
+	    int referencia = Integer.parseInt(request.getParameter("referencia"));
 	    String remitent = request.getParameter("remitent");
 	    String tipus = URLDecoder.decode(request.getParameter("tipus"),  "UTF-8");	    
 	    String idCentre = "";
@@ -74,14 +72,13 @@ public class DoCreateEntradaServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-	    Registre registre = new Registre(referencia, peticio, tipus, remitent, contingut, idIncidencia, idCentre, "", true, idUsuari, new Date());
+	    Registre registre = new Registre(referencia, peticio, tipus, remitent, contingut, idIncidencia, idCentre, "", idUsuari, new Date());
 	    
 	    String errorString = null;
 	 	      
 	   	if (errorString == null) {
 	   		try {
-	   			RegistreCore.nouRegistre(conn, "E", registre);
-	   			
+	   			RegistreCore.nouRegistre(conn, "E", registre);	   			
 	   			//Crear Incidencia
 	   			if (idIncidencia == -1) {
 		   		    referenciaIncidencia = IncidenciaCore.getNewCode(conn);
@@ -89,8 +86,8 @@ public class DoCreateEntradaServlet extends HttpServlet {
 		   		    incidencia.setIdIncidencia(referenciaIncidencia);
 		   		    incidencia.setIdCentre(idCentre);
 		   		    incidencia.setUsuCre(UsuariCore.findUsuariByID(conn, idUsuari));
-		   		    incidencia.setNom(contingut);
-		   		    incidencia.setDataCreacio(peticio);
+		   		    incidencia.setDescripcio(contingut);
+		   		    incidencia.setSolicitant(remitent);
 		   		    IncidenciaCore.novaIncidencia(conn, incidencia);
 		   			RegistreCore.actualitzarIdIncidencia(conn, "E", referencia, referenciaIncidencia);
 	   			}	   			

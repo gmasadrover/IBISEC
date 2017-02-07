@@ -13,56 +13,60 @@ import bean.Registre;
 public class RegistreCore {
 	
 	public static void nouRegistre(Connection conn, String tipus, Registre registre) throws SQLException {
-		String sql = "INSERT INTO public.\"tbl_RegEntrada\" (id, data, tipus, remitent, contingut, \"idCentre\", \"idIncidencia\", valid, \"usuCre\", \"usuMod\") "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, localtimestamp);";
+		String sql = "INSERT INTO public.tbl_regentrada (id, data, tipus, remitent, contingut, idcentre, idincidencia, usucre, datacre)"
+					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, localtimestamp);";
 		if (tipus == "S") {
-			sql = "INSERT INTO public.\"tbl_RegSortida\" (id, data, tipus, destinatari, contingut, \"idCentre\", \"idIncidencia\", valid, \"usuCre\", \"usuMod\") "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, localtimestamp);";
+			sql = "INSERT INTO public.tbl_regsortida (id, data, tipus, destinatari, contingut, idcentre, idincidencia, usucre, datacre)"
+					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, localtimestamp);";
 		}	
 		
 		PreparedStatement pstm = conn.prepareStatement(sql);
 	 
-		pstm.setString(1, registre.getId());		
+		pstm.setInt(1, registre.getId());		
 		pstm.setDate(2, new java.sql.Date(registre.getData().getTime()));
 		pstm.setString(3, registre.getTipus());
 		pstm.setString(4, registre.getRemDes());
 		pstm.setString(5, registre.getContingut());
 		pstm.setString(6,  registre.getIdCentre());
 		pstm.setInt(7, registre.getIdIncidencia());
-		pstm.setBoolean(8, registre.isValid());
-		pstm.setInt(9, registre.getIdUsuari());			
+		pstm.setInt(8, registre.getIdUsuari());			
 				
 		pstm.executeUpdate();
 	}
 	
-	public static Registre findRegistre(Connection conn, String tipus, String idRegistre) throws SQLException {
+	public static Registre findRegistre(Connection conn, String tipus, int idRegistre) throws SQLException {
 		Registre registre = new Registre();
-		String sql = "SELECT id, data, tipus, remitent, contingut, \"idCentre\", \"idIncidencia\", valid, \"usuCre\", \"usuMod\""
-					+ "FROM public.\"tbl_RegEntrada\""
-					+ "WHERE id=?";
-		if (tipus == "S") {
-			sql = "SELECT id, data, tipus, destinatari, contingut, \"idCentre\", \"idIncidencia\", valid, \"usuCre\", \"usuMod\""
-					+ "FROM public.\"tbl_RegSortida\""
-					+ "WHERE id=?";
+		String sql = "SELECT id, data, tipus, remitent, contingut, idcentre, idincidencia, usucre, datacre"
+					+ " FROM public.tbl_regentrada"
+					+ " WHERE id=?";
+		if ("S".equals(tipus)) {
+			sql = "SELECT id, data, tipus, destinatari, contingut, idcentre, idincidencia, usucre, datacre"
+					+ " FROM public.tbl_regsortida"
+					+ " WHERE id=?";
 		}
 		PreparedStatement pstm = conn.prepareStatement(sql);
-		pstm.setString(1, idRegistre);	
+		pstm.setInt(1, idRegistre);	
 		ResultSet rs = pstm.executeQuery();
 		while (rs.next()) {			
-			registre.setId(rs.getString("id"));
+			registre.setId(rs.getInt("id"));
 			registre.setData(rs.getDate("data"));
-			registre.setRemDes(rs.getString("remitent"));
+			if ("S".equals(tipus)) {
+				registre.setRemDes(rs.getString("destinatari"));
+			}else{
+				registre.setRemDes(rs.getString("remitent"));
+			}			
 			registre.setContingut(rs.getString("contingut"));
-			registre.setIdIncidencia(rs.getInt("idIncidencia"));
-			registre.setIdCentre(rs.getString("idCentre"));
-			registre.setNomCentre(CentreCore.nomCentre(conn, rs.getString("idCentre")));
-			registre.setValid(rs.getBoolean("valid"));			
+			registre.setIdIncidencia(rs.getInt("idincidencia"));
+			registre.setIdCentre(rs.getString("idcentre"));
+			registre.setNomCentre(CentreCore.nomCentre(conn, rs.getString("idcentre")));	
 		}
 		return registre;
 	}
 	
 	public static List<Registre> entrades(Connection conn) throws SQLException {
-		String sql = "SELECT id, data, remitent, contingut, \"idCentre\", \"idIncidencia\", valid FROM public.\"tbl_RegEntrada\" ORDER BY id::INT DESC LIMIT 500";
+		String sql = "SELECT id, data, remitent, contingut, idcentre, idincidencia"
+					+ " FROM public.tbl_regentrada"
+					+ " ORDER BY id DESC LIMIT 500";
 	 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 	 
@@ -70,26 +74,26 @@ public class RegistreCore {
 		List<Registre> list = new ArrayList<Registre>();
 		while (rs.next()) {
 			Registre registre = new Registre();
-			registre.setId(rs.getString("id"));
+			registre.setId(rs.getInt("id"));
 			registre.setData(rs.getDate("data"));
 			registre.setRemDes(rs.getString("remitent"));
 			registre.setContingut(rs.getString("contingut"));
-			registre.setIdIncidencia(rs.getInt("idIncidencia"));
-			registre.setIdCentre(rs.getString("idCentre"));
-			registre.setNomCentre(CentreCore.nomCentre(conn, rs.getString("idCentre")));
-			registre.setValid(rs.getBoolean("valid"));
+			registre.setIdIncidencia(rs.getInt("idincidencia"));
+			registre.setIdCentre(rs.getString("idcentre"));
+			registre.setNomCentre(CentreCore.nomCentre(conn, rs.getString("idcentre")));
 			list.add(registre);
 		}
 		return list;
 	}
 	
 	public static List<Registre> searchEntrades(Connection conn, String idCentre, Date dataIni, Date dataFi) throws SQLException {
-		String sql = "SELECT id, data, remitent, contingut, \"idCentre\", \"idIncidencia\", valid FROM public.\"tbl_RegEntrada\" ";
-		sql += "WHERE data >= ? and data <= ? ";
+		String sql = "SELECT id, data, remitent, contingut, idcentre, idincidencia"
+					+ " FROM public.tbl_regentrada"
+					+ " WHERE data >= ? and data <= ? ";
 		if (idCentre != "") {
-			sql += "and \"idCentre\" = ?";
+			sql += "and idcentre = ?";
 		}
-		sql += "ORDER BY id::INT DESC LIMIT 500";
+		sql += "ORDER BY id DESC LIMIT 500";
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
 		pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
@@ -98,55 +102,60 @@ public class RegistreCore {
 		List<Registre> list = new ArrayList<Registre>();
 		while (rs.next()) {
 			Registre registre = new Registre();
-			registre.setId(rs.getString("id"));
+			registre.setId(rs.getInt("id"));
 			registre.setData(rs.getDate("data"));
 			registre.setRemDes(rs.getString("remitent"));
 			registre.setContingut(rs.getString("contingut"));
-			registre.setIdIncidencia(rs.getInt("idIncidencia"));
-			registre.setIdCentre(rs.getString("idCentre"));
-			registre.setNomCentre(CentreCore.nomCentre(conn, rs.getString("idCentre")));
-			registre.setValid(rs.getBoolean("valid"));
+			registre.setIdIncidencia(rs.getInt("idincidencia"));
+			registre.setIdCentre(rs.getString("idcentre"));
+			registre.setNomCentre(CentreCore.nomCentre(conn, rs.getString("idcentre")));
 			list.add(registre);
 		}
 		return list;
 	}
 	
 	public static List<Registre> searchEntradesIncidencia(Connection conn, int referencia) throws SQLException {
-		String sql = "SELECT id, data, remitent, contingut, \"idCentre\", \"idIncidencia\", valid FROM public.\"tbl_RegEntrada\" ";
-		sql += "WHERE \"idIncidencia\" = ? ";		
-		sql += "ORDER BY id::INT DESC";
+		String sql = "SELECT id, data, remitent, contingut, idcentre, idincidencia"
+					+ " FROM public.tbl_regentrada"
+					+ " WHERE idincidencia = ? "		
+					+ " ORDER BY id DESC";
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setInt(1, referencia);
 		ResultSet rs = pstm.executeQuery();
 		List<Registre> list = new ArrayList<Registre>();
 		while (rs.next()) {
 			Registre registre = new Registre();
-			registre.setId(rs.getString("id"));
+			registre.setId(rs.getInt("id"));
 			registre.setData(rs.getDate("data"));
 			registre.setRemDes(rs.getString("remitent"));
 			registre.setContingut(rs.getString("contingut"));
-			registre.setIdIncidencia(rs.getInt("idIncidencia"));
-			registre.setIdCentre(rs.getString("idCentre"));
-			registre.setNomCentre(CentreCore.nomCentre(conn, rs.getString("idCentre")));
-			registre.setValid(rs.getBoolean("valid"));
+			registre.setIdIncidencia(rs.getInt("idincidencia"));
+			registre.setIdCentre(rs.getString("idcentre"));
+			registre.setNomCentre(CentreCore.nomCentre(conn, rs.getString("idcentre")));
 			list.add(registre);
 		}
 		return list;
 	}
 	
-	public static void actualitzarIdIncidencia(Connection conn, String tipus, String idRegistre, int idActuacio) throws SQLException{
-		String sql = "UPDATE public.\"tbl_RegEntrada\" SET \"idIncidencia\"=? WHERE id=?";
+	public static void actualitzarIdIncidencia(Connection conn, String tipus, int idRegistre, int idActuacio) throws SQLException{
+		String sql = "UPDATE public.tbl_regentrada"
+					+ " SET idincidencia=?"
+					+ " WHERE id=?";
 		if (tipus == "S") {
-			sql = "UPDATE public.\"tbl_RegSortida\" SET \"idIncidencia\"=? WHERE id=?";
+			sql = "UPDATE public.tbl_regsortida"
+					+ " SET idincidencia=?"
+					+ " WHERE id=?";
 		}		
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		pstm.setInt(1, idActuacio);
-		pstm.setString(2, idRegistre);				
+		pstm.setInt(2, idRegistre);				
 		pstm.executeUpdate();
 	}
 	
 	public static List<Registre> sortides(Connection conn) throws SQLException {
-		String sql = "SELECT id, data, destinatari, contingut, \"idIncidencia\", valid FROM public.\"tbl_RegSortida\" ORDER BY id::INT DESC LIMIT 500";
+		String sql = "SELECT id, data, destinatari, contingut, idincidencia"
+					+ " FROM public.tbl_regsortida"
+					+ " ORDER BY id DESC LIMIT 500";
 	 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 	 
@@ -154,24 +163,24 @@ public class RegistreCore {
 		List<Registre> list = new ArrayList<Registre>();
 		while (rs.next()) {
 			Registre registre = new Registre();
-			registre.setId(rs.getString("id"));
+			registre.setId(rs.getInt("id"));
 			registre.setData(rs.getDate("data"));
 			registre.setRemDes(rs.getString("destinatari"));
 			registre.setContingut(rs.getString("contingut"));
-			registre.setIdIncidencia(rs.getInt("idIncidencia"));
-			registre.setValid(rs.getBoolean("valid"));
+			registre.setIdIncidencia(rs.getInt("idincidencia"));
 			list.add(registre);
 		}
 		return list;
 	}
 	
 	public static List<Registre> searchSortides(Connection conn, String idCentre, Date dataIni, Date dataFi) throws SQLException {
-		String sql = "SELECT id, data, destinatari, contingut, \"idCentre\", \"idIncidencia\", valid FROM public.\"tbl_RegSortida\" ";
-		sql += "WHERE data >= ? and data <= ? ";
+		String sql = "SELECT id, data, destinatari, contingut, idcentre, idincidencia"
+					+ " FROM public.tbl_regsortida"
+					+ " WHERE data >= ? and data <= ? ";
 		if (idCentre != "") {
-			sql += "and \"idCentre\" = ?";
+			sql += "and idcentre = ?";
 		}
-		sql += "ORDER BY id::INT DESC LIMIT 500";
+		sql += "ORDER BY id DESC LIMIT 500";
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
 		pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
@@ -180,37 +189,36 @@ public class RegistreCore {
 		List<Registre> list = new ArrayList<Registre>();
 		while (rs.next()) {
 			Registre registre = new Registre();
-			registre.setId(rs.getString("id"));
+			registre.setId(rs.getInt("id"));
 			registre.setData(rs.getDate("data"));
 			registre.setRemDes(rs.getString("destinatari"));
 			registre.setContingut(rs.getString("contingut"));
-			registre.setIdIncidencia(rs.getInt("idIncidencia"));
-			registre.setIdCentre(rs.getString("idCentre"));
-			registre.setNomCentre(CentreCore.nomCentre(conn, rs.getString("idCentre")));
-			registre.setValid(rs.getBoolean("valid"));
+			registre.setIdIncidencia(rs.getInt("idincidencia"));
+			registre.setIdCentre(rs.getString("idcentre"));
+			registre.setNomCentre(CentreCore.nomCentre(conn, rs.getString("idcentre")));
 			list.add(registre);
 		}
 		return list;
 	}
 	
 	public static List<Registre> searchSortidesIncidencia(Connection conn, int referencia) throws SQLException {
-		String sql = "SELECT id, data, destinatari, contingut, \"idCentre\", \"idIncidencia\", valid FROM public.\"tbl_RegSortida\" ";
-		sql += "WHERE \"idIncidencia\" = ? ";		
-		sql += "ORDER BY id::INT DESC";
+		String sql = "SELECT id, data, destinatari, contingut, idcentre, idincidencia"
+					+ " FROM public.tbl_regsortida"
+					+ " WHERE idincidencia = ? "		
+					+ " ORDER BY id DESC";
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setInt(1, referencia);
 		ResultSet rs = pstm.executeQuery();
 		List<Registre> list = new ArrayList<Registre>();
 		while (rs.next()) {
 			Registre registre = new Registre();
-			registre.setId(rs.getString("id"));
+			registre.setId(rs.getInt("id"));
 			registre.setData(rs.getDate("data"));
 			registre.setRemDes(rs.getString("destinatari"));
 			registre.setContingut(rs.getString("contingut"));
-			registre.setIdIncidencia(rs.getInt("idIncidencia"));
-			registre.setIdCentre(rs.getString("idCentre"));
-			registre.setNomCentre(CentreCore.nomCentre(conn, rs.getString("idCentre")));
-			registre.setValid(rs.getBoolean("valid"));
+			registre.setIdIncidencia(rs.getInt("idincidencia"));
+			registre.setIdCentre(rs.getString("idcentre"));
+			registre.setNomCentre(CentreCore.nomCentre(conn, rs.getString("idcentre")));
 			list.add(registre);
 		}
 		return list;
@@ -218,9 +226,13 @@ public class RegistreCore {
 	
 	public static String getNewCode(Connection conn, String tipus) throws SQLException {
 		String code = "1";
-		String sql = "SELECT id FROM public.\"tbl_RegEntrada\" ORDER BY id::INT DESC LIMIT 1;";		
+		String sql = "SELECT id"
+					+ " FROM public.tbl_regentrada"
+					+ " ORDER BY id DESC LIMIT 1;";		
 		if (tipus == "S") {
-			sql = "SELECT id FROM public.\"tbl_RegSortida\" ORDER BY id::INT DESC LIMIT 1;";	
+			sql = "SELECT id"
+					+ " FROM public.tbl_regsortida"
+					+ " ORDER BY id DESC LIMIT 1;";	
 		}
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		ResultSet rs = pstm.executeQuery();

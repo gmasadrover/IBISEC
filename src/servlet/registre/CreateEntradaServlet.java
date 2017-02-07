@@ -45,13 +45,13 @@ public class CreateEntradaServlet extends HttpServlet {
  		   response.sendRedirect(request.getContextPath() + "/preLogin");
         }else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_crear)) {
     		response.sendRedirect(request.getContextPath() + "/");	
- 	   	}else{
- 	   		
+ 	   	}else{ 	 
+ 	   		String idIncidencia = request.getParameter("idIncidencia");
 	        try {
 	        	if (request.getParameter("ref") != null) {
 	        		
 	        	}
-	        	request.setAttribute("idActuacio", request.getParameter("ref"));
+	        	request.setAttribute("idIncidencia", idIncidencia);
 				request.setAttribute("nouCodi", RegistreCore.getNewCode(conn, "E"));
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block

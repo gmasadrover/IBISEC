@@ -52,8 +52,8 @@ public class DoAddInformeServlet extends HttpServlet {
 		}
 		
 	    int idTasca = Integer.parseInt(multipartParams.getParametres().get("idTasca"));
-	    int idActuacio = Integer.parseInt(multipartParams.getParametres().get("idActuacio"));
-	    int idIncidencia = -1;
+	    String idActuacio = multipartParams.getParametres().get("idActuacio");
+	    String idIncidencia = multipartParams.getParametres().get("idIncidencia");
 	    int idInformePrevi = Integer.parseInt(multipartParams.getParametres().get("idInformePrevi"));
 	    String guardar = multipartParams.getParametres().get("guardar");
 	    String errorString = null;
@@ -80,7 +80,8 @@ public class DoAddInformeServlet extends HttpServlet {
 		    
 		    Informe informe = new Informe();
 		    informe.setIdTasca(idTasca);
-		    informe.setIdActuacio(idActuacio);
+		    if (idIncidencia != "") informe.setIdIncidencia(Integer.parseInt(idIncidencia));
+		    if (idActuacio != "") informe.setIdActuacio(Integer.parseInt(idActuacio));
 		    informe.setObjecte(objecte);
 		    informe.setTipusObra(tipusObra);
 		    informe.setLlicencia(llicencia);
@@ -99,14 +100,14 @@ public class DoAddInformeServlet extends HttpServlet {
 		   		String msg = "S'ha afegit l'informe";
 		   		if (idInformePrevi > 0) msg = "S'ha modificat l'informe";	   				
 		   		idComentari = TascaCore.nouHistoric(conn, idTasca, msg, Usuari.getIdUsuari());	
-		   		idIncidencia = ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia();
+		   		if (idActuacio != "") idIncidencia = String.valueOf(ActuacioCore.findActuacio(conn, Integer.parseInt(idActuacio)).getIdIncidencia());
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				errorString = e.getMessage();
 			}
 		   	//Guardar adjunts
-		   	Fitxers.guardarFitxer(multipartParams.getFitxers(), idActuacio, "Tasca", String.valueOf(idTasca), idComentari);
+		   	Fitxers.guardarFitxer(multipartParams.getFitxers(), idIncidencia, idActuacio, "Tasca", String.valueOf(idTasca), idComentari);
 	    } else {
 	    	//Enviam l'informe
 	    	//Registrar nova tasca d'asignament de partida
@@ -114,8 +115,8 @@ public class DoAddInformeServlet extends HttpServlet {
 				TascaCore.nouHistoric(conn, idTasca, "Informe enviat", Usuari.getIdUsuari());
 				TascaCore.reasignar(conn, 900, idTasca);
 				int idUsuari = UsuariCore.findUsuarisByTipus(conn, "CONTA").get(0).getIdUsuari();
-				TascaCore.novaTasca(conn, "resPartida", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, "", String.valueOf(idTasca));
-				idIncidencia = ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia();
+				TascaCore.novaTasca(conn, "resPartida", idUsuari, Usuari.getIdUsuari(), Integer.parseInt(idActuacio), Integer.parseInt(idIncidencia), "", String.valueOf(idTasca));
+				if (idActuacio != "") idIncidencia = String.valueOf(ActuacioCore.findActuacio(conn, Integer.parseInt(idActuacio)).getIdIncidencia());
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

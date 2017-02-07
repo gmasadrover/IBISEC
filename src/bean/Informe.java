@@ -11,6 +11,7 @@ public class Informe {
 	private int idInf;
 	private int idTasca;
 	private int idActuacio;
+	private int idIncidencia;
 	private String objecte;
 	private String tipusObra;
 	private boolean llicencia;
@@ -186,5 +187,13 @@ public class Informe {
 
 	public void setPartida(String partida) {
 		this.partida = partida;
+	}
+
+	public int getIdIncidencia() {
+		return idIncidencia;
+	}
+
+	public void setIdIncidencia(int idIncidencia) {
+		this.idIncidencia = idIncidencia;
 	}
 }

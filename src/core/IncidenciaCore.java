@@ -13,38 +13,39 @@ public class IncidenciaCore {
 	
 	private static Incidencia initIncidencia(Connection conn, ResultSet rs) throws SQLException{
 		Incidencia incidencia = new Incidencia();
-		incidencia.setIdIncidencia(rs.getInt("idIncidencia"));
-		incidencia.setNom(rs.getString("nom"));
-		incidencia.setUsuCre(UsuariCore.findUsuariByID(conn, rs.getInt("usuCre")));
-		incidencia.setUsuMod(rs.getDate("usuMod"));
+		incidencia.setIdIncidencia(rs.getInt("idincidencia"));
+		incidencia.setDescripcio(rs.getString("descripcio"));
+		incidencia.setUsuCre(UsuariCore.findUsuariByID(conn, rs.getInt("usucre")));
+		incidencia.setUsuMod(rs.getDate("datacre"));
 		incidencia.setActiva(rs.getBoolean("activa"));
-		incidencia.setDataCreacio(rs.getDate("dataCreacio"));
-		incidencia.setDataTancament(rs.getDate("dataTancament"));
-		incidencia.setIdCentre(rs.getString("idCentre"));
-		incidencia.setNomCentre(CentreCore.nomCentre(conn, rs.getString("idCentre")));
-		incidencia.setLlistaActuacions(ActuacioCore.searchActuacionsInciencia(conn, rs.getInt("idIncidencia")));
+		incidencia.setDataTancament(rs.getDate("datatancament"));
+		incidencia.setIdCentre(rs.getString("idcentre"));
+		incidencia.setNomCentre(CentreCore.nomCentre(conn, rs.getString("idcentre")));
+		incidencia.setSolicitant(rs.getString("solicitant"));
+		incidencia.setLlistaActuacions(ActuacioCore.searchActuacionsInciencia(conn, rs.getInt("idincidencia")));
 		return incidencia;
 	}
 	
 	public static void novaIncidencia(Connection conn, Incidencia incidencia) throws SQLException {
-		String sql = "Insert into public.\"tbl_Incidencia\"(\"idIncidencia\", nom, \"usuCre\", \"usuMod\", activa, \"dataCreacio\", \"idCentre\") values (?,?,?,localtimestamp,true,?,?)";
+		String sql = "INSERT INTO public.tbl_incidencia(idincidencia, descripcio, usucre, datacre, activa, idcentre, solicitant)"
+					+ " VALUES (?,?,?,localtimestamp,true,?,?)";
 	 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 	 
 		pstm.setInt(1, incidencia.getIdIncidencia());		
-		pstm.setString(2, incidencia.getNom());
+		pstm.setString(2, incidencia.getDescripcio());
 		pstm.setInt(3, incidencia.getUsuCre().getIdUsuari());
-		pstm.setDate(4, new java.sql.Date(incidencia.getDataCreacio().getTime()));		
-		pstm.setString(5, incidencia.getIdCentre());
+		pstm.setString(4, incidencia.getIdCentre());
+		pstm.setString(5, incidencia.getSolicitant());
 	 
 		pstm.executeUpdate();
 	}
 	
 	public static Incidencia findIncidencia(Connection conn, int idIncidencia) throws SQLException{
 		Incidencia incidencia = new Incidencia();
-		String sql = "SELECT \"idIncidencia\", nom, \"usuCre\", \"usuMod\", activa, \"dataCreacio\", \"dataTancament\", \"idCentre\" " 
-				+ " FROM public.\"tbl_Incidencia\" "
-		 		+ " WHERE \"idIncidencia\" = ? ";
+		String sql = "SELECT idincidencia, descripcio, usucre, datacre, activa, datatancament, idcentre, solicitant" 
+					+ " FROM public.tbl_incidencia"
+					+ " WHERE idincidencia = ?";
 		PreparedStatement pstm;
 		pstm = conn.prepareStatement(sql);
 		pstm.setInt(1, idIncidencia);			
@@ -58,19 +59,19 @@ public class IncidenciaCore {
 	}
 	
 	public static List<Incidencia> searchIncidencies(Connection conn, String idCentre, boolean onlyActives) throws SQLException {
-		String sql = "SELECT \"idIncidencia\", nom, \"usuCre\", \"usuMod\", activa, \"dataCreacio\", \"dataTancament\", \"idCentre\" " 
-					+ " FROM public.\"tbl_Incidencia\" ";
+		String sql = "SELECT idincidencia, descripcio, usucre, datacre, activa, datatancament, idcentre, solicitant" 
+					+ " FROM public.tbl_incidencia";
 					
 		PreparedStatement pstm;
 		if (idCentre != "") {
-			sql += " WHERE \"idCentre\" = ? ";
-			if (onlyActives) { sql+= "and activa = true"; }
-			sql += " ORDER BY \"idIncidencia\"::INT DESC";
+			sql += " WHERE idcentre = ?";
+			if (onlyActives) { sql+= " and activa = true"; }
+			sql += " ORDER BY idincidencia::INT DESC";
 			pstm = conn.prepareStatement(sql);
 			pstm.setString(1, idCentre);			
 		} else {
 			if (onlyActives) { sql+= " WHERE activa = true"; }
-			sql += " ORDER BY \"idIncidencia\"::INT DESC";
+			sql += " ORDER BY idincidencia::INT DESC";
 			pstm = conn.prepareStatement(sql);
 		}	
 		ResultSet rs = pstm.executeQuery();
@@ -84,11 +85,13 @@ public class IncidenciaCore {
 	
 	public static int getNewCode(Connection conn) throws SQLException {
 		int newCode = 1;
-		String sql = "SELECT \"idIncidencia\" FROM public.\"tbl_Incidencia\" ORDER BY \"idIncidencia\" DESC LIMIT 1;";		 
+		String sql = "SELECT idincidencia"
+					+ " FROM public.tbl_incidencia"
+					+ " ORDER BY idincidencia DESC LIMIT 1;";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		ResultSet rs = pstm.executeQuery();
 		while (rs.next()) {
-			int actualCode = rs.getInt("idIncidencia");			
+			int actualCode = rs.getInt("idincidencia");			
 			newCode = actualCode + 1;
 		}
 		return newCode;

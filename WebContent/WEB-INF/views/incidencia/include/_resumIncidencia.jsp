@@ -17,7 +17,7 @@
     	</div>
     </div>
     <div class="panel-body">
-        <p>${incidencia.nom}</p>
+        <p>${incidencia.descripcio}</p>
     </div>
     <div class="panel-footer">
     	<div class="row">

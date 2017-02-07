@@ -1,10 +1,8 @@
 package servlet.registre;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -50,13 +48,12 @@ public class RegistreDetailsServlet extends HttpServlet {
 		 }else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.registre_detalls)) {
 	    		response.sendRedirect(request.getContextPath() + "/");
 		   }else{			   
-			   String referencia = request.getParameter("referencia");
+			   int referencia =	Integer.parseInt(request.getParameter("referencia"));
 			   String tipus = request.getParameter("tipus");
 		       String errorString = null;
 		       
 		       Registre registre = new Registre();
 		       try {
-		    	   System.out.println(tipus + " " + referencia);
 		    	   registre = RegistreCore.findRegistre(conn, tipus, referencia);				    	  
 		       } catch (SQLException e) {
 		           e.printStackTrace();

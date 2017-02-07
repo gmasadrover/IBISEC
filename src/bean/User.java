@@ -1,9 +1,6 @@
 package bean;
 
 public class User {
-	public enum RolUsuari{
-		rol_cap, rol_arq, rol_bas, rol_jur, rol_eny, rol_admin, rol_adm, rol_tec 
-	}
 	private int idUsuari;
 	private String usuari;
 	private String name;
@@ -11,19 +8,11 @@ public class User {
 	private String rol;
 	private String password;
 	private String carreg;
+	private String departament;
 	 
 	   public User() {
 	 
 	   }
-	 
-	   public User(int idUsuari, String name, String llinatges, String rol, String password, String carreg) {
-		   this.idUsuari = idUsuari;
-	       this.name = name;
-	       this.llinatges = llinatges;
-	       this.rol = rol;
-	       this.password = password;
-	       this.carreg = carreg;
-	   }	 
 
 	   public void setIdUsuari(int idUsuari){
 		   this.idUsuari = idUsuari;
@@ -83,5 +72,13 @@ public class User {
 
 	public void setUsuari(String usuari) {
 		this.usuari = usuari;
+	}
+
+	public String getDepartament() {
+		return departament;
+	}
+
+	public void setDepartament(String departament) {
+		this.departament = departament;
 	}
 }

@@ -47,7 +47,7 @@ public class CreateSortidaServlet extends HttpServlet {
     		response.sendRedirect(request.getContextPath() + "/");
         }else{	       
 	        try {
-	        	request.setAttribute("idActuacio", request.getParameter("ref"));
+	        	request.setAttribute("idIncidencia", request.getParameter("idIncidencia"));
 				request.setAttribute("nouCodi", RegistreCore.getNewCode(conn, "S"));
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block

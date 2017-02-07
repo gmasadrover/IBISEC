@@ -13,20 +13,22 @@ import bean.User;
 public class UsuariCore {
 	private static User initUsuari(ResultSet rs) throws SQLException {
 		User usuari = new User();
-		usuari.setIdUsuari(rs.getInt("idUsuari"));
+		usuari.setIdUsuari(rs.getInt("idusuari"));
 		usuari.setName(rs.getString("nom"));
-		usuari.setLlinatges(rs.getString("llinatges"));
+		usuari.setLlinatges(rs.getString("cognoms"));
 		usuari.setRol(rs.getString("rol"));
 		usuari.setCarreg(rs.getString("carreg"));
-		usuari.setUsuari(rs.getString("usuari"));
+		usuari.setDepartament(rs.getString("departament"));
+		usuari.setUsuari(rs.getString("nomusuari"));
 		return usuari;
 	}
 	
 	
 	public static User findUsuari(Connection conn, String usuari, String password) throws SQLException {
 		 
-		String sql = "Select \"idUsuari\", nom, llinatges, rol, carreg, usuari from public.\"tbl_Usuaris\" "
-					+ " where usuari = ? and password= ?";
+		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari"
+					+ " FROM public.tbl_usuaris"
+					+ " WHERE nomusuari = ? and password= ?";
 	 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setString(1, usuari);
@@ -41,8 +43,9 @@ public class UsuariCore {
 	}
 	 
 	public static User findUsuari(Connection conn, String Usuari) throws SQLException {
-
-		String sql = "Select \"idUsuari\", nom, llinatges, rol, carreg, usuari from public.\"tbl_Usuaris\" where usuari = ? ";
+		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari"
+					+ " FROM public.tbl_usuaris"
+					+ " WHERE nomusuari = ? ";
 	 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setString(1, Usuari);
@@ -57,7 +60,9 @@ public class UsuariCore {
 	}	
 	
 	public static User findUsuariByID(Connection conn, int idUsuari) throws SQLException{
-		String sql = "Select \"idUsuari\", nom, llinatges, rol, carreg, usuari from public.\"tbl_Usuaris\" where \"idUsuari\" = ? ";
+		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari"
+					+ " FROM public.tbl_usuaris"
+					+ " WHERE idusuari = ? ";
 		 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setInt(1, idUsuari);
@@ -74,8 +79,10 @@ public class UsuariCore {
 	public static List<User> findUsuarisByTipus(Connection conn, String tipus) throws SQLException{
 		List<User> userList = new ArrayList<User>();
 		User user = new User();
-		String sql = "Select \"idUsuari\", nom, llinatges, rol, carreg, usuari from public.\"tbl_Usuaris\" where actiu = true and departament <> '' and rol LIKE '%" + tipus + "%' "
-					+ " order by 3, 2";		 
+		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari"
+					+ " FROM public.tbl_usuaris"
+					+ " WHERE actiu = true and departament <> '' and rol LIKE '%" + tipus + "%' "
+					+ " ORDER BY 3, 2";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);		
 		ResultSet rs = pstm.executeQuery();		 
 		while (rs.next()) {
@@ -86,7 +93,8 @@ public class UsuariCore {
 	}
 	
 	public static List<User> llistaUsuaris(Connection conn) throws SQLException {
-		String sql = "SELECT \"idUsuari\", nom, llinatges, rol, carreg, usuari FROM public.\"tbl_Usuaris\"";
+		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari"
+					+ " FROM public.tbl_usuaris";
 		 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 	 
@@ -101,8 +109,9 @@ public class UsuariCore {
 	}
 	
 	public static void modificarDades(Connection conn, int idUsuari, User newUsuari) throws SQLException {
-		String sql = "UPDATE public.\"tbl_Usuaris\"	SET nom=?, llinatges=?, carreg=?"
-				  	+ " WHERE \"idUsuari\"=?";		 
+		String sql = "UPDATE public.tbl_usuaris"
+					+ " SET nom=?, cognoms=?, carreg=?"
+				  	+ " WHERE idusuari=?";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setString(1, newUsuari.getName());
 		pstm.setString(2, newUsuari.getLlinatges());
@@ -112,8 +121,9 @@ public class UsuariCore {
 	}
 	
 	public static void modificarPassword(Connection conn, int idUsuari, String newPassword) throws SQLException {
-		String sql = "UPDATE public.\"tbl_Usuaris\"	SET password=?"
-				  	+ " WHERE \"idUsuari\"=?";		 
+		String sql = "UPDATE public.tbl_usuaris"
+					+ " SET password=?"
+				  	+ " WHERE idusuari=?";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setString(1, newPassword);
 		pstm.setInt(2, idUsuari);
@@ -122,8 +132,8 @@ public class UsuariCore {
 	
 	public static boolean coincideixPassword(Connection conn, int idUsuari, String oldPassword) throws SQLException {
 		boolean coincideix = false;
-		String sql = "SELECT password FROM public.\"tbl_Usuaris\" "
-			  	+ " WHERE \"idUsuari\"=?";	
+		String sql = "SELECT password FROM public.tbl_usuaris"
+			  		+ " WHERE idusuari=?";	
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setInt(1, idUsuari);
 		ResultSet rs = pstm.executeQuery();

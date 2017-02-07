@@ -97,7 +97,7 @@ public class InformeCore {
 		User usuari = UsuariCore.findUsuariByID(conn, rs.getInt("usuCre"));
 		informe.setUsuari(usuari);
 		informe.setDataCreacio(rs.getTimestamp("usuMod"));
-		informe.setAdjunts(utils.Fitxers.ObtenirFitxers(rs.getInt("idActuacio"), "Tasca", String.valueOf(rs.getInt("idTasca")),""));
+		informe.setAdjunts(utils.Fitxers.ObtenirFitxers(rs.getInt("idActuacio"), "Tasca", rs.getInt("idTasca"),""));
 		informe.setPartida(CreditCore.getPartidaActuacio(conn, rs.getInt("idActuacio")));		
 		return informe;
 	}

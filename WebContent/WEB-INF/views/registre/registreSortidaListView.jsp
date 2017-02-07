@@ -88,7 +88,7 @@
                                 <tbody>
                                 	<c:forEach items="${sortides}" var="sortida" >
 							          	<tr>
-							          		<td>${sortida.id}</td>
+							          		<td><a href="registre?tipus=S&referencia=${sortida.id}">${sortida.id}</a></td>
 							            	<td>${sortida.getDataString()}</td>
 							            	<td>${sortida.remDes}</td>
 							            	<td>${sortida.contingut}</td>	
@@ -98,7 +98,7 @@
 											        <td></td>
 											    </c:when>    
 											    <c:otherwise>
-											        <td><a href="actuacionsDetalls?ref=${sortida.idIncidencia}">${sortida.idIncidencia}</a></td>
+											        <td><a href="incidenciaDetalls?ref=${sortida.idIncidencia}">${sortida.idIncidencia}</a></td>
 							            	    </c:otherwise>
 											</c:choose>		
 											<td>${sortida.data}</td>					           								            	

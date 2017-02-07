@@ -7,16 +7,16 @@ import java.util.List;
 
 public class Incidencia {
 	private int idIncidencia;
-	private String nom;
+	private String descripcio;
 	private String idCentre;
 	private String nomCentre;
 	private List<Actuacio> llistaActuacions;
 	private User usuCre;
 	private Date usuMod;
 	private boolean activa;
-	private Date dataCreacio;
 	private Date dataTancament;
-	 
+	private String solicitant;
+	
 	public Incidencia() {
 		 
 	}
@@ -27,14 +27,6 @@ public class Incidencia {
 
 	public void setIdIncidencia(int idEstudi) {
 		this.idIncidencia = idEstudi;
-	}
-
-	public String getNom() {
-		return nom;
-	}
-
-	public void setNom(String nom) {
-		this.nom = nom;
 	}
 
 	public List<Actuacio> getLlistaActuacions() {
@@ -79,18 +71,10 @@ public class Incidencia {
 	public void setActiva(boolean activa) {
 		this.activa = activa;
 	}
-
-	public Date getDataCreacio() {
-		return dataCreacio;
-	}
 	
 	public String getPeticioString() {
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		return df.format(this.dataCreacio);		  
-	}
-
-	public void setDataCreacio(Date dataCreacio) {
-		this.dataCreacio = dataCreacio;
+		return df.format(this.usuMod);		  
 	}
 
 	public Date getDataTancament() {
@@ -120,5 +104,21 @@ public class Incidencia {
 
 	public void setNomCentre(String nomCentre) {
 		this.nomCentre = nomCentre;
+	}
+
+	public String getDescripcio() {
+		return descripcio;
+	}
+
+	public void setDescripcio(String descripcio) {
+		this.descripcio = descripcio;
+	}
+
+	public String getSolicitant() {
+		return solicitant;
+	}
+
+	public void setSolicitant(String solicitant) {
+		this.solicitant = solicitant;
 	}
 }

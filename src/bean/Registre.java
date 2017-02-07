@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class Registre {
 	
-	private String id;
+	private int id;
 	private Date data;
 	private String tipus;
 	private String remDes;
@@ -14,7 +14,6 @@ public class Registre {
 	private int idIncidencia;
 	private String idCentre;
 	private String nomCentre;
-	private boolean valid;
 	private int idUsuari;
 	private Date usuMod;
 	 
@@ -22,7 +21,7 @@ public class Registre {
 		 
 	}
  
-	public Registre(String id, Date data, String tipus, String remdes, String contingut, int idIncidencia, String idCentre, String nomCentre, boolean valid, int idUsuari, Date usuMod) {
+	public Registre(int id, Date data, String tipus, String remdes, String contingut, int idIncidencia, String idCentre, String nomCentre, int idUsuari, Date usuMod) {
 		this.setId(id);
 		this.setData(data);
 		this.setTipus(tipus);
@@ -31,16 +30,15 @@ public class Registre {
 		this.setIdIncidencia(idIncidencia);
 		this.setIdCentre(idCentre);
 		this.setNomCentre(nomCentre);
-		this.setValid(valid);
 		this.setIdUsuari(idUsuari);
 		this.setUsuMod(usuMod);		
 	}
 
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -80,15 +78,7 @@ public class Registre {
 	public void setContingut(String contingut) {
 		this.contingut = contingut;
 	}
-
-	public boolean isValid() {
-		return valid;
-	}
-
-	public void setValid(boolean valid) {
-		this.valid = valid;
-	}
-
+	
 	public int getIdUsuari() {
 		return idUsuari;
 	}

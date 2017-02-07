@@ -85,9 +85,9 @@
                                 	<c:forEach items="${incidenciesList}" var="incidencia" >
 							          	<tr class=${incidencia.activa ? "success" : "danger"}>							          	
 							           		<td><a href="incidenciaDetalls?ref=${incidencia.idIncidencia}">${incidencia.idIncidencia}</a></td>
-							            	<td>${incidencia.nom}</td>
+							            	<td>${incidencia.descripcio}</td>
 							            	<td>${incidencia.getPeticioString()}</td>
-							            	<td>${incidencia.dataCreacio}</td>
+							            	<td>${incidencia.usuMod}</td>
 							            	<td>${incidencia.getLlistaIdActuacions()}</td>
 							            	<c:if test="${!nomesActives}">
 											   	<td>${incidencia.getTancamentString()}</td>

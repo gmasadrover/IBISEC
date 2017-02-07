@@ -48,7 +48,8 @@ public class DoAddHistoricServlet extends HttpServlet {
 		}
 		
 	    int idTasca = Integer.parseInt(multipartParams.getParametres().get("idTasca"));
-	    int idActuacio = Integer.parseInt(multipartParams.getParametres().get("idActuacio"));
+	    String idIncidencia = multipartParams.getParametres().get("idIncidencia");
+	    String idActuacio = multipartParams.getParametres().get("idActuacio");
 	    String reasignar = multipartParams.getParametres().get("reasignar");
 	    String tancar = multipartParams.getParametres().get("tancar");
 	    User Usuari = MyUtils.getLoginedUser(request.getSession());	   
@@ -64,7 +65,7 @@ public class DoAddHistoricServlet extends HttpServlet {
 			errorString = e.getMessage();
 		}
 	   	//Guardar adjunts
-	   	Fitxers.guardarFitxer(multipartParams.getFitxers(), idActuacio, "Tasca", String.valueOf(idTasca), idComentari);
+	   	Fitxers.guardarFitxer(multipartParams.getFitxers(), idIncidencia, idActuacio, "Tasca", String.valueOf(idTasca), idComentari);
 	   	
 	   	// Store infomation to request attribute, before forward to views.
 	   	request.setAttribute("errorString", errorString);
@@ -76,7 +77,7 @@ public class DoAddHistoricServlet extends HttpServlet {
 	   	}// If everything nice. Redirect to the product listing page.            
 	   	else {
 	   		if (reasignar != null) { //reassignem la incid�ncia
-	   			int idUsuariNou = Integer.parseInt(request.getParameter("idUsuari"));
+	   			int idUsuariNou = Integer.parseInt(multipartParams.getParametres().get("idUsuari"));
 	   			try {
 					TascaCore.reasignar(conn, idUsuariNou, idTasca);
 				} catch (SQLException e) {

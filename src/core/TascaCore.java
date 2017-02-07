@@ -16,19 +16,21 @@ public class TascaCore {
 	
 	private static Tasca initTasca(Connection conn, ResultSet rs) throws SQLException {
 		Tasca tasca = new Tasca();
-		tasca.setIdTasca(rs.getInt("idTasca"));
-		tasca.setUsuari(UsuariCore.findUsuariByID(conn, rs.getInt("idUsuari")));
-		tasca.setActuacio(ActuacioCore.findActuacio(conn,  rs.getInt("idActuacio")));
-		tasca.setIncidencia(IncidenciaCore.findIncidencia(conn, rs.getInt("idIncidencia")));
+		tasca.setIdTasca(rs.getInt("idtasca"));
+		tasca.setUsuari(UsuariCore.findUsuariByID(conn, rs.getInt("idusuari")));
+		tasca.setActuacio(ActuacioCore.findActuacio(conn,  rs.getInt("idactuacio")));
+		tasca.setIncidencia(IncidenciaCore.findIncidencia(conn, rs.getInt("idincidencia")));
 		tasca.setActiva(rs.getBoolean("activa"));
-		tasca.setName(rs.getString("nom"));
+		tasca.setDescripcio(rs.getString("descripcio"));
 		tasca.setTipus(rs.getString("tipus"));
-		tasca.setDataCreacio(TascaCore.findInici(conn, rs.getInt("idTasca")));
+		tasca.setDataCreacio(TascaCore.findInici(conn, rs.getInt("idtasca")));
 		return tasca;		
 	}
 	
 	public static Tasca findTascaId(Connection conn, int idTasca) throws SQLException {
-		String sql = "SELECT \"idTasca\", \"idUsuari\", \"idActuacio\", nom, tipus, activa, \"idIncidencia\" FROM public.\"tbl_Tasques\" WHERE \"idTasca\" = ?";	 
+		String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia"
+					+ " FROM public.tbl_tasques"
+					+ " WHERE idtasca = ?";	 
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 
 		 pstm.setInt(1, idTasca);		
 		 ResultSet rs = pstm.executeQuery();
@@ -40,7 +42,9 @@ public class TascaCore {
 	}
 	
 	public static List<Tasca> llistaTasquesUsuari(Connection conn, int idUsuari) throws SQLException {
-		 String sql = "SELECT \"idTasca\", \"idUsuari\", \"idActuacio\", nom, tipus, activa, \"idIncidencia\" FROM public.\"tbl_Tasques\" WHERE \"idUsuari\" = ?";	 
+		 String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia"
+				 	+ " FROM public.tbl_tasques"
+				 	+ " WHERE idusuari = ?";	 
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 
 		 pstm.setInt(1, idUsuari);		
 		 ResultSet rs = pstm.executeQuery();
@@ -53,9 +57,9 @@ public class TascaCore {
     }
 	
 	public static List<Tasca> llistaTasquesArea(Connection conn, String area) throws SQLException {
-		String sql = "SELECT t.\"idTasca\", t.\"idUsuari\", t.\"idActuacio\", t.nom, t.tipus, t.activa, t.\"idIncidencia\" "
-				 	+ " FROM public.\"tbl_Tasques\" t "
-				 	+ " LEFT JOIN public.\"tbl_Usuaris\" u on t.\"idUsuari\" = u.\"idUsuari\" "
+		String sql = "SELECT t.idtasca, t.idusuari, t.idactuacio, t.descripcio, t.tipus, t.activa, t.idincidencia"
+				 	+ " FROM public.tbl_tasques t"
+				 	+ " LEFT JOIN public.tbl_usuaris u on t.idusuari = u.idusuari"
 				 	+ " WHERE u.departament = ?";
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 
 		 pstm.setString(1, area);		
@@ -69,7 +73,9 @@ public class TascaCore {
    }
 	
 	public static List<Tasca> findTasquesActuacio(Connection conn, int referencia) throws SQLException {
-		 String sql = "SELECT \"idTasca\", \"idUsuari\", \"idActuacio\", nom, tipus, activa, \"idIncidencia\" FROM public.\"tbl_Tasques\" WHERE \"idActuacio\" = ?";	 
+		 String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia"
+				 	+ " FROM public.tbl_tasques"
+				 	+ " WHERE idactuacio = ?";	 
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 
 		 pstm.setInt(1, referencia);		
 		 ResultSet rs = pstm.executeQuery();
@@ -82,7 +88,9 @@ public class TascaCore {
 	}
 	
 	public static List<Tasca> findTasquesIncidencia(Connection conn, int referencia) throws SQLException {
-		 String sql = "SELECT \"idTasca\", \"idUsuari\", \"idActuacio\", nom, tipus, activa, \"idIncidencia\" FROM public.\"tbl_Tasques\" WHERE \"idIncidencia\" = ?";	 
+		 String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia"
+				 	+ " FROM public.tbl_tasques"
+				 	+ " WHERE idincidencia = ?";	 
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 
 		 pstm.setInt(1, referencia);		
 		 ResultSet rs = pstm.executeQuery();
@@ -96,7 +104,10 @@ public class TascaCore {
 	
 	public static Date findInici(Connection conn, int idTasca) throws SQLException{
 		Date dataInici = new Date();
-		String sql = "SELECT data FROM public.tbl_historic WHERE \"idTasca\" = ? ORDER BY data";	 
+		String sql = "SELECT data"
+					+ " FROM public.tbl_historial"
+					+ " WHERE idtasca = ?"
+					+ " ORDER BY data";	 
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		pstm.setInt(1, idTasca);		
 		ResultSet rs = pstm.executeQuery();
@@ -107,7 +118,9 @@ public class TascaCore {
 	}
 	
 	public static List<Historic> findHistorial(Connection conn, int idTasca, int idActuacio) throws SQLException {
-		String sql = "SELECT \"idHistoric\", comentari, \"idUsuari\", data FROM public.tbl_historic WHERE \"idTasca\" = ?";	 
+		String sql = "SELECT idhistoric, comentari, idusuari, data"
+					+ " FROM public.tbl_historial"
+					+ " WHERE idtasca = ?";	 
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		pstm.setInt(1, idTasca);		
 		ResultSet rs = pstm.executeQuery();
@@ -116,10 +129,10 @@ public class TascaCore {
 			Historic historic = new Historic();
 			historic.setComentari(rs.getString("comentari"));
 			historic.setData(rs.getTimestamp("data"));
-			historic.setIdHistoric(rs.getInt("idHistoric"));
+			historic.setIdHistoric(rs.getInt("idhistoric"));
 			historic.setIdTasca(idTasca);
-			historic.setUsuari(UsuariCore.findUsuariByID(conn, rs.getInt("idUsuari")));
-			historic.setAdjunts(utils.Fitxers.ObtenirFitxers(idActuacio, "Tasca", String.valueOf(idTasca), rs.getString("idHistoric")));
+			historic.setUsuari(UsuariCore.findUsuariByID(conn, rs.getInt("idusuari")));
+			historic.setAdjunts(utils.Fitxers.ObtenirFitxers(idActuacio, "Tasca", idTasca, rs.getString("idhistoric")));
 			list.add(historic);
 		}
 	    return list;
@@ -127,7 +140,8 @@ public class TascaCore {
 	
 	public static void novaTasca(Connection conn, String tipus, int idUsuari, int idUsuariComentari, int idActuacio, int idIncidencia, String comentari, String assumpte) throws SQLException {
 		
-		String sql = "INSERT INTO public.\"tbl_Tasques\"(\"idTasca\", \"idUsuari\", \"idActuacio\", nom, tipus, activa, \"idIncidencia\") VALUES (?, ?, ?, ?, ?, ?, ?);";		 
+		String sql = "INSERT INTO public.tbl_tasques(idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia)"
+					+" VALUES (?, ?, ?, ?, ?, ?, ?);";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		int idNovaTasca = idNovaTasca(conn);
 		if ("infPrev".equals(tipus)) {
@@ -160,7 +174,8 @@ public class TascaCore {
 	}
 	
 	public static String nouHistoric(Connection conn, int idTasca, String comentari, int idUsuari) throws SQLException {
-		String sql = "INSERT INTO public.tbl_historic(\"idHistoric\", \"idTasca\", comentari, \"idUsuari\", data) VALUES (?, ?, ?, ?,localtimestamp);";		 
+		String sql = "INSERT INTO public.tbl_historial(idhistoric, idtasca, comentari, idusuari, data)"
+					+ " VALUES (?, ?, ?, ?,localtimestamp);";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		pstm = conn.prepareStatement(sql);	
 		int idNouHistoric = idNouHistoric(conn);
@@ -173,7 +188,9 @@ public class TascaCore {
 	}
 	
 	public static void reasignar(Connection conn, int idUsuari, int idTasca) throws SQLException{
-		String sql = "UPDATE public.\"tbl_Tasques\"	SET \"idUsuari\"=? WHERE \"idTasca\"=?;";
+		String sql = "UPDATE public.tbl_tasques"
+					+ " SET idusuari=?"
+					+ " WHERE idtasca=?;";
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		pstm = conn.prepareStatement(sql);	 
 		pstm.setInt(1, idUsuari);
@@ -182,7 +199,9 @@ public class TascaCore {
 	}
 	
 	public static void tancar(Connection conn, int idTasca) throws SQLException {
-		String sql = "UPDATE public.\"tbl_Tasques\"	SET activa=false WHERE \"idTasca\"=?;";
+		String sql = "UPDATE public.tbl_tasques"
+					+ " SET activa=false"
+					+ " WHERE idtasca=?;";
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		pstm = conn.prepareStatement(sql);	 
 		pstm.setInt(1, idTasca);
@@ -191,11 +210,14 @@ public class TascaCore {
 	
 	public static int idNovaTasca(Connection conn) throws SQLException{
 		int id = 1;
-		String sql = "SELECT \"idTasca\" FROM public.\"tbl_Tasques\" ORDER BY \"idTasca\" DESC LIMIT 1;";		 
+		String sql = "SELECT idtasca"
+					+ " FROM public.tbl_tasques"
+					+ " ORDER BY idtasca"
+					+ " DESC LIMIT 1;";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		ResultSet rs = pstm.executeQuery();
 		while (rs.next()) {
-			String actualCode = rs.getString("idTasca");
+			String actualCode = rs.getString("idtasca");
 			int num = Integer.valueOf(actualCode);
 			id = num + 1;
 		}
@@ -203,11 +225,14 @@ public class TascaCore {
 	}
 	public static int idNouHistoric(Connection conn) throws SQLException{
 		int id = 1;
-		String sql = "SELECT \"idHistoric\" FROM public.tbl_historic ORDER BY \"idHistoric\" DESC LIMIT 1;";		 
+		String sql = "SELECT idhistoric"
+					+ " FROM public.tbl_historial"
+					+ " ORDER BY idhistoric"
+					+ " DESC LIMIT 1;";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		ResultSet rs = pstm.executeQuery();
 		while (rs.next()) {
-			String actualCode = rs.getString("idHistoric");
+			String actualCode = rs.getString("idhistoric");
 			int num = Integer.valueOf(actualCode);
 			id = num + 1;
 		}

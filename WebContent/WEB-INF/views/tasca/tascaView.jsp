@@ -52,7 +52,7 @@
 						       			Referència Tasca: ${tasca.idTasca}
 						       		</div>
 						       		<div class="col-lg-4">
-						       			Assumpte: ${tasca.name}
+						       			Assumpte: ${tasca.descripcio}
 						      		</div>
 						       		<div class="col-lg-4">
 						       			Responsable: ${tasca.usuari.getNomComplet()}

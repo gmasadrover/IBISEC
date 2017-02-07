@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import bean.Registre;
-import core.ActuacioCore;
+import core.IncidenciaCore;
 import core.RegistreCore;
 import utils.MyUtils;
 
@@ -41,25 +41,25 @@ public class DoCreateSortidaServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 Connection conn = MyUtils.getStoredConnection(request);
 		
-	    String referencia = request.getParameter("referencia");
+	    int referencia = Integer.parseInt(request.getParameter("referencia"));
 	    String remitent = request.getParameter("destinatari");
 	    String tipus = URLDecoder.decode(request.getParameter("tipus"),  "UTF-8");	    
 //	    String idCentre = request.getParameter("idCentre").split("_")[0];
 	    String contingut = request.getParameter("contingut");
 	    String idCentre = "";
-	    int idActuacio = -1;
+	    int idIncidencia = -1;
 	    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 	    int idUsuari = MyUtils.getLoginedUser(request.getSession()).getIdUsuari();
 	    Date peticio = new Date();
 		try {
-			idActuacio = Integer.parseInt(request.getParameter("idActuacio"));
-	    	idCentre = ActuacioCore.findActuacio(conn, idActuacio).getIdCentre();			
+			idIncidencia = Integer.parseInt(request.getParameter("idIncidencia"));
+	    	idCentre = IncidenciaCore.findIncidencia(conn, idIncidencia).getIdCentre();			
 			peticio = formatter.parse(request.getParameter("peticio"));
 		} catch (ParseException | SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-	    Registre registre = new Registre(referencia, peticio, tipus, remitent, contingut, idActuacio, idCentre, "", true, idUsuari, new Date());
+	    Registre registre = new Registre(referencia, peticio, tipus, remitent, contingut, idIncidencia, idCentre, "", idUsuari, new Date());
 	    
 	    String errorString = null;
 	 	      

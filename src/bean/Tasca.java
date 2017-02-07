@@ -9,22 +9,13 @@ public class Tasca {
 	private User usuari;
 	private Actuacio actuacio;
 	private Incidencia incidencia;
-	private String name;
+	private String descripcio;
 	private String tipus;
 	private boolean activa;
 	private Date dataCreacio;
 	
 	public Tasca() {
 
-	}
-
-	public Tasca(int idTasca, User usuari, Actuacio actuacio, String name, String tipus, boolean activa) {
-		this.setIdTasca(idTasca);
-		this.setUsuari(usuari);
-		this.setActuacio(actuacio);
-		this.setName(name);
-		this.setTipus(tipus);
-		this.setActiva(activa);
 	}
 	
 	public int getIdTasca() {
@@ -59,14 +50,6 @@ public class Tasca {
 		this.activa = activa;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public String getTipus() {
 		return tipus;
 	}
@@ -94,5 +77,13 @@ public class Tasca {
 
 	public void setIncidencia(Incidencia incidencia) {
 		this.incidencia = incidencia;
+	}
+
+	public String getDescripcio() {
+		return descripcio;
+	}
+
+	public void setDescripcio(String descripcio) {
+		this.descripcio = descripcio;
 	}
 }

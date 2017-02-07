@@ -9,7 +9,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -49,7 +48,7 @@ public class Fitxers {
 	
 	public static final String RUTA_BASE = "V:/INTERCANVI D'OBRES/MAS, GUILLEM/documents/";
 	
-	public static List<Fitxer> ObtenirFitxers(int idActuacio, String tipus, String idTipus, String idSubTipus) {
+	public static List<Fitxer> ObtenirFitxers(int idActuacio, String tipus, int idTipus, String idSubTipus) {
 		List<Fitxer> arxius = new ArrayList<Fitxer>();
 		String rutaBase = RUTA_BASE + idActuacio + "/" + tipus + "/" + idTipus;
 		if (idSubTipus != "") rutaBase = RUTA_BASE + idActuacio + "/" + tipus + "/" + idTipus + "/Comentari/" + idSubTipus;
@@ -86,7 +85,7 @@ public class Fitxers {
 		return arxius;	
 	}
 	
-	public static void guardarFitxer(List<FileItem> fitxers, int idActuacio, String tipus, String idTipus, String idSubTipus){		
+	public static void guardarFitxer(List<FileItem> fitxers, String idIncidencia, String idActuacio, String tipus, String idTipus, String idSubTipus){		
 		String fileName = "";
 		// Crear directoris si no existeixen
 		File tmpFile = new File(utils.Fitxers.RUTA_BASE + idActuacio);
