@@ -34,7 +34,33 @@
                     </div>
                 </div>
                 <!-- /.row -->
-
+ 
+				<div class="row">
+					<form class="form-horizontal" method="POST" action="tascaList">	
+						<input type="hidden" id="usuariSelected" value="${usuariSelected}"/>					
+						<div class="form-group">
+							<div class="col-lg-offset-1  col-lg-3">
+								<label>Usuari / Àrea</label>
+							    <select class="form-control selectpicker" name="idUsuari" data-live-search="true" id="usuarisList">
+                                	<c:forEach items="${llistaUsuaris}" var="usuari" >
+                                		<option value='${usuari.idUsuari}'>${usuari.getNomComplet()}</option>
+                                	</c:forEach>
+                                	<option data-divider="true"></option>
+                                		<option value='gerencia'>Gerència</option>
+                                		<option value='juridica'>Assessoria Jurídica</option>
+                                		<option value='obres'>Obres , Projectes i Supervisió</option>
+                                		<option value='comptabilitat'>Administració i comptabilitat</option>
+                                		<option value='instalacions'>Instal·lacions i Manteniment</option>                               
+                                </select>				    
+						  	</div>						  	
+						 </div>
+						 <div class="form-group"> 	
+						  	<div class="col-lg-offset-1 col-lg-2">
+						    	<input type="submit" class="btn btn-primary" name="filtrar" value="Aplicar Filtres">
+							</div>
+						</div>	
+					</form>
+				</div>
 
                 <div class="row">
                     <div class="col-lg-12">
@@ -45,26 +71,28 @@
                                     <tr>                                        
                                         <th>Tasca</th>
                                         <th>id Actuació</th>
+                                        <th>id Incidència</th>
                                         <th>Centre</th>                                        
                                         <th>Data creació</th>
                                         <th>Data creació</th>
+                                        <th>Responsable</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${tasquesList}" var="tasca" >
-							          	<tr>							          	
+							          	<tr class="${tasca.activa ? "success" : "danger"}">							          	
 							           		<td><a href="tasca?id=${tasca.idTasca}">${tasca.idTasca} - ${tasca.name}</a></td>
 							            	<td><a href="actuacionsDetalls?ref=${tasca.actuacio.referencia}">${tasca.actuacio.referencia}</a></td>
+							            	<td><a href="incidenciaDetalls?ref=${tasca.incidencia.idIncidencia}">${tasca.incidencia.idIncidencia}</a></td>
 							            	<td>${tasca.actuacio.nomCentre}</td>							            	
 							            	<td>${tasca.getDataCreacioString()}</td>
-							            	<td>${tasca.dataCreacio}</td>						            	
+							            	<td>${tasca.dataCreacio}</td>	
+							            	<td>${tasca.usuari.getNomComplet()}					            	
 							          	</tr>
 							       	</c:forEach>
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-                    <div class="col-lg-6">
                     </div>
                 </div>
 

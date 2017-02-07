@@ -74,7 +74,8 @@ public class UsuariCore {
 	public static List<User> findUsuarisByTipus(Connection conn, String tipus) throws SQLException{
 		List<User> userList = new ArrayList<User>();
 		User user = new User();
-		String sql = "Select \"idUsuari\", nom, llinatges, rol, carreg, usuari from public.\"tbl_Usuaris\" where rol LIKE '%" + tipus + "%' ";		 
+		String sql = "Select \"idUsuari\", nom, llinatges, rol, carreg, usuari from public.\"tbl_Usuaris\" where actiu = true and departament <> '' and rol LIKE '%" + tipus + "%' "
+					+ " order by 3, 2";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);		
 		ResultSet rs = pstm.executeQuery();		 
 		while (rs.next()) {

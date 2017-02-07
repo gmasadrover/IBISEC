@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.math.NumberUtils;
+
 import bean.Tasca;
 import bean.User;
 import bean.ControlPage.SectionPage;
@@ -38,18 +40,34 @@ public class TascaListServlet extends HttpServlet {
     	}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_list)) {
     		response.sendRedirect(request.getContextPath() + "/");	
  	   	}else{	 
+ 	   		String filtrar = request.getParameter("filtrar");
 	        String errorString = null;
 	        List<Tasca> list = null;
+	        List<User> llistaUsuaris = null;
+	        String idUsuari = request.getParameter("idUsuari");
+	        String usuariSelected = String.valueOf(usuari.getIdUsuari());
 	        try {
-	            list = TascaCore.llistaTasquesUsuari(conn, MyUtils.getLoginedUser(request.getSession()));
+	        	if (filtrar != null) {
+	        		if (NumberUtils.isNumber(idUsuari)) {
+	        			list = TascaCore.llistaTasquesUsuari(conn, Integer.parseInt(idUsuari));
+	        		}else{
+	        			list = TascaCore.llistaTasquesArea(conn, idUsuari);
+	        		}
+	        		usuariSelected = idUsuari;
+	        	}else{
+	        		list = TascaCore.llistaTasquesUsuari(conn, usuari.getIdUsuari());		            
+	        	}	 
+	        	llistaUsuaris =  UsuariCore.findUsuarisByTipus(conn, "");
 	        } catch (SQLException e) {
 	            e.printStackTrace();
 	            errorString = e.getMessage();
 	        }
 	   
 	        // Store info in request attribute, before forward to views
+	        request.setAttribute("llistaUsuaris", llistaUsuaris);
 	        request.setAttribute("errorString", errorString);
 	        request.setAttribute("tasquesList", list);  
+	        request.setAttribute("usuariSelected", usuariSelected);
 		    request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "Tasques"));
 	     
 	        // Forward to /WEB-INF/views/productListView.jsp

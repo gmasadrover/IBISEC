@@ -48,7 +48,7 @@ public class CreateTascaServlet extends HttpServlet {
 	        try {
 	        	String tipus = request.getParameter("tipus");
 	        	String tipusUsuari = "";
-	        	request.setAttribute("idActuacio", request.getParameter("ref"));
+	        	request.setAttribute("idActuacio", request.getParameter("idActuacio"));
 	        	request.setAttribute("idIncidencia", request.getParameter("idIncidencia"));
 	        	request.setAttribute("tipus", tipus);
 				request.setAttribute("nouCodi", TascaCore.idNovaTasca(conn));

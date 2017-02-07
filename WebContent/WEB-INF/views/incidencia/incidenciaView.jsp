@@ -211,18 +211,24 @@
 									<div class="table-responsive">                        
 			                            <table class="table table-striped table-bordered">
 			                                <thead>
-			                                    <tr>
-			                                        <th>id Tasca</th>
+			                                    <tr>                                        
 			                                        <th>Tasca</th>
-			                                        <th>Usuari</th>
+			                                        <th>id Actuació</th>
+			                                        <th>id Incidència</th>
+			                                        <th>Centre</th>                                        
+			                                        <th>Data creació</th>
+			                                        <th>Responsable</th>
 			                                    </tr>
 			                                </thead>
 			                                <tbody>
 			                                	<c:forEach items="${tasques}" var="tasca" >
-										          	<tr class=${tasca.activa ? "success" : "danger"}>							          	
-										           		<td><a href="tasca?id=${tasca.idTasca}">${tasca.idTasca}</a></td>	
-										           		<td>${tasca.name}</td>						            	
-										            	<td>${tasca.usuari.getNomComplet()}</td>						            	
+										          	<tr class="${tasca.activa ? "success" : "danger"}">							          	
+										           		<td><a href="tasca?id=${tasca.idTasca}">${tasca.idTasca} - ${tasca.name}</a></td>
+										            	<td><a href="actuacionsDetalls?ref=${tasca.actuacio.referencia}">${tasca.actuacio.referencia}</a></td>
+										            	<td><a href="incidenciaDetalls?ref=${tasca.incidencia.idIncidencia}">${tasca.incidencia.idIncidencia}</a></td>
+										            	<td>${tasca.actuacio.nomCentre}</td>							            	
+										            	<td>${tasca.getDataCreacioString()}</td>
+										            	<td>${tasca.usuari.getNomComplet()}					            	
 										          	</tr>
 										       	</c:forEach>
 			                                </tbody>

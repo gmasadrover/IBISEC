@@ -183,7 +183,7 @@
 					      		<c:if test="${actuacio.activa}">					      			
 						      		<div class="row margin_bottom10">
 							    		<div class="col-lg-12 panel">
-											<a href="createTasca?ref=${actuacio.referencia}&tipus=infPrev" class="btn btn-primary right" role="button">Sol·licitar informe previ ${informes.size() > 0 ? "nou" : ""}</a>
+											<a href="createTasca?idActuacio=${actuacio.referencia}&tipus=infPrev" class="btn btn-primary right" role="button">Sol·licitar informe previ ${informes.size() > 0 ? "nou" : ""}</a>
 										</div>
 						    		</div>
 					    		</c:if>
@@ -243,26 +243,32 @@
 					      		<c:if test="${actuacio.activa}">
 						      		<div class="row margin_bottom10">
 							    		<div class="col-lg-12 panel">
-											<a href="createTasca?ref=${actuacio.referencia}&tipus=generic" class="btn btn-primary" role="button">Nova tasca</a>
+											<a href="createTasca?idActuacio=${actuacio.referencia}&tipus=generic" class="btn btn-primary" role="button">Nova tasca</a>
 										</div>
 						    		</div>
 						    	</c:if>
 					    		<div class="row panel-body">
 									<div class="table-responsive">                        
 			                            <table class="table table-striped table-bordered">
-			                                <thead>
-			                                    <tr>
-			                                        <th>id Tasca</th>
+			                            	<thead>
+			                                    <tr>                                        
 			                                        <th>Tasca</th>
-			                                        <th>Usuari</th>
+			                                        <th>id Actuació</th>
+			                                        <th>id Incidència</th>
+			                                        <th>Centre</th>                                        
+			                                        <th>Data creació</th>
+			                                        <th>Responsable</th>
 			                                    </tr>
 			                                </thead>
 			                                <tbody>
 			                                	<c:forEach items="${tasques}" var="tasca" >
-										          	<tr class=${tasca.activa ? "success" : "danger"}>							          	
-										           		<td><a href="tasca?id=${tasca.idTasca}">${tasca.idTasca}</a></td>	
-										           		<td>${tasca.name}</td>						            	
-										            	<td>${tasca.usuari.getNomComplet()}</td>						            	
+										          	<tr class="${tasca.activa ? "success" : "danger"}">							          	
+										           		<td><a href="tasca?id=${tasca.idTasca}">${tasca.idTasca} - ${tasca.name}</a></td>
+										            	<td><a href="actuacionsDetalls?ref=${tasca.actuacio.referencia}">${tasca.actuacio.referencia}</a></td>
+										            	<td><a href="incidenciaDetalls?ref=${tasca.incidencia.idIncidencia}">${tasca.incidencia.idIncidencia}</a></td>
+										            	<td>${tasca.actuacio.nomCentre}</td>							            	
+										            	<td>${tasca.getDataCreacioString()}</td>
+										            	<td>${tasca.usuari.getNomComplet()}					            	
 										          	</tr>
 										       	</c:forEach>
 			                                </tbody>

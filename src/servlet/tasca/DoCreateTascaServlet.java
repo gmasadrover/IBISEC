@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import core.ActuacioCore;
 import core.TascaCore;
 import utils.MyUtils;
 
@@ -35,12 +36,9 @@ public class DoCreateTascaServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		Connection conn = MyUtils.getStoredConnection(request);
+		int idIncidencia = -1;		
 		int idActuacio = -1;
-		System.out.println(request.getParameter("idActuacio"));
-	   	System.out.println(request.getParameter("idIncidencia"));
-		if (request.getParameter("idActuacio") != "") idActuacio = Integer.parseInt(request.getParameter("idActuacio")); 
-		int idIncidencia = -1;
-		if (request.getParameter("idIncidencia") != "") idIncidencia = Integer.parseInt(request.getParameter("idIncidencia")); 
+			
 	    int idUsuari = MyUtils.getLoginedUser(request.getSession()).getIdUsuari();
 	    String tipus = request.getParameter("tipus");
 	    String assumpte = request.getParameter("assumpte");
@@ -48,6 +46,11 @@ public class DoCreateTascaServlet extends HttpServlet {
 	   	int usuariTasca = Integer.parseInt(request.getParameter("idUsuari"));
 	   	String errorString = null;	   		   	
 	   	try {
+	   		if (request.getParameter("idIncidencia") != "") idIncidencia = Integer.parseInt(request.getParameter("idIncidencia")); 
+	   		if (request.getParameter("idActuacio") != "") {
+				idActuacio = Integer.parseInt(request.getParameter("idActuacio")); 
+				idIncidencia = ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia();
+			}	
 			TascaCore.novaTasca(conn, tipus, usuariTasca, idUsuari, idActuacio, idIncidencia, comentari, assumpte);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

@@ -5,22 +5,6 @@
 <c:set var="language" value="${not empty param.language ? param.language : not empty language ? language : pageContext.request.locale}" scope="session" />
 <m:setLocale value="${language}" />
 <m:setBundle basename="i18n.base"/>	
-<h2>Tasca</h2>
-<div class="panel panel-${tasca.activa ? "success" : "danger"}">
-   	<div class="panel-heading">
-    	<div class="row">
-       		<div class="col-lg-4">
-       			Referència Tasca: ${tasca.idTasca}
-       		</div>
-       		<div class="col-lg-4">
-       			Assumpte: ${tasca.name}
-      		</div>
-       		<div class="col-lg-4">
-       			Responsable: ${tasca.usuari.getNomComplet()}
-      		</div>
-       	</div>
-   	</div>
-</div>
 <div class="panel panel-${incidencia.activa ? "success" : "danger"}">
     <div class="panel-heading">
         <div class="row">

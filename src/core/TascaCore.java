@@ -11,7 +11,6 @@ import java.util.List;
 import bean.Historic;
 import bean.Informe;
 import bean.Tasca;
-import bean.User;
 
 public class TascaCore {
 	
@@ -40,10 +39,10 @@ public class TascaCore {
 	     return tasca;
 	}
 	
-	public static List<Tasca> llistaTasquesUsuari(Connection conn, User usuari) throws SQLException {
-		 String sql = "SELECT \"idTasca\", \"idUsuari\", \"idActuacio\", nom, tipus, activa, \"idIncidencia\" FROM public.\"tbl_Tasques\" WHERE \"idUsuari\" = ? AND activa=true";	 
+	public static List<Tasca> llistaTasquesUsuari(Connection conn, int idUsuari) throws SQLException {
+		 String sql = "SELECT \"idTasca\", \"idUsuari\", \"idActuacio\", nom, tipus, activa, \"idIncidencia\" FROM public.\"tbl_Tasques\" WHERE \"idUsuari\" = ?";	 
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 
-		 pstm.setInt(1, usuari.getIdUsuari());		
+		 pstm.setInt(1, idUsuari);		
 		 ResultSet rs = pstm.executeQuery();
 		 List<Tasca> list = new ArrayList<Tasca>();
 		 while (rs.next()) {
@@ -52,6 +51,22 @@ public class TascaCore {
 		 }
 	     return list;
     }
+	
+	public static List<Tasca> llistaTasquesArea(Connection conn, String area) throws SQLException {
+		String sql = "SELECT t.\"idTasca\", t.\"idUsuari\", t.\"idActuacio\", t.nom, t.tipus, t.activa, t.\"idIncidencia\" "
+				 	+ " FROM public.\"tbl_Tasques\" t "
+				 	+ " LEFT JOIN public.\"tbl_Usuaris\" u on t.\"idUsuari\" = u.\"idUsuari\" "
+				 	+ " WHERE u.departament = ?";
+		 PreparedStatement pstm = conn.prepareStatement(sql);	 
+		 pstm.setString(1, area);		
+		 ResultSet rs = pstm.executeQuery();
+		 List<Tasca> list = new ArrayList<Tasca>();
+		 while (rs.next()) {
+			 Tasca tasca = initTasca(conn, rs);
+			 list.add(tasca);
+		 }
+	     return list;
+   }
 	
 	public static List<Tasca> findTasquesActuacio(Connection conn, int referencia) throws SQLException {
 		 String sql = "SELECT \"idTasca\", \"idUsuari\", \"idActuacio\", nom, tipus, activa, \"idIncidencia\" FROM public.\"tbl_Tasques\" WHERE \"idActuacio\" = ?";	 

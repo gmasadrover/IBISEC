@@ -42,20 +42,62 @@
                     </div>
                 </div>
                 <!-- /.row -->
-				<c:if test="${not empty actuacio}">
-				<div class="row">					
-	                <div class="col-lg-12">	                	
-	                	<jsp:include page="../actuacio/include/_resumActuacio.jsp"></jsp:include>
-	                </div>
-            	</div> 
-            	</c:if>       
-            	<c:if test="${not empty incidencia}">
-				<div class="row">					
-	                <div class="col-lg-12">	                	
-	                	<jsp:include page="../incidencia/include/_resumIncidencia.jsp"></jsp:include>
-	                </div>
-            	</div> 
-            	</c:if>           	
+                <h2>Tasca</h2>
+                <div class="row">					
+	                <div class="col-lg-12">	   
+						<div class="panel panel-${tasca.activa ? "success" : "danger"}">
+						   	<div class="panel-heading">
+						    	<div class="row">
+						       		<div class="col-lg-4">
+						       			Referència Tasca: ${tasca.idTasca}
+						       		</div>
+						       		<div class="col-lg-4">
+						       			Assumpte: ${tasca.name}
+						      		</div>
+						       		<div class="col-lg-4">
+						       			Responsable: ${tasca.usuari.getNomComplet()}
+						      		</div>
+						       	</div>
+						   	</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-12 panel-group" id="accordion">	
+						<c:if test="${not empty incidencia}">
+							<div class="panel panel-default">
+            		  			<div class="panel-heading">
+					      			<h4 class="panel-title">                        										      		
+			        					<a data-toggle="collapse" data-parent="#accordion" href="#incidencia">Incidència</a>
+			        				</h4>
+			        			</div>
+			        		</div>
+						    <div id="incidencia" class="panel-collapse collapse">
+		                    	<div class="row">					
+					                <div class="col-lg-12">	                	
+					                	<jsp:include page="../incidencia/include/_resumIncidencia.jsp"></jsp:include>
+					                </div>
+				            	</div> 
+							</div>
+						</c:if>	
+						<c:if test="${not empty actuacio}">
+							<div class="panel panel-default">
+            		  			<div class="panel-heading">
+					      			<h4 class="panel-title">     	                        										      		
+			        					<a data-toggle="collapse" data-parent="#accordion" href="#actuacio">Actuació</a>
+			        				</h4>
+			        			</div>
+			        		</div>
+						    <div id="actuacio" class="panel-collapse collapse">
+		                    	<div class="row">					
+					                <div class="col-lg-12">	                	
+					                	<jsp:include page="../actuacio/include/_resumActuacio.jsp"></jsp:include>
+					                </div>
+				            	</div> 
+							</div>
+						</c:if>	
+					</div>
+				</div>
                 <div class="row">
                     <div class="col-lg-12"> 
                         <c:forEach items="${historial}" var="historic" >
@@ -76,30 +118,32 @@
 	       				</c:forEach>                        
                         <c:if test="${tasca.activa}">		  
                         	<div class="panel panel-info">
-                        		<div class="panel-body">
-	                        		<div class="col-lg-12 panel-group" id="accordion">		                        										      		
-						        		<a data-toggle="collapse" data-parent="#accordion" href="#entradesRegistre" class="btn btn-success">
-											<c:choose>
-											    <c:when test="${tasca.tipus=='infPrev'}">Introduir informe prèvi</c:when>
-											    <c:when test="${tasca.tipus=='resPartida'}">Reservar partida</c:when>
-											    <c:when test="${tasca.tipus=='liciMenor'}">Introduir proposta tècnica</c:when>
-											</c:choose>
-										</a>
-									    <div id="entradesRegistre" class="panel-collapse collapse">
-			                        		<c:choose>
-											    <c:when test="${tasca.tipus=='infPrev'}">
-											    	<jsp:include page="include/_crearInformePrevi.jsp"></jsp:include>
-											    </c:when>
-											    <c:when test="${tasca.tipus=='resPartida'}">
-											    	<jsp:include page="include/_reservaPartida.jsp"></jsp:include>
-											    </c:when>
-											    <c:when test="${tasca.tipus=='liciMenor'}">
-											    	<jsp:include page="include/_introduccioPresuposts.jsp"></jsp:include>
-											    </c:when>
-											</c:choose>
-										</div>	
+                        		<c:if test="${tasca.tipus != 'generic'}">
+	                        		<div class="panel-body">
+		                        		<div class="col-lg-12 panel-group" id="accordion">		                        										      		
+							        		<a data-toggle="collapse" data-parent="#accordion" href="#entradesRegistre" class="btn btn-success">
+												<c:choose>
+												    <c:when test="${tasca.tipus=='infPrev'}">Introduir informe prèvi</c:when>
+												    <c:when test="${tasca.tipus=='resPartida'}">Reservar partida</c:when>
+												    <c:when test="${tasca.tipus=='liciMenor'}">Introduir proposta tècnica</c:when>
+												</c:choose>
+											</a>
+										    <div id="entradesRegistre" class="panel-collapse collapse">
+				                        		<c:choose>
+												    <c:when test="${tasca.tipus=='infPrev'}">
+												    	<jsp:include page="include/_crearInformePrevi.jsp"></jsp:include>
+												    </c:when>
+												    <c:when test="${tasca.tipus=='resPartida'}">
+												    	<jsp:include page="include/_reservaPartida.jsp"></jsp:include>
+												    </c:when>
+												    <c:when test="${tasca.tipus=='liciMenor'}">
+												    	<jsp:include page="include/_introduccioPresuposts.jsp"></jsp:include>
+												    </c:when>
+												</c:choose>
+											</div>	
+										</div>
 									</div>
-								</div>				 	
+								</c:if>				 	
 	                    		<div class="panel-footer">	                    		                  	
 			                    	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddHistoric">
 			                    		<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
