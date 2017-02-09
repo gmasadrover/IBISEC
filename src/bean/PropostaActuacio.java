@@ -7,7 +7,7 @@ import java.util.List;
 
 import utils.Fitxers;
 
-public class Informe {
+public class PropostaActuacio {
 	private int idInf;
 	private int idTasca;
 	private int idActuacio;
@@ -27,8 +27,10 @@ public class Informe {
 	private User usuari;
 	private Date dataCreacio;
 	private String partida;
+	private User usuariAprovacio;
+	private Date dataAprovacio;
 	
-	public Informe() {		
+	public PropostaActuacio() {		
 	}
 
 	public int getIdInf() {
@@ -195,5 +197,28 @@ public class Informe {
 
 	public void setIdIncidencia(int idIncidencia) {
 		this.idIncidencia = idIncidencia;
+	}
+
+	public User getUsuariAprovacio() {
+		return usuariAprovacio;
+	}
+
+	public void setUsuariAprovacio(User usuariAprovacio) {
+		this.usuariAprovacio = usuariAprovacio;
+	}
+
+	public Date getDataAprovacio() {
+		return dataAprovacio;
+	}
+
+	public String getDataAprovacioString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");	
+		String dataString = "";
+		if (this.dataAprovacio != null) dataString = df.format(this.dataAprovacio);
+		return dataString;
+	}
+	
+	public void setDataAprovacio(Date dataAprovacio) {
+		this.dataAprovacio = dataAprovacio;
 	}
 }

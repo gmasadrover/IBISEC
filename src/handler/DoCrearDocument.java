@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import bean.Actuacio;
-import bean.Informe;
+import bean.PropostaActuacio;
 import bean.Oferta;
 import core.ActuacioCore;
 import core.InformeCore;
@@ -54,7 +54,7 @@ public class DoCrearDocument extends HttpServlet {
 		int idActuacio = Integer.parseInt(request.getParameter("idActuacio"));
     	String tipus = request.getParameter("tipus");
     	Connection conn = MyUtils.getStoredConnection(request);		
-    	Informe informe = new Informe();
+    	PropostaActuacio informe = new PropostaActuacio();
     	Actuacio actuacio = new Actuacio();
     	Oferta oferta = new Oferta();
     	try {
@@ -73,7 +73,7 @@ public class DoCrearDocument extends HttpServlet {
     	String filePath = "";
     	if (tipus.equals("autMen")) {
     		rutaPlantilla = "V:/INTERCANVI D'OBRES/MAS, GUILLEM/base/MODELLICIMEN.docx";
-    		filePath = "V:/INTERCANVI D'OBRES/MAS, GUILLEM/documents/"+ idActuacio +"/autoritzacio.pdf";
+    		filePath = "V:/INTERCANVI D'OBRES/MAS, GUILLEM/documents/"+ idActuacio +"/autoritzacio.docx";
     	}
 		Map<String, Object> variablesMap = new HashMap<String, Object>();
 		String tipusObra = informe.getTipusObraFormat(); 
@@ -123,7 +123,7 @@ public class DoCrearDocument extends HttpServlet {
 		byte[] mergedOutput = null;
 		try {
 			mergedOutput = generadorDocumentosService.generarDocumento(rutaPlantilla,
-					TemplateEngineKind.Freemarker, variablesMap, imagenesMap, true
+					TemplateEngineKind.Freemarker, variablesMap, imagenesMap, false
 					, metadata
 					);
 		} catch (XDocReportException e) {

@@ -33,9 +33,24 @@ public class UsuariCore {
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setString(1, usuari);
 		pstm.setString(2, password);
-		ResultSet rs = pstm.executeQuery();
-	 
+		ResultSet rs = pstm.executeQuery();	 
 		if (rs.next()) {
+			User user = initUsuari(rs);			
+			return user;
+		}
+		return null;
+	}
+	
+	public static User finCap(Connection conn, String departament) throws SQLException {
+		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari"
+				+ " FROM public.tbl_usuaris"
+				+ " WHERE departament = ? AND rol LIKE '%CAP%'";
+ 
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setString(1, departament);
+	 
+		ResultSet rs = pstm.executeQuery();		
+		if (rs.next()) {		
 			User user = initUsuari(rs);			
 			return user;
 		}
@@ -76,7 +91,7 @@ public class UsuariCore {
 		return null;
 	}
 	
-	public static List<User> findUsuarisByTipus(Connection conn, String tipus) throws SQLException{
+	public static List<User> findUsuarisByRol(Connection conn, String tipus) throws SQLException{
 		List<User> userList = new ArrayList<User>();
 		User user = new User();
 		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari"
@@ -86,6 +101,22 @@ public class UsuariCore {
 		PreparedStatement pstm = conn.prepareStatement(sql);		
 		ResultSet rs = pstm.executeQuery();		 
 		while (rs.next()) {
+			user = initUsuari(rs);			
+			userList.add(user);
+		}
+		return userList;
+	}
+	
+	public static List<User> findUsuarisByDepartament(Connection conn, String tipus) throws SQLException{
+		List<User> userList = new ArrayList<User>();
+		User user = new User();
+		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari"
+					+ " FROM public.tbl_usuaris"
+					+ " WHERE actiu = true and departament = '" + tipus + "'"
+					+ " ORDER BY 3, 2";		 
+		PreparedStatement pstm = conn.prepareStatement(sql);		
+		ResultSet rs = pstm.executeQuery();	
+		while (rs.next()) {			
 			user = initUsuari(rs);			
 			userList.add(user);
 		}
@@ -148,28 +179,28 @@ public class UsuariCore {
 		String rols = usuari.getRol();
 		switch (section) {
 			case actuacio_list:
-				permision = (rols.toUpperCase().contains("ADMIN"));
+				permision = true;
 				break;
 			case actuacio_modificar:
-				permision = (rols.toUpperCase().contains("ADMIN"));
+				permision = (rols.toUpperCase().contains("ADMIN")) || (rols.toUpperCase().contains("GERENT"));
 				break;
 			case actuacio_detalls:
-				permision = (rols.toUpperCase().contains("ADMIN"));
+				permision = true;
 				break;
 			case incidencia_list:
-				permision = (rols.toUpperCase().contains("ADMIN"));
+				permision = true;
 				break;
 			case incidencia_modificar:
 				permision = (rols.toUpperCase().contains("ADMIN"));
 				break;
 			case incidencia_detalls:
-				permision = (rols.toUpperCase().contains("ADMIN"));
+				permision = true;
 				break;
 			case empreses_crear:
 				permision = (rols.toUpperCase().contains("ADMIN"));
 				break;
 			case empreses_list:
-				permision = (rols.toUpperCase().contains("ADMIN"));
+				permision = true;
 				break;
 			case partides_crear:
 				permision = (rols.toUpperCase().contains("ADMIN"));
@@ -178,22 +209,22 @@ public class UsuariCore {
 				permision = (rols.toUpperCase().contains("ADMIN"));
 				break;
 			case registre_detalls:
-				permision = (rols.toUpperCase().contains("ADMIN"));
+				permision = (rols.toUpperCase().contains("ADM"));
 				break;
 			case registre_ent_crear:
-				permision = (rols.toUpperCase().contains("ADMIN"));
+				permision = (rols.toUpperCase().contains("ADM"));
 				break;
 			case registre_ent_list:
 				permision = true;
 				break;
 			case registre_sort_crear:
-				permision = (rols.toUpperCase().contains("ADMIN"));
+				permision = (rols.toUpperCase().contains("ADM"));
 				break;
 			case registre_sort_list:
 				permision = true;
 				break;
 			case tasques_crear:
-				permision = (rols.toUpperCase().contains("ADMIN"));
+				permision = (rols.toUpperCase().contains("ADMIN")) || (rols.toUpperCase().contains("CAP")) ;
 				break;
 			case tasques_list:
 				permision = true;

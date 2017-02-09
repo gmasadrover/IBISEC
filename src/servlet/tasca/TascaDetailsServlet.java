@@ -17,7 +17,7 @@ import bean.Actuacio;
 import bean.Empresa;
 import bean.Historic;
 import bean.Incidencia;
-import bean.Informe;
+import bean.PropostaActuacio;
 import bean.Partida;
 import bean.Tasca;
 import bean.User;
@@ -60,15 +60,21 @@ public class TascaDetailsServlet extends HttpServlet {
  	       Actuacio actuacio = new Actuacio();
  	       Incidencia incidencia = new Incidencia();
  	       Tasca tasca = new Tasca();
- 	       Informe informePrevi = new Informe();
+ 	       boolean esCap = false;
+ 	       PropostaActuacio informePrevi = new PropostaActuacio();
  	       List<Historic> historial = new ArrayList<Historic>();
  	       List<Partida> partidesList = new ArrayList<Partida>();
  	       List<Empresa> empresesList = new ArrayList<Empresa>();
- 	      
+ 	       List<User> llistaUsuaris = new ArrayList<User>();
+ 	       List<User> llistaCaps = new ArrayList<User>();
+ 	       boolean canRealitzarTasca = false;
  	       try {
  	    	   tasca = TascaCore.findTascaId(conn, idTasca);
  	    	   actuacio = tasca.getActuacio();
  	    	   incidencia = tasca.getIncidencia();
+ 	    	   llistaUsuaris = UsuariCore.findUsuarisByDepartament(conn, tasca.getUsuari().getDepartament());
+ 	    	   llistaCaps.addAll(UsuariCore.findUsuarisByRol(conn, "CAP"));
+ 	    	   canRealitzarTasca = usuari.getDepartament().equals(tasca.getUsuari().getDepartament());
  	    	   if (actuacio != null) {
  	    		  historial = TascaCore.findHistorial(conn, idTasca, actuacio.getReferencia());
  	    	   }else{
@@ -77,6 +83,7 @@ public class TascaDetailsServlet extends HttpServlet {
  	    	   String tipusTasca = tasca.getTipus();
  	    	   if ("infPrev".equals(tipusTasca)) {
  	    		  informePrevi = InformeCore.getInformeTasca(conn, idTasca);
+ 	    		  if (tasca.getUsuari().getDepartament().equals(usuari.getDepartament()) && usuari.getRol().contains("CAP")) esCap = true;
  	    	   }else if ("resPartida".equals(tipusTasca)){
  	    		  int tascaInforme = Integer.parseInt(tasca.getDescripcio().split("-")[1].trim());
  	    		  informePrevi = InformeCore.getInformeTasca(conn, tascaInforme);
@@ -94,10 +101,14 @@ public class TascaDetailsServlet extends HttpServlet {
  	       request.setAttribute("actuacio", actuacio);
  	       request.setAttribute("incidencia", incidencia);
  	       request.setAttribute("tasca", tasca);
+ 	       request.setAttribute("esCap", esCap);
  	       request.setAttribute("historial", historial);
  	       request.setAttribute("informePrevi", informePrevi);
  	       request.setAttribute("partidesList", partidesList);
  	       request.setAttribute("empresesList", empresesList);
+ 	       request.setAttribute("llistaUsuaris", llistaUsuaris);
+ 	       request.setAttribute("llistaCaps", llistaCaps);
+ 	      request.setAttribute("canRealitzarTasca", canRealitzarTasca);
  	       request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Tasques"));
  	       // Forward to /WEB-INF/views/homeView.jsp
  	       // (Users can not access directly into JSP pages placed in WEB-INF)

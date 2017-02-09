@@ -1,6 +1,7 @@
 package bean;
 
 import java.text.DecimalFormat;
+import java.util.Date;
 
 public class Oferta {
 	private int idOferta;
@@ -14,6 +15,7 @@ public class Oferta {
 	private boolean seleccionada;
 	private boolean descalificada;
 	private String comentari;
+	private Date dataCreacio;
 	
 	public Oferta(){
 		
@@ -120,5 +122,13 @@ public class Oferta {
 
 	public void setNomEmpresa(String nomEmpresa) {
 		this.nomEmpresa = nomEmpresa;
+	}
+
+	public Date getDataCreacio() {
+		return dataCreacio;
+	}
+
+	public void setDataCreacio(Date dataCreacio) {
+		this.dataCreacio = dataCreacio;
 	}
 }

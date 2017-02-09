@@ -82,10 +82,19 @@
         	<div class="col-lg-6">
        			<div class="row">
            			<div class="col-lg-12">
-                  		<input class="btn btn-success" type="submit" name="reservar" value="Enviar proposta tècnica">
+                  		<input class="btn btn-primary" type="submit" name="guardar" value="Guardar proposta tècnica">
 					</div>
        			</div>
-   			</div>												    
+   			</div>	
+   			<c:if test="${esCap}">
+	 			<div class="col-lg-6">
+		    		<div class="row">
+		        		<div class="col-lg-12">
+		              		<input class="btn btn-success" type="submit" name="enviar" value="Aprovar">
+						</div>
+		     		</div>
+		 		</div>
+	 		</c:if>											    
     	</div>	                       	
 	</form>
 </div>

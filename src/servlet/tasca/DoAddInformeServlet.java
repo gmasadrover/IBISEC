@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileUploadException;
 
-import bean.Informe;
+import bean.PropostaActuacio;
 import bean.User;
 import core.ActuacioCore;
 import core.InformeCore;
@@ -51,7 +51,7 @@ public class DoAddInformeServlet extends HttpServlet {
 			e1.printStackTrace();
 		}
 		
-	    int idTasca = Integer.parseInt(multipartParams.getParametres().get("idTasca"));
+	    int idTasca = Integer.parseInt(multipartParams.getParametres().get("idTasca"));	    
 	    String idActuacio = multipartParams.getParametres().get("idActuacio");
 	    String idIncidencia = multipartParams.getParametres().get("idIncidencia");
 	    int idInformePrevi = Integer.parseInt(multipartParams.getParametres().get("idInformePrevi"));
@@ -78,7 +78,7 @@ public class DoAddInformeServlet extends HttpServlet {
 		    String servei = multipartParams.getParametres().get("tipusServei");
 		    String comentari = multipartParams.getParametres().get("comentariTecnic");
 		    
-		    Informe informe = new Informe();
+		    PropostaActuacio informe = new PropostaActuacio();
 		    informe.setIdTasca(idTasca);
 		    if (idIncidencia != "") informe.setIdIncidencia(Integer.parseInt(idIncidencia));
 		    if (idActuacio != "") informe.setIdActuacio(Integer.parseInt(idActuacio));
@@ -109,12 +109,14 @@ public class DoAddInformeServlet extends HttpServlet {
 		   	//Guardar adjunts
 		   	Fitxers.guardarFitxer(multipartParams.getFitxers(), idIncidencia, idActuacio, "Tasca", String.valueOf(idTasca), idComentari);
 	    } else {
-	    	//Enviam l'informe
+	    	//Aprovació d'informe
 	    	//Registrar nova tasca d'asignament de partida
 			try {
-				TascaCore.nouHistoric(conn, idTasca, "Informe enviat", Usuari.getIdUsuari());
+				InformeCore.aprovarInforme(conn, idInformePrevi, Usuari.getIdUsuari());
+				TascaCore.nouHistoric(conn, idTasca, "Informe aprovat", Usuari.getIdUsuari());
 				TascaCore.reasignar(conn, 900, idTasca);
-				int idUsuari = UsuariCore.findUsuarisByTipus(conn, "CONTA").get(0).getIdUsuari();
+				TascaCore.tancar(conn, idTasca);
+				int idUsuari = UsuariCore.findUsuarisByRol(conn, "CONTA").get(0).getIdUsuari();
 				TascaCore.novaTasca(conn, "resPartida", idUsuari, Usuari.getIdUsuari(), Integer.parseInt(idActuacio), Integer.parseInt(idIncidencia), "", String.valueOf(idTasca));
 				if (idActuacio != "") idIncidencia = String.valueOf(ActuacioCore.findActuacio(conn, Integer.parseInt(idActuacio)).getIdIncidencia());
 			} catch (SQLException e) {

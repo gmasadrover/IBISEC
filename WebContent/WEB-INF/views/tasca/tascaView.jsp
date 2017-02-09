@@ -23,7 +23,7 @@
                             <small>
 								<c:choose>
 								    <c:when test="${tasca.tipus=='infPrev'}">
-								        Sol·licitud informe previ
+								        Sol·licitud proposta d'actuació
 								    </c:when>
 								    <c:otherwise>
 								       Detalls tasca
@@ -118,12 +118,19 @@
 	       				</c:forEach>                        
                         <c:if test="${tasca.activa}">		  
                         	<div class="panel panel-info">
-                        		<c:if test="${tasca.tipus != 'generic'}">
+                        		<c:if test="${tasca.tipus != 'generic' && canRealitzarTasca}">
 	                        		<div class="panel-body">
 		                        		<div class="col-lg-12 panel-group" id="accordion">		                        										      		
 							        		<a data-toggle="collapse" data-parent="#accordion" href="#entradesRegistre" class="btn btn-success">
 												<c:choose>
-												    <c:when test="${tasca.tipus=='infPrev'}">Introduir informe prèvi</c:when>
+												    <c:when test="${tasca.tipus=='infPrev'}">
+												    	<c:if test="${esCap}">
+												    		Proposta d'actuació
+												    	</c:if>
+												    	<c:if test="${!esCap}">
+												    		Introduir proposta d'actuació
+												    	</c:if>
+												    </c:when>
 												    <c:when test="${tasca.tipus=='resPartida'}">Reservar partida</c:when>
 												    <c:when test="${tasca.tipus=='liciMenor'}">Introduir proposta tècnica</c:when>
 												</c:choose>
@@ -168,7 +175,14 @@
 										        <div class="row">
 										            <div class="col-lg-12">
 										            	<div class="col-lg-6">
-							                                <select class="form-control selectpicker" data-live-search="true" name="idUsuari" id="usuarisList">
+							                                <select class="form-control selectpicker" data-live-search="true" data-size="10" name="idUsuari" id="usuarisList">
+							                                <c:forEach items="${llistaUsuaris}" var="usuari" >
+						                                		<option value='${usuari.idUsuari}'>${usuari.getNomComplet()}</option>
+						                                	</c:forEach>
+						                                	<option data-divider="true"></option>
+						                                	<c:forEach items="${llistaCaps}" var="usuari" >
+						                                		<option value='${usuari.idUsuari}'>${usuari.getNomComplet()}</option>
+						                                	</c:forEach>	
 							                                </select>
 						                             	</div>
 						                       			<input class="btn btn-success" type="submit" name="reasignar" value="Reassignar">
@@ -198,7 +212,6 @@
     </div>
     <jsp:include page="../_footer.jsp"></jsp:include>
     <script src="js/tasca/vistaTasca.js"></script>
-    <script src="js/usuari/usuari.js"></script>
     <!-- /#wrapper -->
 </body>
 </html>

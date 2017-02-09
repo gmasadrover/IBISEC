@@ -25,7 +25,7 @@
     			Data Petició: ${incidencia.getPeticioString()}
     		</div>
     		<div class="col-lg-6">
-    			Solicitant:
+    			Solicitant: ${incidencia.solicitant}
    			</div>
     	</div>
     </div>

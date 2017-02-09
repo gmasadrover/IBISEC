@@ -24,7 +24,7 @@
                             <small>
                             	<c:choose>
 								    <c:when test="${tipus=='infPrev'}">
-								        Sol·licitud informe previ
+								        Sol·licitud proposta d'actuació
 								    </c:when>
 								    <c:otherwise>
 								       Nova tasca

@@ -54,38 +54,47 @@ public class DoAddPresupostsServlet extends HttpServlet {
 	    String cifEmpresa = "";
 	    double plic = 0;
 	    String ofertesPresentades = "Les ofertes han estat les següents:<br>"; 
-	   	  
-	  	try {	   	
-	  		for(int i=0; i<paramValues.length; i++) {
-		    	cifEmpresa = paramValues[i].split("#")[0];
-		    	plic = Double.parseDouble(paramValues[i].split("#")[1]);
-		    	Oferta oferta = new Oferta();
-		   		oferta.setIdActuacio(idActuacio);
-		   		oferta.setCifEmpresa(cifEmpresa);
-		   		oferta.setPlic(plic);
-		   		DecimalFormat df = new DecimalFormat("#.##");  
-		   		oferta.setVec(Double.valueOf(df.format(plic / 1.21).replace(",",".")));
-		   		oferta.setIva(Double.valueOf(df.format(oferta.getVec() * 1.21).replace(",",".")));
-		   		if (seleccionada.equals(cifEmpresa)) {
-		   			oferta.setTermini(termini);
-		   			oferta.setComentari(comentari);
-		   		}
-		   		oferta.setSeleccionada(seleccionada.equals(cifEmpresa));
-		   		oferta.setDescalificada(false);
-		   		ofertesPresentades += "Empresa: " + EmpresaCore.findEmpresa(conn, cifEmpresa).getName() + " Oferta: " + plic + "€<br>";
-		   		//Guardar oferta	
-		   		OfertaCore.novaOferta(conn, oferta);
-		    }
-	  		//Registrar comentari;	 
-	   		String comentariHistoral = ofertesPresentades + "El tècnic proposa:<br>" + comentari + "<br>Amb un termini d'execució de: " + termini;	   		
-	   		TascaCore.nouHistoric(conn, idTasca, comentariHistoral, Usuari.getIdUsuari());
-	   		TascaCore.reasignar(conn, 902, idTasca);
-	   		TascaCore.tancar(conn, idTasca);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			errorString = e.getMessage();
-		} 
+	    String guardar = request.getParameter("guardar");
+	    if (guardar != null) {
+		  	try {	   	
+		  		for(int i=0; i<paramValues.length; i++) {
+			    	cifEmpresa = paramValues[i].split("#")[0];
+			    	plic = Double.parseDouble(paramValues[i].split("#")[1]);
+			    	Oferta oferta = new Oferta();
+			   		oferta.setIdActuacio(idActuacio);
+			   		oferta.setCifEmpresa(cifEmpresa);
+			   		oferta.setPlic(plic);
+			   		DecimalFormat df = new DecimalFormat("#.##");  
+			   		oferta.setVec(Double.valueOf(df.format(plic / 1.21).replace(",",".")));
+			   		oferta.setIva(Double.valueOf(df.format(oferta.getVec() * 1.21).replace(",",".")));
+			   		if (seleccionada.equals(cifEmpresa)) {
+			   			oferta.setTermini(termini);
+			   			oferta.setComentari(comentari);
+			   		}
+			   		oferta.setSeleccionada(seleccionada.equals(cifEmpresa));
+			   		oferta.setDescalificada(false);
+			   		ofertesPresentades += "Empresa: " + EmpresaCore.findEmpresa(conn, cifEmpresa).getName() + " Oferta: " + plic + "€<br>";
+			   		//Guardar oferta	
+			   		OfertaCore.novaOferta(conn, oferta, Usuari.getIdUsuari());
+			    }
+		  		//Registrar comentari;	 
+		   		String comentariHistoral = ofertesPresentades + "El tècnic proposa:<br>" + comentari + "<br>Amb un termini d'execució de: " + termini;	   		
+		   		TascaCore.nouHistoric(conn, idTasca, comentariHistoral, Usuari.getIdUsuari());
+		   		/*;*/
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				errorString = e.getMessage();
+			} 
+	    } else {	    	
+	   		try {
+	   			TascaCore.reasignar(conn, 902, idTasca);
+				TascaCore.tancar(conn, idTasca);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    }
 	   	// Store infomation to request attribute, before forward to views.
 	   	request.setAttribute("errorString", errorString);
 	  	// If error, forward to Edit page.

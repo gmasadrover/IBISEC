@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import bean.Historic;
-import bean.Informe;
+import bean.PropostaActuacio;
 import bean.Tasca;
 
 public class TascaCore {
@@ -44,7 +44,7 @@ public class TascaCore {
 	public static List<Tasca> llistaTasquesUsuari(Connection conn, int idUsuari) throws SQLException {
 		 String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia"
 				 	+ " FROM public.tbl_tasques"
-				 	+ " WHERE idusuari = ?";	 
+				 	+ " WHERE idusuari = ? AND activa = true";	 
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 
 		 pstm.setInt(1, idUsuari);		
 		 ResultSet rs = pstm.executeQuery();
@@ -60,7 +60,7 @@ public class TascaCore {
 		String sql = "SELECT t.idtasca, t.idusuari, t.idactuacio, t.descripcio, t.tipus, t.activa, t.idincidencia"
 				 	+ " FROM public.tbl_tasques t"
 				 	+ " LEFT JOIN public.tbl_usuaris u on t.idusuari = u.idusuari"
-				 	+ " WHERE u.departament = ?";
+				 	+ " WHERE u.departament = ? AND t.activa = true";
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 
 		 pstm.setString(1, area);		
 		 ResultSet rs = pstm.executeQuery();
@@ -145,14 +145,14 @@ public class TascaCore {
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		int idNovaTasca = idNovaTasca(conn);
 		if ("infPrev".equals(tipus)) {
-			assumpte = "Sol·licitud informe previ";
-			comentari = "Sol·licitud informe previ";
+			assumpte = "Sol·licitud proposta d'actuació";
+			comentari = "Sol·licitud proposta d'actuació";
 		} else if("resPartida".equals(tipus)) {
 			String tmp = assumpte;
 			assumpte = "Sol·licitud reserva partida - " + tmp;
 			comentari = "Sol·licitud reserva partida - " + tmp;
 		} else if("liciMenor".equals(tipus)) {
-			Informe informePrevi = InformeCore.getInformesActuacio(conn, idActuacio).get(0);
+			PropostaActuacio informePrevi = InformeCore.getInformesActuacio(conn, idActuacio).get(0);
 			assumpte = "Licitació contracte menor";
 			comentari ="1. Recerca de pressupostos";
 			if (informePrevi.isLlicencia()) comentari += "<br> 2. Sol·licitud de llicència o autorització urbanística corresponent";

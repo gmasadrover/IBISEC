@@ -22,7 +22,7 @@
     <div class="panel-footer">
     	<div class="row">
     		<div class="col-lg-6">
-    			Data Petició: ${actuacio.getDataCreacioString()}
+    			Data Creació: ${actuacio.getDataCreacioString()}
     		</div>
     	</div>
     </div>

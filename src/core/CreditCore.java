@@ -12,7 +12,8 @@ import bean.Partida;
 
 public class CreditCore {
 	public static void nouCredit(Connection conn, Credit credit) throws SQLException {
-		String sql = "Insert into public.\"tbl_Credit\"(codi, presupost) values (?,?)";
+		String sql = "INSERT INTO public.tbl_credit(codi, presupost)"
+					+ " VALUES (?,?)";
 	 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 	 
@@ -23,7 +24,8 @@ public class CreditCore {
 	}
 	
 	public static List<Credit> llistaCredits(Connection conn) throws SQLException {
-		String sql = "SELECT codi, presupost FROM public.\"tbl_Credit\"";
+		String sql = "SELECT codi, presupost"
+					+ " FROM public.tbl_credit";
 		 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 	 
@@ -40,8 +42,9 @@ public class CreditCore {
 	
 	public static Credit findCredit(Connection conn, String codi) throws SQLException {
 		 
-		String sql = "Select c.presupost from public.\"tbl_Credit\" c "
-					+ " where c.codi = ?";
+		String sql = "SELECT presupost"
+					+ " FROM public.tbl_credit"
+					+ " WHERE codi = ?";
 	 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setString(1, codi);		
@@ -59,7 +62,9 @@ public class CreditCore {
 	public static String getNewCode(Connection conn) throws SQLException {
 		String newCode = "R.IBIS-001";
 		
-		String sql = "SELECT codi FROM public.\"tbl_Partides\" ORDER BY codi DESC LIMIT 1;";		 
+		String sql = "SELECT codi"
+					+ " FROM public.tbl_partides"
+					+ " ORDER BY codi DESC LIMIT 1;";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		ResultSet rs = pstm.executeQuery();
 		while (rs.next()) {
@@ -72,7 +77,8 @@ public class CreditCore {
 	}
 	
 	public static void novaPartida(Connection conn, Partida partida, int idUsuari) throws SQLException {
-		String sql = "INSERT INTO public.\"tbl_Partides\"(codi, nom, import, tipus, estat, \"usuCre\", \"usuMod\") VALUES (?, ?, ?, ?, true,?,localtimestamp);";
+		String sql = "INSERT INTO public.tbl_partides(codi, nom, import, tipus, activa, usucre, datacre)"
+					+ " VALUES (?, ?, ?, ?, true,?,localtimestamp);";
 	 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 	 
@@ -85,8 +91,9 @@ public class CreditCore {
 	}
 	
 	public static List<Partida> getPartides(Connection conn, boolean tancades) throws SQLException {
-		String sql = "Select * from public.\"tbl_Partides\"";
-		if (!tancades) sql += " where estat=true";
+		String sql = "SELECT *"
+					+ " FROM public.tbl_partides";
+		if (!tancades) sql += " WHERE activa=true";
 		sql += " ORDER BY 1 desc"; 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 	 
@@ -95,7 +102,7 @@ public class CreditCore {
 		while (rs.next()) {
 			Partida partida = new Partida();
 			partida.setCodi(rs.getString("codi"));			
-			partida.setEstat(rs.getBoolean("estat"));
+			partida.setEstat(rs.getBoolean("activa"));
 			partida.setNom(rs.getString("nom"));
 			partida.setTipus(rs.getString("tipus"));
 			partida.setTotalPartida(rs.getDouble("import"));
@@ -108,13 +115,15 @@ public class CreditCore {
 	
 	public static String getPartidaActuacio(Connection conn, int idActuacio) throws SQLException {
 		String idPartida = "";
-		String sql = "Select \"idPartida\" from public.\"tbl_AssignacionsCredit\" where \"idActuacio\" = ?"		
+		String sql = "SELECT idpartida"
+					+ " FROM public.tbl_assignacionscredit"
+					+ " WHERE idactuacio = ?"		
 					+ " ORDER BY 1 desc LIMIT 1"; 
 		PreparedStatement pstm = conn.prepareStatement(sql);		 
 		pstm.setInt(1, idActuacio);
 		ResultSet rs = pstm.executeQuery();
 		while (rs.next()) {
-			idPartida = rs.getString("idPartida");
+			idPartida = rs.getString("idpartida");
 		}
 		return idPartida;
 	}
@@ -122,18 +131,20 @@ public class CreditCore {
 	public static int newAssignacioCode(Connection conn) throws SQLException{
 		int newCode = 1;
 		
-		String sql = "SELECT \"idAssignacio\" FROM public.\"tbl_AssignacionsCredit\" ORDER BY \"idAssignacio\" DESC LIMIT 1;";		 
+		String sql = "SELECT idassignacio"
+					+ " FROM public.tbl_assignacionscredit"
+					+ " ORDER BY idassignacio DESC LIMIT 1;";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		ResultSet rs = pstm.executeQuery();
 		while (rs.next()) {
-			newCode = rs.getInt("idAssignacio") + 1;
+			newCode = rs.getInt("idassignacio") + 1;
 		}
 		return newCode;
 	}
 	
 	public static void reservar(Connection conn, String idPartida, int idActuacio, int idTasca, double valor, String comentari, int idUsuari) throws SQLException {
-		String sql = "INSERT INTO public.\"tbl_AssignacionsCredit\"(\"idAssignacio\", \"idPartida\", \"idActuacio\", \"idTasca\", valor, reserva, assignacio, pagat, comentari, \"usuCre\", \"usuMod\")"
-					+ " VALUES (?, ?, ?, ?, ?, true, false, false, ?, ?, localtimestamp);";
+		String sql = "INSERT INTO public.tbl_assignacionscredit(idassignacio, idpartida, idactuacio, idtasca, valor, reserva, usureserva, datareserva, assignacio, pagat, comentari, usucre, datacre)"
+					+ " VALUES (?, ?, ?, ?, ?, true, ?, localtimestamp, false, false, ?, ?, localtimestamp);";
 		
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		 
@@ -142,15 +153,18 @@ public class CreditCore {
 		pstm.setInt(3, idActuacio);
 		pstm.setInt(4, idTasca);
 		pstm.setDouble(5, valor);
-		pstm.setString(6, comentari);
-		pstm.setInt(7, idUsuari);
+		pstm.setInt(6, idUsuari);
+		pstm.setString(7, comentari);
+		pstm.setInt(8, idUsuari);
 		pstm.executeUpdate();
 		
 	}
 	
 	public static double getTotalReservat(Connection conn, String idPartida) throws SQLException{
 		double totalReservat = 0;
-		String sql = "SELECT SUM(valor) as total FROM public.\"tbl_AssignacionsCredit\" WHERE reserva=true and \"idPartida\" = ?";
+		String sql = "SELECT SUM(valor) AS total"
+					+ " FROM public.tbl_assignacionscredit"
+					+ " WHERE reserva=true and idpartida = ?";
 		PreparedStatement pstm = conn.prepareStatement(sql);		 
 		pstm.setString(1, idPartida);
 		ResultSet rs = pstm.executeQuery();
@@ -162,7 +176,9 @@ public class CreditCore {
 	
 	public static double getTotalGastat(Connection conn, String idPartida) throws SQLException{
 		double totalGastat = 0;
-		String sql = "SELECT SUM(valor) as total FROM public.\"tbl_AssignacionsCredit\" WHERE assignacio=true and \"idPartida\" = ?";
+		String sql = "SELECT SUM(valor) AS total"
+					+ " FROM public.tbl_assignacionscredit"
+					+ " WHERE assignacio=true AND idpartida = ?";
 		PreparedStatement pstm = conn.prepareStatement(sql);		 
 		pstm.setString(1, idPartida);
 		ResultSet rs = pstm.executeQuery();

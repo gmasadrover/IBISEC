@@ -3,6 +3,8 @@ package servlet.tasca;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -47,15 +49,17 @@ public class CreateTascaServlet extends HttpServlet {
  	   	}else{ 
 	        try {
 	        	String tipus = request.getParameter("tipus");
-	        	String tipusUsuari = "";
+	        	List<User> llistaUsuaris = new ArrayList<User>();
 	        	request.setAttribute("idActuacio", request.getParameter("idActuacio"));
 	        	request.setAttribute("idIncidencia", request.getParameter("idIncidencia"));
 	        	request.setAttribute("tipus", tipus);
 				request.setAttribute("nouCodi", TascaCore.idNovaTasca(conn));
 				if ("infPrev".equals(tipus)) {
-					tipusUsuari = "CAP";
+					llistaUsuaris = UsuariCore.findUsuarisByRol(conn, "CAP");
+				} else {
+					llistaUsuaris = UsuariCore.findUsuarisByDepartament(conn, usuari.getDepartament());
 				}
-				request.setAttribute("llistaUsuaris", UsuariCore.findUsuarisByTipus(conn, tipusUsuari));
+				request.setAttribute("llistaUsuaris", llistaUsuaris);
 				request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Tasques"));
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block

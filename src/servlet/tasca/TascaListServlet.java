@@ -57,12 +57,12 @@ public class TascaListServlet extends HttpServlet {
 	        	}else{
 	        		list = TascaCore.llistaTasquesUsuari(conn, usuari.getIdUsuari());		            
 	        	}	 
-	        	llistaUsuaris =  UsuariCore.findUsuarisByTipus(conn, "");
+	        	llistaUsuaris =  UsuariCore.findUsuarisByRol(conn, "");
 	        } catch (SQLException e) {
 	            e.printStackTrace();
 	            errorString = e.getMessage();
-	        }
-	   
+	        }	        
+	        
 	        // Store info in request attribute, before forward to views
 	        request.setAttribute("llistaUsuaris", llistaUsuaris);
 	        request.setAttribute("errorString", errorString);

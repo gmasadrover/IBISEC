@@ -17,7 +17,7 @@ public class ActuacioCore {
 		
 		actuacio.setReferencia(rs.getInt("id"));
 		actuacio.setDescripcio(rs.getString("descripcio"));		
-		actuacio.setDataCreacio(rs.getDate("datacre"));
+		actuacio.setDataCreacio(rs.getTimestamp("datacre"));
 		actuacio.setIdUsuariCreacio(rs.getInt("usucre"));		
 		actuacio.setIdCentre(rs.getString("idcentre"));
 		actuacio.setNomCentre(CentreCore.nomCentre(conn, rs.getString("idcentre")));		

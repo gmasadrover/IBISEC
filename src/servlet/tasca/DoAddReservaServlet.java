@@ -58,6 +58,7 @@ public class DoAddReservaServlet extends HttpServlet {
 		   	}
 	   		TascaCore.nouHistoric(conn, idTasca, comentariHistoral, Usuari.getIdUsuari());
 	   		TascaCore.reasignar(conn, 901, idTasca);
+	   		TascaCore.tancar(conn, idTasca);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

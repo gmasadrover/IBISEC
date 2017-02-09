@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.Informe;
+import bean.PropostaActuacio;
 import bean.User;
 import core.ActuacioCore;
 import core.InformeCore;
@@ -51,16 +51,16 @@ Connection conn = MyUtils.getStoredConnection(request);
    			try {
    				ActuacioCore.aprovar(conn, idActuacio, Usuari.getIdUsuari());
    				//Mirem l'import per començar licitació o contracte d'obra menor
-   				List<Informe> informesList = InformeCore.getInformesActuacio(conn, idActuacio);
-   				Informe informeFinal = informesList.get(informesList.size() - 1);   				
+   				List<PropostaActuacio> informesList = InformeCore.getInformesActuacio(conn, idActuacio);
+   				PropostaActuacio informeFinal = informesList.get(informesList.size() - 1);   				
 			   	String tipus = "";
 			   	int usuariTasca = -1;
 			   	
    				if (("obr".equals(informeFinal.getTipusObra()) && informeFinal.getVec() > 50000) || (!"obr".equals(informeFinal.getTipusObra()) && informeFinal.getVec() > 18000)) { //Contracte d'obres major   					
-   					usuariTasca = UsuariCore.findUsuarisByTipus(conn, "JUR").get(0).getIdUsuari();
+   					usuariTasca = UsuariCore.findUsuarisByRol(conn, "JUR").get(0).getIdUsuari();
    					tipus = "liciMajor";
    				}else{ //Contracte d'obres menor
-   					usuariTasca = informeFinal.getUsuari().getIdUsuari();   					
+   					usuariTasca = UsuariCore.finCap(conn, informeFinal.getUsuari().getDepartament()).getIdUsuari();   					
 					tipus = "liciMenor";
    				}
    				//Registrar incidència nova

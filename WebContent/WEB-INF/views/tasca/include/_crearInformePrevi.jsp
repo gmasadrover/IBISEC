@@ -9,6 +9,7 @@
 <div class="panel-body">
 	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddInforme">
 		<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
+		<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">
 		<input type="hidden" name="idTasca" value="${tasca.idTasca}">
 		<input type="hidden" name="idInformePrevi" id="idInformePrevi" value="${informePrevi.idInf}">						                    		
 		<div class="form-group">
@@ -113,17 +114,26 @@
 			<div class="col-lg-6">
 	    		<div class="row">
 	        		<div class="col-lg-12">
-	              		<input class="btn btn-primary" type="submit" name="guardar" value="${informePrevi.idInf != 0 ? "Modificar" : "Guardar"} informe">
+	              		<input class="btn btn-primary" type="submit" name="guardar" value="${informePrevi.idInf != 0 ? "Modificar" : "Guardar"} proposta d'actuació">
 					</div>
 	     		</div>
 	 		</div>
-	 		<div class="col-lg-6">
+	 		<c:if test="${esCap}">
+	 			<div class="col-lg-6">
+		    		<div class="row">
+		        		<div class="col-lg-12">
+		              		<input class="btn btn-success" type="submit" name="enviar" value="Aprovar">
+						</div>
+		     		</div>
+		 		</div>
+	 		</c:if>
+	 		<!-- <div class="col-lg-6">
 	     		<div class="row">
 	         		<div class="col-lg-12">
-	                	<input class="btn btn-success" type="submit" name="enviar" value="enviar informe">
+	                	<input class="btn btn-success" type="submit" name="enviar" value="enviar proposta d'actuació">
 					</div>
 	     		</div>
-	 		</div>
+	 		</div> -->
 		</div>	                       	
 	</form>
 </div>

@@ -14,19 +14,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import bean.Actuacio;
-import bean.Informe;
+import bean.PropostaActuacio;
 import bean.Oferta;
 import bean.Tasca;
 import bean.User;
 import bean.ControlPage.SectionPage;
-import bean.Registre;
+import bean.Incidencia;
 import core.ActuacioCore;
 import core.ControlPageCore;
+import core.IncidenciaCore;
 import core.InformeCore;
 import core.OfertaCore;
 import core.TascaCore;
 import core.UsuariCore;
-import core.RegistreCore;
 import utils.Fitxers;
 import utils.MyUtils;
 
@@ -50,19 +50,27 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	   }else{		   
 		   int referencia = Integer.parseInt(request.getParameter("ref"));
 	       String errorString = null;
-	       Actuacio actuacio = new Actuacio();	      
+	       Actuacio actuacio = new Actuacio();	
+	       Incidencia incidencia = new Incidencia();
 	       List<Tasca> tasques = new ArrayList<Tasca>();
 	       List<Fitxers.Fitxer> arxius = new ArrayList<Fitxers.Fitxer>();
-	       List<Informe> informes = new ArrayList<Informe>();
+	       List<PropostaActuacio> informes = new ArrayList<PropostaActuacio>();
 	       List<Oferta> ofertes = new ArrayList<Oferta>();
 	       Oferta ofertaSeleccionada = new Oferta();
+	       boolean canModificarActuacio = false;
+	       boolean canCreateInformePrevi = false;
+	       boolean canCreateTasca = false;
 	       try {
 	    	   actuacio = ActuacioCore.findActuacio(conn, referencia);
+	    	   incidencia = IncidenciaCore.findIncidencia(conn, actuacio.getIdIncidencia());
 	    	   tasques = TascaCore.findTasquesActuacio(conn, referencia);	    	  	    	  
 	    	   arxius = Fitxers.ObtenirTotsFitxers(referencia);
 	    	   informes = InformeCore.getInformesActuacio(conn, referencia);
 	    	   ofertes = OfertaCore.findOfertes(conn, actuacio.getReferencia());
 	    	   ofertaSeleccionada = OfertaCore.findOfertaSeleccionada(conn, actuacio.getReferencia());
+	    	   canModificarActuacio = usuari.getRol().contains("GERENT");
+	    	   canCreateInformePrevi = usuari.getRol().contains("GERENT");
+	    	   canCreateTasca = UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_crear);
 	       } catch (SQLException e) {
 	           e.printStackTrace();
 	           errorString = e.getMessage();
@@ -71,11 +79,15 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       // Store info in request attribute, before forward to views
 	       request.setAttribute("errorString", errorString);
 	       request.setAttribute("actuacio", actuacio);
+	       request.setAttribute("incidencia", incidencia);
 	       request.setAttribute("tasques", tasques);
 	       request.setAttribute("arxius", arxius);	   
 	       request.setAttribute("informes", informes);
 	       request.setAttribute("ofertes", ofertes);
 	       request.setAttribute("ofertaSeleccionada", ofertaSeleccionada);
+	       request.setAttribute("canCreateInformePrevi", canCreateInformePrevi);
+	       request.setAttribute("canCreateTasca", canCreateTasca);
+	       request.setAttribute("canModificarActuacio", canModificarActuacio);
 	       request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "Actuacions"));
 	       // Forward to /WEB-INF/views/homeView.jsp
 	       // (Users can not access directly into JSP pages placed in WEB-INF)

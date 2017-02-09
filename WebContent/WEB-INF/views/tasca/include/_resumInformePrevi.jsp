@@ -8,7 +8,13 @@
 <div class="panel-heading">
 	Resum Informe
 </div>
-<div class="panel-body">		
+<div class="panel-body">	
+	<p>
+		<label>Tècnic:</label> ${informePrevi.usuari.getNomComplet()}
+	</p>
+	<p>
+		<label>Data:</label> ${informePrevi.getDataCreacioString()}
+	</p>
 	<p>			                     				
 		<label>Objecte:</label> ${informePrevi.objecte}
 	</p>	
@@ -58,4 +64,10 @@
 			<br>
 		</c:forEach>					            		
 	</div>
+	<p>
+		<label>Aprovació:</label> ${informePrevi.usuariAprovacio.getNomComplet()} - ${informePrevi.getDataAprovacioString()}
+	</p>
+	<p>
+		<label>Partida:</label> ${informePrevi.partida}
+	</p>
 </div>

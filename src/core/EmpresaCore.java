@@ -11,18 +11,20 @@ import bean.Empresa;
 
 public class EmpresaCore {
 	
-	static final String SQL_CAMPS = "\"CIF\", nom, direccio, \"CP\", ciutat, provincia, telefon, email, fax, \"usuMod\", \"dataMod\"";
+	static final String SQL_CAMPS = "cif, nom, direccio, cp, ciutat, provincia, telefon, fax, email, usumod, datamod, modificacio";
 	
 	
 	public static void deleteEmpresa(Connection conn, String codi) throws SQLException {
-		String sql = "Delete FROM public.\"tbl_Empreses\" where \"CIF\"= ?";		 
+		String sql = "DELETE FROM public.tbl_empreses"
+					+ " WHERE cif= ?";		 
 		PreparedStatement pstm = conn.prepareStatement(sql); 
 		pstm.setString(1, codi);
 		pstm.executeUpdate();
 	}
 	
 	public static void insertEmpresa(Connection conn, Empresa empresa, int idUsuari) throws SQLException {
-		String sql = "INSERT INTO public.\"tbl_Empreses\"(" + SQL_CAMPS + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, localtimestamp)";		 
+		String sql = "INSERT INTO public.tbl_empreses(" + SQL_CAMPS + ")"
+					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, localtimestamp,?)";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		pstm.setString(1, empresa.getCif());
 		pstm.setString(2, empresa.getName());
@@ -34,13 +36,14 @@ public class EmpresaCore {
 		pstm.setString(8, empresa.getEmail());
 		pstm.setString(9, empresa.getFax());
 		pstm.setInt(10, idUsuari);
+		pstm.setString(11, "creació");
 		pstm.executeUpdate();
 	}
 	
 	 public static void updateEmpresa(Connection conn, Empresa empresa, int idUsuari) throws SQLException {
-		 String sql = "UPDATE public.\"tbl_Empreses\" "
-				 	+ "SET nom=?, direccio=?, \"CP\"=?, ciutat=?, provincia=?, telefon=?, fax=?, email=?, \"usuMod\"=?, \"dataMod\"=localtimestamp "
-				 	+ "WHERE \"CIF\" =?";	 		 
+		 String sql = "UPDATE public.tbl_empreses"
+				 	+ " SET nom=?, direccio=?, cp=?, ciutat=?, provincia=?, telefon=?, fax=?, email=?, usumod=?, datamod=localtimestamp, modificacio='Canviar dades'"
+				 	+ " WHERE cif = ?";	 		 
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 
 		 pstm.setString(1, empresa.getName());
 		 pstm.setString(2, empresa.getDireccio());
@@ -56,7 +59,9 @@ public class EmpresaCore {
 	  }
 	 
 	 public static Empresa findEmpresa(Connection conn, String cif) throws SQLException {
-		 String sql = "SELECT " + SQL_CAMPS + " from public.\"tbl_Empreses\" where \"CIF\"=?";
+		 String sql = "SELECT " + SQL_CAMPS 
+				 	+ " FROM public.tbl_empreses"
+				 	+ " WHERE cif=?";
 	 
 		 PreparedStatement pstm = conn.prepareStatement(sql);
 	     pstm.setString(1, cif);
@@ -78,16 +83,17 @@ public class EmpresaCore {
 	     return null;
 	 }
 	 public static List<Empresa> getEmpreses(Connection conn) throws SQLException {
-		 String sql = "SELECT " + SQL_CAMPS + " from public.\"tbl_Empreses\" ";	 
+		 String sql = "SELECT " + SQL_CAMPS
+				 	+ " FROM public.tbl_empreses";	 
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 
 		 ResultSet rs = pstm.executeQuery();
 		 List<Empresa> list = new ArrayList<Empresa>();
 		 while (rs.next()) {
 			 Empresa empresa = new Empresa();
-			 empresa.setCif(rs.getString("CIF"));
+			 empresa.setCif(rs.getString("cif"));
 			 empresa.setName(rs.getString("nom"));
 			 empresa.setDireccio(rs.getString("direccio"));
-			 empresa.setCP(rs.getString("CP"));
+			 empresa.setCP(rs.getString("cp"));
 			 empresa.setCiutat(rs.getString("ciutat"));
 			 empresa.setProvincia(rs.getString("provincia"));
 			 empresa.setTelefon(rs.getString("telefon"));

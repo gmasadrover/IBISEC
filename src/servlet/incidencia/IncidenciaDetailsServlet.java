@@ -59,12 +59,20 @@ public class IncidenciaDetailsServlet extends HttpServlet {
 	       List<Registre> sortides = new ArrayList<Registre>();
 	       List<Tasca> tasques = new ArrayList<Tasca>();
 	       List<Fitxers.Fitxer> arxius = new ArrayList<Fitxers.Fitxer>();	
+	       
+	       boolean canCreateActuacio = false;
+	       boolean canCreateRegistre = false;
+	       boolean canCreateTasca = false;
+	       
 	       try {
 	    	   incidencia = IncidenciaCore.findIncidencia(conn, referencia);
 	    	   tasques = TascaCore.findTasquesIncidencia(conn, referencia);	    	  	    	  
 	    	   entrades = RegistreCore.searchEntradesIncidencia(conn, referencia);
 	    	   sortides = RegistreCore.searchSortidesIncidencia(conn, referencia);
-	    	   arxius = Fitxers.ObtenirTotsFitxers(referencia);	    	   
+	    	   arxius = Fitxers.ObtenirTotsFitxers(referencia);	    
+	    	   canCreateActuacio = UsuariCore.hasPermision(conn, usuari, SectionPage.actuacio_modificar);
+	    	   canCreateRegistre = UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_crear);
+	    	   canCreateTasca = UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_crear);
 	       } catch (SQLException e) {
 	           e.printStackTrace();
 	           errorString = e.getMessage();
@@ -77,6 +85,9 @@ public class IncidenciaDetailsServlet extends HttpServlet {
 	       request.setAttribute("entrades", entrades);
 	       request.setAttribute("sortides", sortides);
 	       request.setAttribute("arxius", arxius);	   
+	       request.setAttribute("canCreateActuacio", canCreateActuacio);
+	       request.setAttribute("canCreateRegistre", canCreateRegistre);
+	       request.setAttribute("canCreateTasca", canCreateTasca);
 	       request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "Incidencies"));
 	       // Forward to /WEB-INF/views/homeView.jsp
 	       // (Users can not access directly into JSP pages placed in WEB-INF)

@@ -79,7 +79,7 @@
 						    </div>
 						    <div id="actuacions" class="panel-collapse collapse">
 						      	<div class="panel-body">
-						      		<c:if test="${incidencia.activa}">
+						      		<c:if test="${incidencia.activa && canCreateActuacio}">
 							      		<div class="row margin_bottom10">
 								    		<div class="col-lg-12 panel">
 												<a href="createActuacio?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary" role="button">Nova actuacio</a>
@@ -125,11 +125,13 @@
 					    </div>
 					    <div id="entradesRegistre" class="panel-collapse collapse">
 					      	<div class="panel-body">
-					      		<div class="row margin_bottom10">
-						    		<div class="col-lg-12 panel">
-										<a href="novaEntrada?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary" role="button">Nova entrada</a>
-									</div>
-					    		</div>
+					      		<c:if test="${canCreateRegistre}">
+						      		<div class="row margin_bottom10">
+							    		<div class="col-lg-12 panel">
+											<a href="novaEntrada?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary" role="button">Nova entrada</a>
+										</div>
+						    		</div>
+						    	</c:if>
 					    		<div class="row panel-body">					    		
 									<div class="table-responsive">                        
 				                            <table class="table table-striped table-bordered">
@@ -165,11 +167,13 @@
 					    </div>
 					    <div id="sortidesRegistre" class="panel-collapse collapse">
 					      	<div class="panel-body">
-					      		<div class="row margin_bottom10">
-						    		<div class="col-lg-12 panel">
-										<a href="novaSortida?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary" role="button">Nova sortida</a>
-									</div>
-					    		</div>
+					      		<c:if test="${canCreateRegistre}">
+						      		<div class="row margin_bottom10">
+							    		<div class="col-lg-12 panel">
+											<a href="novaSortida?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary" role="button">Nova sortida</a>
+										</div>
+						    		</div>
+						    	</c:if>
 					    		<div class="row panel-body">	
 									<div class="table-responsive">                        
 				                            <table class="table table-striped table-bordered">
@@ -206,7 +210,7 @@
 					    </div>
 					    <div id="tasques" class="panel-collapse collapse">	
 					      	<div class="panel-body">
-					      		<c:if test="${incidencia.activa}">
+					      		<c:if test="${incidencia.activa && canCreateTasca}">
 						      		<div class="row margin_bottom10">
 							    		<div class="col-lg-12 panel">
 											<a href="createTasca?idIncidencia=${incidencia.idIncidencia}&tipus=generic" class="btn btn-primary" role="button">Nova tasca</a>
