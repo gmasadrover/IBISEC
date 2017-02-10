@@ -62,9 +62,11 @@
 						  	<div class="col-lg-offset-1 col-lg-2">
 						    	<input type="submit" class="btn btn-primary" name="filtrar" value="Aplicar Filtres">
 							</div>
-							<div class="col-lg-2">
-								<a href="novaEntrada" class="btn btn-primary" role="button">Nova entrada</a>
-							</div>
+							<c:if test="${canCreateRegistre}">
+								<div class="col-lg-2">
+									<a href="novaEntrada" class="btn btn-primary" role="button">Nova entrada</a>
+								</div>
+							</c:if>
 						</div>							
 					</form>
 				</div>

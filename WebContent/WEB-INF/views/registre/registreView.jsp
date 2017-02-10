@@ -76,23 +76,25 @@
 	                    </div>
 	                </div>
             	</div>
-            	<div class="row">            			
-					<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadFichero">
-						<div class="form-group">
-							<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-                            <div class="col-xs-5">   
-                                <input type="file" class="btn" name="file" /><br/>
-							</div> 
-							<input type="hidden" name="idIncidencia" value="${registre.idIncidencia}">
-							<input type="hidden" name="tipus" value="RegistreE">
-							<input type="hidden" name="idTipus" value="${registre.id}">
-							<input type="hidden" name="redirect" value="/registre?tipus=${tipus}&referencia=${registre.id}">				    
-							<div class="col-xs-2"> 
-         						<input type="submit" class="btn btn-primary" value="Pujar" />
-         					</div>    						
-         				</div>         				
-					</form>							
-            	</div>
+            	<c:if test="${canCreateRegistre}">
+	            	<div class="row">            			
+						<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadFichero">
+							<div class="form-group">
+								<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+	                            <div class="col-xs-5">   
+	                                <input type="file" class="btn" name="file" /><br/>
+								</div> 
+								<input type="hidden" name="idIncidencia" value="${registre.idIncidencia}">
+								<input type="hidden" name="tipus" value="RegistreE">
+								<input type="hidden" name="idTipus" value="${registre.id}">
+								<input type="hidden" name="redirect" value="/registre?tipus=${tipus}&referencia=${registre.id}">				    
+								<div class="col-xs-2"> 
+	         						<input type="submit" class="btn btn-primary" value="Pujar" />
+	         					</div>    						
+	         				</div>         				
+						</form>							
+	            	</div>
+            	</c:if>
             </div>
             <!-- /.container-fluid -->
 

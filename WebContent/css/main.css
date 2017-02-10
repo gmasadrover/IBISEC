@@ -61,3 +61,6 @@ body{
 	float:right;
 	padding-right:10px;
 }
+.deleteFile{
+	color:red;
+}

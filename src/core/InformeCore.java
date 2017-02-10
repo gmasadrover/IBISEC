@@ -32,7 +32,7 @@ public class InformeCore {
 		User usuari = UsuariCore.findUsuariByID(conn, rs.getInt("usucre"));
 		informe.setUsuari(usuari);
 		informe.setDataCreacio(rs.getTimestamp("datacre"));
-		informe.setAdjunts(utils.Fitxers.ObtenirFitxers(rs.getInt("idactuacio"), "Tasca", rs.getInt("idtasca"),""));
+		informe.setAdjunts(utils.Fitxers.ObtenirFitxers(rs.getInt("idincidencia"), rs.getInt("idactuacio"), "Informe Previ", rs.getInt("idtasca"),""));
 		informe.setPartida(CreditCore.getPartidaActuacio(conn, rs.getInt("idactuacio")));	
 		informe.setUsuariAprovacio(UsuariCore.findUsuariByID(conn, rs.getInt("usuaprovacio")));
 		informe.setDataAprovacio(rs.getTimestamp("dataaprovacio"));
@@ -64,6 +64,31 @@ public class InformeCore {
 		pstm.executeUpdate();
 		
 		return idNouInforme;
+	}
+	
+	public static void modificar(Connection conn, PropostaActuacio informe, int idUsuari) throws SQLException {
+		String sql = "UPDATE public.tbl_propostaactuacio"
+					+ " SET objecte=?, tipusobra=?, llicencia=?, tipusllicencia=?, contracte=?, vec=?, iva=?, plic=?, termini=?, servei=?, comentari=?, usucre=?, datacre=localtimestamp, usuaprovacio=?, dataaprovacio=?"
+					+ " WHERE idInf=?";
+		
+		PreparedStatement pstm = conn.prepareStatement(sql);	 
+		pstm = conn.prepareStatement(sql);
+		pstm.setString(1, informe.getObjecte());
+		pstm.setString(2, informe.getTipusObra());
+		pstm.setBoolean(3, informe.isLlicencia());
+		pstm.setString(4, informe.getTipusLlicencia());
+		pstm.setBoolean(5, informe.isContracte());
+		pstm.setDouble(6, informe.getVec());
+		pstm.setDouble(7, informe.getIva());
+		pstm.setDouble(8, informe.getPlic());
+		pstm.setString(9, informe.getTermini());
+		pstm.setString(10, informe.getServei());
+		pstm.setString(11, informe.getComentari());
+		pstm.setInt(12, idUsuari);
+		pstm.setNull(13, java.sql.Types.INTEGER);
+		pstm.setDate(14, null);
+		pstm.setInt(15, informe.getIdInf());
+		pstm.executeUpdate();
 	}
 	
 	public static int getInformePrevi(Connection conn, int idActuacio) throws SQLException {

@@ -40,7 +40,7 @@ public class ActuacioListServlet extends HttpServlet {
     		response.sendRedirect(request.getContextPath() + "/");	
 		} else {
 			String filtrar = request.getParameter("filtrar");
-			boolean onlyActives = true;
+			boolean onlyActives = false;
 			String idCentre = "";
 			String idCentreSelector = "";
 			

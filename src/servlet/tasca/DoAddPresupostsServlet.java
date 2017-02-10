@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import bean.Oferta;
 import bean.User;
+import core.ActuacioCore;
 import core.EmpresaCore;
 import core.OfertaCore;
 import core.TascaCore;
@@ -88,6 +89,8 @@ public class DoAddPresupostsServlet extends HttpServlet {
 			} 
 	    } else {	    	
 	   		try {
+	   			OfertaCore.aprovarOferta(conn, idActuacio, Usuari.getIdUsuari());
+	   			TascaCore.nouHistoric(conn, idTasca, "Proposta tècnica aprovada", Usuari.getIdUsuari());
 	   			TascaCore.reasignar(conn, 902, idTasca);
 				TascaCore.tancar(conn, idTasca);
 			} catch (SQLException e) {

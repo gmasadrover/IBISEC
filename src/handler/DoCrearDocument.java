@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,9 +28,7 @@ import fr.opensagres.xdocreport.core.XDocReportException;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import fr.opensagres.xdocreport.template.formatter.FieldsMetadata;
 import utils.documentos;
-import utils.GeneradorDocumentosServiceTest;
 import utils.MyUtils;
-import utils.GeneradorDocumentosServiceTest.Numero;
 
 /**
  * Servlet implementation class DoCrearDocument
@@ -73,7 +72,7 @@ public class DoCrearDocument extends HttpServlet {
     	String filePath = "";
     	if (tipus.equals("autMen")) {
     		rutaPlantilla = "V:/INTERCANVI D'OBRES/MAS, GUILLEM/base/MODELLICIMEN.docx";
-    		filePath = "V:/INTERCANVI D'OBRES/MAS, GUILLEM/documents/"+ idActuacio +"/autoritzacio.docx";
+    		filePath = "V:/INTERCANVI D'OBRES/MAS, GUILLEM/documents/"+ idActuacio +"/autoritzacio.pdf";
     	}
 		Map<String, Object> variablesMap = new HashMap<String, Object>();
 		String tipusObra = informe.getTipusObraFormat(); 
@@ -88,6 +87,7 @@ public class DoCrearDocument extends HttpServlet {
 		String terminiExecucio = oferta.getTermini();
 		String reqContracte = "Si";
 		if (!informe.isContracte()) reqContracte = "No";
+		String data = getData();
 		variablesMap.put("contracte", tipusObra);
 		variablesMap.put("nomcentre", nomCentre); 
 		variablesMap.put("objecte", objecte);		 
@@ -100,6 +100,7 @@ public class DoCrearDocument extends HttpServlet {
 		variablesMap.put("iva", iva);
 		variablesMap.put("plic", plic);
 		variablesMap.put("terminiexecucio", terminiExecucio);
+		variablesMap.put("data",data);
 		/*variablesMap.put("fecha", FECHA);
 		variablesMap.put("nombre", NOMBRE);
 		variablesMap.put("texto", TEXTO);
@@ -123,7 +124,7 @@ public class DoCrearDocument extends HttpServlet {
 		byte[] mergedOutput = null;
 		try {
 			mergedOutput = generadorDocumentosService.generarDocumento(rutaPlantilla,
-					TemplateEngineKind.Freemarker, variablesMap, imagenesMap, false
+					TemplateEngineKind.Freemarker, variablesMap, imagenesMap, true
 					, metadata
 					);
 		} catch (XDocReportException e) {
@@ -181,6 +182,46 @@ public class DoCrearDocument extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
+	}
+	
+	private static String getData(){
+		String dataStr = "";
+		Calendar today = Calendar.getInstance();
+		dataStr += String.format("%02d", today.get(Calendar.DAY_OF_MONTH));
+		dataStr += " de " + getMonth(today.get(Calendar.MONTH));
+		dataStr += " de " + (today.get(Calendar.YEAR));
+		return dataStr;
+	}
+	
+	private static String getMonth(int month){
+		switch (month) {
+			case 0: 
+				return "Gener";
+			case 1:
+				return "Febrer";
+			case 2: 
+				return "Març";
+			case 3:
+				return "Abril";
+			case 4: 
+				return "Maig";
+			case 5:
+				return "Juny";
+			case 6: 
+				return "Juliol";
+			case 7:
+				return "Agost";
+			case 8: 
+				return "Setembre";
+			case 9:
+				return "Octubre";
+			case 10: 
+				return "Novembre";
+			case 11:
+				return "Desembre";
+			default:
+				return "";
+		}
 	}
 
 }

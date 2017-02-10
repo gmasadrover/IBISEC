@@ -123,16 +123,9 @@
 		                        		<div class="col-lg-12 panel-group" id="accordion">		                        										      		
 							        		<a data-toggle="collapse" data-parent="#accordion" href="#entradesRegistre" class="btn btn-success">
 												<c:choose>
-												    <c:when test="${tasca.tipus=='infPrev'}">
-												    	<c:if test="${esCap}">
-												    		Proposta d'actuació
-												    	</c:if>
-												    	<c:if test="${!esCap}">
-												    		Introduir proposta d'actuació
-												    	</c:if>
-												    </c:when>
+												    <c:when test="${tasca.tipus=='infPrev'}">Proposta d'actuació</c:when>
 												    <c:when test="${tasca.tipus=='resPartida'}">Reservar partida</c:when>
-												    <c:when test="${tasca.tipus=='liciMenor'}">Introduir proposta tècnica</c:when>
+												    <c:when test="${tasca.tipus=='liciMenor'}">Proposta tècnica</c:when>
 												</c:choose>
 											</a>
 										    <div id="entradesRegistre" class="panel-collapse collapse">
@@ -144,7 +137,12 @@
 												    	<jsp:include page="include/_reservaPartida.jsp"></jsp:include>
 												    </c:when>
 												    <c:when test="${tasca.tipus=='liciMenor'}">
-												    	<jsp:include page="include/_introduccioPresuposts.jsp"></jsp:include>
+												    	<c:if test="${esCap}">
+												    		<jsp:include page="include/_resumOfertes.jsp"></jsp:include>
+												    	</c:if>
+												    	<c:if test="${!esCap}">
+												    		<jsp:include page="include/_introduccioPresuposts.jsp"></jsp:include>
+												    	</c:if>
 												    </c:when>
 												</c:choose>
 											</div>	

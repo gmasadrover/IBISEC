@@ -64,7 +64,7 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	    	   actuacio = ActuacioCore.findActuacio(conn, referencia);
 	    	   incidencia = IncidenciaCore.findIncidencia(conn, actuacio.getIdIncidencia());
 	    	   tasques = TascaCore.findTasquesActuacio(conn, referencia);	    	  	    	  
-	    	   arxius = Fitxers.ObtenirTotsFitxers(referencia);
+	    	   arxius = Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia());
 	    	   informes = InformeCore.getInformesActuacio(conn, referencia);
 	    	   ofertes = OfertaCore.findOfertes(conn, actuacio.getReferencia());
 	    	   ofertaSeleccionada = OfertaCore.findOfertaSeleccionada(conn, actuacio.getReferencia());

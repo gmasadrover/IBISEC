@@ -22,8 +22,11 @@ public class OfertaCore {
    		oferta.setTermini(rs.getString("termini"));
    		oferta.setSeleccionada(rs.getBoolean("seleccionada"));
    		oferta.setDescalificada(rs.getBoolean("descalificada")); 
+   		oferta.setUsuariCreacio(UsuariCore.findUsuariByID(conn, rs.getInt("usucre")));
    		oferta.setDataCreacio(rs.getTimestamp("datacre"));
    		oferta.setComentari(rs.getString("comentari"));
+   		oferta.setUsuariAprovacio(UsuariCore.findUsuariByID(conn, rs.getInt("usuaprovacio")));
+   		oferta.setDataAprovacio(rs.getTimestamp("dataaprovacio"));
    		return oferta;
 	}
 	
@@ -49,7 +52,7 @@ public class OfertaCore {
 	
 	public static List<Oferta> findOfertes(Connection conn, int idActuacio) throws SQLException {
 		List<Oferta> ofertes = new ArrayList<Oferta>();
-		String sql = "SELECT idoferta, idactuacio, cifempresa, vec, iva, plic, termini, seleccionada, descalificada, comentari, datacre"
+		String sql = "SELECT idoferta, idactuacio, cifempresa, vec, iva, plic, termini, seleccionada, descalificada, comentari, usucre, datacre, usuaprovacio, dataaprovacio"
 					+ " FROM public.tbl_empresaoferta"
 					+ " WHERE idactuacio = ? ;";
 		
@@ -64,7 +67,7 @@ public class OfertaCore {
 	}
 	
 	public static Oferta findOfertaSeleccionada(Connection conn, int idActuacio) throws SQLException {		
-		String sql = "SELECT idoferta, idactuacio, cifempresa, vec, iva, plic, termini, seleccionada, descalificada, comentari, datacre"
+		String sql = "SELECT idoferta, idactuacio, cifempresa, vec, iva, plic, termini, seleccionada, descalificada, comentari, usucre, datacre, usuaprovacio, dataaprovacio"
 					+ " FROM public.tbl_empresaoferta"
 					+ " WHERE idactuacio = ? AND seleccionada = true ;";
 		
@@ -76,6 +79,16 @@ public class OfertaCore {
 			return oferta;
 		}
 		return null;
+	}
+	
+	public static void aprovarOferta(Connection conn, int idActuacio, int idUsuari) throws SQLException {
+		String sql = "UPDATE public.tbl_empresaoferta"
+					+ " SET usuaprovacio=?, dataaprovacio=localtimestamp"
+					+ " WHERE idactuacio = ? AND seleccionada = true;";
+		PreparedStatement pstm = conn.prepareStatement(sql);	
+		pstm.setInt(1, idUsuari);
+		pstm.setInt(2, idActuacio);		
+		pstm.executeUpdate();
 	}
 	
 	public static int getNewCode(Connection conn) throws SQLException {

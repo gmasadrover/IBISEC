@@ -60,13 +60,14 @@ public class RegistreDetailsServlet extends HttpServlet {
 		           errorString = e.getMessage();
 		       }
 		  
-		       List<Fitxers.Fitxer> arxius = Fitxers.ObtenirFitxers(registre.getIdIncidencia(), "RegistreE", registre.getId(), "");
+		       List<Fitxers.Fitxer> arxius = Fitxers.ObtenirFitxers(registre.getIdIncidencia(), -1, "RegistreE", registre.getId(), "");
 		      
 		       // Store info in request attribute, before forward to views
 		       request.setAttribute("errorString", errorString);
 		       request.setAttribute("registre", registre);
 		       request.setAttribute("tipus", tipus);
 		       request.setAttribute("arxius", arxius);
+		       request.setAttribute("canCreateRegistre", UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_crear));
 		       request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Registre"));
 		       // Forward to /WEB-INF/views/homeView.jsp
 		       // (Users can not access directly into JSP pages placed in WEB-INF)

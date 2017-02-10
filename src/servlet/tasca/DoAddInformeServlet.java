@@ -55,7 +55,7 @@ public class DoAddInformeServlet extends HttpServlet {
 	    String idActuacio = multipartParams.getParametres().get("idActuacio");
 	    String idIncidencia = multipartParams.getParametres().get("idIncidencia");
 	    int idInformePrevi = Integer.parseInt(multipartParams.getParametres().get("idInformePrevi"));
-	    String guardar = multipartParams.getParametres().get("guardar");
+	    String guardar = multipartParams.getParametres().get("guardar");	    
 	    String errorString = null;
 	    User Usuari = MyUtils.getLoginedUser(request.getSession());	  
 	    if (guardar != null) {
@@ -96,9 +96,14 @@ public class DoAddInformeServlet extends HttpServlet {
 		    String idComentari = "00000";	
 		   	//Registrar informe + comentari;	   
 		   	try {
-		   		InformeCore.nouInforme(conn, informe, Usuari.getIdUsuari());
 		   		String msg = "S'ha afegit l'informe";
-		   		if (idInformePrevi > 0) msg = "S'ha modificat l'informe";	   				
+		   		if (idInformePrevi > 0) {
+		   			informe.setIdInf(idInformePrevi);
+		   			InformeCore.modificar(conn, informe, Usuari.getIdUsuari());
+		   			msg = "S'ha modificat l'informe";	   				
+		   		}else{
+		   			InformeCore.nouInforme(conn, informe, Usuari.getIdUsuari());
+		   		}
 		   		idComentari = TascaCore.nouHistoric(conn, idTasca, msg, Usuari.getIdUsuari());	
 		   		if (idActuacio != "") idIncidencia = String.valueOf(ActuacioCore.findActuacio(conn, Integer.parseInt(idActuacio)).getIdIncidencia());
 			} catch (SQLException e) {
@@ -107,7 +112,7 @@ public class DoAddInformeServlet extends HttpServlet {
 				errorString = e.getMessage();
 			}
 		   	//Guardar adjunts
-		   	Fitxers.guardarFitxer(multipartParams.getFitxers(), idIncidencia, idActuacio, "Tasca", String.valueOf(idTasca), idComentari);
+		   	Fitxers.guardarFitxer(multipartParams.getFitxers(), idIncidencia, idActuacio, "Informe Previ", String.valueOf(idTasca), "");
 	    } else {
 	    	//Aprovació d'informe
 	    	//Registrar nova tasca d'asignament de partida

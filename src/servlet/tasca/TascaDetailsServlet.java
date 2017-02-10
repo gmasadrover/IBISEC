@@ -17,6 +17,7 @@ import bean.Actuacio;
 import bean.Empresa;
 import bean.Historic;
 import bean.Incidencia;
+import bean.Oferta;
 import bean.PropostaActuacio;
 import bean.Partida;
 import bean.Tasca;
@@ -26,8 +27,10 @@ import core.ControlPageCore;
 import core.CreditCore;
 import core.EmpresaCore;
 import core.InformeCore;
+import core.OfertaCore;
 import core.TascaCore;
 import core.UsuariCore;
+import utils.Fitxers;
 import utils.MyUtils;
 
 /**
@@ -68,6 +71,8 @@ public class TascaDetailsServlet extends HttpServlet {
  	       List<User> llistaUsuaris = new ArrayList<User>();
  	       List<User> llistaCaps = new ArrayList<User>();
  	       boolean canRealitzarTasca = false;
+ 	       List<Oferta> ofertes = new ArrayList<Oferta>();
+	       Oferta ofertaSeleccionada = new Oferta();
  	       try {
  	    	   tasca = TascaCore.findTascaId(conn, idTasca);
  	    	   actuacio = tasca.getActuacio();
@@ -75,15 +80,16 @@ public class TascaDetailsServlet extends HttpServlet {
  	    	   llistaUsuaris = UsuariCore.findUsuarisByDepartament(conn, tasca.getUsuari().getDepartament());
  	    	   llistaCaps.addAll(UsuariCore.findUsuarisByRol(conn, "CAP"));
  	    	   canRealitzarTasca = usuari.getDepartament().equals(tasca.getUsuari().getDepartament());
+ 	    	   ofertes = OfertaCore.findOfertes(conn, actuacio.getReferencia());
+	    	   ofertaSeleccionada = OfertaCore.findOfertaSeleccionada(conn, actuacio.getReferencia());
  	    	   if (actuacio != null) {
- 	    		  historial = TascaCore.findHistorial(conn, idTasca, actuacio.getReferencia());
+ 	    		  historial = TascaCore.findHistorial(conn, incidencia.getIdIncidencia(), idTasca, actuacio.getReferencia());
  	    	   }else{
- 	    		  historial = TascaCore.findHistorial(conn, idTasca, incidencia.getIdIncidencia());
+ 	    		  historial = TascaCore.findHistorial(conn, incidencia.getIdIncidencia(), idTasca, incidencia.getIdIncidencia());
  	    	   } 	    	  
  	    	   String tipusTasca = tasca.getTipus();
  	    	   if ("infPrev".equals(tipusTasca)) {
- 	    		  informePrevi = InformeCore.getInformeTasca(conn, idTasca);
- 	    		  if (tasca.getUsuari().getDepartament().equals(usuari.getDepartament()) && usuari.getRol().contains("CAP")) esCap = true;
+ 	    		  informePrevi = InformeCore.getInformeTasca(conn, idTasca);  	    		 
  	    	   }else if ("resPartida".equals(tipusTasca)){
  	    		  int tascaInforme = Integer.parseInt(tasca.getDescripcio().split("-")[1].trim());
  	    		  informePrevi = InformeCore.getInformeTasca(conn, tascaInforme);
@@ -92,6 +98,7 @@ public class TascaDetailsServlet extends HttpServlet {
  	    		  informePrevi = InformeCore.getInformesActuacio(conn, actuacio.getReferencia()).get(0); 
  	    		  empresesList = EmpresaCore.getEmpreses(conn);
  	    	   }
+ 	    	   if (tasca.getUsuari().getDepartament().equals(usuari.getDepartament()) && usuari.getRol().contains("CAP")) esCap = true;
  	       } catch (SQLException e) {
  	           e.printStackTrace();
  	           errorString = e.getMessage();
@@ -108,10 +115,11 @@ public class TascaDetailsServlet extends HttpServlet {
  	       request.setAttribute("empresesList", empresesList);
  	       request.setAttribute("llistaUsuaris", llistaUsuaris);
  	       request.setAttribute("llistaCaps", llistaCaps);
- 	      request.setAttribute("canRealitzarTasca", canRealitzarTasca);
+ 	       request.setAttribute("ofertes", ofertes);
+	       request.setAttribute("ofertaSeleccionada", ofertaSeleccionada);
+ 	       request.setAttribute("canRealitzarTasca", canRealitzarTasca);
  	       request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Tasques"));
- 	       // Forward to /WEB-INF/views/homeView.jsp
- 	       // (Users can not access directly into JSP pages placed in WEB-INF)
+
  	       RequestDispatcher dispatcher = this.getServletContext().getRequestDispatcher("/WEB-INF/views/tasca/tascaView.jsp");
  	        
  	       dispatcher.forward(request, response);

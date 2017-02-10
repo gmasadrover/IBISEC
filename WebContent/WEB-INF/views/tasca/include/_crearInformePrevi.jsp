@@ -102,6 +102,18 @@
 	          			<textarea class="form-control" name="comentariTecnic" placeholder="comentari tècnic" rows="3" required>${informePrevi.comentari}</textarea> 
 	            	</div>
 	        	</div>
+	        	<div class="row">
+	        		<div class="col-lg-12">	
+	                	<p>Arxius adjunts:</p>
+	                  	<c:forEach items="${informePrevi.adjunts}" var="arxiu" >
+		            		<a  href="downloadFichero?ruta=${arxiu.ruta}">
+								${arxiu.nom}
+							</a>
+							<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
+							<br>
+						</c:forEach>
+					</div>
+                </div>	  
 	        	<div class="row margin_top10">
 	    			<div class="col-lg-12">
 	    				<label>Informe</label>	

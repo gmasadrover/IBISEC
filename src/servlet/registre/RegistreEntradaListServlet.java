@@ -97,6 +97,7 @@ public class RegistreEntradaListServlet extends HttpServlet {
 	       request.setAttribute("idCentre", idCentreSelector );
 	       request.setAttribute("dataInici", dataIniciString);
 	       request.setAttribute("dataFi", dataFiString);
+	       request.setAttribute("canCreateRegistre", UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_crear));
 	       request.setAttribute("menu", ControlPageCore.renderMenu(conn,usuari, "Registre"));
  	       // Forward to /WEB-INF/views/homeView.jsp
  	       // (Users can not access directly into JSP pages placed in WEB-INF)

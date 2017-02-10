@@ -139,9 +139,20 @@ public class ActuacioCore {
 		return newCode;
 	}
 
+	public static void actualitzarActuacio(Connection conn, int idActuacio, String modificacio) throws SQLException{
+		String sql = "UPDATE public.tbl_actuacio"
+				+ " SET darreramodificacio=?, datamodificacio=localtimestamp"
+				+ " WHERE id=?;";
+		PreparedStatement pstm = conn.prepareStatement(sql);	 
+		pstm = conn.prepareStatement(sql);
+		pstm.setString(1, modificacio);
+		pstm.setInt(2, idActuacio);
+		pstm.executeUpdate();
+	}
+	
 	public static void aprovar(Connection conn, int referencia, int idUsuari) throws SQLException {
 		String sql = "UPDATE public.tbl_actuacio"
-					+ " SET aprovada=true, dataaprovacio=localtimestamp, usuaprovacio=?"
+					+ " SET aprovada=true, dataaprovacio=localtimestamp, usuaprovacio=?, darreramodificacio='aprovar actuació', datamodificacio=localtimestamp"
 					+ " WHERE id=?;";
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		pstm = conn.prepareStatement(sql);
@@ -152,7 +163,7 @@ public class ActuacioCore {
 	
 	public static void tancar(Connection conn, int referencia,  int idUsuari) throws SQLException {
 		String sql = "UPDATE public.tbl_actuacio"
-					+ " SET activa=false, datatancament=localtimestamp, usutancament=?"
+					+ " SET activa=false, datatancament=localtimestamp, usutancament=?, darreramodificacio='tancar actuació', datamodificacio=localtimestamp"
 					+ " WHERE id=?;";
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		pstm = conn.prepareStatement(sql);	

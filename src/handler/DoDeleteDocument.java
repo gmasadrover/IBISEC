@@ -17,23 +17,22 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import bean.Actuacio;
-import bean.Incidencia;
-import core.ActuacioCore;
-import core.IncidenciaCore;
+import bean.Credit;
+import core.CreditCore;
+import utils.Fitxers;
 import utils.MyUtils;
 
 /**
- * Servlet implementation class LlistatActuacions
+ * Servlet implementation class DoDeleteDocument
  */
-@WebServlet("/LlistatActuacions")
-public class LlistatActuacions extends HttpServlet {
+@WebServlet("/DeleteDocument")
+public class DoDeleteDocument extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public LlistatActuacions() {
+    public DoDeleteDocument() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -42,7 +41,7 @@ public class LlistatActuacions extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doPost(request,response);
+		doPost(request,response);		
 	}
 
 	/**
@@ -56,21 +55,11 @@ public class LlistatActuacions extends HttpServlet {
         response.setHeader("Access-Control-Allow-Methods", "POST");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type");
         response.setHeader("Access-Control-Max-Age", "86400");
-        String idCentre = request.getParameter("idCentre");
-        Gson gson = new Gson(); 
-        JsonObject myObj = new JsonObject();
-        Connection conn = MyUtils.getStoredConnection(request);
-        List<Incidencia> llistatIncidencies = new ArrayList<Incidencia>();
-		try {
-			llistatIncidencies = IncidenciaCore.searchIncidencies(conn, idCentre, true);
-			myObj.addProperty("success", true);
-			JsonElement llistatObj = gson.toJsonTree(llistatIncidencies);
-			myObj.add("llistatIncidencies", llistatObj);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			myObj.addProperty("success", false);
-		}              
+ 
+        JsonObject myObj = new JsonObject();      
+		Fitxers.eliminarFitxer(request.getParameter("ruta"));
+		myObj.addProperty("success", true);	
+		
         out.println(myObj.toString());
  
         out.close();

@@ -49,6 +49,11 @@ public class DoCreateTascaServlet extends HttpServlet {
 	   		if (request.getParameter("idIncidencia") != "") idIncidencia = Integer.parseInt(request.getParameter("idIncidencia")); 
 	   		if (request.getParameter("idActuacio") != "") {
 				idActuacio = Integer.parseInt(request.getParameter("idActuacio")); 
+				String modificacio = "Crear nova tasca";
+				if ("infPrev".equals(tipus)) {
+					modificacio = "Sol·licitar proposta d'actuació";
+				}
+				ActuacioCore.actualitzarActuacio(conn, idActuacio, modificacio);
 				idIncidencia = ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia();
 			}	
 			TascaCore.novaTasca(conn, tipus, usuariTasca, idUsuari, idActuacio, idIncidencia, comentari, assumpte);

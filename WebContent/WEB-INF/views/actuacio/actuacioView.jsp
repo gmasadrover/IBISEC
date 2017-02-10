@@ -44,8 +44,7 @@
 	                        			 ${actuacio.referencia} - ${actuacio.nomCentre}
 	                        		</div>
 	                        		<div class="col-lg-6">
-	                        			 Estat: ${actuacio.activa ? actuacio.aprovada ? "Aprovada" : "Pendent aprovació" : "Tantada"} 	                        			 
-	                        			 / ${informes.size() > 0 ? ofertes.size() > 0 ? "Amb proposta tècnica" : "Informe previ realitzat" : "Pendent informe previ" } 
+	                        			Darrera modificació: ${actuacio.modificacio} - ${actuacio.getDarreraModificacioString()}
 	                        		</div>
 	                        	</div>
 	                        </div>
@@ -130,37 +129,7 @@
 						    		</div>
 					    		</c:if>
 					    		<c:if test="${ofertes.size()>0}">
-					    			<h4>Proposta tècnica</h4>
-					    			<div class="table-responsive">                        
-			                            <table class="table table-striped table-bordered">
-			                                <thead>
-			                                    <tr>
-			                                        <th>Oferta</th>
-			                                        <th>Licitador</th>			                                        
-			                                    </tr>
-			                                </thead>
-			                                <tbody>
-			                                	<c:forEach items="${ofertes}" var="oferta" >
-										          	<tr ${oferta.seleccionada ? "class='success'" : ""}>	
-										          		<td>${oferta.getPlicFormat()}</td>							          	
-										           		<td><a href='editEmpresa?cif=${oferta.cifEmpresa}'>${oferta.nomEmpresa} (${oferta.cifEmpresa})</a></td>
-										            </tr>
-										       	</c:forEach>
-			                                </tbody>
-			                            </table>
-			                        </div>
-			                        <p>
-					            		<label>L'empresa adjudicataria:</label> ${ofertaSeleccionada.nomEmpresa} (${ofertaSeleccionada.cifEmpresa})
-					            	</p>
-					            	<p>
-					            		<label>Amb valor:</label> ${ofertaSeleccionada.getPlicFormat()}
-					            	</p>
-					            	<p>
-					            		<label>Termini:</label> ${ofertaSeleccionada.termini}
-					            	</p>
-					            	<p>
-					            		<label>Proposta tècnica:</label> ${ofertaSeleccionada.comentari}
-					            	</p>
+					    			<jsp:include page="../tasca/include/_resumOfertes.jsp"></jsp:include>
 					            	<c:if test="${actuacio.activa}">					      			
 							      		<div class="row margin_bottom10">
 								    		<div class="col-lg-12 panel">

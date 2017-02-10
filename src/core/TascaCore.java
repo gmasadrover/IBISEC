@@ -107,17 +107,18 @@ public class TascaCore {
 		String sql = "SELECT data"
 					+ " FROM public.tbl_historial"
 					+ " WHERE idtasca = ?"
-					+ " ORDER BY data";	 
+					+ " ORDER BY data"
+					+ " LIMIT 1;";
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		pstm.setInt(1, idTasca);		
 		ResultSet rs = pstm.executeQuery();
-		while (rs.next()) {
+		if (rs.next()) {
 			dataInici = rs.getTimestamp("data");
 		}
 		return dataInici;
 	}
 	
-	public static List<Historic> findHistorial(Connection conn, int idTasca, int idActuacio) throws SQLException {
+	public static List<Historic> findHistorial(Connection conn, int idTasca, int idIncidencia, int idActuacio) throws SQLException {
 		String sql = "SELECT idhistoric, comentari, idusuari, data"
 					+ " FROM public.tbl_historial"
 					+ " WHERE idtasca = ?";	 
@@ -132,7 +133,7 @@ public class TascaCore {
 			historic.setIdHistoric(rs.getInt("idhistoric"));
 			historic.setIdTasca(idTasca);
 			historic.setUsuari(UsuariCore.findUsuariByID(conn, rs.getInt("idusuari")));
-			historic.setAdjunts(utils.Fitxers.ObtenirFitxers(idActuacio, "Tasca", idTasca, rs.getString("idhistoric")));
+			historic.setAdjunts(utils.Fitxers.ObtenirFitxers(idIncidencia, idActuacio, "Tasca", idTasca, rs.getString("idhistoric")));
 			list.add(historic);
 		}
 	    return list;

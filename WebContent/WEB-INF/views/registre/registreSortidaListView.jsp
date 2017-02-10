@@ -14,9 +14,7 @@
     <div id="wrapper">
     	<jsp:include page="../_menu.jsp"></jsp:include>
        	<div id="page-wrapper">
-
             <div class="container-fluid">
-
                 <!-- Page Heading -->
                 <div class="row">
                     <div class="col-lg-12">
@@ -62,9 +60,11 @@
 						  	<div class="col-lg-offset-1 col-lg-2">
 						    	<input type="submit" class="btn btn-primary" name="filtrar" value="Aplicar Filtres">
 							</div>
-							<div class="col-lg-2">
-								<a href="novaSortida" class="btn btn-primary" role="button">Nova sortida</a>
-							</div>
+							<c:if test="${canCreateRegistre}">
+								<div class="col-lg-2">
+									<a href="novaSortida" class="btn btn-primary" role="button">Nova sortida</a>
+								</div>
+							</c:if>
 						</div>							
 					</form>
 				</div>

@@ -1,6 +1,8 @@
 package bean;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Oferta {
@@ -15,7 +17,10 @@ public class Oferta {
 	private boolean seleccionada;
 	private boolean descalificada;
 	private String comentari;
+	private User usuariCreacio;
 	private Date dataCreacio;
+	private User usuariAprovacio;
+	private Date dataAprovacio;
 	
 	public Oferta(){
 		
@@ -130,5 +135,36 @@ public class Oferta {
 
 	public void setDataCreacio(Date dataCreacio) {
 		this.dataCreacio = dataCreacio;
+	}
+
+	public User getUsuariCreacio() {
+		return usuariCreacio;
+	}
+
+	public void setUsuariCreacio(User usuariCreacio) {
+		this.usuariCreacio = usuariCreacio;
+	}
+
+	public User getUsuariAprovacio() {
+		return usuariAprovacio;
+	}
+
+	public void setUsuariAprovacio(User usuariAprovacio) {
+		this.usuariAprovacio = usuariAprovacio;
+	}
+
+	public Date getDataAprovacio() {
+		return dataAprovacio;
+	}
+	
+	public String getDataAprovacioString(){
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");	
+		String dataString = "";
+		if (this.dataAprovacio != null) dataString = df.format(this.dataAprovacio);
+		return dataString;		 
+	}
+
+	public void setDataAprovacio(Date dataAprovacio) {
+		this.dataAprovacio = dataAprovacio;
 	}
 }

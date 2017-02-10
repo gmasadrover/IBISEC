@@ -209,7 +209,7 @@ public class UsuariCore {
 				permision = (rols.toUpperCase().contains("ADMIN"));
 				break;
 			case registre_detalls:
-				permision = (rols.toUpperCase().contains("ADM"));
+				permision = true;
 				break;
 			case registre_ent_crear:
 				permision = (rols.toUpperCase().contains("ADM"));
