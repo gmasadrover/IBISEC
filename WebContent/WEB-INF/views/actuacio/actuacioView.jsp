@@ -130,10 +130,10 @@
 					    		</c:if>
 					    		<c:if test="${ofertes.size()>0}">
 					    			<jsp:include page="../tasca/include/_resumOfertes.jsp"></jsp:include>
-					            	<c:if test="${actuacio.activa}">					      			
+					            	<c:if test="${actuacio.activa && canModificarActuacio}">				      			
 							      		<div class="row margin_bottom10">
 								    		<div class="col-lg-12 panel">
-												<a href="CrearDocument?tipus=autMen&idActuacio=${actuacio.referencia}" class="btn btn-primary right" role="button">Generar autorització actuació</a>
+												<a href="CrearDocument?tipus=autMen&idIncidencia=${incidencia.idIncidencia}&idActuacio=${actuacio.referencia}" class="btn btn-primary right" role="button">Generar autorització actuació</a>
 											</div>
 							    		</div>
 					    			</c:if>	

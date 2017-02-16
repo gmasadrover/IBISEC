@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+
+import bean.Centre;
 
 public class CentreCore {
 	public static String nomCentre(Connection conn, String idCentre) throws SQLException {
@@ -18,5 +21,10 @@ public class CentreCore {
 			nomCentre = rs.getString("nom");
 		}
 		return nomCentre;
+	}
+	
+	public static List<Centre> findCentres(Connection conn, boolean ambIncidencies) throws SQLException {
+		return null;
+		
 	}
 }

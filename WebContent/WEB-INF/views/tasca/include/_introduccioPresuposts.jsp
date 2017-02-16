@@ -90,7 +90,7 @@
 	 			<div class="col-lg-6">
 		    		<div class="row">
 		        		<div class="col-lg-12">
-		              		<input class="btn btn-success" type="submit" name="enviar" value="Aprovar">
+		              		<input class="btn btn-success" type="submit" name="enviar" value="Vistiplau">
 						</div>
 		     		</div>
 		 		</div>

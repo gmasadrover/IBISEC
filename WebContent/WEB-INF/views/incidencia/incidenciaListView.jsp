@@ -50,6 +50,14 @@
 		                             </div>
 							    </div>						    
 						  	</div>		
+						  	<div class="col-lg-4">
+						  		<span>Data registre</span>
+							  	<div class="input-group input-daterange datepicker">
+								    <input type="text" class="form-control" name="dataInici" value="${dataInici}">
+								    <div class="input-group-addon">fins</div>
+								    <input type="text" class="form-control" name="dataFi" value="${dataFi}">
+								</div>                                
+						  	</div>
 						  	<div class="col-lg-2">
 							    <div class="checkbox">
 							      <label>
@@ -72,6 +80,7 @@
                                     <tr>
                                         <th>Referència</th>
                                         <th>Descripció</th>
+                                        <th>Centre</th>
                                         <th>Data petició</th>
                                         <th>Data petició</th>
                                         <th>Actuacions derivades</th>
@@ -86,6 +95,7 @@
 							          	<tr class=${incidencia.activa ? "success" : "danger"}>							          	
 							           		<td><a href="incidenciaDetalls?ref=${incidencia.idIncidencia}">${incidencia.idIncidencia}</a></td>
 							            	<td>${incidencia.descripcio}</td>
+							            	<td>${incidencia.nomCentre}</td>
 							            	<td>${incidencia.getPeticioString()}</td>
 							            	<td>${incidencia.usuMod}</td>
 							            	<td>${incidencia.getLlistaIdActuacions()}</td>

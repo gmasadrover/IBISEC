@@ -60,10 +60,11 @@ Connection conn = MyUtils.getStoredConnection(request);
    					usuariTasca = UsuariCore.findUsuarisByRol(conn, "JUR").get(0).getIdUsuari();
    					tipus = "liciMajor";
    				}else{ //Contracte d'obres menor
-   					usuariTasca = UsuariCore.finCap(conn, informeFinal.getUsuari().getDepartament()).getIdUsuari();   					
+   					usuariTasca = informeFinal.getUsuari().getIdUsuari();   					
 					tipus = "liciMenor";
    				}
    				//Registrar incidència nova
+   				System.out.println(usuariTasca);
    				TascaCore.novaTasca(conn, tipus, usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "", "");
    				
 			} catch (SQLException e) {

@@ -3,8 +3,9 @@ $(document).ready(function() {
 		"order": [[ 0, "desc" ]],
 		"aoColumns": [
     		null,
-    		null,    		
-    		{"iDataSort": 3},
+    		null, 
+    		null, 
+    		{"iDataSort": 4},
     		{"bVisible": false},
     		null
 		]
@@ -13,8 +14,9 @@ $(document).ready(function() {
 		"order": [[ 0, "desc" ]],
 		"aoColumns": [
     		null,
-    		null,    		
-    		{"iDataSort": 3},
+    		null,  
+    		null,  		
+    		{"iDataSort": 4},
     		{"bVisible": false},
     		null,
     		{"iDataSort": 6},

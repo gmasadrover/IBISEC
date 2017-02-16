@@ -1,6 +1,114 @@
 package bean;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import bean.Empresa.Classificacio;
+
 public class Empresa {
  
+   public class Classificacio {
+	   private String grup;
+	   private String subGrup;
+	   private String categoria;
+	public String getGrup() {
+		return grup;
+	}
+	public void setGrup(String grup) {
+		this.grup = grup;
+	}
+	public String getSubGrup() {
+		return subGrup;
+	}
+	public void setSubGrup(String subGrup) {
+		this.subGrup = subGrup;
+	}
+	public String getCategoria() {
+		return categoria;
+	}
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
+	}
+   }
+	
+   public class Administrador{
+	   private String nom;
+	   private String dni;
+	   private Date dataValidesaFins;
+	   private Date dataModificacio;
+	   private String notariModificacio;
+	   private int protocolModificacio;
+	   private String tipus;
+	   
+		public String getNom() {
+			return nom;
+		}
+		public void setNom(String nom) {
+			this.nom = nom;
+		}
+		public String getDni() {
+			return dni;
+		}
+		public void setDni(String dni) {
+			this.dni = dni;
+		}
+		public Date getDataValidesaFins() {
+			return dataValidesaFins;
+		}
+		public String getDataValidesaFinsString() {
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+			String dataString = "";
+			if (this.dataValidesaFins != null) dataString = df.format(this.dataValidesaFins);
+			return dataString;
+		}
+		public void setDataValidesaFins(Date dataValidesaFins) {
+			this.dataValidesaFins = dataValidesaFins;
+		}
+		
+		public boolean isCaducat(){
+			boolean caducat = false;
+			Calendar cad = Calendar.getInstance();
+			cad.setTime(this.dataValidesaFins);			
+			if (cad.before(Calendar.getInstance())) caducat = true;
+			return caducat;
+		}
+		
+		public Date getDataModificacio() {
+			return dataModificacio;
+		}
+		public String getDataModificacioString() {
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+			String dataString = "";
+			if (this.dataModificacio != null) dataString = df.format(this.dataModificacio);
+			return dataString;
+		}
+		public void setDataModificacio(Date dataModificacio) {
+			this.dataModificacio = dataModificacio;
+		}
+		public String getNotariModificacio() {
+			return notariModificacio;
+		}
+		public void setNotariModificacio(String notariModificacio) {
+			this.notariModificacio = notariModificacio;
+		}
+		public int getProtocolModificacio() {
+			return protocolModificacio;
+		}
+		public void setProtocolModificacio(int protocolModificacio) {
+			this.protocolModificacio = protocolModificacio;
+		}
+		public String getTipus() {
+			return tipus;
+		}
+		public void setTipus(String tipus) {
+			this.tipus = tipus;
+		}
+   }
+   
    private String cif;
    private String name;
    private String direccio;
@@ -10,21 +118,19 @@ public class Empresa {
    private String telefon;
    private String fax;
    private String email;
- 
+   private Date dataConstitucio;
+   private String objecteSocial;
+   private String classificacioString;
+   private List<Administrador> administradors;   
+   private boolean acreditacio1;
+   private Date dateExpAcreditacio1;
+   private boolean acreditacio2;
+   private Date dateExpAcreditacio2;
+   private boolean acreditacio3;
+   private Date dateExpAcreditacio3;
+   
    public Empresa() {
  
-   }
- 
-   public Empresa(String code, String name, String direccio, String cp, String ciutat, String provincia, String telefon, String fax, String email) {
-       this.cif = code;
-       this.name = name;
-       this.direccio = direccio;
-       this.cp = cp;
-       this.ciutat = ciutat;
-       this.provincia = provincia;
-       this.telefon = telefon;
-       this.setFax(fax);
-       this.email = email;
    }
  
    public String getCif() {
@@ -97,6 +203,163 @@ public String getFax() {
 
 public void setFax(String fax) {
 	this.fax = fax;
+}
+
+public Date getDataConstitucio() {
+	return dataConstitucio;
+}
+
+public String getDataConstitucioString() {
+	DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+	String dataString = "";
+	if (this.dataConstitucio != null) dataString = df.format(this.dataConstitucio);
+	return dataString;
+}
+
+public void setDataConstitucio(Date dataConstitucio) {
+	this.dataConstitucio = dataConstitucio;
+}
+
+public String getObjecteSocial() {
+	return objecteSocial;
+}
+
+public void setObjecteSocial(String objecteSocial) {
+	this.objecteSocial = objecteSocial;
+}
+
+public List<Classificacio> getClassificacio() {
+	List<Empresa.Classificacio> classificacioList = new ArrayList<Empresa.Classificacio>();
+	if (this.getClassificacioString() != null && !this.getClassificacioString().isEmpty()) {
+		String[] classificacioString = this.getClassificacioString().split(";");
+		Empresa.Classificacio classificacio = new Classificacio();
+		for (String element : classificacioString) {
+			classificacio = new Classificacio();
+		    classificacio.setGrup(element.split("#")[0]);
+		    classificacio.setSubGrup(element.split("#")[1]);
+		    classificacio.setCategoria(element.split("#")[2]);
+		    classificacioList.add(classificacio);
+		}
+	}
+	return classificacioList;
+}
+
+public List<Administrador> getAdministradors() {
+	return administradors;
+}
+
+public void setAdministradors(List<Administrador> administradors) {
+	this.administradors = administradors;
+}
+
+public boolean isAcreditacio1() {
+	return acreditacio1;
+}
+
+public void setAcreditacio1(boolean acreditacio1) {
+	this.acreditacio1 = acreditacio1;
+}
+
+public Date getDateExpAcreditacio1() {
+	return dateExpAcreditacio1;
+}
+
+public String getDateExpAcreditacio1String() {
+	DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+	String dataString = "";
+	if (this.dateExpAcreditacio1 != null) dataString = df.format(this.dateExpAcreditacio1);
+	return dataString;
+}
+
+public void setDateExpAcreditacio1(Date dateExpAcreditacio1) {
+	this.dateExpAcreditacio1 = dateExpAcreditacio1;
+}
+
+public boolean isCaducadaAcreditacio1() {
+	boolean caducat = false;
+	if (this.dateExpAcreditacio1 != null) {
+		Calendar cad = Calendar.getInstance();
+		cad.setTime(this.dateExpAcreditacio1);
+		cad.add(Calendar.MONTH, 6);
+		if (cad.before(Calendar.getInstance())) caducat = true;
+	}
+	return caducat;
+}
+
+public boolean isAcreditacio2() {
+	return acreditacio2;
+}
+
+public void setAcreditacio2(boolean acreditacio2) {
+	this.acreditacio2 = acreditacio2;
+}
+
+public Date getDateExpAcreditacio2() {
+	return dateExpAcreditacio2;
+}
+
+public String getDateExpAcreditacio2String() {
+	DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+	String dataString = "";
+	if (this.dateExpAcreditacio2 != null) dataString = df.format(this.dateExpAcreditacio2);
+	return dataString;
+}
+
+public void setDateExpAcreditacio2(Date dateExpAcreditacio2) {
+	this.dateExpAcreditacio2 = dateExpAcreditacio2;
+}
+
+public boolean isCaducadaAcreditacio2() {
+	boolean caducat = false;
+	if (this.dateExpAcreditacio2 != null) {
+		Calendar cad = Calendar.getInstance();
+		cad.setTime(this.dateExpAcreditacio2);
+		cad.add(Calendar.MONTH, 6);
+		if (cad.before(Calendar.getInstance())) caducat = true;
+	}
+	return caducat;
+}
+
+public boolean isAcreditacio3() {
+	return acreditacio3;
+}
+
+public void setAcreditacio3(boolean acreditacio3) {
+	this.acreditacio3 = acreditacio3;
+}
+
+public Date getDateExpAcreditacio3() {
+	return dateExpAcreditacio3;
+}
+
+public String getDateExpAcreditacio3String() {
+	DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+	String dataString = "";
+	if (this.dateExpAcreditacio3 != null) dataString = df.format(this.dateExpAcreditacio3);
+	return dataString;
+}
+
+public void setDateExpAcreditacio3(Date dateExpAcreditacio3) {
+	this.dateExpAcreditacio3 = dateExpAcreditacio3;
+}
+
+public boolean isCaducadaAcreditacio3() {
+	boolean caducat = false;
+	if (this.dateExpAcreditacio3 != null) {
+		Calendar cad = Calendar.getInstance();
+		cad.setTime(this.dateExpAcreditacio3);
+		cad.add(Calendar.MONTH, 6);
+		if (cad.before(Calendar.getInstance())) caducat = true;
+	}
+	return caducat;
+}
+
+public String getClassificacioString() {
+	return classificacioString;
+}
+
+public void setClassificacioString(String getClassificacioString) {
+	this.classificacioString = getClassificacioString;
 }
  
 }

@@ -64,3 +64,6 @@ body{
 .deleteFile{
 	color:red;
 }
+.longText {
+	white-space: pre-line;
+}

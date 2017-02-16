@@ -79,13 +79,13 @@ public class TascaDetailsServlet extends HttpServlet {
  	    	   incidencia = tasca.getIncidencia();
  	    	   llistaUsuaris = UsuariCore.findUsuarisByDepartament(conn, tasca.getUsuari().getDepartament());
  	    	   llistaCaps.addAll(UsuariCore.findUsuarisByRol(conn, "CAP"));
- 	    	   canRealitzarTasca = usuari.getDepartament().equals(tasca.getUsuari().getDepartament());
- 	    	   ofertes = OfertaCore.findOfertes(conn, actuacio.getReferencia());
-	    	   ofertaSeleccionada = OfertaCore.findOfertaSeleccionada(conn, actuacio.getReferencia());
+ 	    	   canRealitzarTasca = usuari.getDepartament().equals(tasca.getUsuari().getDepartament()); 
  	    	   if (actuacio != null) {
- 	    		  historial = TascaCore.findHistorial(conn, incidencia.getIdIncidencia(), idTasca, actuacio.getReferencia());
+ 	    		  historial = TascaCore.findHistorial(conn, idTasca, incidencia.getIdIncidencia(), actuacio.getReferencia());
+ 	    		  ofertes = OfertaCore.findOfertes(conn, actuacio.getReferencia());
+ 	    		  ofertaSeleccionada = OfertaCore.findOfertaSeleccionada(conn, actuacio.getReferencia());
  	    	   }else{
- 	    		  historial = TascaCore.findHistorial(conn, incidencia.getIdIncidencia(), idTasca, incidencia.getIdIncidencia());
+ 	    		  historial = TascaCore.findHistorial(conn, idTasca, incidencia.getIdIncidencia(), -1);
  	    	   } 	    	  
  	    	   String tipusTasca = tasca.getTipus();
  	    	   if ("infPrev".equals(tipusTasca)) {

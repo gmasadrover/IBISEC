@@ -56,6 +56,6 @@
 </c:if> 
 <c:if test="${!esCap}">
 <p>
-	<label>Aprovada:</label> ${ofertaSeleccionada.usuariAprovacio.getNomComplet()} - ${ofertaSeleccionada.getDataAprovacioString()}
+	<label>Vistiplau:</label> ${ofertaSeleccionada.usuariAprovacio.getNomComplet()} - ${ofertaSeleccionada.getDataAprovacioString()}
 </p>
 </c:if>

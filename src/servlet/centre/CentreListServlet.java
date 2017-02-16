@@ -1,4 +1,4 @@
-package servlet.incidencia;
+package servlet.centre;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -19,8 +19,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import bean.User;
+import bean.Centre;
 import bean.ControlPage.SectionPage;
 import bean.Incidencia;
+import core.CentreCore;
 import core.ControlPageCore;
 import core.IncidenciaCore;
 import core.UsuariCore;
@@ -29,14 +31,14 @@ import utils.MyUtils;
 /**
  * Servlet implementation class IncidenciaListServlet
  */
-@WebServlet("/incidencies")
-public class IncidenciaListServlet extends HttpServlet {
+@WebServlet("/centres")
+public class CentreListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public IncidenciaListServlet() {
+    public CentreListServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -53,48 +55,28 @@ public class IncidenciaListServlet extends HttpServlet {
     		response.sendRedirect(request.getContextPath() + "/");	
 		} else {
 			String filtrar = request.getParameter("filtrar");
-			boolean onlyActives = true;
-			String idCentre = "";
-			String idCentreSelector = "";			
-			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-			Calendar cal = Calendar.getInstance(); 
-			Date dataFi = cal.getTime();
-			String dataFiString = df.format(dataFi);	 
-			cal.add(Calendar.MONTH, -2);
-			Date dataInici = cal.getTime();
-			String dataIniciString = df.format(dataInici);				
+			boolean ambIncidencia = false;	
 			String errorString = null;
-			List<Incidencia> list = new ArrayList<Incidencia>();
+			List<Centre> list = new ArrayList<Centre>();
 			try {
 				if (filtrar != null) {
-					onlyActives = request.getParameter("nomesActives") != null;
-					if (request.getParameter("filterCentre") != null) {
-						idCentre = request.getParameter("idCentre").split("_")[0];
-						idCentreSelector = request.getParameter("idCentre");
-					}				
-					 dataInici = df.parse(request.getParameter("dataInici"));
- 	    			 dataIniciString = request.getParameter("dataInici");
- 	    			 dataFi = df.parse(request.getParameter("dataFi"));
- 	    			 dataFiString = request.getParameter("dataFi");
+					ambIncidencia = request.getParameter("ambIncidencia") != null;					
 				}
-				list = IncidenciaCore.searchIncidencies(conn, idCentre, onlyActives, dataInici, dataFi);
-			} catch (SQLException | ParseException e) {
+				list = CentreCore.findCentres(conn, ambIncidencia);
+			} catch (SQLException e) {
 				e.printStackTrace();
 				errorString = e.getMessage();
 			}
 
 			// Store info in request attribute, before forward to views
 			request.setAttribute("errorString", errorString);
-			request.setAttribute("dataInici", dataIniciString);
-		    request.setAttribute("dataFi", dataFiString);
-			request.setAttribute("incidenciesList", list);
-			request.setAttribute("nomesActives", onlyActives);
-			request.setAttribute("idCentre", idCentreSelector);
-			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Incidencies"));
+			request.setAttribute("centresList", list);
+			request.setAttribute("ambIncidencia", ambIncidencia);
+			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Centres"));
 			// Forward to /WEB-INF/views/homeView.jsp
 			// (Users can not access directly into JSP pages placed in WEB-INF)
 			RequestDispatcher dispatcher = this.getServletContext()
-					.getRequestDispatcher("/WEB-INF/views/incidencia/incidenciaListView.jsp");
+					.getRequestDispatcher("/WEB-INF/views/centre/centreListView.jsp");
 
 			dispatcher.forward(request, response);
 		}

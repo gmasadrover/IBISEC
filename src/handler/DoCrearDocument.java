@@ -51,6 +51,7 @@ public class DoCrearDocument extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		int idActuacio = Integer.parseInt(request.getParameter("idActuacio"));
+		int idIncidencia = Integer.parseInt(request.getParameter("idIncidencia"));
     	String tipus = request.getParameter("tipus");
     	Connection conn = MyUtils.getStoredConnection(request);		
     	PropostaActuacio informe = new PropostaActuacio();
@@ -71,8 +72,26 @@ public class DoCrearDocument extends HttpServlet {
     	String rutaPlantilla = "";
     	String filePath = "";
     	if (tipus.equals("autMen")) {
-    		rutaPlantilla = "V:/INTERCANVI D'OBRES/MAS, GUILLEM/base/MODELLICIMEN.docx";
-    		filePath = "V:/INTERCANVI D'OBRES/MAS, GUILLEM/documents/"+ idActuacio +"/autoritzacio.pdf";
+    		rutaPlantilla = "V:/INTERCANVI D'OBRES/MAS, GUILLEM/base/MODELLICIMEN.docx";    		
+    		
+			// Crear directoris si no existeixen
+			File tmpFile = new File(utils.Fitxers.RUTA_BASE + idIncidencia);
+			if (!tmpFile.exists()) {
+				System.out.println(utils.Fitxers.RUTA_BASE + idIncidencia);
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(utils.Fitxers.RUTA_BASE + idIncidencia + "/Actuacio");
+			if (!tmpFile.exists()) {
+				System.out.println(utils.Fitxers.RUTA_BASE + idIncidencia + "/Actuacio");
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(utils.Fitxers.RUTA_BASE + idIncidencia + "/Actuacio/" + idActuacio);
+			if (!tmpFile.exists()) {
+				System.out.println(utils.Fitxers.RUTA_BASE + idIncidencia + "/Actuacio/" + idActuacio);
+				tmpFile.mkdir();
+			}
+    		
+    		filePath = "V:/INTERCANVI D'OBRES/MAS, GUILLEM/documents/"+ idIncidencia + "/Actuacio/" + idActuacio +"/autoritzacio.pdf";
     	}
 		Map<String, Object> variablesMap = new HashMap<String, Object>();
 		String tipusObra = informe.getTipusObraFormat(); 

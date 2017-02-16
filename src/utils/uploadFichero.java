@@ -45,6 +45,7 @@ public class uploadFichero extends HttpServlet {
 			System.out.println(e.getMessage());
 		}
 		String idActuacio = "00000";
+		String idIncidencia = "00000";
 		String tipus = "altres";
 		String idTipus = "00000";
 		String fileName = "";
@@ -58,47 +59,43 @@ public class uploadFichero extends HttpServlet {
                arxiu = item; 
             } else {
             	switch (item.getFieldName()) {
+	            	case "idIncidencia":
+	        			idIncidencia = item.getString();
+	        			File incidenciaFile = new File(utils.Fitxers.RUTA_BASE + idIncidencia);
+	        			if (!incidenciaFile.exists()) {
+	        				incidenciaFile.mkdir();
+	        			}
+	        			break;
             		case "idActuacio": 
-            			System.out.println("------------------------");
-            			System.out.println("Entram amb: " + item.getFieldName());
             			idActuacio = item.getString();
-            			File actuacioFile = new File(utils.Fitxers.RUTA_BASE + idActuacio);
+            			File actuacioFile = new File(utils.Fitxers.RUTA_BASE + "/Actuacio/" + idActuacio);
             			if (!actuacioFile.exists()) {
-            				System.out.println("Cream directori actuacio: " + idActuacio);
             				actuacioFile.mkdir();
             			}
             			break;
             		case "tipus": 
-            			System.out.println("------------------------");
-            			System.out.println("Entram amb: " + item.getFieldName());
             			tipus = item.getString();
-            			File tipusFile = new File(utils.Fitxers.RUTA_BASE + idActuacio + "/" +tipus);
+            			File tipusFile = new File(utils.Fitxers.RUTA_BASE + idIncidencia + "/" +tipus);
             			if (!tipusFile.exists()) {
-            				System.out.println("Cream directori Tipus: " + idActuacio + "/" + tipus);
             				tipusFile.mkdir();
             			}
             			break;
             		case "idTipus": 
-            			System.out.println("------------------------");
-            			System.out.println("Entram amb: " + item.getFieldName());
             			idTipus = item.getString();
-            			File idTipusFile = new File(utils.Fitxers.RUTA_BASE + idActuacio + "/" + tipus + "/" + idTipus);
+            			File idTipusFile = new File(utils.Fitxers.RUTA_BASE + idIncidencia + "/" + tipus + "/" + idTipus);
             			if (!idTipusFile.exists()) {
-            				System.out.println("Cream directori idTipus: " + idActuacio + "/" + tipus + "/" + idTipus);
             				idTipusFile.mkdir();
             			}            			
             			break;
             		case "redirect":
             			redirect = item.getString();
-            	}     			
-	        	 System.out.println("Nombre --> " + item.getFieldName());
-	        	 System.out.println("Valor --> " + item.getString());
-	        	 System.out.println("-----------------------");
+            	} 
             }
         }
         if (arxiu != null) {
 	        /*cual sera la ruta al archivo en el servidor*/
-	    	fileName = idActuacio + "/" + tipus + "/" + idTipus + "/";
+	    	fileName = idIncidencia + "/" + tipus + "/" + idTipus + "/";
+	    	if (idActuacio != "00000") fileName = idIncidencia + "/Actuacio/" + idActuacio + "/" + tipus + "/" + idTipus + "/";
 	        File archivo_server = new File(utils.Fitxers.RUTA_BASE + fileName + arxiu.getName());
 	        /*y lo escribimos en el servido*/
 	        try {
@@ -106,12 +103,7 @@ public class uploadFichero extends HttpServlet {
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				System.out.println(e.getMessage());
 			}
-	        System.out.println("Nombre --> " + arxiu.getName() );
-	        System.out.println("Tipo --> " + arxiu.getContentType());
-	        System.out.println(" tamaño --> " + (arxiu.getSize()/1240)+ "KB");
-	        System.out.println("-----------------------");
         }
         RequestDispatcher dispatcher = this.getServletContext().getRequestDispatcher(redirect);
         dispatcher.forward(request, response);

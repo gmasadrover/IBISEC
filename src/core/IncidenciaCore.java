@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import bean.Incidencia;
@@ -58,22 +60,49 @@ public class IncidenciaCore {
 		return incidencia;
 	}
 	
-	public static List<Incidencia> searchIncidencies(Connection conn, String idCentre, boolean onlyActives) throws SQLException {
+	public static List<Incidencia> searchIncidencies(Connection conn, String idCentre, boolean onlyActives, Date dataIni, Date dataFi) throws SQLException {
 		String sql = "SELECT idincidencia, descripcio, usucre, datacre, activa, datatancament, idcentre, solicitant" 
 					+ " FROM public.tbl_incidencia";
 					
-		PreparedStatement pstm;
-		if (idCentre != "") {
-			sql += " WHERE idcentre = ?";
-			if (onlyActives) { sql+= " and activa = true"; }
-			sql += " ORDER BY idincidencia::INT DESC";
-			pstm = conn.prepareStatement(sql);
-			pstm.setString(1, idCentre);			
+		PreparedStatement pstm;		
+		if (dataIni != null && dataFi != null) {
+			sql += " WHERE datacre >= ? and datacre <= ? ";
+			if (idCentre != "") {
+				sql += " AND idcentre = ?";
+				if (onlyActives) { sql+= " AND activa = true"; }
+				sql += " ORDER BY idincidencia::INT DESC";
+				pstm = conn.prepareStatement(sql);
+				pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
+				Calendar fi = Calendar.getInstance();
+			    fi.setTime(dataFi);
+			    fi.add(Calendar.DATE, 1);	
+			    dataFi = fi.getTime();
+				pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
+				pstm.setString(3, idCentre);	
+			} else {
+				if (onlyActives) { sql+= " AND activa = true"; }
+				sql += " ORDER BY idincidencia::INT DESC";
+				pstm = conn.prepareStatement(sql);
+				pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
+				Calendar fi = Calendar.getInstance();
+			    fi.setTime(dataFi);
+			    fi.add(Calendar.DATE, 1);	
+			    dataFi = fi.getTime();
+				pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
+			}
 		} else {
-			if (onlyActives) { sql+= " WHERE activa = true"; }
-			sql += " ORDER BY idincidencia::INT DESC";
-			pstm = conn.prepareStatement(sql);
-		}	
+			if (idCentre != "") {
+				sql += " WHERE idcentre = ?";
+				if (onlyActives) { sql+= " AND activa = true"; }
+				sql += " ORDER BY idincidencia::INT DESC";
+				pstm = conn.prepareStatement(sql);				
+				pstm.setString(1, idCentre);	
+			} else {
+				if (onlyActives) { sql+= " WHERE activa = true"; }
+				sql += " ORDER BY idincidencia::INT DESC";
+				pstm = conn.prepareStatement(sql);
+			}
+		}
 		ResultSet rs = pstm.executeQuery();
 		List<Incidencia> list = new ArrayList<Incidencia>();
 		while (rs.next()) {

@@ -126,6 +126,7 @@ public class TascaCore {
 		pstm.setInt(1, idTasca);		
 		ResultSet rs = pstm.executeQuery();
 		List<Historic> list = new ArrayList<Historic>();
+		System.out.println(sql.toString() + idTasca);
 		while (rs.next()) {
 			Historic historic = new Historic();
 			historic.setComentari(rs.getString("comentari"));

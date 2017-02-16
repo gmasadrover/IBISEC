@@ -82,8 +82,10 @@ public class Incidencia {
 	}
 	
 	public String getTancamentString() {
+		String dataString = "";
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		return df.format(this.dataTancament);		  
+		if (this.dataTancament != null) dataString = df.format(this.dataTancament);
+		return dataString;		 
 	}
 
 	public void setDataTancament(Date dataTancament) {

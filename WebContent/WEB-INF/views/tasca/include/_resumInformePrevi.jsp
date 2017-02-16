@@ -65,7 +65,7 @@
 		</c:forEach>					            		
 	</div>
 	<p>
-		<label>Aprovació:</label> ${informePrevi.usuariAprovacio.getNomComplet()} - ${informePrevi.getDataAprovacioString()}
+		<label>Vistiplau:</label> ${informePrevi.usuariAprovacio.getNomComplet()} - ${informePrevi.getDataAprovacioString()}
 	</p>
 	<p>
 		<label>Partida:</label> ${informePrevi.partida}

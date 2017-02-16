@@ -32,7 +32,7 @@
 		            </select>
 	            </div>	
 	            <div class="col-lg-3 visibleTipusLlicencia">
-		      	 	<label>Tipus</label>
+		      	 	<label>Tipus de llicència</label>
 		      	 	<input type="hidden" id="tipusLlicenciaPrev" value="${informePrevi.tipusLlicencia}" >
 	                <select class="form-control selectpicker" name="tipusLlicencia" id="tipusLlicencia">
 	                	<option value="major">Major</option>
@@ -130,22 +130,15 @@
 					</div>
 	     		</div>
 	 		</div>
-	 		<c:if test="${esCap}">
+	 		<c:if test="${esCap && (informePrevi.idInf != 0)}">
 	 			<div class="col-lg-6">
 		    		<div class="row">
 		        		<div class="col-lg-12">
-		              		<input class="btn btn-success" type="submit" name="enviar" value="Aprovar">
+		              		<input class="btn btn-success" type="submit" name="enviar" value="Vistiplau">
 						</div>
 		     		</div>
 		 		</div>
-	 		</c:if>
-	 		<!-- <div class="col-lg-6">
-	     		<div class="row">
-	         		<div class="col-lg-12">
-	                	<input class="btn btn-success" type="submit" name="enviar" value="enviar proposta d'actuació">
-					</div>
-	     		</div>
-	 		</div> -->
+	 		</c:if>	 		
 		</div>	                       	
 	</form>
 </div>

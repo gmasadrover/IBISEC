@@ -89,7 +89,7 @@
                             	<div class="form-group">
 	                             	<label class="col-xs-3 control-label">Incidència</label>
 	                                <div class="col-xs-3">   
-		                                <select class="form-control selectpicker" name="idIncidencia" id="incidenciesList">
+		                                <select class="form-control selectpicker" name="idIncidencia" data-live-search="true" data-size="5" id="incidenciesList">
 		                                	<option value="-1">Nova incidència</option>
 		                                </select>
 									</div>
