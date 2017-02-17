@@ -52,8 +52,8 @@ public class EmpresaCore {
 	}
 	
 	public static void insertEmpresa(Connection conn, Empresa empresa, List<Empresa.Administrador> administradorsList, int idUsuari) throws SQLException {
-		String sql = "INSERT INTO public.tbl_empreses(" + SQL_CAMPS + ")"
-					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, localtimestamp,?,?,?,?,?,?,?,?,?,?,?,?)";		 
+		String sql = "INSERT INTO public.tbl_empreses(cif, nom, direccio, cp, ciutat, provincia, telefon, fax, email, usumod, datamod)"
+					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, localtimestamp)";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		pstm.setString(1, empresa.getCif());
 		pstm.setString(2, empresa.getName());
@@ -64,16 +64,7 @@ public class EmpresaCore {
 		pstm.setString(7, empresa.getTelefon());
 		pstm.setString(8, empresa.getFax());
 		pstm.setString(9, empresa.getEmail());
-		pstm.setInt(10, idUsuari);
-		pstm.setString(11, empresa.getObjecteSocial());
-		pstm.setBoolean(15, empresa.isAcreditacio1());
-		pstm.setDate(16, new java.sql.Date(empresa.getDateExpAcreditacio1().getTime()));
-		pstm.setBoolean(17, empresa.isAcreditacio2());
-		pstm.setDate(18, new java.sql.Date(empresa.getDateExpAcreditacio2().getTime()));
-		pstm.setBoolean(19, empresa.isAcreditacio3());
-		pstm.setDate(20, new java.sql.Date(empresa.getDateExpAcreditacio3().getTime()));
-		pstm.setString(21, empresa.getClassificacioString());
-		pstm.setDate(22, new java.sql.Date(empresa.getDataConstitucio().getTime()));
+		pstm.setInt(10, idUsuari);		
 		pstm.executeUpdate();
 		
 		addAdministradors(conn, empresa.getCif(), administradorsList, idUsuari);
@@ -97,14 +88,30 @@ public class EmpresaCore {
 		 pstm.setString(8, empresa.getEmail());
 		 pstm.setInt(9, idUsuari);
 		 pstm.setString(10, empresa.getObjecteSocial());
-		 pstm.setBoolean(11, empresa.isAcreditacio1());
-		 pstm.setDate(12, new java.sql.Date(empresa.getDateExpAcreditacio1().getTime()));
+		 pstm.setBoolean(11, empresa.isAcreditacio1());		
+		 if (empresa.getDateExpAcreditacio1() != null) {
+			 pstm.setDate(12, new java.sql.Date(empresa.getDateExpAcreditacio1().getTime()));
+		 } else {
+			 pstm.setDate(12, null);
+		 }		 
 		 pstm.setBoolean(13, empresa.isAcreditacio2());
-		 pstm.setDate(14, new java.sql.Date(empresa.getDateExpAcreditacio2().getTime()));
+		 if (empresa.getDateExpAcreditacio2() != null) {
+			 pstm.setDate(14, new java.sql.Date(empresa.getDateExpAcreditacio2().getTime()));
+		 } else {
+			 pstm.setDate(14, null);
+		 }				
 		 pstm.setBoolean(15, empresa.isAcreditacio3());
-		 pstm.setDate(16, new java.sql.Date(empresa.getDateExpAcreditacio3().getTime()));
-		 pstm.setString(17, empresa.getClassificacioString());
-		 pstm.setDate(18, new java.sql.Date(empresa.getDataConstitucio().getTime()));
+		 if (empresa.getDateExpAcreditacio3() != null) {
+			 pstm.setDate(16, new java.sql.Date(empresa.getDateExpAcreditacio3().getTime()));
+		 } else {
+			 pstm.setDate(16, null);
+		 }	
+		 pstm.setString(17, empresa.getClassificacioString());		
+		 if (empresa.getDataConstitucio() != null) {
+			 pstm.setDate(18, new java.sql.Date(empresa.getDataConstitucio().getTime()));
+		 } else {
+			 pstm.setDate(18, null);
+		 }	
 		 pstm.setString(19, empresa.getCif());
 		 pstm.executeUpdate();
 		
@@ -150,7 +157,7 @@ public class EmpresaCore {
 	 
 	 private static void addAdministradors(Connection conn, String cif, List<Empresa.Administrador> administradorsList, int idUsuari) throws SQLException {
 		 String sqlInsert = "INSERT INTO public.tbl_administradorsempresa(nifempresa, nom, dni, validfins, usucre, datacre, protocolmod, notarimod, datamod, tipus)"
-			 			+ " VALUES (?, ?, ?, ?, ?, localtimestamp,?,?,?);";	 
+			 			+ " VALUES (?, ?, ?, ?, ?, localtimestamp,?,?,?,?);";	 
 		 PreparedStatement pstmInsert = null; 
 		 String sqlUpdate = "UPDATE public.tbl_administradorsempresa"
 				 		+ " SET nom=?, validfins=?, usucre=?, datacre=localtimestamp, protocolmod=?, notarimod=?, datamod=?, tipus=?"
@@ -159,6 +166,7 @@ public class EmpresaCore {
 		 for(Iterator<Empresa.Administrador> i = administradorsList.iterator(); i.hasNext();) {
 			 Empresa.Administrador administrador = i.next();
 			 if (existAdministrador(conn, cif, administrador.getDni())) {
+				 System.out.println("Existeix administrador: " + administrador.getDni());
 				 pstmUpdate = conn.prepareStatement(sqlUpdate);	
 				 pstmUpdate.setString(1, administrador.getNom());
 				 pstmUpdate.setDate(2, new java.sql.Date(administrador.getDataValidesaFins().getTime()));
@@ -170,6 +178,7 @@ public class EmpresaCore {
 				 pstmUpdate.setString(8, administrador.getDni());
 				 pstmUpdate.executeUpdate();	
 			 } else {
+				 System.out.println("Nou administrador: " + administrador.getDni());
 				 pstmInsert = conn.prepareStatement(sqlInsert);	
 				 pstmInsert.setString(1, cif);
 				 pstmInsert.setString(2, administrador.getNom());
@@ -211,6 +220,8 @@ public class EmpresaCore {
 		 ResultSet rs = pstm.executeQuery();
 		 Empresa.Administrador administrador = new Empresa().new Administrador();
 		 while (rs.next()) {
+			 System.out.println(rs.getString("dni"));
+			 administrador = new Empresa().new Administrador();
 			 administrador.setNom(rs.getString("nom"));
 			 administrador.setDni(rs.getString("dni"));
 			 administrador.setDataValidesaFins(rs.getTimestamp("validfins"));

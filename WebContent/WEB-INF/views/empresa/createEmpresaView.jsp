@@ -98,7 +98,7 @@
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">email</label>
                                 <div class="col-xs-3">
-                                	<input class="form-control" required type="email" name="email" placeholder="test@test.es">
+                                	<input class="form-control" type="email" name="email" placeholder="test@test.es">
                                 </div>
                             </div>	
 		    				<br>

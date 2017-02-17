@@ -77,7 +77,7 @@
 	                            <div class="form-group">
 	                                <label class="col-xs-4 control-label">email</label>
 	                                <div class="col-xs-6">
-	                                	<input class="form-control" required type="email" name="email" placeholder="test@test.es" value="${empresa.email}">
+	                                	<input class="form-control" type="email" name="email" placeholder="test@test.es" value="${empresa.email}">
 	                                </div>
 	                            </div>	                            
 		                    </div>
@@ -121,7 +121,7 @@
 		                		<div class="form-group">
 	                                <label class="col-xs-2  control-label">Objecte social</label>
 	                                <div class="col-xs-8">
-	                                	<textarea class="form-control" name="objSocial" placeholder="Objecte Social" rows="3" required>${empresa.objecteSocial}</textarea>
+	                                	<textarea class="form-control" name="objSocial" placeholder="Objecte Social" rows="3">${empresa.objecteSocial}</textarea>
 	                                </div>
 	                            </div>
                             </div>

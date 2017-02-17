@@ -5,19 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Properties;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.NoSuchProviderException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -54,6 +43,10 @@ public class TascaListServlet extends HttpServlet {
     		response.sendRedirect(request.getContextPath() + "/");	
  	   	}else{	
  	   		//Desktop.getDesktop().open(new File("W://1-GESTIÓ ADMINISTRATIVA"));
+ 	   		
+ 	   		//utils.EmailTest test = new utils.EmailTest();
+ 	   		//test.test();
+ 	   		
  	   		String filtrar = request.getParameter("filtrar");
 	        String errorString = null;
 	        List<Tasca> list = null;

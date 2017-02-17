@@ -52,18 +52,18 @@ public class DoEditEmpresaServlet extends HttpServlet {
 		Boolean acreditacio3 = "on".equals(request.getParameter("acreditacio3"));
 		
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-		Date dataConstitucio = new Date();
-		Date dateExpAcreditacio1 = new Date();
-		Date dateExpAcreditacio2 = new Date();
-		Date dateExpAcreditacio3 = new Date();
+		Date dataConstitucio = null;
+		Date dateExpAcreditacio1 = null;
+		Date dateExpAcreditacio2 = null;
+		Date dateExpAcreditacio3 = null;
 		Empresa empresa = new Empresa();
 		List<Empresa.Administrador> administradors = new ArrayList<Empresa.Administrador>();
 		String errorString = null;
 		try {
-			dataConstitucio = formatter.parse(request.getParameter("constitucio"));
-			dateExpAcreditacio1 = formatter.parse(request.getParameter("dateExpAcreditacio1"));
-			dateExpAcreditacio2 = formatter.parse(request.getParameter("dateExpAcreditacio2"));
-			dateExpAcreditacio3 = formatter.parse(request.getParameter("dateExpAcreditacio3"));
+			if (! request.getParameter("constitucio").isEmpty()) dataConstitucio = formatter.parse(request.getParameter("constitucio"));
+			if (! request.getParameter("dateExpAcreditacio1").isEmpty()) dateExpAcreditacio1 = formatter.parse(request.getParameter("dateExpAcreditacio1"));
+			if (! request.getParameter("dateExpAcreditacio2").isEmpty()) dateExpAcreditacio2 = formatter.parse(request.getParameter("dateExpAcreditacio2"));
+			if (! request.getParameter("dateExpAcreditacio3").isEmpty()) dateExpAcreditacio3 = formatter.parse(request.getParameter("dateExpAcreditacio3"));
 			
 			empresa.setCif(cif);
 			empresa.setName(name);
@@ -88,6 +88,8 @@ public class DoEditEmpresaServlet extends HttpServlet {
 		    String[] administradorsString = request.getParameterValues("administradors"); //Agafam tots els administradors
 		    if (administradorsString != null) {
 			    for(int i=0; i<administradorsString.length; i++) {
+			    	System.out.println("entra: " + administradorsString[i].split("#")[0]);
+			    	administrador = empresa.new Administrador();	
 			    	administrador.setNom(administradorsString[i].split("#")[0]);
 			    	administrador.setDni(administradorsString[i].split("#")[1]);
 			    	administrador.setTipus(administradorsString[i].split("#")[2]);

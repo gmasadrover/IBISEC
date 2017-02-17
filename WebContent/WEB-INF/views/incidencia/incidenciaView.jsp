@@ -253,7 +253,8 @@
 					      </h4>
 					    </div>
 					    <div id="arxiusAdjunts" class="panel-collapse collapse">
-					      	<div class="panel-body">					      		
+					      	<div class="panel-body">
+					      		<input class="btn btn-primary openFolder" data-idincidencia="${incidencia.idIncidencia}" value="Carpeta">					      		
 					    		<div class="row panel-body">					    		
 									<c:forEach items="${arxius}" var="arxiu" >
 					            		<a  href="downloadFichero?ruta=${arxiu.ruta}">

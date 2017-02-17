@@ -59,7 +59,8 @@
                                 <thead>
                                     <tr>
                                         <th>Codi</th>
-                                        <th>Nom</th>                                       
+                                        <th>Nom</th>                     
+                                        <th>Incidencies derivades</th>                      
                                         <th>Actuacions derivades</th>                                        
                                     </tr>
                                 </thead>
@@ -67,7 +68,8 @@
                                 	<c:forEach items="${centresList}" var="centre" >
 							          	<tr>							          	
 							           		<td><a href="centreDetalls?codi=${centre.idCentre}">${centre.idCentre}</a></td>
-							            	<td>${centre.nom}</td>
+							            	<td>${centre.getNomComplet()}</td>
+							            	<td>${centre.getLlistaIdIncidencies()}</td>	
 							            	<td>${centre.getLlistaIdActuacions()}</td>							            						            	
 							          	</tr>
 							       	</c:forEach>                                	
@@ -85,6 +87,7 @@
 
     </div>
     <jsp:include page="../_footer.jsp"></jsp:include>
+    <script src="js/centres/llistat.js"></script>
     <!-- /#wrapper -->
 </body>
 </html>

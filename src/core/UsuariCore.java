@@ -202,6 +202,12 @@ public class UsuariCore {
 			case empreses_list:
 				permision = true;
 				break;
+			case centres_list:
+				permision = true;
+				break;
+			case centres_detalls:
+				permision = true;
+				break;
 			case partides_crear:
 				permision = (rols.toUpperCase().contains("ADMIN"));
 				break;

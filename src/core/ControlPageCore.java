@@ -60,6 +60,15 @@ public class ControlPageCore {
 			active = "";
 			collapse = "";
 		}
+		//Centres
+		if (UsuariCore.hasPermision(conn, usuari, SectionPage.centres_list)) {			
+			if (seccio.equals("centres")) active = "active"; 
+			menu.append("<li class='" + active + "'>");
+			menu.append("	<a href='centres'><i class='fa fa-fw fa-file'></i> Centres</a>");
+			menu.append("</li>");
+			active = "";
+			collapse = "";
+		}		
 		//Empreses
 		if (UsuariCore.hasPermision(conn, usuari, SectionPage.empreses_list) || UsuariCore.hasPermision(conn, usuari, SectionPage.empreses_crear)) {
 			if (seccio.equals("Empreses")) {
