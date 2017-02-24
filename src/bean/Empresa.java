@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import bean.Empresa.Classificacio;
+import utils.Fitxers;
 
 public class Empresa {
  
@@ -42,7 +42,9 @@ public class Empresa {
 	   private Date dataModificacio;
 	   private String notariModificacio;
 	   private int protocolModificacio;
+	   private Date dataValidacio;
 	   private String tipus;
+	   private boolean eliminar;
 	   
 		public String getNom() {
 			return nom;
@@ -107,6 +109,24 @@ public class Empresa {
 		public void setTipus(String tipus) {
 			this.tipus = tipus;
 		}
+		public Date getDataValidacio() {
+			return dataValidacio;
+		}
+		public void setDataValidacio(Date dataValidacio) {
+			this.dataValidacio = dataValidacio;
+		}
+		public String getDataValidacioString(){
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+			String dataString = "";
+			if (this.dataValidacio != null) dataString = df.format(this.dataValidacio);
+			return dataString;
+		}
+		public boolean isEliminar() {
+			return eliminar;
+		}
+		public void setEliminar(boolean eliminar) {
+			this.eliminar = eliminar;
+		}
    }
    
    private String cif;
@@ -121,6 +141,7 @@ public class Empresa {
    private Date dataConstitucio;
    private String objecteSocial;
    private String classificacioString;
+   private String administradorsString;
    private List<Administrador> administradors;   
    private boolean acreditacio1;
    private Date dateExpAcreditacio1;
@@ -128,6 +149,9 @@ public class Empresa {
    private Date dateExpAcreditacio2;
    private boolean acreditacio3;
    private Date dateExpAcreditacio3;
+   private Fitxers.Fitxer solEconomica;
+   private Fitxers.Fitxer solTecnica;
+   private String informacioAdicional;
    
    public Empresa() {
  
@@ -360,6 +384,38 @@ public String getClassificacioString() {
 
 public void setClassificacioString(String getClassificacioString) {
 	this.classificacioString = getClassificacioString;
+}
+
+public Fitxers.Fitxer getSolEconomica() {
+	return solEconomica;
+}
+
+public void setSolEconomica(Fitxers.Fitxer solEconomica) {
+	this.solEconomica = solEconomica;
+}
+
+public Fitxers.Fitxer getSolTecnica() {
+	return solTecnica;
+}
+
+public void setSolTecnica(Fitxers.Fitxer solTecnica) {
+	this.solTecnica = solTecnica;
+}
+
+public String getAdministradorsString() {
+	return administradorsString;
+}
+
+public void setAdministradorsString(String administradorsString) {
+	this.administradorsString = administradorsString;
+}
+
+public String getInformacioAdicional() {
+	return informacioAdicional;
+}
+
+public void setInformacioAdicional(String informacioAdicional) {
+	this.informacioAdicional = informacioAdicional;
 }
  
 }

@@ -8,8 +8,9 @@ $(document).ready(function() {
 	$('.eliminarSeleccionada').on('click', function(){	
 		var table = $('#administradorsTable').DataTable();
 		$(this).parents('tr').addClass('selected');
-		if (table.row('.selected').data() != undefined && $('#llistatAdministradors input[value="' + table.row('.selected').data()[0] + "#" + table.row('.selected').data()[1] + "#" + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[3] + "#" + table.row('.selected').data()[4] + "#" + table.row('.selected').data()[5] + "#" + table.row('.selected').data()[6] + '"]').size() > 0) {
-			$('#llistatAdministradors input[value="' + table.row('.selected').data()[0] + "#" + table.row('.selected').data()[1] + "#" + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[3] + "#" + table.row('.selected').data()[4] + "#" + table.row('.selected').data()[5] + "#" + table.row('.selected').data()[6] + '"]').remove();				
+		var option =  table.row('.selected').data()[0] + "#" + table.row('.selected').data()[1] + "#" + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[3] + "#" + table.row('.selected').data()[4] + "#" + table.row('.selected').data()[5] + "#" + table.row('.selected').data()[6] + "#" + table.row('.selected').data()[7];
+		if (table.row('.selected').data() != undefined && $('#llistatAdministradors').val().indexOf(option) >= 0) {
+			$('#llistatAdministradors').val($('#llistatAdministradors').val().replace(option + ";", option + '#eliminar;'));				
 		}
 		table.row('.selected').remove().draw( false );
 	});
@@ -23,8 +24,8 @@ $(document).ready(function() {
 		table.row('.selected').remove().draw( false );
 	});
 	$('#afegirAdmin').on('click', function(){
-		var admin = "<input name='administradors' value='" + $('#nomAdmin').val() + "#" + $('#dniAdmin').val() + "#" + $('#tipusAdmin').val() + "#" + $('#validAdmin').val() + "#" + $('#nomNotari').val() + "#" + $('#numProtocol').val() + "#" + $('#dataAlta').val() + "'>";
-		$('#llistatAdministradors').append(admin);
+		var admin = $('#nomAdmin').val() + "#" + $('#dniAdmin').val() + "#" + $('#tipusAdmin').val() + "#" + $('#validAdmin').val() + "#" + $('#nomNotari').val() + "#" + $('#numProtocol').val() + "#" + $('#dataAlta').val() + "#" + $('#dataValidacio').val() + ";";
+		$('#llistatAdministradors').val($('#llistatAdministradors').val() + admin);
     	var table = $('#administradorsTable').DataTable();        	
     	table.row.add( [
     		 $('#nomAdmin').val(),
@@ -34,20 +35,22 @@ $(document).ready(function() {
     		 $('#nomNotari').val(),
     		 $('#numProtocol').val(),
     		 $('#dataAlta').val(),
+    		 $('#dataValidacio').val(),
     		 "<input class='btn btn-danger btn-sm eliminarSeleccionada margin_left10' type='button' value='Eliminar'>"
         ] ).draw( false );
     	$('.eliminarSeleccionada').on('click', function(){	
 			var table = $('#administradorsTable').DataTable();
 			$(this).parents('tr').addClass('selected');
-			if (table.row('.selected').data() != undefined && $('#llistatAdministradors input[value="' + table.row('.selected').data()[0] + "#" + table.row('.selected').data()[1] + "#" + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[3] + "#" + table.row('.selected').data()[4] + "#" + table.row('.selected').data()[5] + "#" + table.row('.selected').data()[6] + '"]').size() > 0) {
-				$('#llistatAdministradors input[value="' + table.row('.selected').data()[0] + "#" + table.row('.selected').data()[1] + "#" + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[3] + "#" + table.row('.selected').data()[4] + "#" + table.row('.selected').data()[5] + "#" + table.row('.selected').data()[6] + '"]').remove();				
+			var option =  table.row('.selected').data()[0] + "#" + table.row('.selected').data()[1] + "#" + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[3] + "#" + table.row('.selected').data()[4] + "#" + table.row('.selected').data()[5] + "#" + table.row('.selected').data()[6] + "#" + table.row('.selected').data()[7];
+			if (table.row('.selected').data() != undefined && $('#llistatAdministradors').val().indexOf(option) >= 0) {
+				$('#llistatAdministradors').val($('#llistatAdministradors').val().replace(option + ";",  option + '#eliminar;'));				
 			}
 			table.row('.selected').remove().draw( false );
     	});
 	});
 	$('#afegirClassificacio').on('click', function(){
-		var admin = $('#grupList').val() + "#" + $('#subGrupList').val() + "#" + $('#categoriaList').val() + ";";
-		$('#llistatClassificacio').val($('#llistatClassificacio').val() + admin);
+		var clas = $('#grupList').val() + "#" + $('#subGrupList').val() + "#" + $('#categoriaList').val() + ";";
+		$('#llistatClassificacio').val($('#llistatClassificacio').val() + clas);
     	var table = $('#classificacioTable').DataTable();        	
     	table.row.add( [
     		 $('#grupList').val(),

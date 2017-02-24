@@ -10,7 +10,7 @@ $(document).ready(function() {
     	$('#provinciesList').trigger('change');
     	if ($('.provinciaSelected').val() !== undefined) {
     		var provincia = $('.provinciaSelected').val();
-    		$('#provinciesList option:contains(' + provincia + ')').attr('selected', 'selected');
+    		$('#provinciesList option:contains("' + provincia + '")').attr('selected', 'selected');
         	$('#provinciesList').trigger('change');        	
     	}
     });
@@ -33,7 +33,7 @@ $('#provinciesList').change(function(){
     	});
     	if ($('.localitatSelected').val() !== undefined) {
     		var localitat = $('.localitatSelected').val();
-    		$('#localitatsList option:contains(' + localitat + ')').attr('selected', 'selected');
+    		$('#localitatsList option[value="' + encodeURIComponent(localitat) + '"]').attr('selected', 'selected');
     	}
     });
 })

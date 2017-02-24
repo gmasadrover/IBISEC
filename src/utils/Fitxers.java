@@ -19,6 +19,7 @@ public class Fitxers {
 		private String nom;
 		private String ruta;
 		private String seccio;
+		private FileItem fitxer;
 		
 		public Fitxer(){
 			
@@ -43,6 +44,14 @@ public class Fitxers {
 
 		public void setSeccio(String seccio) {
 			this.seccio = seccio;
+		}
+
+		public FileItem getFitxer() {
+			return fitxer;
+		}
+
+		public void setFitxer(FileItem fitxer) {
+			this.fitxer = fitxer;
 		}		
 	}
 	
@@ -87,7 +96,7 @@ public class Fitxers {
 		return arxius;	
 	}
 	
-	public static void guardarFitxer(List<FileItem> fitxers, String idIncidencia, String idActuacio, String tipus, String idTipus, String idSubTipus){		
+	public static void guardarFitxer(List<Fitxer> fitxers, String idIncidencia, String idActuacio, String tipus, String idTipus, String idSubTipus){		
 		if (!fitxers.isEmpty()) {
 			String fileName = "";
 			// Crear directoris si no existeixen
@@ -133,11 +142,11 @@ public class Fitxers {
 			}
 			System.out.println(fileName);
 	        for(int i=0;i<fitxers.size();i++){
-	            FileItem item = (FileItem) fitxers.get(i);
-	            if (item.getName() != "") {
-	            	File archivo_server = new File(fileName + item.getName());
+	            Fitxer fitxer = (Fitxer) fitxers.get(i);
+	            if (fitxer.getFitxer().getName() != "") {
+	            	File archivo_server = new File(fileName + fitxer.getFitxer().getName());
 	               	try {
-	               		item.write(archivo_server);
+	               		fitxer.getFitxer().write(archivo_server);
 	           		} catch (Exception e) {
 	           			e.printStackTrace();
 	           		}
@@ -153,7 +162,7 @@ public class Fitxers {
 	
 	public static class formParameters {
 		private  Hashtable<String,String> parametres;
-		private List<FileItem> fitxers;
+		private List<Fitxer> fitxers;
 		
 		public formParameters(){
 			
@@ -165,10 +174,10 @@ public class Fitxers {
 		public void setParametres(Hashtable<String,String> parametres) {
 			this.parametres = parametres;
 		}
-		public List<FileItem> getFitxers() {
+		public List<Fitxer> getFitxers() {
 			return fitxers;
 		}
-		public void setFitxers(List<FileItem> fitxers) {
+		public void setFitxers(List<Fitxer> fitxers) {
 			this.fitxers = fitxers;
 		}
 	}
@@ -176,16 +185,19 @@ public class Fitxers {
 	public static formParameters getParamsFromMultipartForm(HttpServletRequest req) throws FileUploadException, UnsupportedEncodingException {
         Hashtable<String,String> ret=new Hashtable<String,String>();
         List<?> items = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(req);  
-        List<FileItem> fitxers = new ArrayList<FileItem>();
+        List<Fitxer> fitxers = new ArrayList<Fitxer>();
+        formParameters form = new formParameters();
         for(int i=0;i<items.size();i++){
         	FileItem item = (FileItem) items.get(i);
             if (item.isFormField()) {
                 ret.put(item.getFieldName(), item.getString("UTF-8"));
             } else {
-            	fitxers.add(item);
+            	Fitxer fitxer = new Fitxer();
+            	fitxer.setNom(item.getFieldName());
+            	fitxer.setFitxer(item);
+            	fitxers.add(fitxer);
             }
-        }
-        formParameters form = new formParameters();
+        }        
         form.setParametres(ret);
         form.setFitxers(fitxers);
         return form;

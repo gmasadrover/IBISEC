@@ -197,7 +197,7 @@ public class UsuariCore {
 				permision = true;
 				break;
 			case empreses_crear:
-				permision = (rols.toUpperCase().contains("ADMIN"));
+				permision = (rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("JUR"));
 				break;
 			case empreses_list:
 				permision = true;

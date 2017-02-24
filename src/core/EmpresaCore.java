@@ -1,21 +1,24 @@
 package core;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import bean.Actuacio;
 import bean.Empresa;
+import utils.Fitxers.Fitxer;
 
 public class EmpresaCore {
 	
 	static final String SQL_CAMPS = "cif, nom, direccio, cp, ciutat, provincia, telefon, fax, email, usumod, datamod, objectesocial,"
 								+ " acreditacio1, dataexpacreditacio1, acreditacio2, dataexpacreditacio2, acreditacio3, dataexpacreditacio3,"
-								+ " classificacio, dataconstitucio";
+								+ " classificacio, dataconstitucio, informacioadicional";
 	
 	
 	private static Empresa initEmpresa(Connection conn, ResultSet rs) throws SQLException{		
@@ -38,8 +41,12 @@ public class EmpresaCore {
 		empresa.setAcreditacio3(rs.getBoolean("acreditacio3"));
 		empresa.setDateExpAcreditacio3(rs.getTimestamp("dataexpacreditacio3"));	
 		empresa.setClassificacioString(rs.getString("classificacio"));
+		empresa.setAdministradorsString(getAdministradorsString(conn, empresa.getCif()));
 		List<Empresa.Administrador> administradorsList = getAdministradors(conn, empresa.getCif());				
-		empresa.setAdministradors(administradorsList);		
+		empresa.setAdministradors(administradorsList);	
+		empresa.setSolEconomica(getSolEconomica(empresa.getCif()));
+		empresa.setSolTecnica(getSolTecnica(empresa.getCif()));
+		empresa.setInformacioAdicional(rs.getString("informacioadicional"));
 		return empresa;
 	}
 	
@@ -75,7 +82,7 @@ public class EmpresaCore {
 		 String sql = "UPDATE public.tbl_empreses"
 				 	+ " SET nom=?, direccio=?, cp=?, ciutat=?, provincia=?, telefon=?, fax=?, email=?, usumod=?, datamod=localtimestamp, objectesocial=?," 
 				 		+ " acreditacio1=?, dataexpacreditacio1=?, acreditacio2=?, dataexpacreditacio2=?, acreditacio3=?, dataexpacreditacio3=?," 
-				 		+ " classificacio=?, dataconstitucio=?"
+				 		+ " classificacio=?, dataconstitucio=?, informacioadicional=?"
 				 	+ " WHERE cif = ?";	 		 
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 		 
 		 pstm.setString(1, empresa.getName());
@@ -112,7 +119,8 @@ public class EmpresaCore {
 		 } else {
 			 pstm.setDate(18, null);
 		 }	
-		 pstm.setString(19, empresa.getCif());
+		 pstm.setString(19, empresa.getInformacioAdicional());
+		 pstm.setString(20, empresa.getCif());
 		 pstm.executeUpdate();
 		
 		 addAdministradors(conn, empresa.getCif(), administradorsList, idUsuari);
@@ -156,16 +164,24 @@ public class EmpresaCore {
      }	
 	 
 	 private static void addAdministradors(Connection conn, String cif, List<Empresa.Administrador> administradorsList, int idUsuari) throws SQLException {
-		 String sqlInsert = "INSERT INTO public.tbl_administradorsempresa(nifempresa, nom, dni, validfins, usucre, datacre, protocolmod, notarimod, datamod, tipus)"
-			 			+ " VALUES (?, ?, ?, ?, ?, localtimestamp,?,?,?,?);";	 
+		 String sqlInsert = "INSERT INTO public.tbl_administradorsempresa(nifempresa, nom, dni, validfins, usucre, datacre, protocolmod, notarimod, datamod, tipus, datavalidacio)"
+			 			+ " VALUES (?, ?, ?, ?, ?, localtimestamp,?,?,?,?, ?);";	 
 		 PreparedStatement pstmInsert = null; 
 		 String sqlUpdate = "UPDATE public.tbl_administradorsempresa"
-				 		+ " SET nom=?, validfins=?, usucre=?, datacre=localtimestamp, protocolmod=?, notarimod=?, datamod=?, tipus=?"
+				 		+ " SET nom=?, validfins=?, usucre=?, datacre=localtimestamp, protocolmod=?, notarimod=?, datamod=?, tipus=?, datavalidacio=?"
 			 			+ " WHERE dni = ?;";	 
 		 PreparedStatement pstmUpdate = null; 
+		 String sqlDelete = "DELETE FROM public.tbl_administradorsempresa"
+			 			+ " WHERE dni = ?;";	 
+	 PreparedStatement pstmDelete = null; 
 		 for(Iterator<Empresa.Administrador> i = administradorsList.iterator(); i.hasNext();) {
 			 Empresa.Administrador administrador = i.next();
-			 if (existAdministrador(conn, cif, administrador.getDni())) {
+			 if (administrador.isEliminar()) {
+				 System.out.println("Eliminam administrador: " + administrador.getDni());
+				 pstmDelete = conn.prepareStatement(sqlDelete);	
+				 pstmDelete.setString(1, administrador.getDni());
+				 pstmDelete.executeUpdate();
+			 } else if (existAdministrador(conn, cif, administrador.getDni())) {
 				 System.out.println("Existeix administrador: " + administrador.getDni());
 				 pstmUpdate = conn.prepareStatement(sqlUpdate);	
 				 pstmUpdate.setString(1, administrador.getNom());
@@ -175,7 +191,8 @@ public class EmpresaCore {
 				 pstmUpdate.setString(5, administrador.getNotariModificacio());
 				 pstmUpdate.setDate(6, new java.sql.Date(administrador.getDataModificacio().getTime()));
 				 pstmUpdate.setString(7, administrador.getTipus());
-				 pstmUpdate.setString(8, administrador.getDni());
+				 pstmUpdate.setDate(8, new java.sql.Date(administrador.getDataValidacio().getTime()));
+				 pstmUpdate.setString(9, administrador.getDni());
 				 pstmUpdate.executeUpdate();	
 			 } else {
 				 System.out.println("Nou administrador: " + administrador.getDni());
@@ -189,6 +206,7 @@ public class EmpresaCore {
 				 pstmInsert.setString(7, administrador.getNotariModificacio());
 				 pstmInsert.setDate(8, new java.sql.Date(administrador.getDataModificacio().getTime()));
 				 pstmInsert.setString(9, administrador.getTipus());
+				 pstmInsert.setDate(10, new java.sql.Date(administrador.getDataValidacio().getTime()));
 				 pstmInsert.executeUpdate();		
 			 }
 		 }
@@ -212,7 +230,7 @@ public class EmpresaCore {
 	 
 	 private static List<Empresa.Administrador> getAdministradors(Connection conn, String cif) throws SQLException {
 		 List<Empresa.Administrador> administradorsList = new ArrayList<Empresa.Administrador>();
-		 String sql = "SELECT nom, dni, validfins, protocolmod, notarimod, datamod, tipus"
+		 String sql = "SELECT nom, dni, validfins, protocolmod, notarimod, datamod, tipus, datavalidacio"
 				 	+ " FROM public.tbl_administradorsempresa"
 				 	+ " WHERE nifempresa = ?"; 
 		 PreparedStatement pstm = conn.prepareStatement(sql); 
@@ -220,7 +238,6 @@ public class EmpresaCore {
 		 ResultSet rs = pstm.executeQuery();
 		 Empresa.Administrador administrador = new Empresa().new Administrador();
 		 while (rs.next()) {
-			 System.out.println(rs.getString("dni"));
 			 administrador = new Empresa().new Administrador();
 			 administrador.setNom(rs.getString("nom"));
 			 administrador.setDni(rs.getString("dni"));
@@ -229,9 +246,110 @@ public class EmpresaCore {
 			 administrador.setNotariModificacio(rs.getString("notarimod"));
 			 administrador.setDataModificacio(rs.getTimestamp("datamod"));
 			 administrador.setTipus(rs.getString("tipus"));
+			 administrador.setDataValidacio(rs.getTimestamp("datavalidacio"));
 			 administradorsList.add(administrador);
 		 }
 		 return administradorsList;
 	 }
+	 private static String getAdministradorsString(Connection conn, String cif) throws SQLException {
+		String administradorsList = "";
+		 String sql = "SELECT nom, dni, validfins, protocolmod, notarimod, datamod, tipus, datavalidacio"
+				 	+ " FROM public.tbl_administradorsempresa"
+				 	+ " WHERE nifempresa = ?"; 
+		 PreparedStatement pstm = conn.prepareStatement(sql); 
+		 pstm.setString(1, cif);
+		 ResultSet rs = pstm.executeQuery();
+		 DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+		 while (rs.next()) {	
+			 String validfins = "";
+			 String datamod = "";
+			 String datavalidacio = "";
+			 if (rs.getDate("validfins") != null) validfins = df.format(rs.getDate("validfins"));
+			 if (rs.getDate("datamod") != null) datamod = df.format(rs.getDate("datamod"));
+			 if (rs.getDate("datavalidacio") != null) datavalidacio = df.format(rs.getDate("datavalidacio"));
+			 administradorsList += rs.getString("nom") + "#" + rs.getString("dni") + "#" + rs.getString("tipus") + "#" + validfins
+			 						+ "#" + rs.getString("notarimod") + "#" + rs.getString("protocolmod") + "#" + datamod + "#" + datavalidacio + ";";
+		 }
+		 return administradorsList;
+	 }
+	 
+	 public static Fitxer getSolEconomica(String cif) {
+		 Fitxer fitxer = new Fitxer();
+		 File dir = new File(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Economica");
+		 File[] fichers = dir.listFiles();
+		 if (fichers == null) {
+			
+		 } else { 
+			 for (int x=0;x<fichers.length;x++) {
+				 fitxer = new Fitxer();
+				 fitxer.setNom(fichers[x].getName());
+				 fitxer.setRuta(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Economica/" + fichers[x].getName());
+				 System.out.println(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Economica/" + fichers[x].getName());
+			 }
+		 }
+		 return fitxer;
+	 }
+	 
+	 public static Fitxer getSolTecnica(String cif) {
+		 Fitxer fitxer = new Fitxer();
+		 File dir = new File(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Tecnica");
+		 File[] fichers = dir.listFiles();
+		 if (fichers == null) {
+			
+		 } else { 
+			 for (int x=0;x<fichers.length;x++) {
+				 fitxer = new Fitxer();
+				 fitxer.setNom(fichers[x].getName());
+				 fitxer.setRuta(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Tecnica/" + fichers[x].getName());
+				 System.out.println(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Tecnica/" + fichers[x].getName());
+			 }
+		 }
+		 return fitxer;
+	 }
+	 
+	 public static void guardarFitxer(List<Fitxer> fitxers, String cif){		
+			if (!fitxers.isEmpty()) {
+				String fileName = "";
+				// Crear directoris si no existeixen
+				File tmpFile = new File(utils.Fitxers.RUTA_BASE + "/Empreses");
+				if (!tmpFile.exists()) {
+					System.out.println(utils.Fitxers.RUTA_BASE + "/Empreses");
+					tmpFile.mkdir();
+				}
+				tmpFile = new File(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif);
+				if (!tmpFile.exists()) {
+					System.out.println(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif);
+					tmpFile.mkdir();
+				}
+		        for(int i=0;i<fitxers.size();i++){
+		            Fitxer fitxer = (Fitxer) fitxers.get(i);
+		            if ("fileEconomica".equals(fitxer.getNom())) {
+						tmpFile = new File(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Economica");
+						if (!tmpFile.exists()) {
+							System.out.println(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Economica");
+							tmpFile.mkdir();
+						}
+						fileName = utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Economica/";
+					}
+					if ("FileTecnica".equals(fitxer.getNom())) {
+						tmpFile = new File(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Tecnica");
+						if (!tmpFile.exists()) {
+							System.out.println(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Tecnica");
+							tmpFile.mkdir();
+						}
+						fileName = utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Tecnica/";
+					}
+					System.out.println(fileName);
+		            if (fitxer.getFitxer().getName() != "") {		          
+		            	File archivo_server = new File(fileName + fitxer.getFitxer().getName());
+		               	try {
+		               		fitxer.getFitxer().write(archivo_server);
+		           		} catch (Exception e) {
+		           			e.printStackTrace();
+		           		}
+		            } 
+		        }
+			}
+		}
 	 
 }

@@ -66,8 +66,9 @@ public class DoAddPresupostsServlet extends HttpServlet {
 			   		oferta.setCifEmpresa(cifEmpresa);
 			   		oferta.setPlic(plic);
 			   		DecimalFormat df = new DecimalFormat("#.##");  
-			   		oferta.setVec(Double.valueOf(df.format(plic / 1.21).replace(",",".")));
-			   		oferta.setIva(Double.valueOf(df.format(plic * 1.21).replace(",",".")));
+			   		double vec = plic / 1.21;
+			   		oferta.setVec(Double.valueOf(df.format(vec).replace(",",".")));
+			   		oferta.setIva(Double.valueOf(df.format(vec * 0.21).replace(",",".")));
 			   		if (seleccionada.equals(cifEmpresa)) {
 			   			oferta.setTermini(termini);
 			   			oferta.setComentari(comentari);

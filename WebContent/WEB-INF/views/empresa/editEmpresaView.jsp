@@ -41,7 +41,7 @@
                	 </div>
                 <!-- /.row -->
                 <c:if test="${not empty empresa}">
-                	<form class="form-horizontal" method="POST" action="doEditEmpresa">                		
+                	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="doEditEmpresa">                		
                 		<h2 class="margin_bottom30">Informació bàsica</h2>
 			    		<div class="row">			    				    				    		
 		                    <div class="col-lg-6">		                    	
@@ -126,7 +126,7 @@
 	                            </div>
                             </div>
 	                	</div>
-	                	<h2 class="margin_bottom30">Administradors</h2>
+	                	<h2 class="margin_bottom30">Representant</h2>
 	                	<div class="row">
 	                		<div class="col-lg-6">
 		                		<div class="form-group">
@@ -168,20 +168,22 @@
 	                                </div>
 	                            </div> 
 	                            <div class="form-group">
-	                                <label class="col-xs-3 control-label">Data registre</label>
+	                                <label class="col-xs-3 control-label">Data escriptura</label>
 	                                <div class="input-group date col-xs-6 datepicker">
 									  	<input type="text" class="form-control" name="dataAlta" id="dataAlta"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+									</div>
+	                            </div>
+	                            <div class="form-group">
+	                                <label class="col-xs-3 control-label">Data validació</label>
+	                                <div class="input-group date col-xs-6 datepicker">
+									  	<input type="text" class="form-control" name="dataValidacio" id="dataValidacio"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 									</div>
 	                            </div>
 	                            <div class="col-xs-offset-2">	 
 	                            	<input class="btn btn-primary" type="button" name="afegirAdmin" id="afegirAdmin" value="Afegir">
 	                            </div>     			
-	                        </div>
-                        	<div class="hidden" id="llistatAdministradors">
-                        		<c:forEach items="${empresa.administradors}" var="administrador" >
-                        			<input name="administradors" value="${administrador.nom}#${administrador.dni}#${administrador.tipus}#${administrador.getDataValidesaFinsString()}#${administrador.notariModificacio}#${administrador.protocolModificacio}#${administrador.getDataModificacioString()}">
-                        		</c:forEach>
-                        	</div>	                        
+	                        </div>	
+                        	<input type="hidden" name="llistatAdministradors" id="llistatAdministradors" value="${empresa.administradorsString}">                        
 				     		<div class="col-xs-offset-1 col-lg-10">	
 								<label>Administradors actius</label>							                        
 				                <div class="table-responsive">							                        
@@ -195,6 +197,7 @@
 				                                <th>Notari</th>
 				                                <th>N. protocol</th>
 				                                <th>Data</th>
+				                                <th>Validacio</th>
 				                                <th>Control</th>						                                        							                                       
 				                            </tr>
 				                        </thead>
@@ -208,6 +211,7 @@
 								            	<td>${administrador.notariModificacio}</td>
 								            	<td>${administrador.protocolModificacio}</td>
 								            	<td>${administrador.getDataModificacioString()}</td>
+								            	<td>${administrador.getDataValidacioString()}</td>
 								            	<td><input class='btn btn-danger btn-sm eliminarSeleccionada margin_left10' type='button' value='Eliminar'></td>					            	
 								          	</tr>
 							       		</c:forEach>						                                	                              	
@@ -216,7 +220,34 @@
 				                </div>
 				           	</div>									
 	                	</div>
-	                	<h2 class="margin_bottom30">Classificació</h2>
+	                	<h2 class="margin_bottom30">Solvència</h2>
+	                	<h4 class="margin_bottom30">Solvència econòmica</h4>
+	                	<c:if test="${empresa.solEconomica != null}">
+		                	<div class="row">
+		                		<label class="col-xs-2 control-label">Document:</label>
+		                		<a  href="downloadFichero?ruta=${empresa.solEconomica.ruta}">${empresa.solEconomica.nom}</a>
+		                	</div>
+	                	</c:if>
+	                	<div class="row">
+	                		<label class="col-xs-2 control-label">Adjuntar solvència econòmica:</label>	                	
+	                        <div class="col-xs-5">   
+	                            <input type="file" class="btn" name="fileEconomica" /><br/>
+							</div>
+						</div> 
+	                	<h4 class="margin_bottom30">Solvència Tècnica</h4>
+	                	<c:if test="${empresa.solTecnica != null}">
+		                	<div class="row">
+		                		<label class="col-xs-2 control-label">Document:</label>
+		                		<a  href="downloadFichero?ruta=${empresa.solTecnica.ruta}">${empresa.solTecnica.nom}</a>
+		                	</div>
+		                </c:if>
+	                	<div class="row">
+		                	<label class="col-xs-2 control-label">Adjuntar solvència tècnica:</label>
+	                        <div class="col-xs-5">   
+	                            <input type="file" class="btn" name="FileTecnica" /><br/>
+							</div>
+						</div> 
+	                	<h4 class="margin_bottom30">Classificació</h4>
 	                	<div class="row">
 	                		<div class="col-lg-3">
 		                		<div class="form-group">
@@ -243,6 +274,7 @@
 	                                <label class="col-xs-8 control-label">Subgrup</label>
 	                                <div class="col-xs-4">
 	                                	<select class="form-control" name="subGrup" id="subGrupList">
+	                                		<option value="-">-</option>
 	                                		<option value="1">1</option>
 	                                		<option value="2">2</option>
 	                                		<option value="3">3</option>
@@ -386,7 +418,18 @@
 		                            </div>
 		                        </div>        
 	                		</div>
-	                	</div>	                	        	              	
+	                	</div>
+	                	<h2 class="margin_bottom30">Altra informació</h2>
+	                	<div class="row">
+	                		<div class="col-lg-12">
+		                		<div class="form-group">
+	                                <label class="col-xs-2  control-label">informació adicional</label>
+	                                <div class="col-xs-8">
+	                                	<textarea class="form-control" name="informacioAdicional" placeholder="Informació Adicional" rows="3">${empresa.informacioAdicional}</textarea>
+	                                </div>
+	                            </div>
+                            </div>	                		
+	                	</div>	    	                	        	              	
 	                	<div class="row">
 	                		<div class="form-group">
 						        <div class="col-xs-offset-9 col-xs-9">

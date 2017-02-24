@@ -118,7 +118,22 @@
 		                    </table>
 		                </div>
 			    	</div>
-	                <h2 class="margin_bottom30">Classificació</h2>
+	                <h2 class="margin_bottom30">Solvència</h2>
+                	<h4 class="margin_bottom30">Solvència econòmica</h4>
+                	<c:if test="${empresa.solEconomica != null}">
+	                	<div class="row">
+	                		<label class="col-xs-2 control-label">Document:</label>
+	                		<a  href="downloadFichero?ruta=${empresa.solEconomica.ruta}">${empresa.solEconomica.nom}</a>
+	                	</div>
+                	</c:if>
+                	<h4 class="margin_bottom30">Solvència Tècnica</h4>
+                	<c:if test="${empresa.solTecnica != null}">
+	                	<div class="row">
+	                		<label class="col-xs-2 control-label">Document:</label>
+	                		<a  href="downloadFichero?ruta=${empresa.solTecnica.ruta}">${empresa.solTecnica.nom}</a>
+	                	</div>
+	                </c:if>                	
+                	<h4 class="margin_bottom30">Classificació</h4>
 	                <div class="row">	                		
                         <div class="col-xs-offset-2 col-lg-7">	
 							<label>Classificació</label>							                        
@@ -220,6 +235,15 @@
 	                            </div>
 	                        </div>        
                 		</div>
+                	</div>
+                	<h2 class="margin_bottom30">Altra informació</h2>
+                	<div class="row">
+                		<div class="col-xs-offset-1 col-lg-10 longText">
+                			<p> 
+	                        	<label>Informació adicional: </label> 
+	                        	${empresa.informacioAdicional}
+                            </p>	                		
+                        </div>
                 	</div>
                 	<div class="row">
                			<c:if test="${canModificar}">
