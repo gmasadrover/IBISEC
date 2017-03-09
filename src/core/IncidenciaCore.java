@@ -64,7 +64,7 @@ public class IncidenciaCore {
 		String sql = "SELECT idincidencia, descripcio, usucre, datacre, activa, datatancament, idcentre, solicitant" 
 					+ " FROM public.tbl_incidencia";
 					
-		PreparedStatement pstm;		
+		PreparedStatement pstm;	
 		if (dataIni != null && dataFi != null) {
 			sql += " WHERE datacre >= ? and datacre <= ? ";
 			if (idCentre != "") {

@@ -65,6 +65,9 @@
 		</c:forEach>					            		
 	</div>
 	<p>
+		<label>Comentari Cap:</label> ${informePrevi.comentariCap}
+	</p>
+	<p>
 		<label>Vistiplau:</label> ${informePrevi.usuariAprovacio.getNomComplet()} - ${informePrevi.getDataAprovacioString()}
 	</p>
 	<p>

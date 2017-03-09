@@ -29,6 +29,7 @@ public class PropostaActuacio {
 	private String partida;
 	private User usuariAprovacio;
 	private Date dataAprovacio;
+	private String comentariCap;
 	
 	public PropostaActuacio() {		
 	}
@@ -220,5 +221,13 @@ public class PropostaActuacio {
 	
 	public void setDataAprovacio(Date dataAprovacio) {
 		this.dataAprovacio = dataAprovacio;
+	}
+
+	public String getComentariCap() {
+		return comentariCap;
+	}
+
+	public void setComentariCap(String comentariCap) {
+		this.comentariCap = comentariCap;
 	}
 }

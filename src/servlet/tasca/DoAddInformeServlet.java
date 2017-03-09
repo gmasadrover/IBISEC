@@ -117,7 +117,8 @@ public class DoAddInformeServlet extends HttpServlet {
 	    	//Aprovació d'informe
 	    	//Registrar nova tasca d'asignament de partida
 			try {
-				InformeCore.aprovarInforme(conn, idInformePrevi, Usuari.getIdUsuari());
+				String comentariCap = multipartParams.getParametres().get("comentariCap");	
+				InformeCore.aprovarInforme(conn, idInformePrevi, Usuari.getIdUsuari(), comentariCap);
 				TascaCore.nouHistoric(conn, idTasca, "Informe aprovat", Usuari.getIdUsuari());
 				TascaCore.reasignar(conn, 900, idTasca);
 				TascaCore.tancar(conn, idTasca);

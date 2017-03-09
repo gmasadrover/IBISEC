@@ -9,7 +9,9 @@ public class ControlPage {
 		incidencia_list, incidencia_modificar, incidencia_detalls,
 		partides_list, partides_crear, 
 		empreses_list, empreses_crear,
-		usuari_detalls
+		usuari_detalls,
+		obres_list,
+		factures_list
 	}
 	public ControlPage(){
 		

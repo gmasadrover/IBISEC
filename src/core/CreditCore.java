@@ -113,6 +113,20 @@ public class CreditCore {
 		return list;
 	}
 	
+	public static String getPartidaInforme(Connection conn, int idInforme) throws SQLException {
+		String idPartida = "";
+		String sql = "SELECT idpartida"
+					+ " FROM public.tbl_assignacionscredit"
+					+ " WHERE idinf = ?";
+		PreparedStatement pstm = conn.prepareStatement(sql);		 
+		pstm.setInt(1, idInforme);
+		ResultSet rs = pstm.executeQuery();
+		while (rs.next()) {
+			idPartida = rs.getString("idpartida");
+		}
+		return idPartida;
+	}
+	
 	public static String getPartidaActuacio(Connection conn, int idActuacio) throws SQLException {
 		String idPartida = "";
 		String sql = "SELECT idpartida"
@@ -141,28 +155,28 @@ public class CreditCore {
 		}
 		return newCode;
 	}
-	
-	public static void reservar(Connection conn, String idPartida, int idActuacio, int idTasca, double valor, String comentari, int idUsuari) throws SQLException {
-		String sql = "INSERT INTO public.tbl_assignacionscredit(idassignacio, idpartida, idactuacio, idtasca, valor, reserva, usureserva, datareserva, assignacio, pagat, comentari, usucre, datacre)"
-					+ " VALUES (?, ?, ?, ?, ?, true, ?, localtimestamp, false, false, ?, ?, localtimestamp);";
+
+	public static void reservar(Connection conn, String idPartida, int idActuacio, int idInforme, double valor, String comentari, int idUsuari) throws SQLException {
+		String sql = "INSERT INTO public.tbl_assignacionscredit(idassignacio, idactuacio, idinf, reserva, usureserva, datareserva, assignacio, comentari, usucre, datacre, idpartida, valorpa)"
+					+ " VALUES (?, ?, ?, true, ?, localtimestamp, false, ?, ?, localtimestamp, ?, ?);";
 		
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		 
-		pstm.setInt(1, newAssignacioCode(conn));
-		pstm.setString(2, idPartida);
-		pstm.setInt(3, idActuacio);
-		pstm.setInt(4, idTasca);
-		pstm.setDouble(5, valor);
+		pstm.setInt(1, newAssignacioCode(conn));		
+		pstm.setInt(2, idActuacio);
+		pstm.setInt(3, idInforme);
+		pstm.setInt(4, idUsuari);		
+		pstm.setString(5, comentari);
 		pstm.setInt(6, idUsuari);
-		pstm.setString(7, comentari);
-		pstm.setInt(8, idUsuari);
+		pstm.setString(7, idPartida);
+		pstm.setDouble(8, valor);
 		pstm.executeUpdate();
 		
 	}
 	
 	public static double getTotalReservat(Connection conn, String idPartida) throws SQLException{
 		double totalReservat = 0;
-		String sql = "SELECT SUM(valor) AS total"
+		String sql = "SELECT SUM(valorpa) AS total"
 					+ " FROM public.tbl_assignacionscredit"
 					+ " WHERE reserva=true and idpartida = ?";
 		PreparedStatement pstm = conn.prepareStatement(sql);		 
@@ -176,7 +190,7 @@ public class CreditCore {
 	
 	public static double getTotalGastat(Connection conn, String idPartida) throws SQLException{
 		double totalGastat = 0;
-		String sql = "SELECT SUM(valor) AS total"
+		String sql = "SELECT SUM(valorpd) AS total"
 					+ " FROM public.tbl_assignacionscredit"
 					+ " WHERE assignacio=true AND idpartida = ?";
 		PreparedStatement pstm = conn.prepareStatement(sql);		 

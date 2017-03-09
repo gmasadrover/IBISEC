@@ -49,7 +49,15 @@
 		                                </select>
 		                             </div>
 							    </div>						    
-						  	</div>		
+						  	</div>	
+						  	<div class="col-lg-4">
+						  		<span>Data petició</span>
+							  	<div class="input-group input-daterange datepicker">
+								    <input type="text" class="form-control" name="dataInici" value="${dataInici}">
+								    <div class="input-group-addon">fins</div>
+								    <input type="text" class="form-control" name="dataFi" value="${dataFi}">
+								</div>                                
+						  	</div>	
 						  	<div class="col-lg-2">
 							    <div class="checkbox">
 							      <label>
@@ -77,6 +85,9 @@
                                         <th>Descripció</th>
                                         <th>Data petició</th>
                                         <th>Data petició</th>
+                                        <th>Darrera modificació</th>
+                                        <th>Data modificació</th>
+                                        <th>Data modificació</th>
                                         <c:if test="${!nomesActives}">
 											<th>Estat</th>
 										   	<th>Data tancament</th>
@@ -92,6 +103,9 @@
 							            	<td>${actuacio.descripcio}</td>
 							            	<td>${actuacio.getDataCreacioString()}</td>
 							            	<td>${actuacio.dataCreacio}</td>
+							            	<td>${actuacio.modificacio}</td>
+							            	<td>${actuacio.getDarreraModificacioString()}</td>
+							            	<td>${actuacio.darreraModificacio}</td>							            	
 							            	<c:if test="${!nomesActives}">
 											   	<td>${actuacio.estatNom()}</td>
 											   	<td>${actuacio.getDataTancamentString()}</td>

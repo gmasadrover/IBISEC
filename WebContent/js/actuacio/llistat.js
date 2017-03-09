@@ -6,6 +6,9 @@ $(document).ready(function() {
     		null,
     		null,
     		{"iDataSort": 4},
+    		{"bVisible": false},
+    		null,
+    		{"iDataSort": 7},
     		{"bVisible": false}
 		]
 	});
@@ -19,6 +22,9 @@ $(document).ready(function() {
     		{"bVisible": false},
     		null,
     		{"iDataSort": 7},
+    		{"bVisible": false},
+    		null,
+    		{"iDataSort": 9},
     		{"bVisible": false}
 		]
 	});

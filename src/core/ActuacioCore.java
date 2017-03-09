@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import bean.Actuacio;
@@ -82,22 +84,48 @@ public class ActuacioCore {
 		return list;
 	}
 	
-	public static List<Actuacio> searchActuacions(Connection conn, String idCentre, boolean onlyActives) throws SQLException {
+	public static List<Actuacio> searchActuacions(Connection conn, String idCentre, boolean onlyActives, Date dataIni, Date dataFi) throws SQLException {
 		String sql = "SELECT " + SQL_CAMPS
-					+ " FROM public.tbl_actuacio";
-					
+					+ " FROM public.tbl_actuacio";					
 		PreparedStatement pstm;
-		if (idCentre != "") {
-			sql += " WHERE idcentre = ?";
-			if (onlyActives) { sql+= " AND activa = true"; }
-			sql += " ORDER BY id::INT DESC";
-			pstm = conn.prepareStatement(sql);
-			pstm.setString(1, idCentre);			
-		} else {
-			if (onlyActives) { sql+= " WHERE activa = true"; }
-			sql += " ORDER BY id::INT DESC";
-			pstm = conn.prepareStatement(sql);
-		}	
+		if (dataIni != null && dataFi != null) {
+			sql += " WHERE datacre >= ? and datacre <= ? ";
+			if (idCentre != "") {
+				sql += " AND idcentre = ?";
+				if (onlyActives) { sql+= " AND activa = true"; }
+				sql += " ORDER BY id::INT DESC";
+				pstm = conn.prepareStatement(sql);
+				pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
+				Calendar fi = Calendar.getInstance();
+			    fi.setTime(dataFi);
+			    fi.add(Calendar.DATE, 1);	
+			    dataFi = fi.getTime();
+				pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
+				pstm.setString(3, idCentre);	
+			} else {
+				if (onlyActives) { sql+= " AND activa = true"; }
+				sql += " ORDER BY id::INT DESC";
+				pstm = conn.prepareStatement(sql);
+				pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
+				Calendar fi = Calendar.getInstance();
+			    fi.setTime(dataFi);
+			    fi.add(Calendar.DATE, 1);	
+			    dataFi = fi.getTime();
+				pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
+			}
+		}else{
+			if (idCentre != "") {
+				sql += " WHERE idcentre = ?";
+				if (onlyActives) { sql+= " AND activa = true"; }
+				sql += " ORDER BY id::INT DESC";
+				pstm = conn.prepareStatement(sql);
+				pstm.setString(1, idCentre);			
+			} else {
+				if (onlyActives) { sql+= " WHERE activa = true"; }
+				sql += " ORDER BY id::INT DESC";
+				pstm = conn.prepareStatement(sql);
+			}	
+		}
 		ResultSet rs = pstm.executeQuery();
 		List<Actuacio> list = new ArrayList<Actuacio>();
 		while (rs.next()) {

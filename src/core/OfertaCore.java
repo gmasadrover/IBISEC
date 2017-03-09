@@ -15,7 +15,7 @@ public class OfertaCore {
 		oferta.setIdOferta(rs.getInt("idoferta"));
 		oferta.setIdActuacio(rs.getInt("idactuacio"));		
    		oferta.setCifEmpresa(rs.getString("cifempresa"));
-   		oferta.setNomEmpresa(EmpresaCore.findEmpresa(conn, oferta.getCifEmpresa()).getName());
+   		if (EmpresaCore.findEmpresa(conn, oferta.getCifEmpresa()) != null) oferta.setNomEmpresa(EmpresaCore.findEmpresa(conn, oferta.getCifEmpresa()).getName());
    		oferta.setVec(rs.getDouble("vec"));   		
    		oferta.setIva(rs.getDouble("iva"));
    		oferta.setPlic(rs.getDouble("plic"));

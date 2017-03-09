@@ -39,6 +39,7 @@ public class DoAddReservaServlet extends HttpServlet {
 		Connection conn = MyUtils.getStoredConnection(request);		
 		
 	    int idTasca = Integer.parseInt(request.getParameter("idTasca"));
+	    int idInforme = Integer.parseInt(request.getParameter("idInformePrevi"));
 	    int idActuacio = Integer.parseInt(request.getParameter("idActuacio"));
 	    String idPartida = request.getParameter("llistaPartides");
 	    double valor = Double.parseDouble(request.getParameter("importReserva"));
@@ -52,7 +53,7 @@ public class DoAddReservaServlet extends HttpServlet {
 	   		String comentariHistoral = "S'ha reservat l'import de " + valor + "€ de la partida " + idPartida;
 	   		if (reservar != null) {
 		   		//Reservem el crèdit
-		   		CreditCore.reservar(conn, idPartida, idActuacio, idTasca, valor, comentari, Usuari.getIdUsuari());
+		   		CreditCore.reservar(conn, idPartida, idActuacio, idInforme, valor, comentari, Usuari.getIdUsuari());
 		   	}else if(rebutjar != null) {
 		   		comentariHistoral = "S'ha rebutjat l'import de " + valor + "€ de la partida " + idPartida;
 		   	}

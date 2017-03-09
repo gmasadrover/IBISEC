@@ -1,4 +1,4 @@
-package servlet.actuacio;
+package servlet.factura;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -18,25 +18,33 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.Actuacio;
-import bean.ControlPage.SectionPage;
 import bean.User;
-import core.ActuacioCore;
+import bean.ControlPage.SectionPage;
+import bean.Factura;
 import core.ControlPageCore;
+import core.FacturaCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
-@WebServlet(urlPatterns = { "/actuacions" })
-public class ActuacioListServlet extends HttpServlet {
+/**
+ * Servlet implementation class FacturaListServlet
+ */
+@WebServlet("/factures")
+public class FacturaListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public FacturaListServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
-	public ActuacioListServlet() {
-		super();
-	}
-
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Connection conn = MyUtils.getStoredConnection(request);
 		User usuari = MyUtils.getLoginedUser(request.getSession());
 		if (usuari == null) {
@@ -44,10 +52,9 @@ public class ActuacioListServlet extends HttpServlet {
 		}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.actuacio_list)) {
     		response.sendRedirect(request.getContextPath() + "/");	
 		} else {
+			List<Factura> list = new ArrayList<Factura>();
+			String errorString = null;
 			String filtrar = request.getParameter("filtrar");
-			boolean onlyActives = false;
-			String idCentre = "";
-			String idCentreSelector = "";
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			Calendar cal = Calendar.getInstance(); 
 			Date dataFi = cal.getTime();
@@ -55,52 +62,43 @@ public class ActuacioListServlet extends HttpServlet {
 			cal.add(Calendar.MONTH, -2);
 			Date dataInici = cal.getTime();
 			String dataIniciString = df.format(dataInici);	
-			String errorString = null;
-			List<Actuacio> list = new ArrayList<Actuacio>();
 			try {
-				if (filtrar != null) {
-					onlyActives = request.getParameter("nomesActives") != null;
-					if (request.getParameter("filterCentre") != null) {
-						idCentre = request.getParameter("idCentre").split("_")[0];
-						idCentreSelector = request.getParameter("idCentre");
-					}
+				if (filtrar != null) {					
 					dataInici = df.parse(request.getParameter("dataInici"));
 	    			dataIniciString = request.getParameter("dataInici");
 	    			dataFi = df.parse(request.getParameter("dataFi"));
 	    			dataFiString = request.getParameter("dataFi");
-					list = ActuacioCore.searchActuacions(conn, idCentre, onlyActives, dataInici, dataFi);
+					list = FacturaCore.searchFactures(conn, dataInici, dataFi);
 
 				} else {
-					list = ActuacioCore.topAcuacions(conn);
+					list = FacturaCore.searchFactures(conn, dataInici, dataFi);
 				}
-			} catch (SQLException e) {
+				
+			} catch (SQLException | ParseException e) {
 				e.printStackTrace();
-				errorString = e.getMessage();
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				errorString = e.getMessage();			
 			}
 
 			// Store info in request attribute, before forward to views
 			request.setAttribute("errorString", errorString);
-			request.setAttribute("actuacionsList", list);
+			request.setAttribute("facturesList", list);
 			request.setAttribute("dataInici", dataIniciString);
 		    request.setAttribute("dataFi", dataFiString);
-			request.setAttribute("nomesActives", onlyActives);
-			request.setAttribute("idCentre", idCentreSelector);
-			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Actuacions"));
+			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Factures"));
 			// Forward to /WEB-INF/views/homeView.jsp
 			// (Users can not access directly into JSP pages placed in WEB-INF)
 			RequestDispatcher dispatcher = this.getServletContext()
-					.getRequestDispatcher("/WEB-INF/views/actuacio/actuacioListView.jsp");
+					.getRequestDispatcher("/WEB-INF/views/factura/facturaListView.jsp");
 
 			dispatcher.forward(request, response);
 		}
 	}
 
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 

@@ -21,11 +21,11 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Incidències <small>Incidències</small>
+                            Factures <small>Factures</small>
                         </h1>
                         <ol class="breadcrumb">
                             <li class="active">
-                                <i class="fa fa-dashboard"></i> Incidències
+                                <i class="fa fa-dashboard"></i> Factures
                             </li>
                             <li class="active">
                                 <i class="fa fa-table"></i> Llistat
@@ -36,73 +36,55 @@
                 <!-- /.row -->
 				
 				<div class="row">
-					<form class="form-horizontal" method="POST" action="incidencies">						
-						<div class="form-group">
-							<input type="hidden" id="idCentreSelected" value="${idCentre}" />
-							<div class="col-lg-offset-1  col-lg-3">
-							    <div class="checkbox">
-							      <label>
-							        <input type="checkbox" name="filterCentre" ${idCentre != "" ? "checked" : ""}> Filtrar per centre
-							      </label>
-							      <div>
-		                                <select class="form-control selectpicker" name="idCentre" data-live-search="true" data-size="5" id="centresList">
-		                                </select>
-		                             </div>
-							    </div>						    
-						  	</div>		
+					<form class="form-horizontal" method="POST" action="factures">						
+						<div class="form-group">							
 						  	<div class="col-lg-4">
-						  		<span>Data petició</span>
+						  		<span>Data factura</span>
 							  	<div class="input-group input-daterange datepicker">
 								    <input type="text" class="form-control" name="dataInici" value="${dataInici}">
 								    <div class="input-group-addon">fins</div>
 								    <input type="text" class="form-control" name="dataFi" value="${dataFi}">
 								</div>                                
-						  	</div>
-						  	<div class="col-lg-2">
-							    <div class="checkbox">
-							      <label>
-							        <input type="checkbox" name="nomesActives" ${nomesActives ? "checked" : ""}> Només actives
-							      </label>
-							    </div>
-						  	</div>						  				 
+						  	</div>							  				  				 
 						  	<div class="col-lg-2">
 						    	<input type="submit" class="btn btn-primary" name="filtrar" value="Aplicar Filtres">
 							</div>
 						</div>	
 					</form>
-				</div>				
+				</div>
+				
                 <div class="row">
                     <div class="col-lg-12">
-                        <h2>Incidencies</h2>
+                        <h2>Factures</h2>
                         <div class="table-responsive">                        
-                            <table class="table table-striped table-bordered filerTable ${nomesActives ? "normal" : "withTancades"}">
+                            <table class="table table-striped table-bordered filerTable">
                                 <thead>
                                     <tr>
-                                        <th>Referència</th>
-                                        <th>Descripció</th>
-                                        <th>Centre</th>
-                                        <th>Data petició</th>
-                                        <th>Data petició</th>
-                                        <th>Actuacions derivades</th>
-                                        <c:if test="${!nomesActives}">											
-										   	<th>Data tancament</th>
-										   	<th>Data tancament</th>
-										</c:if>
+                                        <th>Factura</th>
+                                        <th>Actuació</th>
+                                        <th>Data entrada</th>
+                                        <th>Data entrada</th>
+                                        <th>Data factura</th>
+                                        <th>Data factura</th>
+                                        <th>Import</th>
+                                        <th>Tipus</th>
+                                        <th>Proveïdor</th>
+                                        <th>notes</th>                                       
                                     </tr>
                                 </thead>
                                 <tbody>
-                                	<c:forEach items="${incidenciesList}" var="incidencia" >
-							          	<tr class=${incidencia.activa ? "success" : "danger"}>							          	
-							           		<td><a href="incidenciaDetalls?ref=${incidencia.idIncidencia}">${incidencia.idIncidencia}</a></td>
-							            	<td>${incidencia.descripcio}</td>
-							            	<td>${incidencia.nomCentre}</td>
-							            	<td>${incidencia.getPeticioString()}</td>
-							            	<td>${incidencia.usuMod}</td>
-							            	<td>${incidencia.getLlistaIdActuacions()}</td>
-							            	<c:if test="${!nomesActives}">
-											   	<td>${incidencia.getTancamentString()}</td>
-											   	<td>${incidencia.dataTancament}</td>
-											</c:if>							            	
+                                	<c:forEach items="${facturesList}" var="factura" >
+							          	<tr class="success">							          	
+							           		<td><a href="facturaDetalls?ref=${factura.idFactura}">${factura.idFactura}</a></td>
+							            	<td>${factura.idActuacio}</td>
+							            	<td>${factura.getDataEntradaString()}</td>
+							            	<td>${factura.dataEntrada}</td>
+							            	<td>${factura.getDataFacturaString()}</td>
+							            	<td>${factura.dataFactura}</td>
+							            	<td>${factura.valor}</td>
+							            	<td>${factura.tipusFactura}</td>
+							            	<td>${factura.idProveidor}</td>
+							            	<td>${factura.notes}</td>	        	
 							          	</tr>
 							       	</c:forEach>                                	
                                 </tbody>
@@ -119,7 +101,7 @@
 
     </div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/incidencia/llistat.js"></script>
+    <script src="js/factura/llistat.js"></script>
     <!-- /#wrapper -->
 </body>
 </html>

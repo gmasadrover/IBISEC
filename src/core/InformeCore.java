@@ -33,9 +33,10 @@ public class InformeCore {
 		informe.setUsuari(usuari);
 		informe.setDataCreacio(rs.getTimestamp("datacre"));
 		informe.setAdjunts(utils.Fitxers.ObtenirFitxers(rs.getInt("idincidencia"), rs.getInt("idactuacio"), "Informe Previ", rs.getInt("idtasca"),""));
-		informe.setPartida(CreditCore.getPartidaActuacio(conn, rs.getInt("idactuacio")));	
+		informe.setPartida(CreditCore.getPartidaInforme(conn, rs.getInt("idinf")));	
 		informe.setUsuariAprovacio(UsuariCore.findUsuariByID(conn, rs.getInt("usuaprovacio")));
 		informe.setDataAprovacio(rs.getTimestamp("dataaprovacio"));
+		informe.setComentariCap(rs.getString("comentaricap"));
 		return informe;
 	}
 	
@@ -108,7 +109,7 @@ public class InformeCore {
 	
 	public static PropostaActuacio getInformeTasca(Connection conn, int idTasca) throws SQLException {
 		PropostaActuacio informe = new PropostaActuacio();
-		String sql = "SELECT idinf, idtasca, idincidencia, idactuacio, objecte, tipusobra, llicencia, tipusllicencia, contracte, vec, iva, plic, termini, servei, comentari, usucre, datacre, usuaprovacio, dataaprovacio" 
+		String sql = "SELECT idinf, idtasca, idincidencia, idactuacio, objecte, tipusobra, llicencia, tipusllicencia, contracte, vec, iva, plic, termini, servei, comentari, usucre, datacre, usuaprovacio, dataaprovacio, comentaricap" 
 					+ " FROM public.tbl_propostaactuacio"
 					+ " WHERE idtasca = ?"
 					+ " ORDER BY idinf DESC LIMIT 1;";		 
@@ -124,7 +125,7 @@ public class InformeCore {
 	
 	public static List<PropostaActuacio> getInformesActuacio(Connection conn, int idActuacio) throws SQLException {
 		 List<PropostaActuacio> informes = new ArrayList<PropostaActuacio>();
-		 String sql = "SELECT idinf, idtasca, idincidencia, idactuacio, objecte, tipusobra, llicencia, tipusllicencia, contracte, vec, iva, plic, termini, servei, comentari, usucre, datacre, usuaprovacio, dataaprovacio" 
+		 String sql = "SELECT idinf, idtasca, idincidencia, idactuacio, objecte, tipusobra, llicencia, tipusllicencia, contracte, vec, iva, plic, termini, servei, comentari, usucre, datacre, usuaprovacio, dataaprovacio, comentaricap" 
 					+ " FROM public.tbl_propostaactuacio"
 					+ " WHERE idactuacio = ?"
 					+ " ORDER BY idinf DESC;";		 
@@ -138,13 +139,14 @@ public class InformeCore {
 		 return informes;
 	}
 	
-	public static void aprovarInforme(Connection conn, int idInf, int idUsuari) throws SQLException {
+	public static void aprovarInforme(Connection conn, int idInf, int idUsuari, String comentariCap) throws SQLException {
 		String sql = "UPDATE public.tbl_propostaactuacio"
-					+ " SET usuaprovacio=?, dataaprovacio=localtimestamp"
+					+ " SET usuaprovacio=?, dataaprovacio=localtimestamp, comentaricap=?"
 					+ " WHERE idinf=?";
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setInt(1, idUsuari);	
-		pstm.setInt(2, idInf);
+		pstm.setString(2, comentariCap);	
+		pstm.setInt(3, idInf);
 		pstm.executeUpdate();
 	}
 	

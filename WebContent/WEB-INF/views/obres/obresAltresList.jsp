@@ -21,11 +21,11 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Incidències <small>Incidències</small>
+                            Contractes <small>Altres</small>
                         </h1>
                         <ol class="breadcrumb">
                             <li class="active">
-                                <i class="fa fa-dashboard"></i> Incidències
+                                <i class="fa fa-dashboard"></i> Contractes Altres
                             </li>
                             <li class="active">
                                 <i class="fa fa-table"></i> Llistat
@@ -36,7 +36,7 @@
                 <!-- /.row -->
 				
 				<div class="row">
-					<form class="form-horizontal" method="POST" action="incidencies">						
+					<form class="form-horizontal" method="POST" action="actuacions">						
 						<div class="form-group">
 							<input type="hidden" id="idCentreSelected" value="${idCentre}" />
 							<div class="col-lg-offset-1  col-lg-3">
@@ -45,19 +45,11 @@
 							        <input type="checkbox" name="filterCentre" ${idCentre != "" ? "checked" : ""}> Filtrar per centre
 							      </label>
 							      <div>
-		                                <select class="form-control selectpicker" name="idCentre" data-live-search="true" data-size="5" id="centresList">
+		                                <select class="form-control selectpicker" name="idCentre" data-live-search="true" id="centresList">
 		                                </select>
 		                             </div>
 							    </div>						    
 						  	</div>		
-						  	<div class="col-lg-4">
-						  		<span>Data petició</span>
-							  	<div class="input-group input-daterange datepicker">
-								    <input type="text" class="form-control" name="dataInici" value="${dataInici}">
-								    <div class="input-group-addon">fins</div>
-								    <input type="text" class="form-control" name="dataFi" value="${dataFi}">
-								</div>                                
-						  	</div>
 						  	<div class="col-lg-2">
 							    <div class="checkbox">
 							      <label>
@@ -70,39 +62,29 @@
 							</div>
 						</div>	
 					</form>
-				</div>				
+				</div>
+				
                 <div class="row">
                     <div class="col-lg-12">
-                        <h2>Incidencies</h2>
-                        <div class="table-responsive">                        
+                        <h2>Contractes altres</h2>
+                        <div class="table-responsive">
+                        
                             <table class="table table-striped table-bordered filerTable ${nomesActives ? "normal" : "withTancades"}">
                                 <thead>
                                     <tr>
                                         <th>Referència</th>
-                                        <th>Descripció</th>
-                                        <th>Centre</th>
-                                        <th>Data petició</th>
-                                        <th>Data petició</th>
-                                        <th>Actuacions derivades</th>
-                                        <c:if test="${!nomesActives}">											
-										   	<th>Data tancament</th>
-										   	<th>Data tancament</th>
-										</c:if>
+                                        <th>Actuació</th>
+                                        <th>Data inici</th>
+                                        <th>Data fi</th>                                        
                                     </tr>
                                 </thead>
                                 <tbody>
-                                	<c:forEach items="${incidenciesList}" var="incidencia" >
-							          	<tr class=${incidencia.activa ? "success" : "danger"}>							          	
-							           		<td><a href="incidenciaDetalls?ref=${incidencia.idIncidencia}">${incidencia.idIncidencia}</a></td>
-							            	<td>${incidencia.descripcio}</td>
-							            	<td>${incidencia.nomCentre}</td>
-							            	<td>${incidencia.getPeticioString()}</td>
-							            	<td>${incidencia.usuMod}</td>
-							            	<td>${incidencia.getLlistaIdActuacions()}</td>
-							            	<c:if test="${!nomesActives}">
-											   	<td>${incidencia.getTancamentString()}</td>
-											   	<td>${incidencia.dataTancament}</td>
-											</c:if>							            	
+                                	<c:forEach items="${obresList}" var="obra" >
+							          	<tr class=${obra.obert ? "success" : "danger"}>							          	
+							           		<td><a href="obraAltraDetall?ref=${obra.id}">${obra.id}</a></td>
+							            	<td>${obra.idActuacio}</td>
+							            	<td>${obra.getDataIniciString()}</td>
+							            	<td>${obra.getDataTancamentString()}</td>							            				            	
 							          	</tr>
 							       	</c:forEach>                                	
                                 </tbody>
@@ -119,7 +101,7 @@
 
     </div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/incidencia/llistat.js"></script>
+    <script src="js/obres/llistat.js"></script>
     <!-- /#wrapper -->
 </body>
 </html>

@@ -11,7 +11,7 @@ import bean.Centre;
 
 public class CentreCore {
 	
-	private static Centre initCentre(Connection conn, ResultSet rs) throws SQLException {
+	private static Centre initCentre(Connection conn, ResultSet rs, Boolean complet) throws SQLException {
 		Centre centre = new Centre();
 		centre.setIdCentre(rs.getString("codi"));
 		centre.setNom(rs.getString("nom"));
@@ -21,8 +21,10 @@ public class CentreCore {
 		centre.setLocalitat(rs.getString("localitat"));
 		centre.setAdreca(rs.getString("adreca"));
 		centre.setCp(rs.getString("cp"));
-		centre.setActuacions(ActuacioCore.searchActuacions(conn, rs.getString("codi"), false));
-		centre.setIncidencies(IncidenciaCore.searchIncidencies(conn, rs.getString("codi"), false, null, null));
+		if (complet) {
+			centre.setActuacions(ActuacioCore.searchActuacions(conn, rs.getString("codi"), false,null,null));
+			centre.setIncidencies(IncidenciaCore.searchIncidencies(conn, rs.getString("codi"), false, null, null));
+		}
 		return centre;
 	}
 	
@@ -46,9 +48,23 @@ public class CentreCore {
 		PreparedStatement pstm = conn.prepareStatement(sql);				
 		ResultSet rs = pstm.executeQuery();	 
 		while (rs.next()) {
-			Centre centre = initCentre(conn, rs);
+			Centre centre = initCentre(conn, rs, false);
 			centres.add(centre);
 		}
 		return centres;
+	}
+	
+	public static Centre findCentre(Connection conn, String codi) throws SQLException {		
+		String sql = "SELECT codi, tipo, nom, illa, municipi, localitat, adreca, cp"
+					+ " FROM public.tbl_centres"
+					+ " WHERE codi = ?;";
+		PreparedStatement pstm = conn.prepareStatement(sql);	
+		pstm.setString(1, codi);	
+		ResultSet rs = pstm.executeQuery();	 
+		Centre centre = new Centre();
+		if (rs.next()) {
+			centre = initCentre(conn, rs, true);			
+		}
+		return centre;
 	}
 }

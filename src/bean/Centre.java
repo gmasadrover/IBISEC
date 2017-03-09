@@ -43,6 +43,10 @@ public class Centre {
 		this.llistaActuacions = actuacions;
 	}
 	
+	public List<Actuacio> getLlistaActuacions(){
+		return this.llistaActuacions;
+	}
+	
 	public String getLlistaIdActuacions(){
 		String llistaIds = "";
 		String estat = "danger";
@@ -58,6 +62,10 @@ public class Centre {
 	
 	public void setIncidencies(List<Incidencia> incidencies){
 		this.llistaIncidencies = incidencies;
+	}
+	
+	public List<Incidencia> getLlistaIncidencies(){
+		return this.llistaIncidencies;
 	}
 	
 	public String getLlistaIdIncidencies(){

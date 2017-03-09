@@ -59,18 +59,14 @@
                                 <thead>
                                     <tr>
                                         <th>Codi</th>
-                                        <th>Nom</th>                     
-                                        <th>Incidencies derivades</th>                      
-                                        <th>Actuacions derivades</th>                                        
+                                        <th>Nom</th>                                                          
                                     </tr>
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${centresList}" var="centre" >
 							          	<tr>							          	
 							           		<td><a href="centreDetalls?codi=${centre.idCentre}">${centre.idCentre}</a></td>
-							            	<td>${centre.getNomComplet()}</td>
-							            	<td>${centre.getLlistaIdIncidencies()}</td>	
-							            	<td>${centre.getLlistaIdActuacions()}</td>							            						            	
+							            	<td>${centre.getNomComplet()}</td>					            						            	
 							          	</tr>
 							       	</c:forEach>                                	
                                 </tbody>

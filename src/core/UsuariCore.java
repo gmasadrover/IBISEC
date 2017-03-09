@@ -241,6 +241,12 @@ public class UsuariCore {
 			case usuari_detalls:
 				permision = true;
 				break;
+			case obres_list:
+				permision = rols.toUpperCase().contains("ADMIN");
+				break;
+			case factures_list:
+				permision = true;
+				break;
 			default:
 				break;
 		}

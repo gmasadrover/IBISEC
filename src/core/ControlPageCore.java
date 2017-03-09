@@ -60,6 +60,66 @@ public class ControlPageCore {
 			active = "";
 			collapse = "";
 		}
+		//Obres
+		if (UsuariCore.hasPermision(conn, usuari, SectionPage.obres_list)) {
+			if (seccio.equals("Obres")) {
+				active = "active"; 
+				collapse = "in";
+			}
+			menu.append("<li class='"+ active + "'>");
+			menu.append("	<a href='javascript:;' data-toggle='collapse' data-target='#obresMenu'><i class='fa fa-fw fa-edit'></i> Obres<i class='fa fa-fw fa-caret-down'></i></a>");
+			menu.append("	<ul id='obresMenu' class='collapse " + collapse + "'>");			
+			menu.append("		<li>");
+			menu.append("       	<a href='obresMenors'>Contractes menors</a>");
+			menu.append("    	</li>");		
+			menu.append("     	<li>");
+			menu.append("        	<a href='obresMajors'>Contractes majors</a>");
+			menu.append("    	</li>");
+			menu.append("	</ul>");
+			menu.append("</li>");
+			active = "";
+			collapse = "";
+		}
+		//Serveis
+		if (UsuariCore.hasPermision(conn, usuari, SectionPage.obres_list)) {
+			if (seccio.equals("Serveis")) {
+				active = "active"; 
+				collapse = "in";
+			}
+			menu.append("<li class='"+ active + "'>");
+			menu.append("	<a href='javascript:;' data-toggle='collapse' data-target='#serveisMenu'><i class='fa fa-fw fa-edit'></i> Serveis<i class='fa fa-fw fa-caret-down'></i></a>");
+			menu.append("	<ul id='serveisMenu' class='collapse " + collapse + "'>");			
+			menu.append("		<li>");
+			menu.append("       	<a href='serveisMenors'>Contractes menors</a>");
+			menu.append("    	</li>");		
+			menu.append("     	<li>");
+			menu.append("        	<a href='serveisMajors'>Contractes majors</a>");
+			menu.append("    	</li>");
+			menu.append("	</ul>");
+			menu.append("</li>");
+			active = "";
+			collapse = "";
+		}
+		//Subministrament
+		if (UsuariCore.hasPermision(conn, usuari, SectionPage.obres_list)) {
+			if (seccio.equals("Subministrament")) {
+				active = "active"; 
+				collapse = "in";
+			}
+			menu.append("<li class='"+ active + "'>");
+			menu.append("	<a href='javascript:;' data-toggle='collapse' data-target='#subministramentMenu'><i class='fa fa-fw fa-edit'></i> Subministrament<i class='fa fa-fw fa-caret-down'></i></a>");
+			menu.append("	<ul id='subministramentMenu' class='collapse " + collapse + "'>");			
+			menu.append("		<li>");
+			menu.append("       	<a href='subministramentMenors'>Contractes menors</a>");
+			menu.append("    	</li>");		
+			menu.append("     	<li>");
+			menu.append("        	<a href='subministramentMajors'>Contractes majors</a>");
+			menu.append("    	</li>");
+			menu.append("	</ul>");
+			menu.append("</li>");
+			active = "";
+			collapse = "";
+		}
 		//Centres
 		if (UsuariCore.hasPermision(conn, usuari, SectionPage.centres_list)) {			
 			if (seccio.equals("centres")) active = "active"; 
@@ -93,6 +153,15 @@ public class ControlPageCore {
 			active = "";
 			collapse = "";
 		}
+		//Factures
+		if (UsuariCore.hasPermision(conn, usuari, SectionPage.factures_list)) {			
+			if (seccio.equals("Factures")) active = "active"; 
+			menu.append("<li class='" + active + "'>");
+			menu.append("	<a href='factures'><i class='fa fa-fw fa-file'></i> Factures</a>");
+			menu.append("</li>");
+			active = "";
+			collapse = "";
+		}	
 		//Partides
 		if (UsuariCore.hasPermision(conn, usuari, SectionPage.partides_list) || UsuariCore.hasPermision(conn, usuari, SectionPage.partides_crear)) {
 			if (seccio.equals("Partides")) {

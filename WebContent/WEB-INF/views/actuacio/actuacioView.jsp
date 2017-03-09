@@ -197,13 +197,62 @@
 					    </div>
 					    <div id="arxiusAdjunts" class="panel-collapse collapse">
 					      	<div class="panel-body">					      		
-					    		<div class="row panel-body">					    		
+					    		<div class="row panel-body">
+					    			<input id="obrirPD" class="btn btn-default" value="Carpteta Actuacio" data-idactuacio="${actuacio.referencia}" data-idincidencia="${incidencia.idIncidencia}">						    		
+									<br>
 									<c:forEach items="${arxius}" var="arxiu" >
 					            		<a  href="downloadFichero?ruta=${arxiu.ruta}">
 											${arxiu.seccio} - ${arxiu.nom}
 										</a>
 										<br>
-									</c:forEach>	
+									</c:forEach>																		
+								</div>
+							</div>
+					    </div>
+					  </div>
+					  <div class="panel panel-default">
+					    <div class="panel-heading">
+					      <h4 class="panel-title">
+					        <a data-toggle="collapse" data-parent="#accordion" href="#factures">Factures</a>
+					      </h4>
+					    </div>
+					    <div id="factures" class="panel-collapse collapse">
+					      	<div class="panel-body">					      		
+					    		<div class="row panel-body">
+					    			<div class="table-responsive">                        
+			                            <table class="table table-striped table-bordered filerTable factures">
+			                            	<thead>
+			                                    <tr>                                        
+			                                    	<th>Factura</th>
+			                                        <th>Actuació</th>
+			                                        <th>Data entrada</th>
+			                                        <th>Data entrada</th>
+			                                        <th>Data factura</th>
+			                                        <th>Data factura</th>
+			                                        <th>Import</th>
+			                                        <th>Tipus</th>
+			                                        <th>Proveïdor</th>
+			                                        <th>notes</th>  
+			                                    </tr>
+			                                </thead>
+			                                <tbody>
+			                                	<c:forEach items="${factures}" var="factura" >
+										          	<tr class="">							          	
+										           		<td><a href="facturaDetalls?ref=${factura.idFactura}">${factura.idFactura}</a></td>
+										            	<td>${factura.idActuacio}</td>
+										            	<td>${factura.getDataEntradaString()}</td>
+										            	<td>${factura.dataEntrada}</td>
+										            	<td>${factura.getDataFacturaString()}</td>
+										            	<td>${factura.dataFactura}</td>
+										            	<td>${factura.valor}</td>
+										            	<td>${factura.tipusFactura}</td>
+										            	<td>${factura.idProveidor}</td>
+										            	<td>${factura.notes}</td>	 				            	
+										          	</tr>
+										       	</c:forEach>
+			                                </tbody>
+			                            </table>
+			                        </div>																	
 								</div>
 							</div>
 					    </div>
@@ -219,7 +268,7 @@
 
     </div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/usuari/usuari.js"></script>
+    <script src="js/actuacio/detalls.js"></script>
     <!-- /#wrapper -->
 </body>
 </html>

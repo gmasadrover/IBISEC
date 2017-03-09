@@ -3,8 +3,11 @@ package servlet.tasca;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -76,7 +79,11 @@ public class TascaListServlet extends HttpServlet {
 	        request.setAttribute("tasquesList", list);  
 	        request.setAttribute("usuariSelected", usuariSelected);
 		    request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "Tasques"));
-	     
+		
+		    
+		    InetAddress IP=InetAddress.getLocalHost();
+		    System.out.println("IP of my system is := "+IP.getHostAddress());
+		    System.out.println("USER: " + System.getProperty("user.name"));
 	        // Forward to /WEB-INF/views/productListView.jsp
 	        RequestDispatcher dispatcher = request.getServletContext()
 					.getRequestDispatcher("/WEB-INF/views/tasca/tascaListView.jsp");
