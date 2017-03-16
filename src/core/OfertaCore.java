@@ -27,12 +27,13 @@ public class OfertaCore {
    		oferta.setComentari(rs.getString("comentari"));
    		oferta.setUsuariAprovacio(UsuariCore.findUsuariByID(conn, rs.getInt("usuaprovacio")));
    		oferta.setDataAprovacio(rs.getTimestamp("dataaprovacio"));
+   		oferta.setIdInforme(rs.getInt("idinforme"));
    		return oferta;
 	}
 	
 	public static void novaOferta(Connection conn, Oferta oferta, int idUsuari) throws SQLException {
-		String sql = "INSERT INTO public.tbl_empresaoferta(idoferta, idactuacio, cifempresa, vec, iva, plic, termini, seleccionada, descalificada, comentari, usucre, datacre)"
-					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, localtimestamp);";
+		String sql = "INSERT INTO public.tbl_empresaoferta(idoferta, idactuacio, cifempresa, vec, iva, plic, termini, seleccionada, descalificada, comentari, usucre, datacre, idinforme)"
+					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, localtimestamp, ?);";
 	 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 	 
@@ -47,17 +48,18 @@ public class OfertaCore {
 		pstm.setBoolean(9, oferta.isDescalificada());
 		pstm.setString(10, oferta.getComentari());
 		pstm.setInt(11, idUsuari);
+		pstm.setInt(12, oferta.getIdInforme());
 		pstm.executeUpdate();
 	}
 	
-	public static List<Oferta> findOfertes(Connection conn, int idActuacio) throws SQLException {
+	public static List<Oferta> findOfertes(Connection conn, int idInforme) throws SQLException {
 		List<Oferta> ofertes = new ArrayList<Oferta>();
-		String sql = "SELECT idoferta, idactuacio, cifempresa, vec, iva, plic, termini, seleccionada, descalificada, comentari, usucre, datacre, usuaprovacio, dataaprovacio"
+		String sql = "SELECT idoferta, idactuacio, cifempresa, vec, iva, plic, termini, seleccionada, descalificada, comentari, usucre, datacre, usuaprovacio, dataaprovacio, idinforme"
 					+ " FROM public.tbl_empresaoferta"
-					+ " WHERE idactuacio = ? ;";
+					+ " WHERE idinforme = ? ;";
 		
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
-		pstm.setInt(1, idActuacio);		
+		pstm.setInt(1, idInforme);		
 		ResultSet rs = pstm.executeQuery();		
 		while (rs.next()) {
 			Oferta oferta = initOferta(conn, rs);
@@ -66,13 +68,13 @@ public class OfertaCore {
 		return ofertes;
 	}
 	
-	public static Oferta findOfertaSeleccionada(Connection conn, int idActuacio) throws SQLException {		
-		String sql = "SELECT idoferta, idactuacio, cifempresa, vec, iva, plic, termini, seleccionada, descalificada, comentari, usucre, datacre, usuaprovacio, dataaprovacio"
+	public static Oferta findOfertaSeleccionada(Connection conn, int idInforme) throws SQLException {		
+		String sql = "SELECT idoferta, idactuacio, cifempresa, vec, iva, plic, termini, seleccionada, descalificada, comentari, usucre, datacre, usuaprovacio, dataaprovacio, idinforme"
 					+ " FROM public.tbl_empresaoferta"
-					+ " WHERE idactuacio = ? AND seleccionada = true ;";
+					+ " WHERE idinforme = ? AND seleccionada = true ;";
 		
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
-		pstm.setInt(1, idActuacio);		
+		pstm.setInt(1, idInforme);		
 		ResultSet rs = pstm.executeQuery();		
 		while (rs.next()) {
 			Oferta oferta = initOferta(conn, rs);

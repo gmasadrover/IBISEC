@@ -35,7 +35,7 @@
                 </div>
                 <!-- /.row -->
 				
-				<div class="row">
+				<%-- <div class="row">
 					<form class="form-horizontal" method="POST" action="centres">						
 						<div class="form-group">
 						  	<div class="col-lg-2">
@@ -50,7 +50,7 @@
 							</div>
 						</div>	
 					</form>
-				</div>				
+				</div>			 --%>	
                 <div class="row">
                     <div class="col-lg-12">
                         <h2>Centres</h2>

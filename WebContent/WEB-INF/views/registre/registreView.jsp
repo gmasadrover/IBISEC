@@ -68,9 +68,11 @@
 	                        		</div>
 	                        		<div class="col-lg-4">            			
 	                        		</div>
-	                        		<div class="col-lg-4">
-	                        			Incidència relacionada: <a href="incidenciaDetalls?ref=${registre.idIncidencia}">${registre.idIncidencia}</a>                        			
-	                        		</div>
+	                        		<c:if test="${registre.idIncidencia > 0}">
+		                        		<div class="col-lg-4">
+		                        			Incidència relacionada: <a href="incidenciaDetalls?ref=${registre.idIncidencia}">${registre.idIncidencia}</a>                        			
+		                        		</div>
+		                        	</c:if>
 	                        	</div>
 	                        </div>
 	                    </div>

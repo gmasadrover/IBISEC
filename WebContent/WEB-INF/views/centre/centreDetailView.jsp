@@ -121,7 +121,7 @@
 		                            </tr>
 		                        </thead>
 		                        <tbody>
-								<c:forEach items="${centre.llistaActuacions}" var="actuacio" >
+								<c:forEach items="${centre.llistaActuacions.llistaActuacions}" var="actuacio" >
 						          	<tr class=${actuacio.activa ? actuacio.aprovada ? "success" : "warning" : "danger"}>							          	
 						           		<td><a href="actuacionsDetalls?ref=${actuacio.referencia}">${actuacio.referencia}</a></td>
 						            	<td>${actuacio.nomCentre}</td>
@@ -145,7 +145,7 @@
 		<!-- /#page-wrapper -->
 	</div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/empresa/modificar.js"></script>
+    <script src="js/centres/detalls.js"></script>
     <script src="js/zones/zones.js"></script>
 </body>
 </html>

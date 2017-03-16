@@ -8,7 +8,7 @@ $(document).ready(function() {
 	$('.eliminarSeleccionada').on('click', function(){	
 		var table = $('#administradorsTable').DataTable();
 		$(this).parents('tr').addClass('selected');
-		var option =  table.row('.selected').data()[0] + "#" + table.row('.selected').data()[1] + "#" + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[3] + "#" + table.row('.selected').data()[4] + "#" + table.row('.selected').data()[5] + "#" + table.row('.selected').data()[6] + "#" + table.row('.selected').data()[7];
+		var option =  table.row('.selected').data()[0] + "#" + table.row('.selected').data()[1] + "#" + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[3] + "#" + table.row('.selected').data()[4] + "#" + table.row('.selected').data()[5] + "#" + table.row('.selected').data()[6] + "#" + table.row('.selected').data()[7] + "#" + table.row('.selected').data()[8];
 		if (table.row('.selected').data() != undefined && $('#llistatAdministradors').val().indexOf(option) >= 0) {
 			$('#llistatAdministradors').val($('#llistatAdministradors').val().replace(option + ";", option + '#eliminar;'));				
 		}
@@ -24,7 +24,7 @@ $(document).ready(function() {
 		table.row('.selected').remove().draw( false );
 	});
 	$('#afegirAdmin').on('click', function(){
-		var admin = $('#nomAdmin').val() + "#" + $('#dniAdmin').val() + "#" + $('#tipusAdmin').val() + "#" + $('#validAdmin').val() + "#" + $('#nomNotari').val() + "#" + $('#numProtocol').val() + "#" + $('#dataAlta').val() + "#" + $('#dataValidacio').val() + ";";
+		var admin = $('#nomAdmin').val() + "#" + $('#dniAdmin').val() + "#" + $('#tipusAdmin').val() + "#" + $('#validAdmin').val() + "#" + $('#nomNotari').val() + "#" + $('#numProtocol').val() + "#" + $('#dataAlta').val() + "#" + $('#dataValidacio').val() + "#" + $('#organValidador').val() + ";";
 		$('#llistatAdministradors').val($('#llistatAdministradors').val() + admin);
     	var table = $('#administradorsTable').DataTable();        	
     	table.row.add( [
@@ -36,12 +36,13 @@ $(document).ready(function() {
     		 $('#numProtocol').val(),
     		 $('#dataAlta').val(),
     		 $('#dataValidacio').val(),
+    		 $('#organValidador').val(),
     		 "<input class='btn btn-danger btn-sm eliminarSeleccionada margin_left10' type='button' value='Eliminar'>"
         ] ).draw( false );
     	$('.eliminarSeleccionada').on('click', function(){	
 			var table = $('#administradorsTable').DataTable();
 			$(this).parents('tr').addClass('selected');
-			var option =  table.row('.selected').data()[0] + "#" + table.row('.selected').data()[1] + "#" + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[3] + "#" + table.row('.selected').data()[4] + "#" + table.row('.selected').data()[5] + "#" + table.row('.selected').data()[6] + "#" + table.row('.selected').data()[7];
+			var option =  table.row('.selected').data()[0] + "#" + table.row('.selected').data()[1] + "#" + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[3] + "#" + table.row('.selected').data()[4] + "#" + table.row('.selected').data()[5] + "#" + table.row('.selected').data()[6] + "#" + table.row('.selected').data()[7] + "#" + table.row('.selected').data()[8];
 			if (table.row('.selected').data() != undefined && $('#llistatAdministradors').val().indexOf(option) >= 0) {
 				$('#llistatAdministradors').val($('#llistatAdministradors').val().replace(option + ";",  option + '#eliminar;'));				
 			}

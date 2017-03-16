@@ -164,11 +164,11 @@ public class EmpresaCore {
      }	
 	 
 	 private static void addAdministradors(Connection conn, String cif, List<Empresa.Administrador> administradorsList, int idUsuari) throws SQLException {
-		 String sqlInsert = "INSERT INTO public.tbl_administradorsempresa(nifempresa, nom, dni, validfins, usucre, datacre, protocolmod, notarimod, datamod, tipus, datavalidacio)"
-			 			+ " VALUES (?, ?, ?, ?, ?, localtimestamp,?,?,?,?, ?);";	 
+		 String sqlInsert = "INSERT INTO public.tbl_administradorsempresa(nifempresa, nom, dni, validfins, usucre, datacre, protocolmod, notarimod, datamod, tipus, datavalidacio, organvalidacio)"
+			 			+ " VALUES (?, ?, ?, ?, ?, localtimestamp,?,?,?,?,?,?);";	 
 		 PreparedStatement pstmInsert = null; 
 		 String sqlUpdate = "UPDATE public.tbl_administradorsempresa"
-				 		+ " SET nom=?, validfins=?, usucre=?, datacre=localtimestamp, protocolmod=?, notarimod=?, datamod=?, tipus=?, datavalidacio=?"
+				 		+ " SET nom=?, validfins=?, usucre=?, datacre=localtimestamp, protocolmod=?, notarimod=?, datamod=?, tipus=?, datavalidacio=?, organvalidacio=?"
 			 			+ " WHERE dni = ?;";	 
 		 PreparedStatement pstmUpdate = null; 
 		 String sqlDelete = "DELETE FROM public.tbl_administradorsempresa"
@@ -192,7 +192,8 @@ public class EmpresaCore {
 				 pstmUpdate.setDate(6, new java.sql.Date(administrador.getDataModificacio().getTime()));
 				 pstmUpdate.setString(7, administrador.getTipus());
 				 pstmUpdate.setDate(8, new java.sql.Date(administrador.getDataValidacio().getTime()));
-				 pstmUpdate.setString(9, administrador.getDni());
+				 pstmUpdate.setString(9, administrador.getEntitatValidacio());
+				 pstmUpdate.setString(10, administrador.getDni());
 				 pstmUpdate.executeUpdate();	
 			 } else {
 				 System.out.println("Nou administrador: " + administrador.getDni());
@@ -207,6 +208,7 @@ public class EmpresaCore {
 				 pstmInsert.setDate(8, new java.sql.Date(administrador.getDataModificacio().getTime()));
 				 pstmInsert.setString(9, administrador.getTipus());
 				 pstmInsert.setDate(10, new java.sql.Date(administrador.getDataValidacio().getTime()));
+				 pstmInsert.setString(11, administrador.getEntitatValidacio());
 				 pstmInsert.executeUpdate();		
 			 }
 		 }
@@ -230,7 +232,7 @@ public class EmpresaCore {
 	 
 	 private static List<Empresa.Administrador> getAdministradors(Connection conn, String cif) throws SQLException {
 		 List<Empresa.Administrador> administradorsList = new ArrayList<Empresa.Administrador>();
-		 String sql = "SELECT nom, dni, validfins, protocolmod, notarimod, datamod, tipus, datavalidacio"
+		 String sql = "SELECT nom, dni, validfins, protocolmod, notarimod, datamod, tipus, datavalidacio, organvalidacio"
 				 	+ " FROM public.tbl_administradorsempresa"
 				 	+ " WHERE nifempresa = ?"; 
 		 PreparedStatement pstm = conn.prepareStatement(sql); 
@@ -247,13 +249,14 @@ public class EmpresaCore {
 			 administrador.setDataModificacio(rs.getTimestamp("datamod"));
 			 administrador.setTipus(rs.getString("tipus"));
 			 administrador.setDataValidacio(rs.getTimestamp("datavalidacio"));
+			 administrador.setEntitatValidacio(rs.getString("organvalidacio"));
 			 administradorsList.add(administrador);
 		 }
 		 return administradorsList;
 	 }
 	 private static String getAdministradorsString(Connection conn, String cif) throws SQLException {
 		String administradorsList = "";
-		 String sql = "SELECT nom, dni, validfins, protocolmod, notarimod, datamod, tipus, datavalidacio"
+		 String sql = "SELECT nom, dni, validfins, protocolmod, notarimod, datamod, tipus, datavalidacio, organvalidacio"
 				 	+ " FROM public.tbl_administradorsempresa"
 				 	+ " WHERE nifempresa = ?"; 
 		 PreparedStatement pstm = conn.prepareStatement(sql); 
@@ -268,7 +271,7 @@ public class EmpresaCore {
 			 if (rs.getDate("datamod") != null) datamod = df.format(rs.getDate("datamod"));
 			 if (rs.getDate("datavalidacio") != null) datavalidacio = df.format(rs.getDate("datavalidacio"));
 			 administradorsList += rs.getString("nom") + "#" + rs.getString("dni") + "#" + rs.getString("tipus") + "#" + validfins
-			 						+ "#" + rs.getString("notarimod") + "#" + rs.getString("protocolmod") + "#" + datamod + "#" + datavalidacio + ";";
+			 						+ "#" + rs.getString("notarimod") + "#" + rs.getString("protocolmod") + "#" + datamod + "#" + datavalidacio + "#" + rs.getString("organvalidacio") + ";";
 		 }
 		 return administradorsList;
 	 }

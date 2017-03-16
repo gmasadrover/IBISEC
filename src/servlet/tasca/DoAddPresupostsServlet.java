@@ -45,6 +45,7 @@ public class DoAddPresupostsServlet extends HttpServlet {
 		
 	    int idTasca = Integer.parseInt(request.getParameter("idTasca"));
 	    int idActuacio = Integer.parseInt(request.getParameter("idActuacio"));
+	    int idInforme = Integer.parseInt(request.getParameter("idInformePrevi"));
 	    User Usuari = MyUtils.getLoginedUser(request.getSession());	   
 	    String comentari = request.getParameter("propostaTecnica");	   
 	    String errorString = null;
@@ -62,6 +63,7 @@ public class DoAddPresupostsServlet extends HttpServlet {
 			    	cifEmpresa = paramValues[i].split("#")[0];
 			    	plic = Double.parseDouble(paramValues[i].split("#")[1]);
 			    	Oferta oferta = new Oferta();
+			    	oferta.setIdInforme(idInforme);
 			   		oferta.setIdActuacio(idActuacio);
 			   		oferta.setCifEmpresa(cifEmpresa);
 			   		oferta.setPlic(plic);

@@ -55,7 +55,7 @@
                                 <tbody>
                                 	<c:forEach items="${partidesList}" var="partida" >
 							          	<tr class=${partida.estat ? "success" : "danger"}>							          	
-							           		<td>${partida.codi}</td>
+							           		<td><a href="partidaDetalls?codi=${partida.codi}">${partida.codi}</a></td>
 							            	<td>${partida.nom}</td>
 							            	<td>${partida.tipus}</td>
 							            	<td>${partida.getTotalPartidaFormat()}</td>

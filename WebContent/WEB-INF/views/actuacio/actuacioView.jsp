@@ -117,6 +117,20 @@
 										    <div id="informe${informePrevi.idInf}" class="panel-collapse collapse">
 										    	<c:set var="informePrevi" scope="request" value="${informePrevi}"></c:set>
 										      	<jsp:include page="../tasca/include/_resumInformePrevi.jsp"></jsp:include>
+										      	<div class="panel-body">
+								    				<c:if test="${informePrevi.llistaOfertes.size()>0}">
+								    					<c:set var="ofertes" scope="request" value="${informePrevi.llistaOfertes}"></c:set>
+								    					<c:set var="ofertaSeleccionada" scope="request" value="${informePrevi.ofertaSeleccionada}"></c:set>								    					
+										    			<jsp:include page="../tasca/include/_resumOfertes.jsp"></jsp:include>
+										            	<c:if test="${actuacio.activa && canModificarActuacio}">				      			
+												      		<div class="row margin_bottom10">
+													    		<div class="col-lg-12 panel">
+																	<a href="CrearDocument?tipus=autMen&idIncidencia=${incidencia.idIncidencia}&idActuacio=${actuacio.referencia}" class="btn btn-primary right" role="button">Generar autorització actuació</a>
+																</div>
+												    		</div>
+										    			</c:if>	
+										    		</c:if>	
+										    	</div>	
 								    		</div>
 					      				</div>
 					      			</c:forEach>
@@ -127,17 +141,7 @@
 											<a href="createTasca?idActuacio=${actuacio.referencia}&tipus=infPrev" class="btn btn-primary right" role="button">Sol·licitar proposta d'actuació ${informes.size() > 0 ? "nova" : ""}</a>
 										</div>
 						    		</div>
-					    		</c:if>
-					    		<c:if test="${ofertes.size()>0}">
-					    			<jsp:include page="../tasca/include/_resumOfertes.jsp"></jsp:include>
-					            	<c:if test="${actuacio.activa && canModificarActuacio}">				      			
-							      		<div class="row margin_bottom10">
-								    		<div class="col-lg-12 panel">
-												<a href="CrearDocument?tipus=autMen&idIncidencia=${incidencia.idIncidencia}&idActuacio=${actuacio.referencia}" class="btn btn-primary right" role="button">Generar autorització actuació</a>
-											</div>
-							    		</div>
-					    			</c:if>	
-					    		</c:if>					      					          	
+					    		</c:if>      					          	
 				    		</div>
 				    	</div>
             		  </div>

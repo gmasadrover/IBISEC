@@ -11,7 +11,7 @@ public class Centre {
 	private String localitat;
 	private String adreca;
 	private String cp;
-	private List<Actuacio> llistaActuacions;
+	private Resultat llistaActuacions;
 	private List<Incidencia> llistaIncidencies;
 	public Centre() {
 		 
@@ -39,11 +39,11 @@ public class Centre {
 		return this.nom + " (" + this.localitat + ", " + this.municipi + ")";
 	}
 	
-	public void setActuacions(List<Actuacio> actuacions){
+	public void setActuacions(Resultat actuacions){
 		this.llistaActuacions = actuacions;
 	}
 	
-	public List<Actuacio> getLlistaActuacions(){
+	public Resultat getLlistaActuacions(){
 		return this.llistaActuacions;
 	}
 	
@@ -51,7 +51,7 @@ public class Centre {
 		String llistaIds = "";
 		String estat = "danger";
 		if (this.llistaActuacions != null) {
-			for (Actuacio actuacio: this.llistaActuacions) {
+			for (Actuacio actuacio: this.llistaActuacions.getLlistaActuacions()) {
 				if (actuacio.isActiva()) estat = "warning";
 				if (actuacio.isActiva() && actuacio.isAprovada()) estat = "success";
 				llistaIds += "<a style='margin:2px;' class='btn btn-" + estat + "' target='_blank' href='actuacionsDetalls?ref=" + actuacio.getReferencia() + "'>" + actuacio.getReferencia() + "</a>";

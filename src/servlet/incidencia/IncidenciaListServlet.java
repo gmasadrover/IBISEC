@@ -53,6 +53,7 @@ public class IncidenciaListServlet extends HttpServlet {
     		response.sendRedirect(request.getContextPath() + "/");	
 		} else {
 			String filtrar = request.getParameter("filtrar");
+			String filterWithOutDate = request.getParameter("filterWithOutDate");
 			boolean onlyActives = true;
 			String idCentre = "";
 			String idCentreSelector = "";			
@@ -68,14 +69,20 @@ public class IncidenciaListServlet extends HttpServlet {
 			try {
 				if (filtrar != null) {
 					onlyActives = request.getParameter("nomesActives") != null;
-					if (request.getParameter("filterCentre") != null) {
+					if (!"-1".equals(request.getParameter("idCentre").split("_")[0])) {
 						idCentre = request.getParameter("idCentre").split("_")[0];
 						idCentreSelector = request.getParameter("idCentre");
 					}				
-					 dataInici = df.parse(request.getParameter("dataInici"));
- 	    			 dataIniciString = request.getParameter("dataInici");
- 	    			 dataFi = df.parse(request.getParameter("dataFi"));
- 	    			 dataFiString = request.getParameter("dataFi");
+					dataInici = null;
+					dataIniciString = "";
+					dataFi = null;
+					dataFiString = "";
+					if (filterWithOutDate == null){
+						dataInici = df.parse(request.getParameter("dataInici"));
+		    			dataIniciString = request.getParameter("dataInici");
+		    			dataFi = df.parse(request.getParameter("dataFi"));
+		    			dataFiString = request.getParameter("dataFi");
+					}		
 				}
 				list = IncidenciaCore.searchIncidencies(conn, idCentre, onlyActives, dataInici, dataFi);
 			} catch (SQLException | ParseException e) {
@@ -90,6 +97,7 @@ public class IncidenciaListServlet extends HttpServlet {
 			request.setAttribute("incidenciesList", list);
 			request.setAttribute("nomesActives", onlyActives);
 			request.setAttribute("idCentre", idCentreSelector);
+			request.setAttribute("filterWithOutDate", "on".equals(filterWithOutDate));
 			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Incidencies"));
 			// Forward to /WEB-INF/views/homeView.jsp
 			// (Users can not access directly into JSP pages placed in WEB-INF)

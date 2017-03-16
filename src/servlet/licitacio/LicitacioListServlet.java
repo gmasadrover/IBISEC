@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import bean.Actuacio;
 import bean.ControlPage;
+import bean.Resultat;
 import core.ActuacioCore;
 import utils.MyUtils;
  
@@ -34,9 +35,9 @@ public class LicitacioListServlet extends HttpServlet {
 	   }else{
 		   Connection conn = MyUtils.getStoredConnection(request);		   
 	       String errorString = null;
-	       List<Actuacio> list = new ArrayList<Actuacio>();	      
+	       Resultat result = new Resultat();	      
 	       try {
-	           list = ActuacioCore.topAcuacions(conn);	           
+	           result = ActuacioCore.topAcuacions(conn);	           
 	       } catch (SQLException e) {
 	           e.printStackTrace();
 	           errorString = e.getMessage();
@@ -44,7 +45,7 @@ public class LicitacioListServlet extends HttpServlet {
 	       
 	       // Store info in request attribute, before forward to views
 	       request.setAttribute("errorString", errorString);
-	       request.setAttribute("actuacionsList", list);
+	       request.setAttribute("actuacionsList", result.getLlistaActuacions());
 	       // Forward to /WEB-INF/views/homeView.jsp
 	       // (Users can not access directly into JSP pages placed in WEB-INF)
 	       RequestDispatcher dispatcher = this.getServletContext().getRequestDispatcher("/WEB-INF/views/licitacio/licitacioListView.jsp");

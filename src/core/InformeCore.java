@@ -37,6 +37,8 @@ public class InformeCore {
 		informe.setUsuariAprovacio(UsuariCore.findUsuariByID(conn, rs.getInt("usuaprovacio")));
 		informe.setDataAprovacio(rs.getTimestamp("dataaprovacio"));
 		informe.setComentariCap(rs.getString("comentaricap"));
+		informe.setLlistaOfertes(OfertaCore.findOfertes(conn, rs.getInt("idinf")));
+		informe.setOfertaSeleccionada(OfertaCore.findOfertaSeleccionada(conn, rs.getInt("idinf")));
 		return informe;
 	}
 	
@@ -136,6 +138,7 @@ public class InformeCore {
 		 while (rs.next()) {
 			 informes.add(initInforme(conn, rs));			
 		 }
+		
 		 return informes;
 	}
 	

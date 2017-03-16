@@ -80,7 +80,7 @@ public class DoCreateEntradaServlet extends HttpServlet {
 	   		try {
 	   			RegistreCore.nouRegistre(conn, "E", registre);	   			
 	   			//Crear Incidencia
-	   			if (idIncidencia == -1) {
+	   			if (!"-1".equals(idCentre) && idIncidencia == -1) {
 		   		    referenciaIncidencia = IncidenciaCore.getNewCode(conn);
 		   		    Incidencia incidencia = new Incidencia();
 		   		    incidencia.setIdIncidencia(referenciaIncidencia);

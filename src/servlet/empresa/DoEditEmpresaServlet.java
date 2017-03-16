@@ -111,7 +111,10 @@ public class DoEditEmpresaServlet extends HttpServlet {
 				    	administrador.setNotariModificacio(administradorsString[i].split("#")[4]);
 				    	administrador.setProtocolModificacio(Integer.parseInt(administradorsString[i].split("#")[5]));
 				    	if (! administradorsString[i].split("#")[6].isEmpty()) administrador.setDataModificacio(formatter.parse(administradorsString[i].split("#")[6]));
-				    	if (administradorsString[i].split("#")[7] != null) administrador.setDataValidacio(formatter.parse(administradorsString[i].split("#")[7]));
+				    	if (administradorsString[i].split("#")[7] != null) {
+				    		administrador.setDataValidacio(formatter.parse(administradorsString[i].split("#")[7]));
+				    		administrador.setEntitatValidacio(administradorsString[i].split("#")[8]);
+				    	}				  
 				    	if (administradorsString[i].indexOf("eliminar") >= 0) {
 				    		administrador.setEliminar(true);
 				    	}			    	

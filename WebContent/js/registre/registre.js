@@ -2,7 +2,12 @@ $(document).ready(function() {
 	loadTipus();
 	searchIncidencies('07000000');
 	$('#centresList').on('change', function(){
-		searchIncidencies($(this).val().split("_")[0]);
+		if ($(this).val() != -1) {
+			$('.incidencies').removeClass('hidden');
+			searchIncidencies($(this).val().split("_")[0]);
+		} else {
+			$('.incidencies').addClass('hidden');
+		}		
 	});
 });
 

@@ -7,6 +7,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -51,25 +52,36 @@ public class RegistreEntradaListServlet extends HttpServlet {
   		response.sendRedirect(request.getContextPath() + "/");	
  	   }else{
  		   String filtrar = request.getParameter("filtrar");
+ 		   String filterWithOutDate = request.getParameter("filterWithOutDate");
  		   String idCentre = "";
 		   String idCentreSelector = "";
 		   DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		   String dataIniciString = "01/01/1990";
-		   String dataFiString = df.format(new Date().getTime());	 	   
+		   Calendar cal = Calendar.getInstance(); 
+		   Date dataFi = cal.getTime();
+		   String dataFiString = df.format(dataFi);	 
+		   cal.add(Calendar.MONTH, -2);
+		   Date dataInici = cal.getTime();
+		   String dataIniciString = df.format(dataInici);		   
  	       String errorString = null;
  	       List<Registre> list = new ArrayList<Registre>();
  	       try {
  	    	  if (filtrar != null) {
- 	    		  try {
- 	    			 Date dataInici = df.parse(request.getParameter("dataInici"));
- 	    			 dataIniciString = request.getParameter("dataInici");
- 	    			 Date dataFi = df.parse(request.getParameter("dataFi"));
- 	    			 dataFiString = request.getParameter("dataFi");
- 	    			 if (request.getParameter("filterCentre") != null) {
+ 	    		  try { 	    			 
+ 	    			 if (!"-1".equals(request.getParameter("idCentre").split("_")[0])) {
  						  idCentre = request.getParameter("idCentre").split("_")[0];
  						  idCentreSelector = request.getParameter("idCentre");
  					  }
- 					  list = RegistreCore.searchEntrades(conn, idCentre, dataInici, dataFi);
+ 	    			 dataInici = null;
+ 	    			 dataIniciString = "";
+ 	    			 dataFi = null;
+ 	    			 dataFiString = "";
+ 	    			 if (filterWithOutDate == null){
+ 	    				 dataInici = df.parse(request.getParameter("dataInici"));
+ 	    				 dataIniciString = request.getParameter("dataInici");
+ 	    				 dataFi = df.parse(request.getParameter("dataFi"));
+ 	    				 dataFiString = request.getParameter("dataFi");
+ 	    			 }	
+ 	    			 list = RegistreCore.searchEntrades(conn, idCentre, dataInici, dataFi);
  	    		  } catch (ParseException e1) {
  	    			  // TODO Auto-generated catch block
  	    			  e1.printStackTrace();
@@ -95,6 +107,7 @@ public class RegistreEntradaListServlet extends HttpServlet {
  	       request.setAttribute("errorString", errorString);
  	       request.setAttribute("entrades", list);
 	       request.setAttribute("idCentre", idCentreSelector );
+	       request.setAttribute("filterWithOutDate", "on".equals(filterWithOutDate));
 	       request.setAttribute("dataInici", dataIniciString);
 	       request.setAttribute("dataFi", dataFiString);
 	       request.setAttribute("canCreateRegistre", UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_crear));

@@ -89,7 +89,7 @@
                 	</div>
                 	<h2 class="margin_bottom30">Administradors</h2>
                 	<div class="row">
-	                	<div class="table-responsive col-xs-offset-1 col-lg-10">							                        
+	                	<div class="table-responsive col-lg-12">							                        
 		                    <table class="table table-striped table-bordered filerTable" id="administradorsTable">
 		                        <thead>
 		                            <tr>
@@ -99,7 +99,9 @@
 		                                <th>Vàlid fins</th>
 		                                <th>Notari</th>
 		                                <th>N. protocol</th>
-		                                <th>Data</th>						                                        							                                       
+		                                <th>Data</th>		
+		                                <th>Validacio</th>
+				                        <th>Organ validació</th>				                                        							                                       
 		                            </tr>
 		                        </thead>
 		                        <tbody>
@@ -112,6 +114,8 @@
 						            	<td>${administrador.notariModificacio}</td>
 						            	<td>${administrador.protocolModificacio}</td>
 						            	<td>${administrador.getDataModificacioString()}</td>
+						            	<td>${administrador.getDataValidacioString()}</td>
+								        <td>${administrador.entitatValidacio}</td>
 						            </tr>
 					       		</c:forEach>						                                	                              	
 		                        </tbody>

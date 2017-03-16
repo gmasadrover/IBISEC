@@ -13,6 +13,7 @@ public class Tasca {
 	private String tipus;
 	private boolean activa;
 	private Date dataCreacio;
+	private int idinforme;
 	
 	public Tasca() {
 
@@ -85,5 +86,13 @@ public class Tasca {
 
 	public void setDescripcio(String descripcio) {
 		this.descripcio = descripcio;
+	}
+
+	public int getIdinforme() {
+		return idinforme;
+	}
+
+	public void setIdinforme(int idinforme) {
+		this.idinforme = idinforme;
 	}
 }

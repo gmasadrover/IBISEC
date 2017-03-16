@@ -88,17 +88,28 @@ public class RegistreCore {
 	
 	public static List<Registre> searchEntrades(Connection conn, String idCentre, Date dataIni, Date dataFi) throws SQLException {
 		String sql = "SELECT id, data, remitent, contingut, idcentre, idincidencia"
-					+ " FROM public.tbl_regentrada"
-					+ " WHERE data >= ? and data <= ? ";
-		if (idCentre != "") {
-			sql += "and idcentre = ?";
+					+ " FROM public.tbl_regentrada";
+		ResultSet rs = null;
+		if (dataIni != null && dataFi != null) {
+			sql += " WHERE data >= ? and data <= ?";
+			if (idCentre != "") {
+				sql += "and idcentre = ?";
+			}
+			sql += " ORDER BY id DESC";
+			PreparedStatement pstm = conn.prepareStatement(sql);
+			pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
+			pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
+			if (idCentre != "") pstm.setString(3, idCentre);
+			rs = pstm.executeQuery();
+		} else {
+			if (idCentre != "") {
+				sql += " WHERE idcentre = ?";
+			}
+			sql += " ORDER BY id DESC";
+			PreparedStatement pstm = conn.prepareStatement(sql);
+			if (idCentre != "") pstm.setString(1, idCentre);
+			rs = pstm.executeQuery();
 		}
-		sql += "ORDER BY id DESC LIMIT 500";
-		PreparedStatement pstm = conn.prepareStatement(sql);
-		pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
-		pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
-		if (idCentre != "") pstm.setString(3, idCentre);
-		ResultSet rs = pstm.executeQuery();
 		List<Registre> list = new ArrayList<Registre>();
 		while (rs.next()) {
 			Registre registre = new Registre();
@@ -175,17 +186,28 @@ public class RegistreCore {
 	
 	public static List<Registre> searchSortides(Connection conn, String idCentre, Date dataIni, Date dataFi) throws SQLException {
 		String sql = "SELECT id, data, destinatari, contingut, idcentre, idincidencia"
-					+ " FROM public.tbl_regsortida"
-					+ " WHERE data >= ? and data <= ? ";
-		if (idCentre != "") {
-			sql += "and idcentre = ?";
+					+ " FROM public.tbl_regsortida";
+					ResultSet rs = null;
+		if (dataIni != null && dataFi != null) {
+			sql += " WHERE data >= ? and data <= ?";
+			if (idCentre != "") {
+				sql += "and idcentre = ?";
+			}
+			sql += " ORDER BY id DESC";
+			PreparedStatement pstm = conn.prepareStatement(sql);
+			pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
+			pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
+			if (idCentre != "") pstm.setString(3, idCentre);
+			rs = pstm.executeQuery();
+		} else {
+			if (idCentre != "") {
+				sql += " WHERE idcentre = ?";
+			}
+			sql += " ORDER BY id DESC";
+			PreparedStatement pstm = conn.prepareStatement(sql);
+			if (idCentre != "") pstm.setString(1, idCentre);
+			rs = pstm.executeQuery();
 		}
-		sql += "ORDER BY id DESC LIMIT 500";
-		PreparedStatement pstm = conn.prepareStatement(sql);
-		pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
-		pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
-		if (idCentre != "") pstm.setString(3, idCentre);
-		ResultSet rs = pstm.executeQuery();
 		List<Registre> list = new ArrayList<Registre>();
 		while (rs.next()) {
 			Registre registre = new Registre();

@@ -83,10 +83,11 @@
 	                                <label class="col-xs-3  control-label">Centre</label>
 	                                <div class="col-xs-3">
 		                                <select class="form-control selectpicker" name="idCentre" data-live-search="true" data-size="5" id="centresList">
+			                            	<option value="-1">No hi ha relació</option>
 			                            </select>
 		                             </div>
 	                            </div> 
-                            	<div class="form-group">
+                            	<div class="form-group incidencies hidden">
 	                             	<label class="col-xs-3 control-label">Incidència</label>
 	                                <div class="col-xs-3">   
 		                                <select class="form-control selectpicker" name="idIncidencia" data-live-search="true" data-size="5" id="incidenciesList">

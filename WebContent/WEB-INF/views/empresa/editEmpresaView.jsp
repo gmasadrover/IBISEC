@@ -179,12 +179,22 @@
 									  	<input type="text" class="form-control" name="dataValidacio" id="dataValidacio"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 									</div>
 	                            </div>
+	                             <div class="form-group">
+	                                <label class="col-xs-3 control-label">Organ validador</label>
+	                                <div class="col-xs-6">
+		                                <select class="form-control" name="organValidador" id="organValidador">
+		                                	<option value="caib">Advocacia CAIB</option>
+		                                	<option value="estat">Advocacia Estat</option>
+		                                	<option value="ibisec">Assessoria jurídica IBISEC</option>
+		                                </select>
+		                             </div>
+	                            </div>
 	                            <div class="col-xs-offset-2">	 
 	                            	<input class="btn btn-primary" type="button" name="afegirAdmin" id="afegirAdmin" value="Afegir">
 	                            </div>     			
 	                        </div>	
                         	<input type="hidden" name="llistatAdministradors" id="llistatAdministradors" value="${empresa.administradorsString}">                        
-				     		<div class="col-xs-offset-1 col-lg-10">	
+				     		<div class="col-lg-12">	
 								<label>Administradors actius</label>							                        
 				                <div class="table-responsive">							                        
 				                    <table class="table table-striped table-bordered filerTable" id="administradorsTable">
@@ -198,6 +208,7 @@
 				                                <th>N. protocol</th>
 				                                <th>Data</th>
 				                                <th>Validacio</th>
+				                                <th>Organ validació</th>
 				                                <th>Control</th>						                                        							                                       
 				                            </tr>
 				                        </thead>
@@ -212,6 +223,7 @@
 								            	<td>${administrador.protocolModificacio}</td>
 								            	<td>${administrador.getDataModificacioString()}</td>
 								            	<td>${administrador.getDataValidacioString()}</td>
+								            	<td>${administrador.entitatValidacio}</td>
 								            	<td><input class='btn btn-danger btn-sm eliminarSeleccionada margin_left10' type='button' value='Eliminar'></td>					            	
 								          	</tr>
 							       		</c:forEach>						                                	                              	

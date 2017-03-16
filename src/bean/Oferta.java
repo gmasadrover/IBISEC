@@ -21,6 +21,7 @@ public class Oferta {
 	private Date dataCreacio;
 	private User usuariAprovacio;
 	private Date dataAprovacio;
+	private int idInforme;
 	
 	public Oferta(){
 		
@@ -166,5 +167,13 @@ public class Oferta {
 
 	public void setDataAprovacio(Date dataAprovacio) {
 		this.dataAprovacio = dataAprovacio;
+	}
+
+	public int getIdInforme() {
+		return idInforme;
+	}
+
+	public void setIdInforme(int idInforme) {
+		this.idInforme = idInforme;
 	}
 }

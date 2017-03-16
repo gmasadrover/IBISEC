@@ -88,8 +88,13 @@ public class TascaDetailsServlet extends HttpServlet {
  	    		  historial = TascaCore.findHistorial(conn, idTasca, incidencia.getIdIncidencia(), -1);
  	    	   } 	    	  
  	    	   String tipusTasca = tasca.getTipus();
+ 	    	   if (tasca.getUsuari().getDepartament().equals(usuari.getDepartament()) && usuari.getRol().contains("CAP")) esCap = true;
  	    	   if ("infPrev".equals(tipusTasca)) {
- 	    		  informePrevi = InformeCore.getInformeTasca(conn, idTasca);  	    		 
+ 	    		  informePrevi = InformeCore.getInformeTasca(conn, idTasca);  
+ 	    		  if (!esCap) {
+	 	    		  llistaUsuaris.clear();
+	 	    		  llistaUsuaris.add(UsuariCore.finCap(conn, tasca.getUsuari().getDepartament()));
+ 	    		  }
  	    	   }else if ("resPartida".equals(tipusTasca)){
  	    		  int tascaInforme = Integer.parseInt(tasca.getDescripcio().split("-")[1].trim());
  	    		  informePrevi = InformeCore.getInformeTasca(conn, tascaInforme);
@@ -97,8 +102,12 @@ public class TascaDetailsServlet extends HttpServlet {
  	    	   }else if ("liciMenor".equals(tipusTasca)){
  	    		  informePrevi = InformeCore.getInformesActuacio(conn, actuacio.getReferencia()).get(0); 
  	    		  empresesList = EmpresaCore.getEmpreses(conn);
+ 	    		  if (!esCap) {
+	 	    		  llistaUsuaris.clear();
+		    		  llistaUsuaris.add(UsuariCore.finCap(conn, tasca.getUsuari().getDepartament()));
+ 	    		  }
  	    	   }
- 	    	   if (tasca.getUsuari().getDepartament().equals(usuari.getDepartament()) && usuari.getRol().contains("CAP")) esCap = true;
+ 	    	   
  	       } catch (SQLException e) {
  	           e.printStackTrace();
  	           errorString = e.getMessage();

@@ -56,10 +56,8 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       Incidencia incidencia = new Incidencia();
 	       List<Tasca> tasques = new ArrayList<Tasca>();
 	       List<Fitxers.Fitxer> arxius = new ArrayList<Fitxers.Fitxer>();
-	       List<PropostaActuacio> informes = new ArrayList<PropostaActuacio>();
-	       List<Oferta> ofertes = new ArrayList<Oferta>();
-	       List<Factura> factures = new ArrayList<Factura>();
-	       Oferta ofertaSeleccionada = new Oferta();
+	       List<PropostaActuacio> informes = new ArrayList<PropostaActuacio>();	       
+	       List<Factura> factures = new ArrayList<Factura>();	      
 	       String rutaActuacio = "V:/INTERCANVI D'OBRES/MAS, GUILLEM/documents/";
 	       boolean canModificarActuacio = false;
 	       boolean canCreateInformePrevi = false;
@@ -70,9 +68,7 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	    	   tasques = TascaCore.findTasquesActuacio(conn, referencia);	    	  	    	  
 	    	   arxius = Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia());
 	    	   informes = InformeCore.getInformesActuacio(conn, referencia);
-	    	   factures = FacturaCore.getFacturesActuacio(conn, referencia);
-	    	   ofertes = OfertaCore.findOfertes(conn, actuacio.getReferencia());
-	    	   ofertaSeleccionada = OfertaCore.findOfertaSeleccionada(conn, actuacio.getReferencia());
+	    	   factures = FacturaCore.getFacturesActuacio(conn, referencia);  
 	    	   rutaActuacio += incidencia.getIdIncidencia() + "/Actuacio";
 	    	   canModificarActuacio = usuari.getRol().contains("GERENT");
 	    	   canCreateInformePrevi = usuari.getRol().contains("GERENT");
@@ -88,11 +84,9 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       request.setAttribute("incidencia", incidencia);
 	       request.setAttribute("tasques", tasques);
 	       request.setAttribute("arxius", arxius);	   
-	       request.setAttribute("informes", informes);
-	       request.setAttribute("ofertes", ofertes);
+	       request.setAttribute("informes", informes);	      
 	       request.setAttribute("factures", factures);
 	       request.setAttribute("rutaActuacio", rutaActuacio);
-	       request.setAttribute("ofertaSeleccionada", ofertaSeleccionada);
 	       request.setAttribute("canCreateInformePrevi", canCreateInformePrevi);
 	       request.setAttribute("canCreateTasca", canCreateTasca);
 	       request.setAttribute("canModificarActuacio", canModificarActuacio);

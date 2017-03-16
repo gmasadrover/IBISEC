@@ -122,15 +122,17 @@
 	    		</div>
 			</div>						                       		
 		</div>	
-		<div class="form-group">
-			<div class="col-lg-12">		
-				<div class="row">	 
-					<div class="col-lg-12">						                    						
-	          			<textarea class="form-control" name="comentariCap" placeholder="comentari cap" rows="3" required>${informePrevi.comentariCap}</textarea> 
-	            	</div>
+		<c:if test="${esCap}">
+			<div class="form-group">
+				<div class="col-lg-12">		
+					<div class="row">	 
+						<div class="col-lg-12">						                    						
+		          			<textarea class="form-control" name="comentariCap" placeholder="comentari cap" rows="3" required>${informePrevi.comentariCap}</textarea> 
+		            	</div>
+		        	</div>
 	        	</div>
-        	</div>
-       	</div>		
+	       	</div>	
+       	</c:if>	
 		<div class="form-group">
 			<div class="col-lg-6">
 	    		<div class="row">

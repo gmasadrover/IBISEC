@@ -43,6 +43,7 @@ public class Empresa {
 	   private String notariModificacio;
 	   private int protocolModificacio;
 	   private Date dataValidacio;
+	   private String entitatValidacio;
 	   private String tipus;
 	   private boolean eliminar;
 	   
@@ -126,6 +127,12 @@ public class Empresa {
 		}
 		public void setEliminar(boolean eliminar) {
 			this.eliminar = eliminar;
+		}
+		public String getEntitatValidacio() {
+			return entitatValidacio;
+		}
+		public void setEntitatValidacio(String entitatValidacio) {
+			this.entitatValidacio = entitatValidacio;
 		}
    }
    

@@ -37,13 +37,12 @@
 				
 				<div class="row">
 					<form class="form-horizontal" method="POST" action="actuacions">						
-						<div class="form-group">
+						<div class="form-group">						
 							<input type="hidden" id="idCentreSelected" value="${idCentre}" />
+							<input type="hidden" id="estatSelected" value="${estatFilter}" />
 							<div class="col-lg-offset-1  col-lg-3">
-							    <div class="checkbox">
-							      <label>
-							        <input type="checkbox" name="filterCentre" ${idCentre != "" ? "checked" : ""}> Filtrar per centre
-							      </label>
+							    <div class="col-lg-12">
+							      <label>Filtrar per centre</label>
 							      <div>
 		                                <select class="form-control selectpicker" name="idCentre" data-live-search="true" id="centresList">
 		                                </select>
@@ -51,24 +50,40 @@
 							    </div>						    
 						  	</div>	
 						  	<div class="col-lg-4">
-						  		<span>Data petició</span>
-							  	<div class="input-group input-daterange datepicker">
-								    <input type="text" class="form-control" name="dataInici" value="${dataInici}">
-								    <div class="input-group-addon">fins</div>
-								    <input type="text" class="form-control" name="dataFi" value="${dataFi}">
+						  		<div class="col-lg-12">
+							  		<label>Filtrar per data petició</label>
+								  	<div class="input-group input-daterange datepicker">
+									    <input type="text" class="form-control" name="dataInici" value="${dataInici}">
+									    <div class="input-group-addon">fins</div>
+									    <input type="text" class="form-control" name="dataFi" value="${dataFi}">
+									</div>
+									<input type="checkbox" name="filterWithOutDate" ${filterWithOutDate ? "checked" : ""}> Filtrar fora dates
 								</div>                                
 						  	</div>	
 						  	<div class="col-lg-2">
-							    <div class="checkbox">
-							      <label>
-							        <input type="checkbox" name="nomesActives" ${nomesActives ? "checked" : ""}> Només actives
-							      </label>
+							    <div class="col-lg-12">
+							      <label>Filtrar per estat</label>
+							      <div>
+							      	<select class="selectpicker" id="estatList" name="estat">
+									  <option value="-1">Qualsevol</option>
+									  <option value="Aprovada">Aprovada</option>
+									  <option value="Pendent">Pendent</option>
+									  <option value="Tancada">Tancada</option>
+									</select>							      	
+							      </div>
 							    </div>
-						  	</div>						  				 
-						  	<div class="col-lg-2">
+						  	</div>
+						</div>	
+						<div class="form-group">
+							<div class="col-lg-offset-10 col-lg-2">
 						    	<input type="submit" class="btn btn-primary" name="filtrar" value="Aplicar Filtres">
 							</div>
-						</div>	
+						</div>
+						<div class="form-group">
+							<div class="col-lg-offset-1 col-lg-3 circunferencia green">${actuacionsAprovades}</div>
+							<div class="col-lg-3 margin_left30 circunferencia yellow">${actuacionsPendents}</div>
+							<div class="col-lg-3 margin_left30 circunferencia red">${actuacionsTancades}</div>
+						</div>
 					</form>
 				</div>
 				

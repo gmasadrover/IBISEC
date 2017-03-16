@@ -6,10 +6,8 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -18,8 +16,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.Actuacio;
 import bean.ControlPage.SectionPage;
+import bean.Resultat;
 import bean.User;
 import core.ActuacioCore;
 import core.ControlPageCore;
@@ -45,7 +43,8 @@ public class ActuacioListServlet extends HttpServlet {
     		response.sendRedirect(request.getContextPath() + "/");	
 		} else {
 			String filtrar = request.getParameter("filtrar");
-			boolean onlyActives = false;
+			String filterWithOutDate = request.getParameter("filterWithOutDate");
+			String estat = "";
 			String idCentre = "";
 			String idCentreSelector = "";
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
@@ -56,22 +55,27 @@ public class ActuacioListServlet extends HttpServlet {
 			Date dataInici = cal.getTime();
 			String dataIniciString = df.format(dataInici);	
 			String errorString = null;
-			List<Actuacio> list = new ArrayList<Actuacio>();
+			Resultat result = new Resultat();
 			try {
-				if (filtrar != null) {
-					onlyActives = request.getParameter("nomesActives") != null;
-					if (request.getParameter("filterCentre") != null) {
+				if (filtrar != null) {					
+					estat = request.getParameter("estat");
+					if (!"-1".equals(request.getParameter("idCentre").split("_")[0])) {						
 						idCentre = request.getParameter("idCentre").split("_")[0];
 						idCentreSelector = request.getParameter("idCentre");
 					}
-					dataInici = df.parse(request.getParameter("dataInici"));
-	    			dataIniciString = request.getParameter("dataInici");
-	    			dataFi = df.parse(request.getParameter("dataFi"));
-	    			dataFiString = request.getParameter("dataFi");
-					list = ActuacioCore.searchActuacions(conn, idCentre, onlyActives, dataInici, dataFi);
-
+					dataInici = null;
+					dataIniciString = "";
+					dataFi = null;
+					dataFiString = "";
+					if (filterWithOutDate == null){
+						dataInici = df.parse(request.getParameter("dataInici"));
+		    			dataIniciString = request.getParameter("dataInici");
+		    			dataFi = df.parse(request.getParameter("dataFi"));
+		    			dataFiString = request.getParameter("dataFi");
+					}					
+					result = ActuacioCore.searchActuacions(conn, idCentre, estat, dataInici, dataFi);
 				} else {
-					list = ActuacioCore.topAcuacions(conn);
+					result = ActuacioCore.topAcuacions(conn);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -83,11 +87,15 @@ public class ActuacioListServlet extends HttpServlet {
 
 			// Store info in request attribute, before forward to views
 			request.setAttribute("errorString", errorString);
-			request.setAttribute("actuacionsList", list);
+			request.setAttribute("actuacionsList", result.getLlistaActuacions());
+			request.setAttribute("actuacionsAprovades", result.getEstad().getAprovades());
+			request.setAttribute("actuacionsPendents", result.getEstad().getPendents());
+			request.setAttribute("actuacionsTancades", result.getEstad().getTancades());
+			request.setAttribute("filterWithOutDate", "on".equals(filterWithOutDate));
 			request.setAttribute("dataInici", dataIniciString);
 		    request.setAttribute("dataFi", dataFiString);
-			request.setAttribute("nomesActives", onlyActives);
 			request.setAttribute("idCentre", idCentreSelector);
+			request.setAttribute("estatFilter", estat);
 			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Actuacions"));
 			// Forward to /WEB-INF/views/homeView.jsp
 			// (Users can not access directly into JSP pages placed in WEB-INF)

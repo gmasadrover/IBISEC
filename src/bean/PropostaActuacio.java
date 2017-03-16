@@ -30,6 +30,8 @@ public class PropostaActuacio {
 	private User usuariAprovacio;
 	private Date dataAprovacio;
 	private String comentariCap;
+	private List<Oferta> llistaOfertes;
+	private Oferta ofertaSeleccionada;
 	
 	public PropostaActuacio() {		
 	}
@@ -229,5 +231,21 @@ public class PropostaActuacio {
 
 	public void setComentariCap(String comentariCap) {
 		this.comentariCap = comentariCap;
+	}
+
+	public List<Oferta> getLlistaOfertes() {
+		return llistaOfertes;
+	}
+
+	public void setLlistaOfertes(List<Oferta> llistaOfertes) {
+		this.llistaOfertes = llistaOfertes;
+	}
+
+	public Oferta getOfertaSeleccionada() {
+		return ofertaSeleccionada;
+	}
+
+	public void setOfertaSeleccionada(Oferta ofertaSeleccionada) {
+		this.ofertaSeleccionada = ofertaSeleccionada;
 	}
 }

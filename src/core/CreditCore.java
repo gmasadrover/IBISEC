@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import bean.AssignacioCredit;
 import bean.Credit;
 import bean.Partida;
 
@@ -90,6 +91,30 @@ public class CreditCore {
 		pstm.executeUpdate();
 	}
 	
+	public static Partida getPartida(Connection conn, String codi) throws SQLException {
+		 
+		String sql = "SELECT codi, nom, import, tipus, activa, usucre, datacre"
+					+ " FROM public.tbl_partides"
+					+ " WHERE codi = ?";
+	 	
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setString(1, codi);		
+		ResultSet rs = pstm.executeQuery();
+	 
+		if (rs.next()) {
+			Partida partida = new Partida();
+			partida.setCodi(rs.getString("codi"));			
+			partida.setEstat(rs.getBoolean("activa"));
+			partida.setNom(rs.getString("nom"));
+			partida.setTipus(rs.getString("tipus"));
+			partida.setTotalPartida(rs.getDouble("import"));
+			partida.setGastadaPartida(getTotalGastat(conn, rs.getString("codi")));
+			partida.setReservaPartida(getTotalReservat(conn, rs.getString("codi")));
+			return partida;
+		}
+		return null;
+	}
+	
 	public static List<Partida> getPartides(Connection conn, boolean tancades) throws SQLException {
 		String sql = "SELECT *"
 					+ " FROM public.tbl_partides";
@@ -156,6 +181,37 @@ public class CreditCore {
 		return newCode;
 	}
 
+	public static List<AssignacioCredit> findAssignacions(Connection conn, String codi) throws SQLException {
+		List<AssignacioCredit> assignacionsList = new ArrayList<AssignacioCredit>();
+		String sql = "SELECT idassignacio, idactuacio, idinf, reserva, usureserva, datareserva, assignacio, usuassignacio,"
+					+ " dataassignacio, comentari, usucre, datacre, idpartida, valorpa, valorpd"
+					+ " FROM public.tbl_assignacionscredit"
+					+ " WHERE idpartida=?;";		 
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setString(1, codi);
+		ResultSet rs = pstm.executeQuery();
+		while (rs.next()) {
+			AssignacioCredit assignacio = new AssignacioCredit();
+			assignacio.setIdAssignacio(rs.getInt("idassignacio"));
+			assignacio.setIdActuacio(rs.getInt("idactuacio"));
+			assignacio.setIdInf(rs.getInt("idinf"));
+			assignacio.setReserva(rs.getBoolean("reserva"));
+			assignacio.setUsuReserva(UsuariCore.findUsuariByID(conn, rs.getInt("usureserva")));
+			assignacio.setDatareserva(rs.getTimestamp("datareserva"));
+			assignacio.setAssignacio(rs.getBoolean("assignacio"));
+			assignacio.setUsuAssignacio(UsuariCore.findUsuariByID(conn, rs.getInt("usuassignacio")));
+			assignacio.setDataAssignacio(rs.getTimestamp("dataassignacio"));
+			assignacio.setComentari(rs.getString("comentari"));
+			assignacio.setUsuCre(UsuariCore.findUsuariByID(conn, rs.getInt("usucre")));
+			assignacio.setDataCre(rs.getTimestamp("datacre"));
+			assignacio.setIdPartida(rs.getString("idpartida"));
+			assignacio.setValorPA(rs.getDouble("valorpa"));
+			assignacio.setValorPD(rs.getDouble("valorpd"));
+			assignacionsList.add(assignacio);
+		}
+		return assignacionsList;
+	}
+	
 	public static void reservar(Connection conn, String idPartida, int idActuacio, int idInforme, double valor, String comentari, int idUsuari) throws SQLException {
 		String sql = "INSERT INTO public.tbl_assignacionscredit(idassignacio, idactuacio, idinf, reserva, usureserva, datareserva, assignacio, comentari, usucre, datacre, idpartida, valorpa)"
 					+ " VALUES (?, ?, ?, true, ?, localtimestamp, false, ?, ?, localtimestamp, ?, ?);";

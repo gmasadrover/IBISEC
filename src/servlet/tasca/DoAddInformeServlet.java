@@ -120,6 +120,7 @@ public class DoAddInformeServlet extends HttpServlet {
 				String comentariCap = multipartParams.getParametres().get("comentariCap");	
 				InformeCore.aprovarInforme(conn, idInformePrevi, Usuari.getIdUsuari(), comentariCap);
 				TascaCore.nouHistoric(conn, idTasca, "Informe aprovat", Usuari.getIdUsuari());
+				ActuacioCore.actualitzarActuacio(conn, Integer.parseInt(idActuacio), "Proposta d'actuació realitzada");
 				TascaCore.reasignar(conn, 900, idTasca);
 				TascaCore.tancar(conn, idTasca);
 				int idUsuari = UsuariCore.findUsuarisByRol(conn, "CONTA").get(0).getIdUsuari();

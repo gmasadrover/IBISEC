@@ -10,11 +10,13 @@ import java.util.Date;
 import java.util.List;
 
 import bean.Actuacio;
+import bean.Resultat;
+import bean.Resultat.Estadistiques;
 public class ActuacioCore {
 	
 	static final String SQL_CAMPS = "id, idincidencia, descripcio, idcentre, usucre, datacre, aprovada, dataaprovacio, usuaprovacio, activa, datatancament, usutancament, datamodificacio, darreramodificacio";
 	
-	private static Actuacio initActuacio(Connection conn, ResultSet rs) throws SQLException{
+	private static Actuacio initActuacio(Connection conn, ResultSet rs, Estadistiques estad) throws SQLException{
 		Actuacio actuacio = new Actuacio();
 		
 		actuacio.setReferencia(rs.getInt("id"));
@@ -22,7 +24,7 @@ public class ActuacioCore {
 		actuacio.setDataCreacio(rs.getTimestamp("datacre"));
 		actuacio.setIdUsuariCreacio(rs.getInt("usucre"));		
 		actuacio.setIdCentre(rs.getString("idcentre"));
-		actuacio.setNomCentre(CentreCore.nomCentre(conn, rs.getString("idcentre")));		
+		actuacio.setNomCentre(CentreCore.nomCentreComplet(conn, rs.getString("idcentre")));		
 		actuacio.setActiva(rs.getBoolean("activa"));		
 		actuacio.setDataTancament(rs.getTimestamp("datatancament"));		
 		actuacio.setAprovada(rs.getBoolean("aprovada"));
@@ -31,7 +33,17 @@ public class ActuacioCore {
 		actuacio.setIdIncidencia(rs.getInt("idincidencia"));		
 		actuacio.setDarreraModificacio(rs.getTimestamp("datamodificacio"));
 		actuacio.setModificacio(rs.getString("darreramodificacio"));
-		
+		if (estad != null) {
+			if (actuacio.isActiva()) {
+				if (actuacio.isAprovada()) {
+					estad.setAprovades(estad.getAprovades() + 1);
+				} else {
+					estad.setPendents(estad.getPendents() + 1);
+				}			
+			} else {
+				estad.setTancades(estad.getTancades() + 1);
+			}
+		}
 		return actuacio;
 	}
 	
@@ -61,13 +73,13 @@ public class ActuacioCore {
 		pstm.setInt(1, referencia);		
 		ResultSet rs = pstm.executeQuery();
 		if (rs.next()) {
-			Actuacio actuacio = initActuacio(conn, rs); 
+			Actuacio actuacio = initActuacio(conn, rs, null); 
 			return actuacio;
 		}
 		return null;
 	}
 	
-	public static List<Actuacio> topAcuacions(Connection conn) throws SQLException {
+	public static Resultat topAcuacions(Connection conn) throws SQLException {
 		String sql = "SELECT " + SQL_CAMPS
 					+ " FROM public.tbl_actuacio"
 					+ " ORDER BY id::INT DESC"
@@ -76,15 +88,19 @@ public class ActuacioCore {
 		PreparedStatement pstm = conn.prepareStatement(sql);
 	 
 		ResultSet rs = pstm.executeQuery();
+		Resultat result = new Resultat();
 		List<Actuacio> list = new ArrayList<Actuacio>();
+		Estadistiques estad = result.new Estadistiques();
 		while (rs.next()) {
-			Actuacio actuacio = initActuacio(conn, rs);
+			Actuacio actuacio = initActuacio(conn, rs, estad);
 			list.add(actuacio);
 		}
-		return list;
+		result.setEstad(estad);
+		result.setLlistaActuacions(list);
+		return result;
 	}
 	
-	public static List<Actuacio> searchActuacions(Connection conn, String idCentre, boolean onlyActives, Date dataIni, Date dataFi) throws SQLException {
+	public static Resultat searchActuacions(Connection conn, String idCentre, String estat, Date dataIni, Date dataFi) throws SQLException {
 		String sql = "SELECT " + SQL_CAMPS
 					+ " FROM public.tbl_actuacio";					
 		PreparedStatement pstm;
@@ -92,7 +108,11 @@ public class ActuacioCore {
 			sql += " WHERE datacre >= ? and datacre <= ? ";
 			if (idCentre != "") {
 				sql += " AND idcentre = ?";
-				if (onlyActives) { sql+= " AND activa = true"; }
+				if (estat != "-1") {					
+					if ("Aprovada".equals(estat)) sql+= " AND activa = true AND aprovada = true"; 
+					if ("Pendent".equals(estat)) sql+= " AND activa = true AND aprovada = false"; 
+					if ("Tancada".equals(estat)) sql+= " AND activa = false"; 			
+				}
 				sql += " ORDER BY id::INT DESC";
 				pstm = conn.prepareStatement(sql);
 				pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
@@ -103,7 +123,11 @@ public class ActuacioCore {
 				pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
 				pstm.setString(3, idCentre);	
 			} else {
-				if (onlyActives) { sql+= " AND activa = true"; }
+				if (estat != "-1") {					
+					if ("Aprovada".equals(estat)) sql+= " AND activa = true AND aprovada = true"; 
+					if ("Pendent".equals(estat)) sql+= " AND activa = true AND aprovada = false"; 
+					if ("Tancada".equals(estat)) sql+= " AND activa = false"; 
+				}
 				sql += " ORDER BY id::INT DESC";
 				pstm = conn.prepareStatement(sql);
 				pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
@@ -116,26 +140,38 @@ public class ActuacioCore {
 		}else{
 			if (idCentre != "") {
 				sql += " WHERE idcentre = ?";
-				if (onlyActives) { sql+= " AND activa = true"; }
+				if (estat != "-1") {					
+					if ("Aprovada".equals(estat)) sql+= " AND activa = true AND aprovada = true"; 
+					if ("Pendent".equals(estat)) sql+= " AND activa = true AND aprovada = false"; 
+					if ("Tancada".equals(estat)) sql+= " AND activa = false"; 
+				}
 				sql += " ORDER BY id::INT DESC";
 				pstm = conn.prepareStatement(sql);
 				pstm.setString(1, idCentre);			
 			} else {
-				if (onlyActives) { sql+= " WHERE activa = true"; }
+				if (estat != "-1") {					
+					if ("Aprovada".equals(estat)) sql+= " WHERE activa = true AND aprovada = true"; 
+					if ("Pendent".equals(estat)) sql+= " WHERE activa = true AND aprovada = false"; 
+					if ("Tancada".equals(estat)) sql+= " WHERE activa = false"; 					
+				}
 				sql += " ORDER BY id::INT DESC";
 				pstm = conn.prepareStatement(sql);
 			}	
 		}
 		ResultSet rs = pstm.executeQuery();
+		Resultat result = new Resultat();
 		List<Actuacio> list = new ArrayList<Actuacio>();
-		while (rs.next()) {
-			Actuacio actuacio = initActuacio(conn, rs);			
+		Estadistiques estad = result.new Estadistiques();
+		while (rs.next()) {			
+			Actuacio actuacio = initActuacio(conn, rs, estad);	
 			list.add(actuacio);
 		}
-		return list;
+		result.setEstad(estad);
+		result.setLlistaActuacions(list);
+		return result;
 	}
 	
-	public static List<Actuacio> searchActuacionsInciencia(Connection conn, int idIncidencia) throws SQLException {
+	public static Resultat searchActuacionsInciencia(Connection conn, int idIncidencia) throws SQLException {
 		List<Actuacio> list = new ArrayList<Actuacio>();
 		String sql = "SELECT " + SQL_CAMPS
 				 	+ " FROM public.tbl_actuacio"
@@ -145,11 +181,15 @@ public class ActuacioCore {
 		pstm = conn.prepareStatement(sql);
 		pstm.setInt(1, idIncidencia);	
 		ResultSet rs = pstm.executeQuery();
+		Resultat result = new Resultat();
+		Estadistiques estad = result.new Estadistiques();
 		while (rs.next()) {
-			Actuacio actuacio = initActuacio(conn, rs);			
+			Actuacio actuacio = initActuacio(conn, rs, estad);			
 			list.add(actuacio);
 		}
-		return list;
+		result.setEstad(estad);
+		result.setLlistaActuacions(list);
+		return result;
 	}
 	
 	public static String getNewCode(Connection conn) throws SQLException {
