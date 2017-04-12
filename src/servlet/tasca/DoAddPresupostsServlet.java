@@ -44,8 +44,8 @@ public class DoAddPresupostsServlet extends HttpServlet {
 		Connection conn = MyUtils.getStoredConnection(request);		
 		
 	    int idTasca = Integer.parseInt(request.getParameter("idTasca"));
-	    int idActuacio = Integer.parseInt(request.getParameter("idActuacio"));
-	    int idInforme = Integer.parseInt(request.getParameter("idInformePrevi"));
+	    String idActuacio = request.getParameter("idActuacio");
+	    String idInforme = request.getParameter("idInformePrevi");
 	    User Usuari = MyUtils.getLoginedUser(request.getSession());	   
 	    String comentari = request.getParameter("propostaTecnica");	   
 	    String errorString = null;
@@ -92,7 +92,8 @@ public class DoAddPresupostsServlet extends HttpServlet {
 			} 
 	    } else {	    	
 	   		try {
-	   			OfertaCore.aprovarOferta(conn, idActuacio, Usuari.getIdUsuari());
+	   			OfertaCore.validacioCapOferta(conn, idInforme, Usuari.getIdUsuari());
+	   			ActuacioCore.actualitzarActuacio(conn, idActuacio, "Proposta tècnica realitzada");
 	   			TascaCore.nouHistoric(conn, idTasca, "Proposta tècnica aprovada", Usuari.getIdUsuari());
 	   			TascaCore.reasignar(conn, 902, idTasca);
 				TascaCore.tancar(conn, idTasca);

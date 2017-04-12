@@ -5,93 +5,132 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
-import bean.ObraAltra;
-import bean.ObraMajor;
-import bean.ObraMenor;
+import bean.Obra;
+import bean.Oferta;
 
 public class ObresCore {
-	static final String SQL_CAMPSMENOR = "id, idactuacio, datainici, obert, datatancament, motiutancament";
-	static final String SQL_CAMPSMAJOR = "id, idactuacio, datainici, obert, datatancament, motiutancament";
-	static final String SQL_CAMPSALTRES = "id, idactuacio, datainici, obert, datatancament, motiutancament";
-	
-	private static ObraMenor initObraMenor(Connection conn, ResultSet rs) throws SQLException{
-		ObraMenor obra = new ObraMenor();
-		obra.setId(rs.getInt("id"));
-		obra.setIdActuacio(rs.getInt("idactuacio"));
-		obra.setDataInici(rs.getTimestamp("datainici"));
-		obra.setObert(rs.getBoolean("obert"));
-		obra.setDataTancament(rs.getTimestamp("datatancament"));
-		obra.setMotiuTancament(rs.getString("motiutancament"));	
+	private static Obra initObra(Connection conn, ResultSet rs) throws SQLException{
+		Obra obra = new Obra();
+		obra.setIdActuacio(rs.getString("idactuacio"));
+		obra.setDescripcio(rs.getString("desc"));
+		obra.setDataCreacio(rs.getTimestamp("datacre"));
+		obra.setDataAprovacio(rs.getTimestamp("dataaprovacio"));
+		obra.setNomCentre(CentreCore.nomCentre(conn, rs.getString("idcentre")));
+		obra.setIdInforme(rs.getString("idinf"));
+		obra.setFactures(FacturaCore.getFacturesInforme(conn, rs.getString("idinf")));
+		Oferta oferta = OfertaCore.findOfertaSeleccionada(conn, rs.getString("idinf"));
+		if (oferta != null) {
+			obra.setEmpresa(EmpresaCore.findEmpresa(conn, oferta.getCifEmpresa()));
+			obra.setValor(oferta.getPlic());
+		}
+		obra.setNotes(rs.getString("notes"));
+		obra.setDataTancament(rs.getTimestamp("tancament"));
 		return obra;
 	}
-	
-	private static ObraMajor initObraMajor(Connection conn, ResultSet rs) throws SQLException{
-		ObraMajor obra = new ObraMajor();
-		obra.setId(rs.getString("id"));
-		obra.setIdActuacio(rs.getInt("idactuacio"));
-		obra.setDataInici(rs.getTimestamp("datainici"));
-		obra.setObert(rs.getBoolean("obert"));
-		obra.setDataTancament(rs.getTimestamp("datatancament"));
-		obra.setMotiuTancament(rs.getString("motiutancament"));	
-		return obra;
-	}
-	
-	private static ObraAltra initObraAltra(Connection conn, ResultSet rs) throws SQLException{
-		ObraAltra obra = new ObraAltra();
-		obra.setId(rs.getInt("id"));
-		obra.setIdActuacio(rs.getInt("idactuacio"));
-		obra.setDataInici(rs.getTimestamp("datainici"));
-		obra.setObert(rs.getBoolean("obert"));
-		obra.setDataTancament(rs.getTimestamp("datatancament"));
-		obra.setMotiuTancament(rs.getString("motiutancament"));	
-		return obra;
-	}
-	
-	public static List<ObraMenor> ObresMenors(Connection conn) throws SQLException {
-		String sql = "SELECT " + SQL_CAMPSMENOR
-					+ " FROM public.tbl_obramenor"
-					+ " ORDER BY id::INT DESC";
-	 
-		PreparedStatement pstm = conn.prepareStatement(sql);
-	 
+		
+	public static List<Obra> ObresMenors(Connection conn, String idCentre, Date dataIni, Date dataFi, boolean withTancades) throws SQLException {
+		String sql = "SELECT a.id AS idactuacio, a.descripcio AS desc, a.datacre AS datacre, a.dataaprovacio AS dataaprovacio, a.idcentre AS idcentre, i.idinf AS idinf, i.datatancament AS tancament, e.notes AS notes"
+					+ " FROM public.tbl_informeactuacio i LEFT JOIN public.tbl_actuacio a ON i.idactuacio = a.id"
+					+ "		LEFT JOIN public.tbl_informacioextra e ON i.idinf = e.idinf"
+					+ " WHERE i.tipusobra = 'obr' AND i.vec < 50000";
+		if (!withTancades) sql += " AND i.datatancament IS NULL";			
+		PreparedStatement pstm = conn.prepareStatement(sql);			
+		if (dataIni != null && dataFi != null) {
+			sql += " AND i.datacre >= ? AND i.datacre <= ? ";
+			if (idCentre != "") {
+				sql += " AND a.idcentre = ?";
+				sql += " ORDER BY i.idactuacio DESC, i.idinf DESC";
+				pstm = conn.prepareStatement(sql);
+				pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
+				Calendar fi = Calendar.getInstance();
+			    fi.setTime(dataFi);
+			    fi.add(Calendar.DATE, 1);	
+			    dataFi = fi.getTime();
+				pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
+				pstm.setString(3, idCentre);	
+			} else {				
+				sql += " ORDER BY i.idactuacio DESC, i.idinf DESC";
+				pstm = conn.prepareStatement(sql);
+				pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
+				Calendar fi = Calendar.getInstance();
+			    fi.setTime(dataFi);
+			    fi.add(Calendar.DATE, 1);	
+			    dataFi = fi.getTime();
+				pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
+			}
+		}else{
+			if (idCentre != "") {
+				sql += " AND a.idcentre = ?";				
+				sql += " ORDER BY i.idactuacio DESC, i.idinf DESC";
+				pstm = conn.prepareStatement(sql);
+				pstm.setString(1, idCentre);			
+			} else {				
+				sql += " ORDER BY i.idactuacio DESC, i.idinf DESC";
+				pstm = conn.prepareStatement(sql);
+			}	
+		}
+		
+		
 		ResultSet rs = pstm.executeQuery();
-		List<ObraMenor> list = new ArrayList<ObraMenor>();
+		List<Obra> list = new ArrayList<Obra>();
 		while (rs.next()) {
-			ObraMenor obra = initObraMenor(conn, rs);
+			Obra obra = initObra(conn, rs);
 			list.add(obra);
 		}
 		return list;
 	}
 	
-	public static List<ObraMajor> ObresMajor(Connection conn) throws SQLException {
-		String sql = "SELECT " + SQL_CAMPSMAJOR
-					+ " FROM public.tbl_obramajor"
-					+ " ORDER BY id::INT DESC";
-	 
-		PreparedStatement pstm = conn.prepareStatement(sql);
-	 
-		ResultSet rs = pstm.executeQuery();
-		List<ObraMajor> list = new ArrayList<ObraMajor>();
-		while (rs.next()) {
-			ObraMajor obra = initObraMajor(conn, rs);
-			list.add(obra);
+	public static List<Obra> ObresMajor(Connection conn, String idCentre, Date dataIni, Date dataFi) throws SQLException {
+		String sql = "SELECT a.id AS idactuacio, a.descripcio AS desc, a.datacre AS datacre, a.dataaprovacio AS dataaprovacio, a.idcentre AS idcentre, i.idinf AS idinf, i.datatancament AS tancament, e.notes AS notes"
+				+ " FROM public.tbl_informeactuacio i LEFT JOIN public.tbl_actuacio a ON i.idactuacio = a.id"
+				+ "		LEFT JOIN public.tbl_informacioextra e ON i.idinf = e.idinf"
+				+ " WHERE i.tipusobra = 'obr' AND i.vec >= 50000";
+				
+		PreparedStatement pstm = conn.prepareStatement(sql);			
+		if (dataIni != null && dataFi != null) {
+			sql += " AND i.datacre >= ? AND i.datacre <= ? ";
+			if (idCentre != "") {
+				sql += " AND a.idcentre = ?";
+				sql += " ORDER BY i.idactuacio DESC, i.idinf DESC";
+				pstm = conn.prepareStatement(sql);
+				pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
+				Calendar fi = Calendar.getInstance();
+			    fi.setTime(dataFi);
+			    fi.add(Calendar.DATE, 1);	
+			    dataFi = fi.getTime();
+				pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
+				pstm.setString(3, idCentre);	
+			} else {				
+				sql += " ORDER BY i.idactuacio DESC, i.idinf DESC";
+				pstm = conn.prepareStatement(sql);
+				pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
+				Calendar fi = Calendar.getInstance();
+			    fi.setTime(dataFi);
+			    fi.add(Calendar.DATE, 1);	
+			    dataFi = fi.getTime();
+				pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
+			}
+		}else{
+			if (idCentre != "") {
+				sql += " AND a.idcentre = ?";				
+				sql += " ORDER BY i.idactuacio DESC, i.idinf DESC";
+				pstm = conn.prepareStatement(sql);
+				pstm.setString(1, idCentre);			
+			} else {				
+				sql += " ORDER BY i.idactuacio DESC, i.idinf DESC";
+				pstm = conn.prepareStatement(sql);
+			}	
 		}
-		return list;
-	}
-	
-	public static List<ObraAltra> ObresAltres(Connection conn) throws SQLException {
-		String sql = "SELECT " + SQL_CAMPSALTRES
-					+ " FROM public.tbl_obraaltres"
-					+ " ORDER BY id::INT DESC";
-	 
-		PreparedStatement pstm = conn.prepareStatement(sql);
-	 
+		
+		
 		ResultSet rs = pstm.executeQuery();
-		List<ObraAltra> list = new ArrayList<ObraAltra>();
+		List<Obra> list = new ArrayList<Obra>();
 		while (rs.next()) {
-			ObraAltra obra = initObraAltra(conn, rs);
+			Obra obra = initObra(conn, rs);
 			list.add(obra);
 		}
 		return list;

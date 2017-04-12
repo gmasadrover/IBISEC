@@ -13,7 +13,7 @@ public class ControlPageCore {
 		if (UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_list)) {			
 			if (seccio.equals("Tasques")) active = "active"; 
 			menu.append("<li class='" + active + "'>");
-			menu.append("	<a href='tascaList'><i class='fa fa-fw fa-file'></i> Tasques</a>");
+			menu.append("	<a href='tascaList'><i class='fa fa-fw fa-tasks'></i> Tasques</a>");
 			menu.append("</li>");
 			active = "";
 			collapse = "";
@@ -25,7 +25,7 @@ public class ControlPageCore {
 				collapse = "in";
 			}		
 			menu.append("<li class='"+ active + "'>");
-			menu.append("	<a href='javascript:;' data-toggle='collapse' data-target='#registres'><i class='fa fa-fw fa-dashboard'></i> Registre <i class='fa fa-fw fa-caret-down'></i></a>");
+			menu.append("	<a href='javascript:;' data-toggle='collapse' data-target='#registres'><i class='fa fa-fw fa-archive'></i> Registre <i class='fa fa-fw fa-caret-down'></i></a>");
 			menu.append("	<ul id='registres' class='collapse " + collapse + "'>");
 			if (UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_list)) {
 				menu.append("   	<li>");
@@ -46,7 +46,7 @@ public class ControlPageCore {
 		if (UsuariCore.hasPermision(conn, usuari, SectionPage.incidencia_list)) {			
 			if (seccio.equals("Incidencies")) active = "active"; 
 			menu.append("<li class='" + active + "'>");
-			menu.append("	<a href='incidencies'><i class='fa fa-fw fa-file'></i> Incidències</a>");
+			menu.append("	<a href='incidencies'><i class='fa fa-fw fa-bookmark-o'></i> Incidències</a>");
 			menu.append("</li>");
 			active = "";
 			collapse = "";
@@ -55,7 +55,7 @@ public class ControlPageCore {
 		if (UsuariCore.hasPermision(conn, usuari, SectionPage.actuacio_list)) {			
 			if (seccio.equals("Actuacions")) active = "active"; 
 			menu.append("<li class='" + active + "'>");
-			menu.append("	<a href='actuacions'><i class='fa fa-fw fa-file'></i> Actuacions</a>");
+			menu.append("	<a href='actuacions'><i class='fa fa-fw fa-bookmark'></i> Actuacions</a>");
 			menu.append("</li>");
 			active = "";
 			collapse = "";
@@ -67,7 +67,7 @@ public class ControlPageCore {
 				collapse = "in";
 			}
 			menu.append("<li class='"+ active + "'>");
-			menu.append("	<a href='javascript:;' data-toggle='collapse' data-target='#obresMenu'><i class='fa fa-fw fa-edit'></i> Obres<i class='fa fa-fw fa-caret-down'></i></a>");
+			menu.append("	<a href='javascript:;' data-toggle='collapse' data-target='#obresMenu'><i class='fa fa-fw fa-list'></i> Obres<i class='fa fa-fw fa-caret-down'></i></a>");
 			menu.append("	<ul id='obresMenu' class='collapse " + collapse + "'>");			
 			menu.append("		<li>");
 			menu.append("       	<a href='obresMenors'>Contractes menors</a>");
@@ -87,7 +87,7 @@ public class ControlPageCore {
 				collapse = "in";
 			}
 			menu.append("<li class='"+ active + "'>");
-			menu.append("	<a href='javascript:;' data-toggle='collapse' data-target='#serveisMenu'><i class='fa fa-fw fa-edit'></i> Serveis<i class='fa fa-fw fa-caret-down'></i></a>");
+			menu.append("	<a href='javascript:;' data-toggle='collapse' data-target='#serveisMenu'><i class='fa fa-fw fa-list'></i> Serveis<i class='fa fa-fw fa-caret-down'></i></a>");
 			menu.append("	<ul id='serveisMenu' class='collapse " + collapse + "'>");			
 			menu.append("		<li>");
 			menu.append("       	<a href='serveisMenors'>Contractes menors</a>");
@@ -107,7 +107,7 @@ public class ControlPageCore {
 				collapse = "in";
 			}
 			menu.append("<li class='"+ active + "'>");
-			menu.append("	<a href='javascript:;' data-toggle='collapse' data-target='#subministramentMenu'><i class='fa fa-fw fa-edit'></i> Subministrament<i class='fa fa-fw fa-caret-down'></i></a>");
+			menu.append("	<a href='javascript:;' data-toggle='collapse' data-target='#subministramentMenu'><i class='fa fa-fw fa-list'></i> Subministrament<i class='fa fa-fw fa-caret-down'></i></a>");
 			menu.append("	<ul id='subministramentMenu' class='collapse " + collapse + "'>");			
 			menu.append("		<li>");
 			menu.append("       	<a href='subministramentMenors'>Contractes menors</a>");
@@ -120,11 +120,31 @@ public class ControlPageCore {
 			active = "";
 			collapse = "";
 		}
+		//Altres BD antiga
+		if (UsuariCore.hasPermision(conn, usuari, SectionPage.obres_list)) {
+			if (seccio.equals("Altres")) {
+				active = "active"; 
+				collapse = "in";
+			}
+			menu.append("<li class='"+ active + "'>");
+			menu.append("	<a href='javascript:;' data-toggle='collapse' data-target='#altresMenu'><i class='fa fa-fw fa-list'></i> Altres BD antiga<i class='fa fa-fw fa-caret-down'></i></a>");
+			menu.append("	<ul id='altresMenu' class='collapse " + collapse + "'>");			
+			menu.append("		<li>");
+			menu.append("       	<a href='altresMenors'>Contractes menors</a>");
+			menu.append("    	</li>");		
+			menu.append("     	<li>");
+			menu.append("        	<a href='altresMajors'>Contractes majors</a>");
+			menu.append("    	</li>");
+			menu.append("	</ul>");
+			menu.append("</li>");
+			active = "";
+			collapse = "";
+		}
 		//Centres
 		if (UsuariCore.hasPermision(conn, usuari, SectionPage.centres_list)) {			
 			if (seccio.equals("centres")) active = "active"; 
 			menu.append("<li class='" + active + "'>");
-			menu.append("	<a href='centres'><i class='fa fa-fw fa-file'></i> Centres</a>");
+			menu.append("	<a href='centres'><i class='fa fa-fw fa-university'></i> Centres</a>");
 			menu.append("</li>");
 			active = "";
 			collapse = "";
@@ -136,7 +156,7 @@ public class ControlPageCore {
 				collapse = "in";
 			}
 			menu.append("<li class='"+ active + "'>");
-			menu.append("	<a href='javascript:;' data-toggle='collapse' data-target='#empresaMenu'><i class='fa fa-fw fa-edit'></i> Empreses<i class='fa fa-fw fa-caret-down'></i></a>");
+			menu.append("	<a href='javascript:;' data-toggle='collapse' data-target='#empresaMenu'><i class='fa fa-fw fa-suitcase'></i> Empreses<i class='fa fa-fw fa-caret-down'></i></a>");
 			menu.append("	<ul id='empresaMenu' class='collapse " + collapse + "'>");
 			if (UsuariCore.hasPermision(conn, usuari, SectionPage.empreses_list)) {
 				menu.append("		<li>");
@@ -157,7 +177,7 @@ public class ControlPageCore {
 		if (UsuariCore.hasPermision(conn, usuari, SectionPage.factures_list)) {			
 			if (seccio.equals("Factures")) active = "active"; 
 			menu.append("<li class='" + active + "'>");
-			menu.append("	<a href='factures'><i class='fa fa-fw fa-file'></i> Factures</a>");
+			menu.append("	<a href='factures'><i class='fa fa-fw fa-edit'></i> Factures</a>");
 			menu.append("</li>");
 			active = "";
 			collapse = "";
@@ -169,7 +189,7 @@ public class ControlPageCore {
 				collapse = "in";
 			}
 			menu.append("<li class='"+ active + "'>");
-			menu.append("	<a href='javascript:;' data-toggle='collapse' data-target='#creditMenu'><i class='fa fa-fw fa-desktop'></i> Crèdit / Partides<i class='fa fa-fw fa-caret-down'></i></a>");
+			menu.append("	<a href='javascript:;' data-toggle='collapse' data-target='#creditMenu'><i class='fa fa-fw fa-calculator'></i> Crèdit / Partides<i class='fa fa-fw fa-caret-down'></i></a>");
 			menu.append("	<ul id='creditMenu' class='collapse " + collapse + "'>");
 			if (UsuariCore.hasPermision(conn, usuari, SectionPage.partides_list)) {
 				menu.append("		<li>");

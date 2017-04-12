@@ -69,6 +69,14 @@ public class DoEditEmpresaServlet extends HttpServlet {
 		Date dateExpAcreditacio1 = null;
 		Date dateExpAcreditacio2 = null;
 		Date dateExpAcreditacio3 = null;
+		Date dataRegistreMercantil = null;
+		
+		SimpleDateFormat formatterYear = new SimpleDateFormat("yyyy");
+		Date dataExerciciEconomic = null;
+		
+		double ratioAP = 0;
+		if (! multipartParams.getParametres().get("ratioAP").isEmpty()) ratioAP = Double.parseDouble(multipartParams.getParametres().get("ratioAP"));
+		
 		Empresa empresa = new Empresa();
 		List<Empresa.Administrador> administradors = new ArrayList<Empresa.Administrador>();
 		String errorString = null;
@@ -77,6 +85,8 @@ public class DoEditEmpresaServlet extends HttpServlet {
 			if (! multipartParams.getParametres().get("dateExpAcreditacio1").isEmpty()) dateExpAcreditacio1 = formatter.parse(multipartParams.getParametres().get("dateExpAcreditacio1"));
 			if (! multipartParams.getParametres().get("dateExpAcreditacio2").isEmpty()) dateExpAcreditacio2 = formatter.parse(multipartParams.getParametres().get("dateExpAcreditacio2"));
 			if (! multipartParams.getParametres().get("dateExpAcreditacio3").isEmpty()) dateExpAcreditacio3 = formatter.parse(multipartParams.getParametres().get("dateExpAcreditacio3"));
+			if (! multipartParams.getParametres().get("dataRegistreMercantil").isEmpty()) dataRegistreMercantil = formatter.parse(multipartParams.getParametres().get("dataRegistreMercantil"));
+			if (! multipartParams.getParametres().get("dataExerciciEconomic").isEmpty()) dataExerciciEconomic = formatterYear.parse(multipartParams.getParametres().get("dataExerciciEconomic"));
 			
 			empresa.setCif(cif);
 			empresa.setName(name);
@@ -97,6 +107,9 @@ public class DoEditEmpresaServlet extends HttpServlet {
 			empresa.setAcreditacio3(acreditacio3);
 			empresa.setDateExpAcreditacio3(dateExpAcreditacio3);
 			empresa.setInformacioAdicional(informacioAdicional);
+			empresa.setRegistreMercantilData(dataRegistreMercantil);
+			empresa.setExerciciEconomic(dataExerciciEconomic);
+			empresa.setRatioAP(ratioAP);
 			
 			Empresa.Administrador administrador = empresa.new Administrador();			
 		    String[] administradorsString = multipartParams.getParametres().get("llistatAdministradors").split(";"); //Agafam tots els administradors

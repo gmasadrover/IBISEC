@@ -49,11 +49,11 @@ public class OpenFolder extends HttpServlet {
  
         JsonObject myObj = new JsonObject();      
         int idIncidencia = Integer.parseInt(request.getParameter("idIncidencia"));
-        File tmpFile = new File(utils.Fitxers.RUTA_BASE + idIncidencia);
+        File tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia);
 		if (!tmpFile.exists()) {
 			tmpFile.mkdir();
 		}
-		Desktop.getDesktop().open(new File(utils.Fitxers.RUTA_BASE + idIncidencia));
+		Desktop.getDesktop().open(new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia));
 		myObj.addProperty("success", true);	
 		
         out.println(myObj.toString());

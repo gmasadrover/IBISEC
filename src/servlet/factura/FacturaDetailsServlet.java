@@ -45,7 +45,7 @@ public class FacturaDetailsServlet extends HttpServlet {
     	}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.factures_list)) {
     		response.sendRedirect(request.getContextPath() + "/");	 
  	   	}else{
-			int idFactura = Integer.parseInt(request.getParameter("ref"));	 
+			String idFactura = request.getParameter("ref");	 
 	        Factura factura = null;	 
 	        String errorString = null;
 	 

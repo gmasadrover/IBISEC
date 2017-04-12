@@ -84,9 +84,6 @@ public class JDBCFilter implements Filter {
        // (for example: image, css, javascript,... )
        //
        if (this.needJDBC(req)) {
- 
-           System.out.println("Open Connection for: " + req.getServletPath());
- 
            Connection conn = null;
            try {
                // Create connection

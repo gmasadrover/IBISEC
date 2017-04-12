@@ -1,13 +1,9 @@
 package servlet.tasca;
 
-import java.awt.Desktop;
-import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -23,6 +19,7 @@ import bean.Tasca;
 import bean.User;
 import bean.ControlPage.SectionPage;
 import core.ControlPageCore;
+import core.LoggerCore;
 import core.TascaCore;
 import core.UsuariCore;
 import utils.MyUtils;
@@ -34,7 +31,7 @@ public class TascaListServlet extends HttpServlet {
     public TascaListServlet() {
         super();
     } 
-    
+        
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -44,25 +41,26 @@ public class TascaListServlet extends HttpServlet {
  		   response.sendRedirect(request.getContextPath() + "/preLogin");
     	}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_list)) {
     		response.sendRedirect(request.getContextPath() + "/");	
- 	   	}else{	
- 	   		//Desktop.getDesktop().open(new File("W://1-GESTIÓ ADMINISTRATIVA"));
- 	   		
- 	   		//utils.EmailTest test = new utils.EmailTest();
- 	   		//test.test();
- 	   		
+ 	   	}else{	   		
  	   		String filtrar = request.getParameter("filtrar");
 	        String errorString = null;
 	        List<Tasca> list = null;
 	        List<User> llistaUsuaris = null;
 	        String idUsuari = request.getParameter("idUsuari");
 	        String usuariSelected = String.valueOf(usuari.getIdUsuari());
+	        boolean veureTotes = usuari.getDepartament().equals("gerencia");
 	        try {
 	        	if (filtrar != null) {
 	        		if (NumberUtils.isNumber(idUsuari)) {
 	        			list = TascaCore.llistaTasquesUsuari(conn, Integer.parseInt(idUsuari));
 	        		}else{
-	        			list = TascaCore.llistaTasquesArea(conn, idUsuari);
+	        			if ("totes".equals(idUsuari)) {
+	        				list = TascaCore.llistaTotesTasques(conn);
+	        			} else {
+	        				list = TascaCore.llistaTasquesArea(conn, idUsuari);
+	        			}	        			
 	        		}
+	        		if (usuari.getRol().contains("GERENT")) idUsuari = "totes";
 	        		usuariSelected = idUsuari;
 	        	}else{
 	        		list = TascaCore.llistaTasquesUsuari(conn, usuari.getIdUsuari());		            
@@ -74,6 +72,7 @@ public class TascaListServlet extends HttpServlet {
 	        }	        
 	        
 	        // Store info in request attribute, before forward to views
+	        request.setAttribute("veureTotes", veureTotes);
 	        request.setAttribute("llistaUsuaris", llistaUsuaris);
 	        request.setAttribute("errorString", errorString);
 	        request.setAttribute("tasquesList", list);  
@@ -82,8 +81,9 @@ public class TascaListServlet extends HttpServlet {
 		
 		    
 		    InetAddress IP=InetAddress.getLocalHost();
-		    System.out.println("IP of my system is := "+IP.getHostAddress());
-		    System.out.println("USER: " + System.getProperty("user.name"));
+		    LoggerCore.addLog("IP remote: " + request.getRemoteAddr(), usuari.getUsuari());
+		    LoggerCore.addLog("IP of my system is := "+IP.getHostAddress(), usuari.getUsuari());
+		    LoggerCore.addLog("USER: " + System.getProperty("user.name"), usuari.getUsuari());
 	        // Forward to /WEB-INF/views/productListView.jsp
 	        RequestDispatcher dispatcher = request.getServletContext()
 					.getRequestDispatcher("/WEB-INF/views/tasca/tascaListView.jsp");

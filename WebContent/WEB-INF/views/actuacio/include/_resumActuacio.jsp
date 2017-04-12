@@ -18,6 +18,13 @@
     </div>
     <div class="panel-body">
         <p>${actuacio.descripcio}</p>
+        <p>Documents adjunts:</p>
+        <c:forEach items="${actuacio.arxiusAdjunts}" var="arxiu" >
+          	<a target="_blanck" href="downloadFichero?ruta=${arxiu.ruta}">
+				${arxiu.seccio} - ${arxiu.nom}
+			</a>
+			<br>
+		</c:forEach>		
     </div>
     <div class="panel-footer">
     	<div class="row">

@@ -10,6 +10,8 @@
 <link href="css/bootstrap-datepicker3.standalone.min.css" rel="stylesheet">
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 <link href="//cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css" rel="stylesheet">
+<link href="//cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css" rel="stylesheet">
+
 <link href="css/bootstrap-select.min.css" rel="stylesheet">
 
 <!-- Custom CSS -->
@@ -19,6 +21,7 @@
 <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
 <link href="css/main.css" rel="stylesheet">
+<link rel="shortcut icon" href="favicon.png" type="image/png">
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->

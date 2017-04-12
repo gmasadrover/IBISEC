@@ -1,13 +1,22 @@
 body{
 	background-color: #FFFFFF;
 }
+.logo {
+	width: 30px;
+	float: left;
+}
+.tittleLogo{
+	margin-left: 10px;
+    line-height: 25px;
+}
 .footer{
 	background: #E0E0E0; 
 	text-align: center; 
 	padding: 5px; 
-	position: fixed;
     width: 100%;
-    bottom: 0;
+    margin-top: 50px;
+    font-size:11px;
+    display:none;
 }
 .fa-user:before {
 	margin-right:10px;
@@ -54,6 +63,9 @@ body{
 .margin_left30{
     margin-left: 30px;
 }
+.margin_left100{
+    margin-left: 100px;
+}
 .right{
 	float:right;
 }
@@ -90,4 +102,10 @@ body{
 }
 .yellow{
 	background: #f0ad4e;	
+}
+.blue{
+	background: #286090;	
+}
+#wrapper{
+	display:block;
 }

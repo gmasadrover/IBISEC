@@ -15,7 +15,7 @@ public class IncidenciaCore {
 	
 	private static Incidencia initIncidencia(Connection conn, ResultSet rs) throws SQLException{
 		Incidencia incidencia = new Incidencia();
-		incidencia.setIdIncidencia(rs.getInt("idincidencia"));
+		incidencia.setIdIncidencia(rs.getString("idincidencia"));
 		incidencia.setDescripcio(rs.getString("descripcio"));
 		incidencia.setUsuCre(UsuariCore.findUsuariByID(conn, rs.getInt("usucre")));
 		incidencia.setUsuMod(rs.getDate("datacre"));
@@ -24,7 +24,7 @@ public class IncidenciaCore {
 		incidencia.setIdCentre(rs.getString("idcentre"));
 		incidencia.setNomCentre(CentreCore.nomCentre(conn, rs.getString("idcentre")));
 		incidencia.setSolicitant(rs.getString("solicitant"));
-		incidencia.setLlistaActuacions(ActuacioCore.searchActuacionsInciencia(conn, rs.getInt("idincidencia")));
+		incidencia.setLlistaActuacions(ActuacioCore.searchActuacionsInciencia(conn, rs.getString("idincidencia")));
 		return incidencia;
 	}
 	
@@ -34,7 +34,7 @@ public class IncidenciaCore {
 	 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 	 
-		pstm.setInt(1, incidencia.getIdIncidencia());		
+		pstm.setString(1, incidencia.getIdIncidencia());		
 		pstm.setString(2, incidencia.getDescripcio());
 		pstm.setInt(3, incidencia.getUsuCre().getIdUsuari());
 		pstm.setString(4, incidencia.getIdCentre());
@@ -43,14 +43,14 @@ public class IncidenciaCore {
 		pstm.executeUpdate();
 	}
 	
-	public static Incidencia findIncidencia(Connection conn, int idIncidencia) throws SQLException{
+	public static Incidencia findIncidencia(Connection conn, String idIncidencia) throws SQLException{
 		Incidencia incidencia = new Incidencia();
 		String sql = "SELECT idincidencia, descripcio, usucre, datacre, activa, datatancament, idcentre, solicitant" 
 					+ " FROM public.tbl_incidencia"
 					+ " WHERE idincidencia = ?";
 		PreparedStatement pstm;
 		pstm = conn.prepareStatement(sql);
-		pstm.setInt(1, idIncidencia);			
+		pstm.setString(1, idIncidencia);			
 		
 		ResultSet rs = pstm.executeQuery();
 		
@@ -70,7 +70,7 @@ public class IncidenciaCore {
 			if (idCentre != "") {
 				sql += " AND idcentre = ?";
 				if (onlyActives) { sql+= " AND activa = true"; }
-				sql += " ORDER BY idincidencia::INT DESC";
+				sql += " ORDER BY datacre DESC, idincidencia DESC";
 				pstm = conn.prepareStatement(sql);
 				pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
 				Calendar fi = Calendar.getInstance();
@@ -81,7 +81,7 @@ public class IncidenciaCore {
 				pstm.setString(3, idCentre);	
 			} else {
 				if (onlyActives) { sql+= " AND activa = true"; }
-				sql += " ORDER BY idincidencia::INT DESC";
+				sql += " ORDER BY datacre DESC, idincidencia DESC";
 				pstm = conn.prepareStatement(sql);
 				pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
 				Calendar fi = Calendar.getInstance();
@@ -94,12 +94,12 @@ public class IncidenciaCore {
 			if (idCentre != "") {
 				sql += " WHERE idcentre = ?";
 				if (onlyActives) { sql+= " AND activa = true"; }
-				sql += " ORDER BY idincidencia::INT DESC";
+				sql += " ORDER BY datacre DESC, idincidencia DESC";
 				pstm = conn.prepareStatement(sql);				
 				pstm.setString(1, idCentre);	
 			} else {
 				if (onlyActives) { sql+= " WHERE activa = true"; }
-				sql += " ORDER BY idincidencia::INT DESC";
+				sql += " ORDER BY datacre DESC, idincidencia DESC";
 				pstm = conn.prepareStatement(sql);
 			}
 		}
@@ -112,16 +112,29 @@ public class IncidenciaCore {
 		return list;
 	}
 	
-	public static int getNewCode(Connection conn) throws SQLException {
-		int newCode = 1;
-		String sql = "SELECT idincidencia"
+	public static String getNewCode(Connection conn) throws SQLException {
+		String newCode = "1";
+		
+		String sql = "SELECT idincidencia, datacre"
 					+ " FROM public.tbl_incidencia"
-					+ " ORDER BY idincidencia DESC LIMIT 1;";		 
+					+ " WHERE idincidencia like '%INC%'"
+					+ " ORDER BY datacre DESC, idincidencia DESC LIMIT 1;";	 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		ResultSet rs = pstm.executeQuery();
-		while (rs.next()) {
-			int actualCode = rs.getInt("idincidencia");			
-			newCode = actualCode + 1;
+		Calendar now = Calendar.getInstance();
+		int year = now.get(Calendar.YEAR);
+		String yearInString = String.valueOf(year);
+		String prefix = "INC";
+		if (rs.next()) { //Codis nous
+			String actualCode = rs.getString("idincidencia");			
+			int num = Integer.valueOf(actualCode.split("-")[2]);
+			String numFormatted = String.format("%04d", num + 1);
+			newCode = yearInString + "-" + prefix + "-" + numFormatted;
+		}
+		else {
+			int num = 0;		
+			String numFormatted = String.format("%04d", num + 1);
+			newCode = yearInString + "-" + prefix + "-" + numFormatted;
 		}
 		return newCode;
 	}

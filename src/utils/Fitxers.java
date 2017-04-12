@@ -55,21 +55,21 @@ public class Fitxers {
 		}		
 	}
 	
-	public static final String RUTA_BASE = "V:/INTERCANVI D'OBRES/MAS, GUILLEM/documents/";
+	public static final String RUTA_BASE = "//sibisec1/usuaris/INTERCANVI D'OBRES/IBISEC/NOVA INTRANET";
 	
-	public static List<Fitxer> ObtenirFitxers(int idIncidencia, int idActuacio, String tipus, int idTipus, String idSubTipus) {
+	public static List<Fitxer> ObtenirFitxers(String idIncidencia, String idActuacio, String tipus, String idTipus, String idSubTipus) {
 		List<Fitxer> arxius = new ArrayList<Fitxer>();
-		String rutaBase = RUTA_BASE + idIncidencia;
-		if (idActuacio != -1) rutaBase += "/Actuacio/" + idActuacio;				
+		String rutaBase = RUTA_BASE + "/documents/" + idIncidencia;
+		if (!idActuacio.isEmpty()) rutaBase += "/Actuacio/" + idActuacio;				
 		rutaBase += "/" + tipus + "/" + idTipus;
-		if (idSubTipus != "") rutaBase += "/Comentari/" + idSubTipus;
+		if (!idSubTipus.isEmpty()) rutaBase += "/Comentari/" + idSubTipus;
 		arxius = ObtenirTotsFitxers(rutaBase, tipus);		
 		return arxius;		
 	}
 	
-	public static List<Fitxer> ObtenirTotsFitxers(int idActuacio) {
+	public static List<Fitxer> ObtenirTotsFitxers(String idIncidencia) {
 		List<Fitxer> arxius = new ArrayList<Fitxer>();		
-		String rutaBase = RUTA_BASE + idActuacio + "/";
+		String rutaBase = RUTA_BASE + "/documents/" + idIncidencia + "/";
 		arxius = ObtenirTotsFitxers(rutaBase, "Incidencia");		
 		return arxius;	
 	}
@@ -89,7 +89,6 @@ public class Fitxers {
 					fitxer.setRuta(ruta + "/" + ficheros[x].getName());
 					fitxer.setSeccio(seccio);
 					arxius.add(fitxer);
-					System.out.println(ruta + "/" + ficheros[x].getName());
 				}				
 			}
 		}
@@ -100,47 +99,39 @@ public class Fitxers {
 		if (!fitxers.isEmpty()) {
 			String fileName = "";
 			// Crear directoris si no existeixen
-			File tmpFile = new File(utils.Fitxers.RUTA_BASE + idIncidencia);
+			File tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/"  + idIncidencia);
 			if (!tmpFile.exists()) {
-				System.out.println(utils.Fitxers.RUTA_BASE + idIncidencia);
 				tmpFile.mkdir();
 			}
-			tmpFile = new File(utils.Fitxers.RUTA_BASE + idIncidencia + "/Actuacio");
+			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio");
 			if (!tmpFile.exists()) {
-				System.out.println(utils.Fitxers.RUTA_BASE + idIncidencia + "/Actuacio");
 				tmpFile.mkdir();
 			}
-			tmpFile = new File(utils.Fitxers.RUTA_BASE + idIncidencia + "/Actuacio/" + idActuacio);
+			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
 			if (!tmpFile.exists()) {
-				System.out.println(utils.Fitxers.RUTA_BASE + idIncidencia + "/Actuacio/" + idActuacio);
 				tmpFile.mkdir();
 			}
-			tmpFile = new File(utils.Fitxers.RUTA_BASE + idIncidencia + "/Actuacio/" + idActuacio + "/" +tipus);
+			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/" +tipus);
 			if (!tmpFile.exists()) {
-				System.out.println(utils.Fitxers.RUTA_BASE + idIncidencia + "/Actuacio/" + idActuacio + "/" +tipus);
 				tmpFile.mkdir();
 			}
-			tmpFile = new File(utils.Fitxers.RUTA_BASE + idIncidencia + "/Actuacio/" +idActuacio + "/" + tipus + "/" + idTipus);
+			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" +idActuacio + "/" + tipus + "/" + idTipus);
 			if (!tmpFile.exists()) {
-				System.out.println(utils.Fitxers.RUTA_BASE + idIncidencia + "/Actuacio/" +idActuacio + "/" + tipus + "/" + idTipus);
 				tmpFile.mkdir();
 			}		
-			fileName = utils.Fitxers.RUTA_BASE + idIncidencia + "/Actuacio/" + idActuacio + "/" + tipus + "/" + idTipus + "/";
+			fileName = utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/" + tipus + "/" + idTipus + "/";
 			// Miram si te subtipus
 			if (!idSubTipus.isEmpty()) {
-				tmpFile = new File(utils.Fitxers.RUTA_BASE + idIncidencia + "/Actuacio/" + idActuacio + "/" + tipus + "/" + idTipus + "/Comentari");
+				tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/" + tipus + "/" + idTipus + "/Comentari");
 				if (!tmpFile.exists()) {
-					System.out.println(utils.Fitxers.RUTA_BASE + idIncidencia + "/Actuacio/" + idActuacio + "/" + tipus + "/" + idTipus + "/Comentari");
 					tmpFile.mkdir();
 				}
-				tmpFile = new File(utils.Fitxers.RUTA_BASE + idIncidencia + "/Actuacio/" + idActuacio + "/" + tipus + "/" + idTipus + "/Comentari/" + idSubTipus);
+				tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/" + tipus + "/" + idTipus + "/Comentari/" + idSubTipus);
 				if (!tmpFile.exists()) {
-					System.out.println(utils.Fitxers.RUTA_BASE + idIncidencia + "/Actuacio/" + idActuacio + "/" + tipus + "/" + idTipus + "/Comentari/" + idSubTipus);
 					tmpFile.mkdir();
 				}
 				fileName +=  "Comentari/" + idSubTipus + "/";
 			}
-			System.out.println(fileName);
 	        for(int i=0;i<fitxers.size();i++){
 	            Fitxer fitxer = (Fitxer) fitxers.get(i);
 	            if (fitxer.getFitxer().getName() != "") {

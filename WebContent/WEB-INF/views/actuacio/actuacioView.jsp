@@ -37,7 +37,7 @@
 				<c:if test="${not empty actuacio}">
 				<div class="row">
 	                <div class="col-lg-12">
-	                    <div class="panel panel-${actuacio.activa ? actuacio.aprovada ? "success" : "warning" : "danger"}">
+	                    <div class="panel panel-${actuacio.isActiva() ? actuacio.isPaAprovada() ? actuacio.isAprovada() ? "success" : "info" : "warning" : "danger"}">
 	                        <div class="panel-heading">
 	                           	<div class="row">
 	                        		<div class="col-lg-6">
@@ -53,17 +53,22 @@
 	                        </div>
 	                        <div class="panel-footer">
 	                        	<div class="row">
-	                        		<div class="col-lg-4">
-	                        			Data creació: ${actuacio.getDataCreacioString()}
+	                        		<div class="col-lg-3">
+	                        			Creació: ${actuacio.getDataCreacioString()}
 	                        		</div>
-	                        		<div class="col-lg-4">
-	                        			<c:if test="${actuacio.aprovada}">
-	                        				Data Aprovació: ${actuacio.getDataAprovacioString()}
+	                        		<div class="col-lg-3">
+	                        			<c:if test="${actuacio.isPaAprovada()}">
+	                        				Aprovació PA: ${actuacio.getDataAprovarPaString()}
 	                        			</c:if>
 	                        		</div>
-	                        		<div class="col-lg-4">
-	                        			<c:if test="${!actuacio.activa}">
-	                        				Data Tancament: ${actuacio.getDataTancamentString()}
+	                        		<div class="col-lg-3">
+	                        			<c:if test="${actuacio.isAprovada()}">
+	                        				Aprovació: ${actuacio.getDataAprovacioString()}
+	                        			</c:if>
+	                        		</div>
+	                        		<div class="col-lg-3">
+	                        			<c:if test="${!actuacio.isActiva()}">
+	                        				Tancament: ${actuacio.getDataTancamentString()}
 	                        			</c:if>
 	                        		</div>
 	                        	</div>
@@ -71,30 +76,41 @@
 	                    </div>
 	                </div>
             	</div> 
-            	<c:if test="${canModificarActuacio}">  
-	            	<div class="row">
-	           			<div class="col-lg-12 panel ">
-	                    	<div class="">		                    	
-		                    	<form class="form-horizontal" method="POST" action="DoCanvisActuacio">
-		                    		<input class="hidden" name="idActuacio" value=${actuacio.referencia}>
-		                    		<input class="hidden" name="idIncidencia" value=${incidencia.idIncidencia}>
-		                    		<div class="form-group">
-	                    				<div class="col-lg-6">
-	                    					<c:if test="${!actuacio.aprovada and actuacio.activa}">
-	                    						<input class="btn btn-success" type="submit" name="aprovar" value="Aprovar">
-	                    					</c:if>
-	                    				</div>
-							        	<div class="col-lg-6">
-							        		<c:if test="${actuacio.activa}">
-							        			<input class="btn btn-danger" type="submit" name="tancar" value="Tancar">
-							        		</c:if>
-							        	</div>	                    			 
-		                    		</div>	                    		                       	
-		                       	</form>		                       	
-		                   	</div>
-		                </div>
-	            	</div>
-	            </c:if>
+            	<div class="row">
+            		<form class="form-horizontal" method="POST" action="DoCanvisActuacio">
+                		<input class="hidden" name="idActuacio" value=${actuacio.referencia}>
+                		<input class="hidden" name="idIncidencia" value=${incidencia.idIncidencia}>
+                		<input class="hidden" name="idInforme" value="-1">
+                		<div class="form-group">
+               				<div class="col-lg-6">
+               					
+               				</div>
+		        			<div class="col-lg-6">
+				        		<c:if test="${actuacio.isActiva() && canModificarActuacio}">
+				        			<input class="btn btn-danger" data-toggle="modal" data-target="#myModal" name="tancar" value="Tancar actuació">
+				        		</c:if>
+				        	</div> 
+							<!-- Modal -->
+							<div id="myModal" class="modal fade" role="dialog">
+								<div class="modal-dialog">																	
+							    <!-- Modal content-->
+							    	<div class="modal-content">
+							      		<div class="modal-header">
+							        		<button type="button" class="close" data-dismiss="modal">&times;</button>
+							        		<h4 class="modal-title">Motiu tancament</h4>
+							      		</div>
+							      		<div class="modal-body">
+							        		<textarea required></textarea>
+							      		</div>
+							      		<div class="modal-footer">
+							        		<input class="btn btn-danger" type="submit" name="tancar" value="Tancar actuació">
+							      		</div>
+						    		</div>																	
+							  	</div>
+							</div>                  			 
+                 		</div>	                    		                       	
+                	</form>		  
+            	</div>
             	<div class="row">
             		<div class="col-lg-12 panel-group" id="accordion">
             		  <div class="panel panel-default">
@@ -105,13 +121,13 @@
 					    </div>
 					    <div id="dadesTecniques" class="panel-collapse collapse">					    	
 					      	<div class="panel-body">
-					      		<h4>Proposta d'actuació</h4>					      		
+					      		<h4>Informe d'actuació</h4>					      		
 					      		<div class="col-lg-12 panel-group" id="accordionInformes">
 					      			<c:forEach items="${informes}" var="informePrevi" >					      				
 					      				<div class="panel panel-default">
 						      				<div class="panel-heading">
 										      <h4 class="panel-title">
-										        <a data-toggle="collapse" data-parent="#accordionInformes" href="#informe${informePrevi.idInf}">Proposta d'actuació ${informePrevi.idInf} - ${informePrevi.getDataCreacioString()} ${informePrevi.partida == "" ? "Pendent de reserva de partida" : "Partida reservada" }</a>
+										        <a data-toggle="collapse" data-parent="#accordionInformes" href="#informe${informePrevi.idInf}">Proposta despesa ${informePrevi.idInf} - ${informePrevi.getDataCreacioString()} ${informePrevi.partida == "" ? "Pendent de reserva de partida" : "Partida reservada" }</a>
 										      </h4>
 										    </div>
 										    <div id="informe${informePrevi.idInf}" class="panel-collapse collapse">
@@ -122,15 +138,87 @@
 								    					<c:set var="ofertes" scope="request" value="${informePrevi.llistaOfertes}"></c:set>
 								    					<c:set var="ofertaSeleccionada" scope="request" value="${informePrevi.ofertaSeleccionada}"></c:set>								    					
 										    			<jsp:include page="../tasca/include/_resumOfertes.jsp"></jsp:include>
-										            	<c:if test="${actuacio.activa && canModificarActuacio}">				      			
-												      		<div class="row margin_bottom10">
-													    		<div class="col-lg-12 panel">
-																	<a href="CrearDocument?tipus=autMen&idIncidencia=${incidencia.idIncidencia}&idActuacio=${actuacio.referencia}" class="btn btn-primary right" role="button">Generar autorització actuació</a>
-																</div>
-												    		</div>
-										    			</c:if>	
+										    			<c:if test="${informePrevi.ofertaSeleccionada.dataAprovacio != null && informePrevi.ofertaSeleccionada.dataAprovacio > '2017-04-01'}">
+										            	<p>
+										            		<label class="">Autorització generada amb data ${informePrevi.ofertaSeleccionada.getDataAprovacioString()}: </label>	
+										            		<a target="_blanck" href="downloadFichero?ruta=${rutaActuacio}/${actuacio.referencia}/autoritzacio_informe_${informePrevi.idInf}.pdf">
+																autoritzacio_informe_${informePrevi.idInf}.pdf	
+															</a>																
+										            	</p>
+										            	</c:if>
+										            	<c:if test="${informePrevi.ofertaSeleccionada.dataAprovacio == null}">
+											            	<c:if test="${actuacio.activa && canModificarActuacio}">				      			
+													      		<div class="row margin_bottom10">
+														    		<div class="col-lg-12 panel">
+																		<a target="_blanck" href="CrearDocument?tipus=autMen&idIncidencia=${incidencia.idIncidencia}&idActuacio=${actuacio.referencia}&idInforme=${informePrevi.idInf}" class="btn btn-success right" role="button">Aprovar i generar autorització actuació</a>
+																	</div>
+													    		</div>
+											    			</c:if>	
+										    			</c:if>
 										    		</c:if>	
-										    	</div>	
+										    	</div>
+										    	<c:if test="${informePrevi.ofertaSeleccionada.dataAprovacio != null}">
+											    	<div class="panel-body">
+									    				<div class="row panel-body">
+									    					<h4>Factures</h4>
+											    			<div class="table-responsive">                        
+									                            <table class="table table-striped table-bordered filerTable factures">
+									                            	<thead>
+									                                    <tr>                                        
+									                                    	<th>Factura</th>
+									                                        <th>Actuació</th>
+									                                        <th>Data entrada</th>
+									                                        <th>Data entrada</th>
+									                                        <th>Data factura</th>
+									                                        <th>Data factura</th>
+									                                        <th>Import</th>
+									                                        <th>Tipus</th>
+									                                        <th>Proveïdor</th>
+									                                        <th>notes</th>  
+									                                    </tr>
+									                                </thead>
+									                                <tbody>
+									                                	<c:forEach items="${informePrevi.llistaFactures}" var="factura" >
+																          	<tr class="">							          	
+																           		<td><a href="facturaDetalls?ref=${factura.idFactura}">${factura.idFactura}</a></td>
+																            	<td>${factura.idActuacio}</td>
+																            	<td>${factura.getDataEntradaString()}</td>
+																            	<td>${factura.dataEntrada}</td>
+																            	<td>${factura.getDataFacturaString()}</td>
+																            	<td>${factura.dataFactura}</td>
+																            	<td>${factura.valor}</td>
+																            	<td>${factura.tipusFactura}</td>
+																            	<td>${factura.idProveidor}</td>
+																            	<td>${factura.notes}</td>	 				            	
+																          	</tr>
+																       	</c:forEach>
+									                                </tbody>
+									                            </table>
+									                        </div>
+									                        <c:if test="${canCreateFactura}">
+										                        <div class="">	
+										                    		<a href="registrarFactura?idInforme=${informePrevi.idInf}" class="btn btn-primary" role="button">Registrar factura</a>							                    				                       	
+											                   	</div>
+										                   	</c:if>																	
+														</div>
+											    	</div>
+											    </c:if>	
+										    	<c:if test="${canModificarActuacio and informePrevi.getDataAprovacio() == null and actuacio.isActiva()}">  
+									            	<div class="panel-body">
+								                    	<div class="">		                    	
+									                    	<form class="form-horizontal" method="POST" action="DoCanvisActuacio">
+									                    		<input class="hidden" name="idActuacio" value=${actuacio.referencia}>
+									                    		<input class="hidden" name="idIncidencia" value=${incidencia.idIncidencia}>
+									                    		<input class="hidden" name="idInforme" value=${informePrevi.idInf}>
+									                    		<div class="form-group">
+								                    				<div class="col-lg-6">
+								                    					<input class="btn btn-success" type="submit" name="aprovarPA" value="Aprovar proposta d'actuació">
+								                    				</div>																	               			 
+									                    		</div>	                    		                       	
+									                       	</form>		                       	
+									                   	</div>
+									            	</div>
+									            </c:if>
 								    		</div>
 					      				</div>
 					      			</c:forEach>
@@ -138,7 +226,7 @@
 					      		<c:if test="${actuacio.activa && canCreateInformePrevi}">					      			
 						      		<div class="row margin_bottom10">
 							    		<div class="col-lg-12 panel">
-											<a href="createTasca?idActuacio=${actuacio.referencia}&tipus=infPrev" class="btn btn-primary right" role="button">Sol·licitar proposta d'actuació ${informes.size() > 0 ? "nova" : ""}</a>
+											<a href="createTasca?idActuacio=${actuacio.referencia}&tipus=infPrev" class="btn btn-primary right" role="button">Sol·licitar informe prèvi amb valoració econòmica ${informes.size() > 0 ? "nova" : ""}</a>
 										</div>
 						    		</div>
 					    		</c:if>      					          	
@@ -196,21 +284,120 @@
 					  <div class="panel panel-default">
 					    <div class="panel-heading">
 					      <h4 class="panel-title">
+					        <a data-toggle="collapse" data-parent="#accordion" href="#entradesRegistre">Registre entrades</a>
+					      </h4>
+					    </div>
+					    <div id="entradesRegistre" class="panel-collapse collapse">
+					      	<div class="panel-body">
+					      		<c:if test="${canCreateRegistre}">
+						      		<div class="row margin_bottom10">
+							    		<div class="col-lg-12 panel">
+											<a href="novaEntrada?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary" role="button">Nova entrada</a>
+										</div>
+						    		</div>
+						    	</c:if>
+					    		<div class="row panel-body">					    		
+									<div class="table-responsive">                        
+				                            <table class="table table-striped table-bordered">
+				                                <thead>
+				                                    <tr>
+				                                        <th>Referència</th>
+				                                        <th>Data registre</th>
+				                                        <th>Remitent</th>
+				                                        <th>Contingut</th>
+				                                    </tr>
+				                                </thead>
+				                                <tbody>
+				                                	<c:forEach items="${entrades}" var="entrada" >
+											          	<tr>							          	
+											           		<td><a href="registre?tipus=E&referencia=${entrada.id}">${entrada.id}</a></td>
+											            	<td>${entrada.getDataString()}</td>
+											            	<td>${entrada.remDes}</td>
+											            	<td>${entrada.contingut}</td>						            	
+											          	</tr>
+											       	</c:forEach>
+				                                </tbody>
+				                            </table>
+				                        </div>
+									</div>
+								</div>
+					    	</div>
+					  </div>
+					  <div class="panel panel-default">
+					    <div class="panel-heading">
+					      <h4 class="panel-title">
+					        <a data-toggle="collapse" data-parent="#accordion" href="#sortidesRegistre">Registre sortides</a>
+					      </h4>
+					    </div>
+					    <div id="sortidesRegistre" class="panel-collapse collapse">
+					      	<div class="panel-body">
+					      		<c:if test="${canCreateRegistre}">
+						      		<div class="row margin_bottom10">
+							    		<div class="col-lg-12 panel">
+											<a href="novaSortida?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary" role="button">Nova sortida</a>
+										</div>
+						    		</div>
+						    	</c:if>
+					    		<div class="row panel-body">	
+									<div class="table-responsive">                        
+				                            <table class="table table-striped table-bordered">
+				                                <thead>
+				                                    <tr>
+				                                        <th>Referència</th>
+				                                        <th>Data registre</th>
+				                                        <th>Destinatari</th>
+				                                        <th>Contingut</th>
+				                                    </tr>
+				                                </thead>
+				                                <tbody>
+				                                	<c:forEach items="${sortides}" var="sortida" >
+											          	<tr>							          	
+											           		<td><a href="registre?tipus=S&referencia=${sortida.id}">${sortida.id}</a></td>
+											            	<td>${sortida.getDataString()}</td>
+											            	<td>${sortida.remDes}</td>
+											            	<td>${sortida.contingut}</td>						            	
+											          	</tr>
+											       	</c:forEach>
+				                                </tbody>
+				                            </table>
+				                        </div>
+									</div>
+								</div>
+					    	</div>
+					  </div>		
+					  <div class="panel panel-default">
+					    <div class="panel-heading">
+					      <h4 class="panel-title">
 					        <a data-toggle="collapse" data-parent="#accordion" href="#arxiusAdjunts">Arxius adjunts</a>
 					      </h4>
 					    </div>
-					    <div id="arxiusAdjunts" class="panel-collapse collapse">
+					    <div id="arxiusAdjunts" class="panel-collapse collapse in">
 					      	<div class="panel-body">					      		
 					    		<div class="row panel-body">
-					    			<input id="obrirPD" class="btn btn-default" value="Carpteta Actuacio" data-idactuacio="${actuacio.referencia}" data-idincidencia="${incidencia.idIncidencia}">						    		
-									<br>
-									<c:forEach items="${arxius}" var="arxiu" >
-					            		<a  href="downloadFichero?ruta=${arxiu.ruta}">
+									<c:forEach items="${actuacio.arxiusAdjunts}" var="arxiu" >
+					            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.ruta}">
 											${arxiu.seccio} - ${arxiu.nom}
 										</a>
 										<br>
 									</c:forEach>																		
 								</div>
+								<div class="row">            			
+									<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadFichero">
+										<div class="form-group">
+											<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+				                            <div class="col-xs-5">   
+				                                <input type="file" class="btn" name="file" /><br/>
+											</div> 
+											<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">
+											<input type="hidden" name="tipus" value="Actuacio">
+											<input type="hidden" name="idTipus" value="${actuacio.referencia}">											
+											<input type="hidden" name="redirect" value="/actuacionsDetalls?ref=${actuacio.referencia}">				    
+											<div class="col-xs-2"> 
+				         						<input type="submit" class="btn btn-primary" value="Pujar" />
+				         					</div>    						
+				         				</div>         				
+									</form>							
+				            	</div>     
 							</div>
 					    </div>
 					  </div>

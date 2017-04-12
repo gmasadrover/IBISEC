@@ -36,8 +36,8 @@ public class DoCreateTascaServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		Connection conn = MyUtils.getStoredConnection(request);
-		int idIncidencia = -1;		
-		int idActuacio = -1;
+		String idIncidencia = "";		
+		String idActuacio = "";
 			
 	    int idUsuari = MyUtils.getLoginedUser(request.getSession()).getIdUsuari();
 	    String tipus = request.getParameter("tipus");
@@ -46,9 +46,9 @@ public class DoCreateTascaServlet extends HttpServlet {
 	   	int usuariTasca = Integer.parseInt(request.getParameter("idUsuari"));
 	   	String errorString = null;	   		   	
 	   	try {
-	   		if (request.getParameter("idIncidencia") != "") idIncidencia = Integer.parseInt(request.getParameter("idIncidencia")); 
+	   		idIncidencia = request.getParameter("idIncidencia"); 
 	   		if (request.getParameter("idActuacio") != "") {
-				idActuacio = Integer.parseInt(request.getParameter("idActuacio")); 
+				idActuacio = request.getParameter("idActuacio"); 
 				String modificacio = "Crear nova tasca";
 				if ("infPrev".equals(tipus)) {
 					modificacio = "Sol·licitar proposta d'actuació";
@@ -56,7 +56,7 @@ public class DoCreateTascaServlet extends HttpServlet {
 				ActuacioCore.actualitzarActuacio(conn, idActuacio, modificacio);
 				idIncidencia = ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia();
 			}	
-			TascaCore.novaTasca(conn, tipus, usuariTasca, idUsuari, idActuacio, idIncidencia, comentari, assumpte);
+			TascaCore.novaTasca(conn, tipus, usuariTasca, idUsuari, idActuacio, idIncidencia, comentari, assumpte, "");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -71,7 +71,7 @@ public class DoCreateTascaServlet extends HttpServlet {
 	   				.getRequestDispatcher("/WEB-INF/views/tasca/createTascaView.jsp");
 	   		dispatcher.forward(request, response);
 	   	}// If everything nice. Redirect to the product listing page.            
-	   	else if (idActuacio > -1) {
+	   	else if (! idActuacio.isEmpty()) {
 	   		response.sendRedirect(request.getContextPath() + "/actuacionsDetalls?ref=" + idActuacio);
 	   	} else {
 	   		response.sendRedirect(request.getContextPath() + "/incidenciaDetalls?ref=" + idIncidencia);

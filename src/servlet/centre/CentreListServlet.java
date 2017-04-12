@@ -3,12 +3,7 @@ package servlet.centre;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -21,10 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import bean.User;
 import bean.Centre;
 import bean.ControlPage.SectionPage;
-import bean.Incidencia;
 import core.CentreCore;
 import core.ControlPageCore;
-import core.IncidenciaCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
@@ -51,7 +44,7 @@ public class CentreListServlet extends HttpServlet {
 		User usuari = MyUtils.getLoginedUser(request.getSession());
 		if (usuari == null) {
 			response.sendRedirect(request.getContextPath() + "/preLogin");
-		}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.incidencia_list)) {
+		}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.centres_list)) {
     		response.sendRedirect(request.getContextPath() + "/");	
 		} else {
 			String filtrar = request.getParameter("filtrar");

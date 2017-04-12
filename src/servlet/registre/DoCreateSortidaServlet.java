@@ -41,21 +41,30 @@ public class DoCreateSortidaServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 Connection conn = MyUtils.getStoredConnection(request);
 		
-	    int referencia = Integer.parseInt(request.getParameter("referencia"));
+	    String referencia = request.getParameter("referencia");
 	    String remitent = request.getParameter("destinatari");
 	    String tipus = URLDecoder.decode(request.getParameter("tipus"),  "UTF-8");	    
-//	    String idCentre = request.getParameter("idCentre").split("_")[0];
-	    String contingut = request.getParameter("contingut");
 	    String idCentre = "";
-	    int idIncidencia = -1;
+	    String contingut = request.getParameter("contingut");
+	    String idIncidencia = "";
 	    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 	    int idUsuari = MyUtils.getLoginedUser(request.getSession()).getIdUsuari();
 	    Date peticio = new Date();
 		try {
-			idIncidencia = Integer.parseInt(request.getParameter("idIncidencia"));
-	    	idCentre = IncidenciaCore.findIncidencia(conn, idIncidencia).getIdCentre();			
-			peticio = formatter.parse(request.getParameter("peticio"));
-		} catch (ParseException | SQLException e1) {
+			if (request.getParameter("idIncidenciaSeleccionada") != null && request.getParameter("idIncidenciaSeleccionada") != "") {
+		    	idIncidencia = request.getParameter("idIncidenciaSeleccionada");
+		    	try {
+					idCentre = IncidenciaCore.findIncidencia(conn,idIncidencia).getIdCentre();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    } else {
+				idIncidencia = request.getParameter("idIncidencia");
+		    	idCentre = request.getParameter("idCentre");			
+				peticio = formatter.parse(request.getParameter("peticio"));
+		    }
+		} catch (ParseException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}

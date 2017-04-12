@@ -44,7 +44,8 @@
                     <div class="col-lg-12">                    	
 		    			<form class="form-horizontal" method="POST" action="DoCreateSortidaServlet">
 		    				<div class="form-group">
-		    					<input type="hidden" name="idIncidencia" value="${idIncidencia}"> 
+		    					<input type="hidden" id="tipusRegistre" value="S"> 
+		    					<input type="hidden" name="idIncidenciaSeleccionada" value="${idIncidencia}"> 
                                 <label class="col-xs-3 control-label">Referència</label>
                                 <div class="col-xs-3">
                                 	<input class="form-control" name="referencia" placeholder="referència" value="${nouCodi}">
@@ -59,7 +60,7 @@
                             <div class="form-group">
                                 <label class="col-xs-3  control-label">Tipus</label>
                                 <div class="col-xs-3">
-	                                <select class="form-control selectpicker" name="tipus" data-live-search="true" id="tipusList">
+	                                <select class="form-control selectpicker" name="tipus" data-live-search="true" data-size="5" id="tipusList">
 	                                </select>
 	                             </div>
                             </div>  			
@@ -74,7 +75,25 @@
                                 <div class="input-group date col-xs-3 datepicker">
 								  	<input type="text" class="form-control"  name="peticio" value="${data}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>
-                            </div>	
+                            </div>
+                             <c:if test="${idIncidencia == null}">
+                            	<div class="form-group">
+	                                <label class="col-xs-3  control-label">Centre</label>
+	                                <div class="col-xs-3">
+		                                <select class="form-control selectpicker" name="idCentre" data-live-search="true" data-size="5" id="centresList">
+			                            	<option value="-1">No hi ha relació</option>
+			                            </select>
+		                             </div>
+	                            </div> 
+                            	<div class="form-group incidencies hidden">
+	                             	<label class="col-xs-3 control-label">Incidència</label>
+	                                <div class="col-xs-3">   
+		                                <select class="form-control selectpicker" name="idIncidencia" data-live-search="true" data-size="5" id="incidenciesList">
+		                                	<option value="-1">Nova incidència</option>
+		                                </select>
+									</div>
+								</div>	          
+							</c:if>			
                             <br>
 						    <div class="form-group">
 						        <div class="col-xs-offset-3 col-xs-9">

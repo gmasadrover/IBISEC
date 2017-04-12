@@ -48,7 +48,7 @@ public class RegistreDetailsServlet extends HttpServlet {
 		 }else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.registre_detalls)) {
 	    		response.sendRedirect(request.getContextPath() + "/");
 		   }else{			   
-			   int referencia =	Integer.parseInt(request.getParameter("referencia"));
+			   String referencia =	request.getParameter("referencia");
 			   String tipus = request.getParameter("tipus");
 		       String errorString = null;
 		       
@@ -60,7 +60,7 @@ public class RegistreDetailsServlet extends HttpServlet {
 		           errorString = e.getMessage();
 		       }
 		  
-		       List<Fitxers.Fitxer> arxius = Fitxers.ObtenirFitxers(registre.getIdIncidencia(), -1, "RegistreE", registre.getId(), "");
+		       List<Fitxers.Fitxer> arxius = Fitxers.ObtenirFitxers(registre.getIdIncidencia(), "", "RegistreE", registre.getId(), "");
 		      
 		       // Store info in request attribute, before forward to views
 		       request.setAttribute("errorString", errorString);

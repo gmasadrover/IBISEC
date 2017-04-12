@@ -44,6 +44,9 @@
 	                        	    </div>
 	                        	    <div class="col-lg-4">
 	                        			 Data entrada: ${registre.getDataString()} 
+	                        	    </div>	  
+	                        	    <div class="col-lg-4">
+	                        			 Centre: ${registre.nomCentre} 
 	                        	    </div>	                        		
 	                        	</div>
 	                        </div>
@@ -54,12 +57,31 @@
 	                        	<div class="row panel-body">
 	                        		<p>Arxius adjunts:</p>
 	                        		<c:forEach items="${arxius}" var="arxiu" >
-					            		<a  href="downloadFichero?ruta=${arxiu.ruta}">
+					            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.ruta}">
 											${arxiu.nom}
 										</a>
 										<br>
 									</c:forEach>
-	                        	</div>	                            
+	                        	</div>
+	                        	<c:if test="${canCreateRegistre}">	  
+		                        	<div class="row">            			
+										<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadFichero">
+											<div class="form-group">
+												<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+					                            <div class="col-xs-5">   
+					                                <input type="file" class="btn" name="file" /><br/>
+												</div> 
+												<input type="hidden" name="idIncidencia" value="${registre.idIncidencia}">
+												<input type="hidden" name="tipus" value="RegistreE">
+												<input type="hidden" name="idTipus" value="${registre.id}">
+												<input type="hidden" name="redirect" value="/registre?tipus=${tipus}&referencia=${registre.id}">				    
+												<div class="col-xs-2"> 
+					         						<input type="submit" class="btn btn-primary" value="Pujar" />
+					         					</div>    						
+					         				</div>         				
+										</form>							
+					            	</div>     
+					            </c:if>                     
 	                        </div>
 	                        <div class="panel-footer">
 	                        	<div class="row">
@@ -68,7 +90,7 @@
 	                        		</div>
 	                        		<div class="col-lg-4">            			
 	                        		</div>
-	                        		<c:if test="${registre.idIncidencia > 0}">
+	                        		<c:if test="${registre.idIncidencia != '-1'}">
 		                        		<div class="col-lg-4">
 		                        			Incidència relacionada: <a href="incidenciaDetalls?ref=${registre.idIncidencia}">${registre.idIncidencia}</a>                        			
 		                        		</div>
@@ -77,25 +99,13 @@
 	                        </div>
 	                    </div>
 	                </div>
-            	</div>
+            	</div>            	
             	<c:if test="${canCreateRegistre}">
-	            	<div class="row">            			
-						<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadFichero">
-							<div class="form-group">
-								<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-	                            <div class="col-xs-5">   
-	                                <input type="file" class="btn" name="file" /><br/>
-								</div> 
-								<input type="hidden" name="idIncidencia" value="${registre.idIncidencia}">
-								<input type="hidden" name="tipus" value="RegistreE">
-								<input type="hidden" name="idTipus" value="${registre.id}">
-								<input type="hidden" name="redirect" value="/registre?tipus=${tipus}&referencia=${registre.id}">				    
-								<div class="col-xs-2"> 
-	         						<input type="submit" class="btn btn-primary" value="Pujar" />
-	         					</div>    						
-	         				</div>         				
-						</form>							
-	            	</div>
+	            	<div class="row">
+	            		<div class="col-xs-offset-10 col-xs-2"> 
+	   						<a href="editRegistre?id=${registre.id}&tipus=${tipus}" class="btn btn-success">Modificar registre</a>
+	   					</div>
+	            	</div>	            	
             	</c:if>
             </div>
             <!-- /.container-fluid -->

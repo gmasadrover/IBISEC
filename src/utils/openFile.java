@@ -2,6 +2,10 @@ package utils;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -9,6 +13,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import core.LoggerCore;
+
 import java.awt.Desktop;
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,24 +41,48 @@ public class openFile extends HttpServlet {
 		// TODO Auto-generated method stub
 		String idIncidencia = request.getParameter("idincidencia");
 		String idActuacio = request.getParameter("idactuacio");
-		File tmpFile = new File(utils.Fitxers.RUTA_BASE + idIncidencia);
+		File tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia);
 		if (!tmpFile.exists()) {
-			System.out.println(utils.Fitxers.RUTA_BASE + idIncidencia);
 			tmpFile.mkdir();
 		}
-		tmpFile = new File(utils.Fitxers.RUTA_BASE + idIncidencia + "/Actuacio");
+		tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio");
 		if (!tmpFile.exists()) {
-			System.out.println(utils.Fitxers.RUTA_BASE + idIncidencia + "/Actuacio");
 			tmpFile.mkdir();
 		}
-		tmpFile = new File(utils.Fitxers.RUTA_BASE + idIncidencia + "/Actuacio/" + idActuacio);
+		tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
 		if (!tmpFile.exists()) {
-			System.out.println(utils.Fitxers.RUTA_BASE + idIncidencia + "/Actuacio/" + idActuacio);
 			tmpFile.mkdir();
 		}
-		Desktop.getDesktop().open(new File(utils.Fitxers.RUTA_BASE + idIncidencia + "/Actuacio/" + idActuacio));
+		//Desktop.getDesktop().browse(getFileURI("W:/1-GESTIÓ ADMINISTRATIVA"));
+		Desktop.getDesktop().open(new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio));
 	}
 
+	
+	private static URI getFileURI(String filePath) {
+	    URI uri = null;
+	    filePath = filePath.trim();
+	    if (filePath.indexOf("http") == 0 || filePath.indexOf("\\") == 0) {
+	        if (filePath.indexOf("\\") == 0){
+	            filePath = "file:" + filePath;
+	            filePath = filePath.replaceAll("#", "%23");
+	        }
+	        try {
+	            filePath = filePath.replaceAll(" ", "%20");
+	            URL url = new URL(filePath);
+	            uri = url.toURI();
+	        } catch (MalformedURLException ex) {
+	            ex.printStackTrace();
+	        } catch (URISyntaxException ex) {
+	            ex.printStackTrace();
+	        } 
+	    } else {
+	        File file = new File(filePath);
+	        uri = file.toURI();
+	    }
+	    LoggerCore.addLog(uri.toString(), "");
+	    return uri;
+	}
+	
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */

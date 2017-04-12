@@ -18,7 +18,7 @@ import bean.Empresa;
 import bean.Historic;
 import bean.Incidencia;
 import bean.Oferta;
-import bean.PropostaActuacio;
+import bean.InformeActuacio;
 import bean.Partida;
 import bean.Tasca;
 import bean.User;
@@ -64,7 +64,7 @@ public class TascaDetailsServlet extends HttpServlet {
  	       Incidencia incidencia = new Incidencia();
  	       Tasca tasca = new Tasca();
  	       boolean esCap = false;
- 	       PropostaActuacio informePrevi = new PropostaActuacio();
+ 	       InformeActuacio informePrevi = new InformeActuacio();
  	       List<Historic> historial = new ArrayList<Historic>();
  	       List<Partida> partidesList = new ArrayList<Partida>();
  	       List<Empresa> empresesList = new ArrayList<Empresa>();
@@ -75,32 +75,34 @@ public class TascaDetailsServlet extends HttpServlet {
 	       Oferta ofertaSeleccionada = new Oferta();
  	       try {
  	    	   tasca = TascaCore.findTascaId(conn, idTasca);
- 	    	   actuacio = tasca.getActuacio();
+ 	    	   actuacio = tasca.getActuacio(); 	    	  
  	    	   incidencia = tasca.getIncidencia();
+ 	    	   actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia()));
  	    	   llistaUsuaris = UsuariCore.findUsuarisByDepartament(conn, tasca.getUsuari().getDepartament());
  	    	   llistaCaps.addAll(UsuariCore.findUsuarisByRol(conn, "CAP"));
- 	    	   canRealitzarTasca = usuari.getDepartament().equals(tasca.getUsuari().getDepartament()); 
+ 	    	   canRealitzarTasca = usuari.getDepartament().equals(tasca.getUsuari().getDepartament()) || "ADMIN".equals(usuari.getRol()); 
  	    	   if (actuacio != null) {
  	    		  historial = TascaCore.findHistorial(conn, idTasca, incidencia.getIdIncidencia(), actuacio.getReferencia());
- 	    		  ofertes = OfertaCore.findOfertes(conn, actuacio.getReferencia());
- 	    		  ofertaSeleccionada = OfertaCore.findOfertaSeleccionada(conn, actuacio.getReferencia());
+ 	    		  ofertes = OfertaCore.findOfertes(conn, tasca.getIdinforme());
+ 	    		  ofertaSeleccionada = OfertaCore.findOfertaSeleccionada(conn, tasca.getIdinforme());
  	    	   }else{
- 	    		  historial = TascaCore.findHistorial(conn, idTasca, incidencia.getIdIncidencia(), -1);
+ 	    		  historial = TascaCore.findHistorial(conn, idTasca, incidencia.getIdIncidencia(), "");
  	    	   } 	    	  
  	    	   String tipusTasca = tasca.getTipus();
- 	    	   if (tasca.getUsuari().getDepartament().equals(usuari.getDepartament()) && usuari.getRol().contains("CAP")) esCap = true;
+ 	    	   if ((tasca.getUsuari().getDepartament().equals(usuari.getDepartament()) && usuari.getRol().contains("CAP")) || "ADMIN".equals(usuari.getRol())) esCap = true;
  	    	   if ("infPrev".equals(tipusTasca)) {
  	    		  informePrevi = InformeCore.getInformeTasca(conn, idTasca);  
  	    		  if (!esCap) {
 	 	    		  llistaUsuaris.clear();
 	 	    		  llistaUsuaris.add(UsuariCore.finCap(conn, tasca.getUsuari().getDepartament()));
  	    		  }
- 	    	   }else if ("resPartida".equals(tipusTasca)){
- 	    		  int tascaInforme = Integer.parseInt(tasca.getDescripcio().split("-")[1].trim());
- 	    		  informePrevi = InformeCore.getInformeTasca(conn, tascaInforme);
+ 	    	   }else if ("resPartida".equals(tipusTasca)){ 	    		  
+ 	    		  String tascaInforme = tasca.getIdinforme();
+ 	    		  informePrevi = InformeCore.getInformePrevi(conn, tascaInforme);
  	    		  partidesList = CreditCore.getPartides(conn, false);
- 	    	   }else if ("liciMenor".equals(tipusTasca)){
- 	    		  informePrevi = InformeCore.getInformesActuacio(conn, actuacio.getReferencia()).get(0); 
+ 	    	   }else if ("liciMenor".equals(tipusTasca)){ 	    		 
+ 	    		  String tascaInforme = tasca.getIdinforme(); 	    		
+ 	    		  informePrevi = InformeCore.getInformePrevi(conn, tascaInforme);
  	    		  empresesList = EmpresaCore.getEmpreses(conn);
  	    		  if (!esCap) {
 	 	    		  llistaUsuaris.clear();

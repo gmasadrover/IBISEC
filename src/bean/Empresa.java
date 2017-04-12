@@ -157,8 +157,12 @@ public class Empresa {
    private boolean acreditacio3;
    private Date dateExpAcreditacio3;
    private Fitxers.Fitxer solEconomica;
+   private Date exerciciEconomic;
+   private Date registreMercantilData;
    private Fitxers.Fitxer solTecnica;
+   private double ratioAP;
    private String informacioAdicional;
+   
    
    public Empresa() {
  
@@ -423,6 +427,44 @@ public String getInformacioAdicional() {
 
 public void setInformacioAdicional(String informacioAdicional) {
 	this.informacioAdicional = informacioAdicional;
+}
+
+public Date getExerciciEconomic() {
+	return exerciciEconomic;
+}
+
+public String getExerciciEconomicString() {
+	DateFormat df = new SimpleDateFormat("yyyy");	
+	String dataString = "";
+	if (this.exerciciEconomic != null) dataString = df.format(this.exerciciEconomic);
+	return dataString;
+}
+
+public void setExerciciEconomic(Date exerciciEconomic) {
+	this.exerciciEconomic = exerciciEconomic;
+}
+
+public Date getRegistreMercantilData() {
+	return registreMercantilData;
+}
+
+public String getRegistreMercantilDataString() {
+	DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+	String dataString = "";
+	if (this.registreMercantilData != null) dataString = df.format(this.registreMercantilData);
+	return dataString;
+}
+
+public void setRegistreMercantilData(Date registreMercantilData) {
+	this.registreMercantilData = registreMercantilData;
+}
+
+public double getRatioAP() {
+	return ratioAP;
+}
+
+public void setRatioAP(double ratioAP) {
+	this.ratioAP = ratioAP;
 }
  
 }

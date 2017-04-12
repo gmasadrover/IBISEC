@@ -3,7 +3,6 @@ package servlet.actuacio;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,7 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.PropostaActuacio;
+import bean.InformeActuacio;
 import bean.User;
 import core.ActuacioCore;
 import core.InformeCore;
@@ -41,31 +40,35 @@ public class DoCanvisActuacioServlet extends HttpServlet {
 Connection conn = MyUtils.getStoredConnection(request);
 		
 		//Registrar actuació
-	    int idActuacio = Integer.parseInt(request.getParameter("idActuacio"));
-	    int idIncidencia = Integer.parseInt(request.getParameter("idIncidencia"));
-	    String aprovar = request.getParameter("aprovar");
+	    String idActuacio = request.getParameter("idActuacio");
+	    String idIncidencia = request.getParameter("idIncidencia");
+	    String idInforme = request.getParameter("idInforme");
+	    String aprovarPA = request.getParameter("aprovarPA");
 	    String tancar = request.getParameter("tancar");	   
 	    User Usuari = MyUtils.getLoginedUser(request.getSession());	   
 	    	   	
-   		if (aprovar != null) { //aprovam actuació
+   		
+	    if (aprovarPA != null) { 
    			try {
-   				ActuacioCore.aprovar(conn, idActuacio, Usuari.getIdUsuari());
+   				//aprovam actuació
+   				ActuacioCore.aprovarPA(conn, idActuacio, Usuari.getIdUsuari());
+   				//aprovam informe
+   				InformeCore.aprovacioInforme(conn, idInforme, Usuari.getIdUsuari());
    				//Mirem l'import per començar licitació o contracte d'obra menor
-   				List<PropostaActuacio> informesList = InformeCore.getInformesActuacio(conn, idActuacio);
-   				PropostaActuacio informeFinal = informesList.get(informesList.size() - 1);   				
+   				InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme);		
 			   	String tipus = "";
 			   	int usuariTasca = -1;
 			   	
-   				if (("obr".equals(informeFinal.getTipusObra()) && informeFinal.getVec() > 50000) || (!"obr".equals(informeFinal.getTipusObra()) && informeFinal.getVec() > 18000)) { //Contracte d'obres major   					
+   				if (("obr".equals(informe.getTipusObra()) && informe.getVec() > 50000) || (!"obr".equals(informe.getTipusObra()) && informe.getVec() > 18000)) { //Contracte d'obres major   					
    					usuariTasca = UsuariCore.findUsuarisByRol(conn, "JUR").get(0).getIdUsuari();
    					tipus = "liciMajor";
    				}else{ //Contracte d'obres menor
-   					usuariTasca = informeFinal.getUsuari().getIdUsuari();   					
+   					usuariTasca = informe.getUsuari().getIdUsuari();   					
 					tipus = "liciMenor";
    				}
    				//Registrar incidència nova
-   				System.out.println(usuariTasca);
-   				TascaCore.novaTasca(conn, tipus, usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "", "");
+   				ActuacioCore.actualitzarActuacio(conn, idActuacio, "Sol·licitud proposta tècnica");
+   				TascaCore.novaTasca(conn, tipus, usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "", "",informe.getIdInf());
    				
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -73,6 +76,7 @@ Connection conn = MyUtils.getStoredConnection(request);
 			}
    		}else if (tancar != null) { // tancam actuació
    			try {
+   				ActuacioCore.actualitzarActuacio(conn, idActuacio, "Tancar actuació");
    				ActuacioCore.tancar(conn, idActuacio, Usuari.getIdUsuari());
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block

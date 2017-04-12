@@ -6,12 +6,22 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.filechooser.FileSystemView;
 
 import java.util.*;
 import org.apache.commons.fileupload.*;
 import org.apache.commons.fileupload.disk.*;
 import org.apache.commons.fileupload.servlet.*;
+
+import com.itextpdf.text.pdf.*;
+import com.itextpdf.text.pdf.parser.PdfTextExtractor;
+
+import core.LoggerCore;
+import fr.opensagres.xdocreport.template.utils.TemplateUtils;
+
 import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 /**
  * Servlet implementation class uploadFichero
  */
@@ -42,12 +52,10 @@ public class uploadFichero extends HttpServlet {
 		} catch (FileUploadException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.out.println(e.getMessage());
 		}
-		String idActuacio = "00000";
-		String idIncidencia = "00000";
-		String tipus = "altres";
-		String idTipus = "00000";
+		String idIncidencia = "";
+		String tipus = "";
+		String idTipus = "";
 		String fileName = "";
 		String redirect = "/";
 		FileItem arxiu = null;
@@ -61,30 +69,26 @@ public class uploadFichero extends HttpServlet {
             	switch (item.getFieldName()) {
 	            	case "idIncidencia":
 	        			idIncidencia = item.getString();
-	        			File incidenciaFile = new File(utils.Fitxers.RUTA_BASE + idIncidencia);
+	        			File incidenciaFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia);
 	        			if (!incidenciaFile.exists()) {
 	        				incidenciaFile.mkdir();
+	        				LoggerCore.addLog("crear directori - >" + incidenciaFile.toString(), "");
 	        			}
-	        			break;
-            		case "idActuacio": 
-            			idActuacio = item.getString();
-            			File actuacioFile = new File(utils.Fitxers.RUTA_BASE + "/Actuacio/" + idActuacio);
-            			if (!actuacioFile.exists()) {
-            				actuacioFile.mkdir();
-            			}
-            			break;
+	        			break;      
             		case "tipus": 
             			tipus = item.getString();
-            			File tipusFile = new File(utils.Fitxers.RUTA_BASE + idIncidencia + "/" +tipus);
+            			File tipusFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/" +tipus);
             			if (!tipusFile.exists()) {
             				tipusFile.mkdir();
+            				LoggerCore.addLog("crear directori - >" + tipusFile.toString(), "");
             			}
             			break;
             		case "idTipus": 
             			idTipus = item.getString();
-            			File idTipusFile = new File(utils.Fitxers.RUTA_BASE + idIncidencia + "/" + tipus + "/" + idTipus);
+            			File idTipusFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/" + tipus + "/" + idTipus);
             			if (!idTipusFile.exists()) {
             				idTipusFile.mkdir();
+            				LoggerCore.addLog("crear directori - >" + idTipusFile.toString(), "");
             			}            			
             			break;
             		case "redirect":
@@ -93,16 +97,90 @@ public class uploadFichero extends HttpServlet {
             }
         }
         if (arxiu != null) {
-	        /*cual sera la ruta al archivo en el servidor*/
-	    	fileName = idIncidencia + "/" + tipus + "/" + idTipus + "/";
-	    	if (idActuacio != "00000") fileName = idIncidencia + "/Actuacio/" + idActuacio + "/" + tipus + "/" + idTipus + "/";
-	        File archivo_server = new File(utils.Fitxers.RUTA_BASE + fileName + arxiu.getName());
+	    	fileName = idIncidencia + "/";
+	    	if (! tipus.isEmpty()) fileName += tipus + "/";
+	    	if (! idTipus.isEmpty()) fileName += idTipus + "/";
+	    	LoggerCore.addLog(fileName, "");
+	        File archivo_server = new File(utils.Fitxers.RUTA_BASE + "/documents/" + fileName + "temp_" + arxiu.getName());
 	        /*y lo escribimos en el servido*/
 	        try {
 				arxiu.write(archivo_server);
+				LoggerCore.addLog(utils.Fitxers.RUTA_BASE + "/documents/"+ fileName + arxiu.getName(), "");
+		        PdfReader reader = new PdfReader(utils.Fitxers.RUTA_BASE + "/documents/"+  fileName + "temp_" + arxiu.getName()); // input PDF
+		        PdfStamper stamper = new PdfStamper(reader,
+		          new FileOutputStream(utils.Fitxers.RUTA_BASE + "/documents/"+ fileName + arxiu.getName())); // output PDF
+		        BaseFont bf = BaseFont.createFont(
+		                BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED); // set font
+
+		        try {
+
+		            // pageNumber = 1
+		            String textFromPage = PdfTextExtractor.getTextFromPage(reader, 1);
+
+		            LoggerCore.addLog(textFromPage, "");
+
+
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		            LoggerCore.addLog(e.toString(), "");
+		        }
+		        
+		        
+		        AcroFields fields = stamper.getAcroFields();
+		        PRAcroForm form = reader.getAcroForm();
+		        if (form != null) {
+			        for (Iterator<?> it = form.getFields().iterator(); it.hasNext(); ) {
+						PRAcroForm.FieldInformation field = (PRAcroForm.FieldInformation) it.next();
+						String fieldValue = fields.getField(field.getName());
+						LoggerCore.addLog("Field: " + field.getName() + ", Value: " + fieldValue, "");
+						
+						if (fieldValue != null && !fieldValue.equals("")) {
+							
+						} else {
+							
+						}
+					}
+		        }
+		        
+		        //loop on pages (1-based)
+		        for (int i=1; i<=reader.getNumberOfPages(); i++){
+
+		            // get object for writing over the existing content;
+		            // you can also use getUnderContent for writing in the bottom layer
+		           // PdfContentByte over = stamper.getOverContent(i);
+
+		            // Data
+//		            DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");	
+//		    		String dataString = df.format(new Date());
+//		            over.beginText();
+//		            over.setFontAndSize(bf, 9);    // set font and size
+//		            over.setTextMatrix(445, 758);   // set x,y position (0,0 is at the bottom left)
+//		            over.showText(dataString);  // set text
+//		            over.endText();
+//		            
+//		            // Num entrada
+//		            over.beginText();
+//		            over.setFontAndSize(bf, 9);    // set font and size
+//		            over.setTextMatrix(445, 748);   // set x,y position (0,0 is at the bottom left)
+//		            over.showText(idTipus);  // set text
+//		            over.endText();
+
+		            // draw a red circle
+//		            over.setRGBColorStroke(0xFF, 0x00, 0x00);
+//		            over.setLineWidth(5f);
+//		            over.ellipse(250, 450, 350, 550);
+//		            over.stroke();
+		        }
+
+		        stamper.close();
+		        reader.close();
+		        //Delete Temp file
+		        archivo_server.delete();
+		        
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				LoggerCore.addLog(e.toString(), "");
 			}
         }
         RequestDispatcher dispatcher = this.getServletContext().getRequestDispatcher(redirect);

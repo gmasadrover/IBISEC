@@ -6,7 +6,7 @@
 <m:setLocale value="${language}" />
 <m:setBundle basename="i18n.base"/>			                         	
 <div class="panel-heading">
-	Resum Informe
+	Proposta d'actuació
 </div>
 <div class="panel-body">	
 	<p>
@@ -60,7 +60,7 @@
 	</p>	
 	<div class="row col-lg-12">
 		<c:forEach items="${informePrevi.adjunts}" var="arxiu" >
-			<a  href="downloadFichero?ruta=${arxiu.ruta}">${arxiu.nom}</a>
+			<a target="_blanck" href="downloadFichero?ruta=${arxiu.ruta}">${arxiu.nom}</a>
 			<br>
 		</c:forEach>					            		
 	</div>
@@ -68,7 +68,7 @@
 		<label>Comentari Cap:</label> ${informePrevi.comentariCap}
 	</p>
 	<p>
-		<label>Vistiplau:</label> ${informePrevi.usuariAprovacio.getNomComplet()} - ${informePrevi.getDataAprovacioString()}
+		<label>Vistiplau:</label> ${informePrevi.usuariCapValidacio.getNomComplet()} - ${informePrevi.getDataCapValidacioString()}
 	</p>
 	<p>
 		<label>Partida:</label> ${informePrevi.partida}

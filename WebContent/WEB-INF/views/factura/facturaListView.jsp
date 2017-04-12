@@ -76,7 +76,7 @@
                                 	<c:forEach items="${facturesList}" var="factura" >
 							          	<tr class="success">							          	
 							           		<td><a href="facturaDetalls?ref=${factura.idFactura}">${factura.idFactura}</a></td>
-							            	<td>${factura.idActuacio}</td>
+							            	<td><a href="actuacionsDetalls?ref=${factura.idActuacio}">${factura.idActuacio}</a></td>
 							            	<td>${factura.getDataEntradaString()}</td>
 							            	<td>${factura.dataEntrada}</td>
 							            	<td>${factura.getDataFacturaString()}</td>

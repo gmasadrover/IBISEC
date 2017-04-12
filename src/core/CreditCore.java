@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import bean.AssignacioCredit;
@@ -108,8 +109,9 @@ public class CreditCore {
 			partida.setNom(rs.getString("nom"));
 			partida.setTipus(rs.getString("tipus"));
 			partida.setTotalPartida(rs.getDouble("import"));
-			partida.setGastadaPartida(getTotalGastat(conn, rs.getString("codi")));
+			partida.setPrevistPartida(getTotalPrevist(conn, rs.getString("codi")));
 			partida.setReservaPartida(getTotalReservat(conn, rs.getString("codi")));
+			partida.setPagatPartida(getTotalPagat(conn, rs.getString("codi")));
 			return partida;
 		}
 		return null;
@@ -131,35 +133,36 @@ public class CreditCore {
 			partida.setNom(rs.getString("nom"));
 			partida.setTipus(rs.getString("tipus"));
 			partida.setTotalPartida(rs.getDouble("import"));
-			partida.setGastadaPartida(getTotalGastat(conn, rs.getString("codi")));
+			partida.setPrevistPartida(getTotalPrevist(conn, rs.getString("codi")));
 			partida.setReservaPartida(getTotalReservat(conn, rs.getString("codi")));
+			partida.setPagatPartida(getTotalPagat(conn, rs.getString("codi")));
 			list.add(partida);
 		}
 		return list;
 	}
 	
-	public static String getPartidaInforme(Connection conn, int idInforme) throws SQLException {
+	public static String getPartidaInforme(Connection conn, String idInforme) throws SQLException {
 		String idPartida = "";
-		String sql = "SELECT idpartida"
-					+ " FROM public.tbl_assignacionscredit"
+		String sql = "SELECT p.nom AS nom"
+					+ " FROM public.tbl_assignacionscredit a LEFT JOIN public.tbl_partides p ON a.idpartida=p.codi"
 					+ " WHERE idinf = ?";
 		PreparedStatement pstm = conn.prepareStatement(sql);		 
-		pstm.setInt(1, idInforme);
+		pstm.setString(1, idInforme);
 		ResultSet rs = pstm.executeQuery();
 		while (rs.next()) {
-			idPartida = rs.getString("idpartida");
+			idPartida = rs.getString("nom");
 		}
 		return idPartida;
 	}
 	
-	public static String getPartidaActuacio(Connection conn, int idActuacio) throws SQLException {
+	public static String getPartidaActuacio(Connection conn, String idActuacio) throws SQLException {
 		String idPartida = "";
 		String sql = "SELECT idpartida"
 					+ " FROM public.tbl_assignacionscredit"
 					+ " WHERE idactuacio = ?"		
 					+ " ORDER BY 1 desc LIMIT 1"; 
 		PreparedStatement pstm = conn.prepareStatement(sql);		 
-		pstm.setInt(1, idActuacio);
+		pstm.setString(1, idActuacio);
 		ResultSet rs = pstm.executeQuery();
 		while (rs.next()) {
 			idPartida = rs.getString("idpartida");
@@ -167,16 +170,29 @@ public class CreditCore {
 		return idPartida;
 	}
 	
-	public static int newAssignacioCode(Connection conn) throws SQLException{
-		int newCode = 1;
+	public static String newAssignacioCode(Connection conn) throws SQLException{
+		String newCode = "1";
 		
 		String sql = "SELECT idassignacio"
 					+ " FROM public.tbl_assignacionscredit"
-					+ " ORDER BY idassignacio DESC LIMIT 1;";		 
+					+ " WHERE idassignacio like '%INF%'"
+					+ " ORDER BY datacre DESC, idassignacio DESC LIMIT 1;";	 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		ResultSet rs = pstm.executeQuery();
-		while (rs.next()) {
-			newCode = rs.getInt("idassignacio") + 1;
+		Calendar now = Calendar.getInstance();
+		int year = now.get(Calendar.YEAR);
+		String yearInString = String.valueOf(year);
+		String prefix = "INF";
+		if (rs.next()) { //Codis nous
+			String actualCode = rs.getString("idassignacio");			
+			int num = Integer.valueOf(actualCode.split("-")[2]);
+			String numFormatted = String.format("%04d", num + 1);
+			newCode = yearInString + "-" + prefix + "-" + numFormatted;
+		}
+		else {
+			int num = 0;		
+			String numFormatted = String.format("%04d", num + 1);
+			newCode = yearInString + "-" + prefix + "-" + numFormatted;
 		}
 		return newCode;
 	}
@@ -192,9 +208,9 @@ public class CreditCore {
 		ResultSet rs = pstm.executeQuery();
 		while (rs.next()) {
 			AssignacioCredit assignacio = new AssignacioCredit();
-			assignacio.setIdAssignacio(rs.getInt("idassignacio"));
-			assignacio.setIdActuacio(rs.getInt("idactuacio"));
-			assignacio.setIdInf(rs.getInt("idinf"));
+			assignacio.setIdAssignacio(rs.getString("idassignacio"));
+			assignacio.setIdActuacio(rs.getString("idactuacio"));
+			assignacio.setIdInf(rs.getString("idinf"));
 			assignacio.setReserva(rs.getBoolean("reserva"));
 			assignacio.setUsuReserva(UsuariCore.findUsuariByID(conn, rs.getInt("usureserva")));
 			assignacio.setDatareserva(rs.getTimestamp("datareserva"));
@@ -212,15 +228,15 @@ public class CreditCore {
 		return assignacionsList;
 	}
 	
-	public static void reservar(Connection conn, String idPartida, int idActuacio, int idInforme, double valor, String comentari, int idUsuari) throws SQLException {
+	public static void reservar(Connection conn, String idPartida, String idActuacio, String idInforme, double valor, String comentari, int idUsuari) throws SQLException {
 		String sql = "INSERT INTO public.tbl_assignacionscredit(idassignacio, idactuacio, idinf, reserva, usureserva, datareserva, assignacio, comentari, usucre, datacre, idpartida, valorpa)"
 					+ " VALUES (?, ?, ?, true, ?, localtimestamp, false, ?, ?, localtimestamp, ?, ?);";
 		
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		 
-		pstm.setInt(1, newAssignacioCode(conn));		
-		pstm.setInt(2, idActuacio);
-		pstm.setInt(3, idInforme);
+		pstm.setString(1, newAssignacioCode(conn));		
+		pstm.setString(2, idActuacio);
+		pstm.setString(3, idInforme);
 		pstm.setInt(4, idUsuari);		
 		pstm.setString(5, comentari);
 		pstm.setInt(6, idUsuari);
@@ -230,11 +246,23 @@ public class CreditCore {
 		
 	}
 	
+	public static void assignar(Connection conn, String idInforme, double valor) throws SQLException {
+		String sql = "UPDATE public.tbl_assignacionscredit"
+					+ " SET valorpd=?, assignacio=?, dataassignacio=localtimestamp"
+					+ " WHERE idinf = ?;";
+		
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setDouble(1, valor);
+		pstm.setBoolean(2, true);
+		pstm.setString(3, idInforme);
+		pstm.executeUpdate();
+	}
+	
 	public static double getTotalReservat(Connection conn, String idPartida) throws SQLException{
 		double totalReservat = 0;
 		String sql = "SELECT SUM(valorpa) AS total"
 					+ " FROM public.tbl_assignacionscredit"
-					+ " WHERE reserva=true and idpartida = ?";
+					+ " WHERE reserva=true and assignacio=false and idpartida = ?";
 		PreparedStatement pstm = conn.prepareStatement(sql);		 
 		pstm.setString(1, idPartida);
 		ResultSet rs = pstm.executeQuery();
@@ -244,7 +272,7 @@ public class CreditCore {
 		return totalReservat;
 	}
 	
-	public static double getTotalGastat(Connection conn, String idPartida) throws SQLException{
+	public static double getTotalPrevist(Connection conn, String idPartida) throws SQLException{
 		double totalGastat = 0;
 		String sql = "SELECT SUM(valorpd) AS total"
 					+ " FROM public.tbl_assignacionscredit"
@@ -253,6 +281,20 @@ public class CreditCore {
 		pstm.setString(1, idPartida);
 		ResultSet rs = pstm.executeQuery();
 		while (rs.next()) {
+			totalGastat = rs.getDouble("total");
+		}
+		return totalGastat;
+	}
+	
+	public static double getTotalPagat(Connection conn, String idPartida) throws SQLException{
+		double totalGastat = 0;
+		String sql = "SELECT SUM(f.import) AS total"
+				  	+ " FROM public.tbl_factures f LEFT JOIN public.tbl_assignacionscredit a ON f.idactuacio = a.idactuacio"
+				  	+ " WHERE a.idpartida = ?";
+		PreparedStatement pstm = conn.prepareStatement(sql);		 
+		pstm.setString(1, idPartida);
+		ResultSet rs = pstm.executeQuery();
+		if (rs.next()) {
 			totalGastat = rs.getDouble("total");
 		}
 		return totalGastat;

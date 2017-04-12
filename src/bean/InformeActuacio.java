@@ -7,11 +7,11 @@ import java.util.List;
 
 import utils.Fitxers;
 
-public class PropostaActuacio {
-	private int idInf;
+public class InformeActuacio {
+	private String idInf;
 	private int idTasca;
-	private int idActuacio;
-	private int idIncidencia;
+	private String idActuacio;
+	private String idIncidencia;
 	private String objecte;
 	private String tipusObra;
 	private boolean llicencia;
@@ -27,20 +27,25 @@ public class PropostaActuacio {
 	private User usuari;
 	private Date dataCreacio;
 	private String partida;
+	private User usuariCapValidacio;
+	private Date dataCapValidacio;
+	private String comentariCap;
 	private User usuariAprovacio;
 	private Date dataAprovacio;
-	private String comentariCap;
 	private List<Oferta> llistaOfertes;
 	private Oferta ofertaSeleccionada;
+	private List<Factura> llistaFactures;
+	private Date dataTancament;
 	
-	public PropostaActuacio() {		
+	
+	public InformeActuacio() {		
 	}
 
-	public int getIdInf() {
+	public String getIdInf() {
 		return idInf;
 	}
 
-	public void setIdInf(int idInf) {
+	public void setIdInf(String idInf) {
 		this.idInf = idInf;
 	}
 
@@ -52,11 +57,11 @@ public class PropostaActuacio {
 		this.idTasca = idTasca;
 	}
 
-	public int getIdActuacio() {
+	public String getIdActuacio() {
 		return idActuacio;
 	}
 
-	public void setIdActuacio(int idActuacio) {
+	public void setIdActuacio(String idActuacio) {
 		this.idActuacio = idActuacio;
 	}
 
@@ -194,11 +199,11 @@ public class PropostaActuacio {
 		this.partida = partida;
 	}
 
-	public int getIdIncidencia() {
+	public String getIdIncidencia() {
 		return idIncidencia;
 	}
 
-	public void setIdIncidencia(int idIncidencia) {
+	public void setIdIncidencia(String idIncidencia) {
 		this.idIncidencia = idIncidencia;
 	}
 
@@ -247,5 +252,51 @@ public class PropostaActuacio {
 
 	public void setOfertaSeleccionada(Oferta ofertaSeleccionada) {
 		this.ofertaSeleccionada = ofertaSeleccionada;
+	}
+
+	public User getUsuariCapValidacio() {
+		return usuariCapValidacio;
+	}
+	
+	public void setUsuariCapValidacio(User usuariCapValidacio) {
+		this.usuariCapValidacio = usuariCapValidacio;
+	}
+
+	public Date getDataCapValidacio() {
+		return dataCapValidacio;
+	}
+	
+	public String getDataCapValidacioString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");	
+		String dataString = "";
+		if (this.dataCapValidacio != null) dataString = df.format(this.dataCapValidacio);
+		return dataString;
+	}
+
+	public void setDataCapValidacio(Date dataCapValidacio) {
+		this.dataCapValidacio = dataCapValidacio;
+	}
+
+	public List<Factura> getLlistaFactures() {
+		return llistaFactures;
+	}
+
+	public void setLlistaFactures(List<Factura> llistaFactures) {
+		this.llistaFactures = llistaFactures;
+	}
+
+	public Date getDataTancament() {
+		return dataTancament;
+	}
+
+	public void setDataTancament(Date dataTancament) {
+		this.dataTancament = dataTancament;
+	}
+	
+	public String getDataTancamentString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+		String dataString = "";
+		if (this.dataTancament != null) dataString = df.format(this.dataTancament);
+		return dataString;
 	}
 }

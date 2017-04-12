@@ -1,6 +1,5 @@
 $(document).ready(function() {
 	$('.filerTable.normal').DataTable({
-		"order": [[ 0, "desc" ]],
 		"aoColumns": [
     		null,
     		null, 
@@ -11,7 +10,6 @@ $(document).ready(function() {
 		]
 	});
 	$('.filerTable.withTancades').DataTable({
-		"order": [[ 0, "desc" ]],
 		"aoColumns": [
     		null,
     		null,  

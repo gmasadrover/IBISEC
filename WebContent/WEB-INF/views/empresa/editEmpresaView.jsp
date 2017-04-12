@@ -237,8 +237,8 @@
 	                	<c:if test="${empresa.solEconomica != null}">
 		                	<div class="row">
 		                		<label class="col-xs-2 control-label">Document:</label>
-		                		<a  href="downloadFichero?ruta=${empresa.solEconomica.ruta}">${empresa.solEconomica.nom}</a>
-		                	</div>
+		                		<a  target="_blanck" href="downloadFichero?ruta=${empresa.solEconomica.ruta}">${empresa.solEconomica.nom}</a>
+		                	</div>	                	
 	                	</c:if>
 	                	<div class="row">
 	                		<label class="col-xs-2 control-label">Adjuntar solvència econòmica:</label>	                	
@@ -246,11 +246,31 @@
 	                            <input type="file" class="btn" name="fileEconomica" /><br/>
 							</div>
 						</div> 
+						<div class="row">
+	                		<label class="col-xs-2 control-label">Exercici</label>
+                            <div class="input-group date col-xs-2 datepicker">
+							  	<input type="text" class="form-control" name="dataExerciciEconomic" id="dataExerciciEconomic" value="${empresa.getExerciciEconomicString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+							</div>
+	                	</div>
+	                	<div class="row">
+	                		<label class="col-xs-2 control-label">Dipositat en Registre Mercantil amb data</label>
+                            <div class="input-group date col-xs-2 datepicker">
+							  	<input type="text" class="form-control" name="dataRegistreMercantil" id="dataRegistreMercantil" value="${empresa.getRegistreMercantilDataString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+							</div>	                		
+	                	</div>
+	                	<div class="row">
+	                		<div class="form-group">
+                                <label class="col-xs-2 control-label">Ràtio A/P</label>
+                                <div class="col-xs-2">
+                                	<input class="form-control" name="ratioAP" id="ratioAP" value="${empresa.getRatioAP()}">
+                                </div>
+                            </div>
+                        </div>
 	                	<h4 class="margin_bottom30">Solvència Tècnica</h4>
 	                	<c:if test="${empresa.solTecnica != null}">
 		                	<div class="row">
 		                		<label class="col-xs-2 control-label">Document:</label>
-		                		<a  href="downloadFichero?ruta=${empresa.solTecnica.ruta}">${empresa.solTecnica.nom}</a>
+		                		<a target="_blanck" href="downloadFichero?ruta=${empresa.solTecnica.ruta}">${empresa.solTecnica.nom}</a>
 		                	</div>
 		                </c:if>
 	                	<div class="row">

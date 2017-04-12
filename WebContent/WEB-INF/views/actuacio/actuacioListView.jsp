@@ -45,6 +45,7 @@
 							      <label>Filtrar per centre</label>
 							      <div>
 		                                <select class="form-control selectpicker" name="idCentre" data-live-search="true" id="centresList">
+		                                	<option value="-1">Tots els centres</option>
 		                                </select>
 		                             </div>
 							    </div>						    
@@ -66,7 +67,8 @@
 							      <div>
 							      	<select class="selectpicker" id="estatList" name="estat">
 									  <option value="-1">Qualsevol</option>
-									  <option value="Aprovada">Aprovada</option>
+									  <option value="AprovadaPT">PT Aprovada</option>
+									  <option value="AprovadaPA">PA Aprovada</option>
 									  <option value="Pendent">Pendent</option>
 									  <option value="Tancada">Tancada</option>
 									</select>							      	
@@ -80,9 +82,34 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="col-lg-offset-1 col-lg-3 circunferencia green">${actuacionsAprovades}</div>
-							<div class="col-lg-3 margin_left30 circunferencia yellow">${actuacionsPendents}</div>
-							<div class="col-lg-3 margin_left30 circunferencia red">${actuacionsTancades}</div>
+							<div class="row">
+								<div class="col-lg-offset-1 col-lg-2">
+									<div class="container">
+								 		<div class="circunferencia yellow">${actuacionsPendents}</div>		
+								 	</div>
+								</div>
+								<div class="col-lg-2">
+									<div class="container">						
+										<div class="circunferencia blue">${actuacionsAprovadesPA}</div>
+									</div>
+								</div>
+								<div class="col-lg-2">
+									<div class="container">
+										<div class="circunferencia green">${actuacionsAprovadesPT}</div>
+									</div>
+								</div>
+								<div class="col-lg-2">
+									<div class="container">
+										<div class="circunferencia red">${actuacionsTancades}</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-offset-1 col-md-2">Actuacions pendents</div>							
+								<div class="col-md-2">Actuacions amb proposta d'actuacions aprovades</div>
+								<div class="col-md-2">Actuacions amb proposta tècnica aprovades</div>
+								<div class="col-md-2">Actuacions tancades</div>
+							</div>
 						</div>
 					</form>
 				</div>
@@ -92,40 +119,42 @@
                         <h2>Actuacions</h2>
                         <div class="table-responsive">
                         
-                            <table class="table table-striped table-bordered filerTable ${nomesActives ? "normal" : "withTancades"}">
+                            <table class="table table-striped table-bordered filerTable">
                                 <thead>
                                     <tr>
                                         <th>Referència</th>
                                         <th>Centre</th>
                                         <th>Descripció</th>
-                                        <th>Data petició</th>
-                                        <th>Data petició</th>
-                                        <th>Darrera modificació</th>
-                                        <th>Data modificació</th>
-                                        <th>Data modificació</th>
-                                        <c:if test="${!nomesActives}">
-											<th>Estat</th>
-										   	<th>Data tancament</th>
-										   	<th>Data tancament</th>
-										</c:if>
+                                        <th>Data creació</th>
+                                        <th>Data creació</th>                                       
+                                        <th>Data PA</th>
+                                        <th>Data PA</th>
+										<th>Data aprovada</th>
+                                        <th>Data aprovada</th>
+									   	<th>Data tancament</th>
+									   	<th>Data tancament</th>
+									   	<th>Darrera modificació</th>
+									   	<th>Data modificació</th>
+									   	<th>Data modificació</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${actuacionsList}" var="actuacio" >
-							          	<tr class=${actuacio.activa ? actuacio.aprovada ? "success" : "warning" : "danger"}>							          	
+							          	<tr class=${actuacio.isActiva() ? actuacio.isPaAprovada() ? actuacio.isAprovada() ? "success" : "info" : "warning" : "danger"}>							          	
 							           		<td><a href="actuacionsDetalls?ref=${actuacio.referencia}">${actuacio.referencia}</a></td>
 							            	<td>${actuacio.nomCentre}</td>
 							            	<td>${actuacio.descripcio}</td>
 							            	<td>${actuacio.getDataCreacioString()}</td>
-							            	<td>${actuacio.dataCreacio}</td>
-							            	<td>${actuacio.modificacio}</td>
-							            	<td>${actuacio.getDarreraModificacioString()}</td>
-							            	<td>${actuacio.darreraModificacio}</td>							            	
-							            	<c:if test="${!nomesActives}">
-											   	<td>${actuacio.estatNom()}</td>
-											   	<td>${actuacio.getDataTancamentString()}</td>
-											   	<td>${actuacio.dataTancament}</td>
-											</c:if>							            	
+							            	<td>${actuacio.dataCreacio}</td>		
+							            	<td>${actuacio.getDataAprovarPaString()}</td>
+							            	<td>${actuacio.dataAprovarPa}</td>		
+							            	<td>${actuacio.getDataAprovacioString()}</td>
+							            	<td>${actuacio.dataAprovacio}</td>
+										   	<td>${actuacio.getDataTancamentString()}</td>
+										   	<td>${actuacio.dataTancament}</td>
+										   	<td>${actuacio.modificacio}</td>
+										   	<td>${actuacio.getDarreraModificacioString()}</td>
+										   	<td>${actuacio.darreraModificacio}</td>				            	
 							          	</tr>
 							       	</c:forEach>                                	
                                 </tbody>

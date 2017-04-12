@@ -1,12 +1,8 @@
 package servlet.actuacio;
 
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -17,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import bean.Actuacio;
 import core.ActuacioCore;
-import core.TascaCore;
 import utils.MyUtils;
 
 /**
@@ -42,10 +37,10 @@ public class DoCreateActuacioServlet extends HttpServlet {
 	
 		Connection conn = MyUtils.getStoredConnection(request);
 		//Registrar actuaci�
-	    int referencia = Integer.parseInt(request.getParameter("referencia"));
+	    String referencia = request.getParameter("referencia");
 	    String idCentre = request.getParameter("idCentre");	   
 	    String descripcio = request.getParameter("descripcio");	    
-	    int idIncidencia = Integer.parseInt(request.getParameter("idIncidencia"));	   
+	    String idIncidencia = request.getParameter("idIncidencia");	   
 	    int idUsuari = MyUtils.getLoginedUser(request.getSession()).getIdUsuari();
 	    
 	    Actuacio actuacio = new Actuacio();

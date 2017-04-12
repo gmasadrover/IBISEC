@@ -1,6 +1,6 @@
 $(document).ready(function() {
 	$('.filerTable').DataTable({
-		"order": [[ 0, "desc" ]],
+		"order": [[ 1, "desc" ]],
 		"aoColumns": [
     		null,
     		{"iDataSort": 6},

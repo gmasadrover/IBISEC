@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import bean.ControlPage.SectionPage;
 import bean.User;
 
@@ -20,29 +22,13 @@ public class UsuariCore {
 		usuari.setCarreg(rs.getString("carreg"));
 		usuari.setDepartament(rs.getString("departament"));
 		usuari.setUsuari(rs.getString("nomusuari"));
+		usuari.setPassword(rs.getString("password"));
+		usuari.setAlias(rs.getString("alias"));
 		return usuari;
 	}
 	
-	
-	public static User findUsuari(Connection conn, String usuari, String password) throws SQLException {
-		 
-		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari"
-					+ " FROM public.tbl_usuaris"
-					+ " WHERE nomusuari = ? and password= ?";
-	 
-		PreparedStatement pstm = conn.prepareStatement(sql);
-		pstm.setString(1, usuari);
-		pstm.setString(2, password);
-		ResultSet rs = pstm.executeQuery();	 
-		if (rs.next()) {
-			User user = initUsuari(rs);			
-			return user;
-		}
-		return null;
-	}
-	
 	public static User finCap(Connection conn, String departament) throws SQLException {
-		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari"
+		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari, password, alias"
 				+ " FROM public.tbl_usuaris"
 				+ " WHERE departament = ? AND rol LIKE '%CAP%'";
  
@@ -58,7 +44,7 @@ public class UsuariCore {
 	}
 	 
 	public static User findUsuari(Connection conn, String Usuari) throws SQLException {
-		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari"
+		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari, password, alias"
 					+ " FROM public.tbl_usuaris"
 					+ " WHERE nomusuari = ? ";
 	 
@@ -75,7 +61,7 @@ public class UsuariCore {
 	}	
 	
 	public static User findUsuariByID(Connection conn, int idUsuari) throws SQLException{
-		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari"
+		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari, password, alias"
 					+ " FROM public.tbl_usuaris"
 					+ " WHERE idusuari = ? ";
 		 
@@ -94,7 +80,7 @@ public class UsuariCore {
 	public static List<User> findUsuarisByRol(Connection conn, String tipus) throws SQLException{
 		List<User> userList = new ArrayList<User>();
 		User user = new User();
-		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari"
+		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari, password, alias"
 					+ " FROM public.tbl_usuaris"
 					+ " WHERE actiu = true and departament <> '' and rol LIKE '%" + tipus + "%' "
 					+ " ORDER BY 3, 2";		 
@@ -110,10 +96,17 @@ public class UsuariCore {
 	public static List<User> findUsuarisByDepartament(Connection conn, String tipus) throws SQLException{
 		List<User> userList = new ArrayList<User>();
 		User user = new User();
-		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari"
+		
+		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari, password, alias"
 					+ " FROM public.tbl_usuaris"
-					+ " WHERE actiu = true and departament = '" + tipus + "'"
-					+ " ORDER BY 3, 2";		 
+					+ " WHERE actiu = true ";
+		if (!"gerencia".equals(tipus)) {
+			sql += "and departament = '" + tipus + "'";
+		} else {
+			sql += "and departament <> ''";
+		}
+		
+		sql += " ORDER BY 3, 2";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);		
 		ResultSet rs = pstm.executeQuery();	
 		while (rs.next()) {			
@@ -124,7 +117,7 @@ public class UsuariCore {
 	}
 	
 	public static List<User> llistaUsuaris(Connection conn) throws SQLException {
-		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari"
+		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari, password, alias"
 					+ " FROM public.tbl_usuaris";
 		 
 		PreparedStatement pstm = conn.prepareStatement(sql);
@@ -156,7 +149,8 @@ public class UsuariCore {
 					+ " SET password=?"
 				  	+ " WHERE idusuari=?";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);
-		pstm.setString(1, newPassword);
+		String newPasswordMD5=DigestUtils.md5Hex(newPassword); 
+		pstm.setString(1, newPasswordMD5);
 		pstm.setInt(2, idUsuari);
 		pstm.executeUpdate();
 	}
@@ -169,7 +163,8 @@ public class UsuariCore {
 		pstm.setInt(1, idUsuari);
 		ResultSet rs = pstm.executeQuery();
 		if (rs.next()) {
-			coincideix = oldPassword.equals(rs.getString("password"));
+			String oldPasswordMD5=DigestUtils.md5Hex(oldPassword); 
+			coincideix = oldPasswordMD5.equals(rs.getString("password"));
 		}
 		return coincideix;
 	}
@@ -182,19 +177,19 @@ public class UsuariCore {
 				permision = true;
 				break;
 			case actuacio_modificar:
-				permision = (rols.toUpperCase().contains("ADMIN")) || (rols.toUpperCase().contains("GERENT"));
+				permision = (rols.toUpperCase().contains("ADMIN")) || (rols.toUpperCase().contains("GER"));
 				break;
 			case actuacio_detalls:
 				permision = true;
 				break;
 			case incidencia_list:
-				permision = true;
+				permision = (rols.toUpperCase().contains("ADMIN")) || (rols.toUpperCase().contains("GER"));
 				break;
 			case incidencia_modificar:
-				permision = (rols.toUpperCase().contains("ADMIN"));
+				permision = (rols.toUpperCase().contains("ADMIN")) || (rols.toUpperCase().contains("GER"));
 				break;
 			case incidencia_detalls:
-				permision = true;
+				permision = (rols.toUpperCase().contains("ADMIN")) || (rols.toUpperCase().contains("GER"));
 				break;
 			case empreses_crear:
 				permision = (rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("JUR"));
@@ -209,10 +204,10 @@ public class UsuariCore {
 				permision = true;
 				break;
 			case partides_crear:
-				permision = (rols.toUpperCase().contains("ADMIN"));
+				permision = (rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("CONTA"));
 				break;
 			case partides_list:
-				permision = (rols.toUpperCase().contains("ADMIN"));
+				permision = true;
 				break;
 			case registre_detalls:
 				permision = true;
@@ -242,10 +237,13 @@ public class UsuariCore {
 				permision = true;
 				break;
 			case obres_list:
-				permision = rols.toUpperCase().contains("ADMIN");
+				permision = rols.toUpperCase().contains("ADMIN") || (rols.toUpperCase().contains("GER"));
 				break;
 			case factures_list:
 				permision = true;
+				break;
+			case factures_crear:
+				permision = rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("CONTA");
 				break;
 			default:
 				break;

@@ -17,9 +17,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import bean.Actuacio;
 import bean.Incidencia;
-import core.ActuacioCore;
 import core.IncidenciaCore;
 import utils.MyUtils;
 

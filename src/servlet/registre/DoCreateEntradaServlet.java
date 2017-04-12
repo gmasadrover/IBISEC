@@ -44,14 +44,14 @@ public class DoCreateEntradaServlet extends HttpServlet {
 	
 		Connection conn = MyUtils.getStoredConnection(request);
 		
-	    int referencia = Integer.parseInt(request.getParameter("referencia"));
+	    String referencia = request.getParameter("referencia");
 	    String remitent = request.getParameter("remitent");
 	    String tipus = URLDecoder.decode(request.getParameter("tipus"),  "UTF-8");	    
 	    String idCentre = "";
 	    String contingut = request.getParameter("contingut");
-	    int idIncidencia = -1;
+	    String idIncidencia = "";
 	    if (request.getParameter("idIncidenciaSeleccionada") != null && request.getParameter("idIncidenciaSeleccionada") != "") {
-	    	idIncidencia = Integer.parseInt(request.getParameter("idIncidenciaSeleccionada"));
+	    	idIncidencia = request.getParameter("idIncidenciaSeleccionada");
 	    	try {
 				idCentre = IncidenciaCore.findIncidencia(conn,idIncidencia).getIdCentre();
 			} catch (SQLException e) {
@@ -59,12 +59,12 @@ public class DoCreateEntradaServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 	    } else {
-	    	idIncidencia = Integer.parseInt(request.getParameter("idIncidencia"));
+	    	idIncidencia = request.getParameter("idIncidencia");
 	    	idCentre = request.getParameter("idCentre").split("_")[0];
 	    }
 	    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 	    int idUsuari = MyUtils.getLoginedUser(request.getSession()).getIdUsuari();
-	    int referenciaIncidencia = -1;
+	    String referenciaIncidencia = "";
 	    Date peticio = new Date();
 		try {
 			peticio = formatter.parse(request.getParameter("peticio"));
@@ -78,9 +78,9 @@ public class DoCreateEntradaServlet extends HttpServlet {
 	 	      
 	   	if (errorString == null) {
 	   		try {
-	   			RegistreCore.nouRegistre(conn, "E", registre);	   			
+	   			RegistreCore.nouRegistre(conn, "E", registre);	
 	   			//Crear Incidencia
-	   			if (!"-1".equals(idCentre) && idIncidencia == -1) {
+	   			if (!"-1".equals(idCentre) && "-1".equals(idIncidencia)) {
 		   		    referenciaIncidencia = IncidenciaCore.getNewCode(conn);
 		   		    Incidencia incidencia = new Incidencia();
 		   		    incidencia.setIdIncidencia(referenciaIncidencia);

@@ -106,7 +106,7 @@
 	        		<div class="col-lg-12">	
 	                	<p>Arxius adjunts:</p>
 	                  	<c:forEach items="${informePrevi.adjunts}" var="arxiu" >
-		            		<a  href="downloadFichero?ruta=${arxiu.ruta}">
+		            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.ruta}">
 								${arxiu.nom}
 							</a>
 							<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
@@ -137,11 +137,11 @@
 			<div class="col-lg-6">
 	    		<div class="row">
 	        		<div class="col-lg-12">
-	              		<input class="btn btn-primary" type="submit" name="guardar" value="${informePrevi.idInf != 0 ? "Modificar" : "Guardar"} proposta d'actuació">
+	              		<input class="btn btn-primary" type="submit" name="guardar" value="${informePrevi.idInf != '0' ? "Modificar" : "Guardar"} proposta d'actuació">
 					</div>
 	     		</div>
 	 		</div>
-	 		<c:if test="${esCap && (informePrevi.idInf != 0)}">
+	 		<c:if test="${esCap && (informePrevi.idInf != '0')}">
 	 			<div class="col-lg-6">
 		    		<div class="row">
 		        		<div class="col-lg-12">

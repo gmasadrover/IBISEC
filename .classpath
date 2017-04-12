@@ -17,5 +17,8 @@
 	<classpathentry kind="lib" path="E:/git/Test/WebContent/WEB-INF/lib/mail.jar"/>
 	<classpathentry kind="lib" path="E:/git/Test/WebContent/WEB-INF/lib/activation.jar"/>
 	<classpathentry kind="lib" path="E:/git/Test/WebContent/WEB-INF/lib/commons-email-1.4.jar"/>
+	<classpathentry kind="lib" path="E:/git/Test/WebContent/WEB-INF/lib/itextpdf-5.3.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/x43178362/Downloads/log4j-1.2.17/apache-log4j-1.2.17/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="E:/git/Test/WebContent/WEB-INF/lib/itext-rtf-2.1.7.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -5,6 +5,11 @@ $(document).ready(function() {
 	$('#classificacioTable').dataTable( {
 		 
 	} );
+	$("#dataExerciciEconomic").datepicker( {
+	    format: " yyyy", // Notice the Extra space at the beginning
+	    viewMode: "years", 
+	    minViewMode: "years"
+	});
 	$('.eliminarSeleccionada').on('click', function(){	
 		var table = $('#administradorsTable').DataTable();
 		$(this).parents('tr').addClass('selected');

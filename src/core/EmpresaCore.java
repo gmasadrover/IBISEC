@@ -18,7 +18,7 @@ public class EmpresaCore {
 	
 	static final String SQL_CAMPS = "cif, nom, direccio, cp, ciutat, provincia, telefon, fax, email, usumod, datamod, objectesocial,"
 								+ " acreditacio1, dataexpacreditacio1, acreditacio2, dataexpacreditacio2, acreditacio3, dataexpacreditacio3,"
-								+ " classificacio, dataconstitucio, informacioadicional";
+								+ " classificacio, dataconstitucio, informacioadicional, exercicieconomic,  dataregistremercantil,  ratioap";
 	
 	
 	private static Empresa initEmpresa(Connection conn, ResultSet rs) throws SQLException{		
@@ -47,6 +47,9 @@ public class EmpresaCore {
 		empresa.setSolEconomica(getSolEconomica(empresa.getCif()));
 		empresa.setSolTecnica(getSolTecnica(empresa.getCif()));
 		empresa.setInformacioAdicional(rs.getString("informacioadicional"));
+		empresa.setExerciciEconomic(rs.getTimestamp("exercicieconomic"));
+		empresa.setRegistreMercantilData(rs.getTimestamp("dataregistremercantil"));
+		empresa.setRatioAP(rs.getDouble("ratioap"));
 		return empresa;
 	}
 	
@@ -82,7 +85,7 @@ public class EmpresaCore {
 		 String sql = "UPDATE public.tbl_empreses"
 				 	+ " SET nom=?, direccio=?, cp=?, ciutat=?, provincia=?, telefon=?, fax=?, email=?, usumod=?, datamod=localtimestamp, objectesocial=?," 
 				 		+ " acreditacio1=?, dataexpacreditacio1=?, acreditacio2=?, dataexpacreditacio2=?, acreditacio3=?, dataexpacreditacio3=?," 
-				 		+ " classificacio=?, dataconstitucio=?, informacioadicional=?"
+				 		+ " classificacio=?, dataconstitucio=?, informacioadicional=?, exercicieconomic=?,  dataregistremercantil=?,  ratioap=?"
 				 	+ " WHERE cif = ?";	 		 
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 		 
 		 pstm.setString(1, empresa.getName());
@@ -119,8 +122,19 @@ public class EmpresaCore {
 		 } else {
 			 pstm.setDate(18, null);
 		 }	
-		 pstm.setString(19, empresa.getInformacioAdicional());
-		 pstm.setString(20, empresa.getCif());
+		 pstm.setString(19, empresa.getInformacioAdicional());		 
+		 if (empresa.getExerciciEconomic() != null) {
+			 pstm.setDate(20, new java.sql.Date(empresa.getExerciciEconomic().getTime()));
+		 } else {
+			 pstm.setDate(20, null);
+		 }	
+		 if (empresa.getRegistreMercantilData() != null) {
+			 pstm.setDate(21, new java.sql.Date(empresa.getRegistreMercantilData().getTime()));
+		 } else {
+			 pstm.setDate(21, null);
+		 }	
+		 pstm.setDouble(22, empresa.getRatioAP());
+		 pstm.setString(23, empresa.getCif());
 		 pstm.executeUpdate();
 		
 		 addAdministradors(conn, empresa.getCif(), administradorsList, idUsuari);
@@ -177,12 +191,10 @@ public class EmpresaCore {
 		 for(Iterator<Empresa.Administrador> i = administradorsList.iterator(); i.hasNext();) {
 			 Empresa.Administrador administrador = i.next();
 			 if (administrador.isEliminar()) {
-				 System.out.println("Eliminam administrador: " + administrador.getDni());
 				 pstmDelete = conn.prepareStatement(sqlDelete);	
 				 pstmDelete.setString(1, administrador.getDni());
 				 pstmDelete.executeUpdate();
 			 } else if (existAdministrador(conn, cif, administrador.getDni())) {
-				 System.out.println("Existeix administrador: " + administrador.getDni());
 				 pstmUpdate = conn.prepareStatement(sqlUpdate);	
 				 pstmUpdate.setString(1, administrador.getNom());
 				 pstmUpdate.setDate(2, new java.sql.Date(administrador.getDataValidesaFins().getTime()));
@@ -196,7 +208,6 @@ public class EmpresaCore {
 				 pstmUpdate.setString(10, administrador.getDni());
 				 pstmUpdate.executeUpdate();	
 			 } else {
-				 System.out.println("Nou administrador: " + administrador.getDni());
 				 pstmInsert = conn.prepareStatement(sqlInsert);	
 				 pstmInsert.setString(1, cif);
 				 pstmInsert.setString(2, administrador.getNom());
@@ -278,7 +289,7 @@ public class EmpresaCore {
 	 
 	 public static Fitxer getSolEconomica(String cif) {
 		 Fitxer fitxer = new Fitxer();
-		 File dir = new File(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Economica");
+		 File dir = new File(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Sol Economica");
 		 File[] fichers = dir.listFiles();
 		 if (fichers == null) {
 			
@@ -286,8 +297,7 @@ public class EmpresaCore {
 			 for (int x=0;x<fichers.length;x++) {
 				 fitxer = new Fitxer();
 				 fitxer.setNom(fichers[x].getName());
-				 fitxer.setRuta(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Economica/" + fichers[x].getName());
-				 System.out.println(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Economica/" + fichers[x].getName());
+				 fitxer.setRuta(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Sol Economica/" + fichers[x].getName());
 			 }
 		 }
 		 return fitxer;
@@ -295,7 +305,7 @@ public class EmpresaCore {
 	 
 	 public static Fitxer getSolTecnica(String cif) {
 		 Fitxer fitxer = new Fitxer();
-		 File dir = new File(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Tecnica");
+		 File dir = new File(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Sol Tecnica");
 		 File[] fichers = dir.listFiles();
 		 if (fichers == null) {
 			
@@ -303,8 +313,7 @@ public class EmpresaCore {
 			 for (int x=0;x<fichers.length;x++) {
 				 fitxer = new Fitxer();
 				 fitxer.setNom(fichers[x].getName());
-				 fitxer.setRuta(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Tecnica/" + fichers[x].getName());
-				 System.out.println(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Tecnica/" + fichers[x].getName());
+				 fitxer.setRuta(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Sol Tecnica/" + fichers[x].getName());
 			 }
 		 }
 		 return fitxer;
@@ -314,35 +323,30 @@ public class EmpresaCore {
 			if (!fitxers.isEmpty()) {
 				String fileName = "";
 				// Crear directoris si no existeixen
-				File tmpFile = new File(utils.Fitxers.RUTA_BASE + "/Empreses");
+				File tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/Empreses");
 				if (!tmpFile.exists()) {
-					System.out.println(utils.Fitxers.RUTA_BASE + "/Empreses");
 					tmpFile.mkdir();
 				}
-				tmpFile = new File(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif);
+				tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif);
 				if (!tmpFile.exists()) {
-					System.out.println(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif);
 					tmpFile.mkdir();
 				}
 		        for(int i=0;i<fitxers.size();i++){
 		            Fitxer fitxer = (Fitxer) fitxers.get(i);
 		            if ("fileEconomica".equals(fitxer.getNom())) {
-						tmpFile = new File(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Economica");
+						tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Sol Economica");
 						if (!tmpFile.exists()) {
-							System.out.println(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Economica");
 							tmpFile.mkdir();
 						}
-						fileName = utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Economica/";
+						fileName = utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Sol Economica/";
 					}
 					if ("FileTecnica".equals(fitxer.getNom())) {
-						tmpFile = new File(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Tecnica");
+						tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Sol Tecnica");
 						if (!tmpFile.exists()) {
-							System.out.println(utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Tecnica");
 							tmpFile.mkdir();
 						}
-						fileName = utils.Fitxers.RUTA_BASE + "/Empreses/" + cif + "/Sol Tecnica/";
+						fileName = utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Sol Tecnica/";
 					}
-					System.out.println(fileName);
 		            if (fitxer.getFitxer().getName() != "") {		          
 		            	File archivo_server = new File(fileName + fitxer.getFitxer().getName());
 		               	try {

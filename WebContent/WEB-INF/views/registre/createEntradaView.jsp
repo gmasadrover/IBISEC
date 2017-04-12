@@ -45,6 +45,7 @@
                     <div class="col-lg-12">                    	
 		    			<form class="form-horizontal" method="POST" action="DoCreateRegistreEntrada">
 		    				<div class="form-group">
+		    					<input type="hidden" id="tipusRegistre" value="E"> 
 		    					<input type="hidden" name="idIncidenciaSeleccionada" value="${idIncidencia}"> 
                                 <label class="col-xs-3 control-label">Referència</label>
                                 <div class="col-xs-3">
@@ -61,7 +62,7 @@
                             <div class="form-group">
                                 <label class="col-xs-3  control-label">Tipus</label>
                                 <div class="col-xs-3">
-	                                <select class="form-control selectpicker" name="tipus" id="tipusList">
+	                                <select class="form-control selectpicker" name="tipus" id="tipusList" data-live-search="true" data-size="5">
 	                                </select>
 	                             </div>
                             </div>										
@@ -94,15 +95,7 @@
 		                                	<option value="-1">Nova incidència</option>
 		                                </select>
 									</div>
-								</div>	                            
-	                            <!-- <div class="form-group">
-	                             	<label class="col-xs-3 control-label">Actuació</label>
-	                                <div class="col-xs-3">   
-		                                <select class="form-control selectpicker" name="idActuacio" id="actuacioList">
-		                                	<option value="-1">Nova actuació</option>
-		                                </select>
-									</div>
-								</div>	 -->
+								</div>
 							</c:if>									
                             <br>
 						    <div class="form-group">

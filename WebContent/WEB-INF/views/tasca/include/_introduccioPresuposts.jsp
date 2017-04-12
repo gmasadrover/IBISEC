@@ -18,7 +18,7 @@
    		<div class="form-group">
         	<div class="col-lg-4">	
          		<label>Empresa</label>									            	 										            	 	
-            	<select class="selectpicker" name="llistaEmpreses" id="llistaEmpreses">						                                					                                	
+            	<select class="selectpicker" name="llistaEmpreses" id="llistaEmpreses" data-live-search="true" data-size="10">						                                					                                	
                		<c:forEach items="${empresesList}" var="empresa">
                    		<option value="${empresa.cif}">${empresa.name}</option>
                    	</c:forEach>	

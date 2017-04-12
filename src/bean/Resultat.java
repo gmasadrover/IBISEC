@@ -4,7 +4,8 @@ import java.util.List;
 
 public class Resultat {
 	public class Estadistiques {
-		private int aprovades;
+		private int aprovadesPA;
+		private int aprovadesPT;
 		private int pendents;
 		private int tancades;
 		
@@ -12,12 +13,12 @@ public class Resultat {
 			
 		}
 		
-		public int getAprovades() {
-			return aprovades;
+		public int getAprovadesPA() {
+			return aprovadesPA;
 		}
 
-		public void setAprovades(int aprovades) {
-			this.aprovades = aprovades;
+		public void setAprovadesPA(int aprovadesPA) {
+			this.aprovadesPA = aprovadesPA;
 		}
 
 		public int getPendents() {
@@ -34,6 +35,14 @@ public class Resultat {
 
 		public void setTancades(int tancades) {
 			this.tancades = tancades;
+		}
+
+		public int getAprovadesPT() {
+			return aprovadesPT;
+		}
+
+		public void setAprovadesPT(int aprovadesPT) {
+			this.aprovadesPT = aprovadesPT;
 		}
 	}
 	

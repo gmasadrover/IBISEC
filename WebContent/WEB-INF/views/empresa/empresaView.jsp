@@ -127,14 +127,14 @@
                 	<c:if test="${empresa.solEconomica != null}">
 	                	<div class="row">
 	                		<label class="col-xs-2 control-label">Document:</label>
-	                		<a  href="downloadFichero?ruta=${empresa.solEconomica.ruta}">${empresa.solEconomica.nom}</a>
+	                		<a target="_blanck" href="downloadFichero?ruta=${empresa.solEconomica.ruta}">${empresa.solEconomica.nom}</a>
 	                	</div>
                 	</c:if>
                 	<h4 class="margin_bottom30">Solvència Tècnica</h4>
                 	<c:if test="${empresa.solTecnica != null}">
 	                	<div class="row">
 	                		<label class="col-xs-2 control-label">Document:</label>
-	                		<a  href="downloadFichero?ruta=${empresa.solTecnica.ruta}">${empresa.solTecnica.nom}</a>
+	                		<a target="_blanck" href="downloadFichero?ruta=${empresa.solTecnica.ruta}">${empresa.solTecnica.nom}</a>
 	                	</div>
 	                </c:if>                	
                 	<h4 class="margin_bottom30">Classificació</h4>

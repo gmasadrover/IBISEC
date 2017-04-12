@@ -30,7 +30,6 @@ public class MyUtils {
 	// Store user info in Session.
 	public static void storeLoginedUser(HttpSession session, User loginedUser) {
 		// On the JSP can access ${loginedUser}
-		//System.out.println(loginedUser.getName());
 		session.setAttribute("loginedUser", loginedUser);
 	}
 	 
@@ -46,7 +45,6 @@ public class MyUtils {
 	 
 	// Store info in Cookie
 	public static void storeUserCookie(HttpServletResponse response, User user) {
-		System.out.println("Store user cookie");
 		Cookie cookieUserName = new Cookie(ATT_NAME_USER_NAME, String.valueOf(user.getIdUsuari()));
 	 
 		// 1 day (Convert to seconds)

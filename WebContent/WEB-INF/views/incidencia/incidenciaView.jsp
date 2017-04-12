@@ -252,17 +252,31 @@
 					        <a data-toggle="collapse" data-parent="#accordion" href="#arxiusAdjunts">Arxius adjunts</a>
 					      </h4>
 					    </div>
-					    <div id="arxiusAdjunts" class="panel-collapse collapse">
+					    <div id="arxiusAdjunts" class="panel-collapse collapse in">
 					      	<div class="panel-body">
-					      		<input class="btn btn-primary openFolder" data-idincidencia="${incidencia.idIncidencia}" value="Carpeta">					      		
 					    		<div class="row panel-body">					    		
 									<c:forEach items="${arxius}" var="arxiu" >
-					            		<a  href="downloadFichero?ruta=${arxiu.ruta}">
+					            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.ruta}">
 											${arxiu.seccio} - ${arxiu.nom}
 										</a>
 										<br>
 									</c:forEach>	
 								</div>
+								<div class="row">            			
+									<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadFichero">
+										<div class="form-group">
+											<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+				                            <div class="col-xs-5">   
+				                                <input type="file" class="btn" name="file" /><br/>
+											</div> 
+											<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">
+											<input type="hidden" name="redirect" value="/incidenciaDetalls?ref=${incidencia.idIncidencia}">				    
+											<div class="col-xs-2"> 
+				         						<input type="submit" class="btn btn-primary" value="Pujar" />
+				         					</div>    						
+				         				</div>         				
+									</form>							
+				            	</div>     
 							</div>
 					    </div>
 					  </div>

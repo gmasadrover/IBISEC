@@ -62,41 +62,10 @@
 						</div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-lg-12 panel-group" id="accordion">	
-						<c:if test="${not empty incidencia}">
-							<div class="panel panel-default">
-            		  			<div class="panel-heading">
-					      			<h4 class="panel-title">                        										      		
-			        					<a data-toggle="collapse" data-parent="#accordion" href="#incidencia">Incidència</a>
-			        				</h4>
-			        			</div>
-			        		</div>
-						    <div id="incidencia" class="panel-collapse collapse">
-		                    	<div class="row">					
-					                <div class="col-lg-12">	                	
-					                	<jsp:include page="../incidencia/include/_resumIncidencia.jsp"></jsp:include>
-					                </div>
-				            	</div> 
-							</div>
-						</c:if>	
-						<c:if test="${not empty actuacio}">
-							<div class="panel panel-default">
-            		  			<div class="panel-heading">
-					      			<h4 class="panel-title">     	                        										      		
-			        					<a data-toggle="collapse" data-parent="#accordion" href="#actuacio">Actuació</a>
-			        				</h4>
-			        			</div>
-			        		</div>
-						    <div id="actuacio" class="panel-collapse collapse">
-		                    	<div class="row">					
-					                <div class="col-lg-12">	                	
-					                	<jsp:include page="../actuacio/include/_resumActuacio.jsp"></jsp:include>
-					                </div>
-				            	</div> 
-							</div>
-						</c:if>	
-					</div>
+				<div class="row">					
+	                <div class="col-lg-12">	                	
+	                	<jsp:include page="../actuacio/include/_resumActuacio.jsp"></jsp:include>
+	                </div>				            	
 				</div>
                 <div class="row">
                     <div class="col-lg-12"> 
@@ -110,7 +79,7 @@
 	                         		<div class="row panel-body">${historic.comentari}</div>		
 					            	<div class="row panel-body">
 						            	<c:forEach items="${historic.adjunts}" var="arxiu" >
-						            		<a  href="downloadFichero?ruta=${arxiu.ruta}">${arxiu.nom}</a><br>
+						            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.ruta}">${arxiu.nom}</a><br>
 										</c:forEach>					            		
 					            	</div>			          		
 					          	</div>					          	
@@ -120,31 +89,37 @@
                         	<div class="panel panel-info">
                         		<c:if test="${tasca.tipus != 'generic' && canRealitzarTasca}">
 	                        		<div class="panel-body">
-		                        		<div class="col-lg-12 panel-group" id="accordion">		                        										      		
-							        		<a data-toggle="collapse" data-parent="#accordion" href="#entradesRegistre" class="btn btn-success">
-												<c:choose>
-												    <c:when test="${tasca.tipus=='infPrev'}">Proposta d'actuació</c:when>
-												    <c:when test="${tasca.tipus=='resPartida'}">Reservar partida</c:when>
-												    <c:when test="${tasca.tipus=='liciMenor'}">Proposta tècnica</c:when>
-												</c:choose>
-											</a>
-										    <div id="entradesRegistre" class="panel-collapse collapse">
-				                        		<c:choose>
-												    <c:when test="${tasca.tipus=='infPrev'}">
-												    	<jsp:include page="include/_crearInformePrevi.jsp"></jsp:include>
-												    </c:when>
-												    <c:when test="${tasca.tipus=='resPartida'}">
-												    	<jsp:include page="include/_reservaPartida.jsp"></jsp:include>
-												    </c:when>
-												    <c:when test="${tasca.tipus=='liciMenor'}">
-												    	<c:if test="${esCap}">
-												    		<jsp:include page="include/_resumOfertes.jsp"></jsp:include>
-												    	</c:if>
-												    	<c:if test="${!esCap}">
-												    		<jsp:include page="include/_introduccioPresuposts.jsp"></jsp:include>
-												    	</c:if>
-												    </c:when>
-												</c:choose>
+		                        		<div class="col-lg-12 panel-group" id="accordion">		
+			                        		<div class="panel panel-default">
+							      				<div class="panel-heading">
+											      <h4 class="panel-title">
+											        <a data-toggle="collapse" data-parent="#accordion" href="#entradesRegistre">
+												      	<c:choose>
+														    <c:when test="${tasca.tipus=='infPrev'}">Realitzar informe</c:when>
+														    <c:when test="${tasca.tipus=='resPartida'}">Reservar partida</c:when>
+														    <c:when test="${tasca.tipus=='liciMenor'}">Proposta tècnica</c:when>
+														</c:choose>
+													</a>
+											      </h4>
+											    </div>										    
+											    <div id="entradesRegistre" class="panel-collapse collapse">
+					                        		<c:choose>
+													    <c:when test="${tasca.tipus=='infPrev'}">
+													    	<jsp:include page="include/_crearInformePrevi.jsp"></jsp:include>
+													    </c:when>
+													    <c:when test="${tasca.tipus=='resPartida'}">
+													    	<jsp:include page="include/_reservaPartida.jsp"></jsp:include>
+													    </c:when>
+													    <c:when test="${tasca.tipus=='liciMenor'}">
+													    	<c:if test="${esCap}">
+													    		<jsp:include page="include/_resumOfertes.jsp"></jsp:include>
+													    	</c:if>
+													    	<c:if test="${!esCap}">
+													    		<jsp:include page="include/_introduccioPresuposts.jsp"></jsp:include>
+													    	</c:if>
+													    </c:when>
+													</c:choose>
+												</div>												
 											</div>	
 										</div>
 									</div>
@@ -170,30 +145,34 @@
 										        </div>
 				                      		</div>
 				                       		<div class="col-lg-6">
-										        <div class="row">
-										            <div class="col-lg-12">
-										            	<div class="col-lg-6">
-							                                <select class="form-control selectpicker" data-live-search="true" data-size="10" name="idUsuari" id="usuarisList">
-							                                <c:forEach items="${llistaUsuaris}" var="usuari" >
-						                                		<option value='${usuari.idUsuari}'>${usuari.getNomComplet()}</option>
-						                                	</c:forEach>
-						                                	<option data-divider="true"></option>
-						                                	<c:forEach items="${llistaCaps}" var="usuari" >
-						                                		<option value='${usuari.idUsuari}'>${usuari.getNomComplet()}</option>
-						                                	</c:forEach>	
-							                                </select>
-						                             	</div>
-						                       			<input class="btn btn-success" type="submit" name="reasignar" value="Reassignar">
-													</div>
-										        </div>
+				                       			<c:if test="${canRealitzarTasca}">
+											        <div class="row">
+											            <div class="col-lg-12">
+											            	<div class="col-lg-6">
+								                                <select class="form-control selectpicker" data-live-search="true" data-size="10" name="idUsuari" id="usuarisList">
+								                                <c:forEach items="${llistaUsuaris}" var="usuari" >
+							                                		<option value='${usuari.idUsuari}'>${usuari.getNomComplet()}</option>
+							                                	</c:forEach>
+							                                	<option data-divider="true"></option>
+							                                	<c:forEach items="${llistaCaps}" var="usuari" >
+							                                		<option value='${usuari.idUsuari}'>${usuari.getNomComplet()}</option>
+							                                	</c:forEach>	
+								                                </select>
+							                             	</div>
+							                       			<input class="btn btn-success" type="submit" name="reasignar" value="Reassignar">
+														</div>
+											        </div>
+										        </c:if>
 										        <div class="row margin_top10">
 										        	<div class="col-lg-6"></div>
 										            <div><input class="btn btn-primary" type="submit" name="afegirComentari" value="Només afegir comentari"></div>
 										        </div>
-										        <div class="row margin_top10">
-										        	<div class="col-lg-6"></div>
-										            <div><input class="btn btn-danger" type="submit" name="tancar" value="Tancar"></div>
-										        </div>
+										        <c:if test="${esCap}">
+											        <div class="row margin_top10">
+											        	<div class="col-lg-6"></div>
+											            <div><input class="btn btn-danger" type="submit" name="tancar" value="Tancar"></div>
+											        </div>
+										        </c:if>
 										    </div>
 				                       	</div>		                       	
 			                       	</form>			                		                       	

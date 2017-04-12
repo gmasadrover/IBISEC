@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Incidencia {
-	private int idIncidencia;
+	private String idIncidencia;
 	private String descripcio;
 	private String idCentre;
 	private String nomCentre;
@@ -21,12 +21,12 @@ public class Incidencia {
 		 
 	}
 
-	public int getIdIncidencia() {
+	public String getIdIncidencia() {
 		return idIncidencia;
 	}
 
-	public void setIdIncidencia(int idEstudi) {
-		this.idIncidencia = idEstudi;
+	public void setIdIncidencia(String idIncidencia) {
+		this.idIncidencia = idIncidencia;
 	}
 
 	public Resultat getLlistaActuacions() {
@@ -73,8 +73,10 @@ public class Incidencia {
 	}
 	
 	public String getPeticioString() {
+		String dataString = "";
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		return df.format(this.usuMod);		  
+		if (this.usuMod != null) dataString = df.format(this.usuMod);	
+		return dataString;
 	}
 
 	public Date getDataTancament() {

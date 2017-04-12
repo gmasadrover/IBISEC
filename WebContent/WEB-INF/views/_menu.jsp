@@ -15,7 +15,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="tascaList">IBISEC</a>
+        <a class="navbar-brand" href="tascaList"><img  class="logo" src="favicon.png" /><span class="tittleLogo">Intranet IBISEC</span></a>
     </div>
     <!-- Top Menu Items -->
     <ul class="nav navbar-right top-nav">
@@ -105,7 +105,7 @@
                 <li><a href="?language=ca" class="language" rel="ca"><m:message key="catala"/></a></li>
                 <li><a href="?language=es" class="language" rel="es"><m:message key="espanyol"/></a></li>
             </ul>
-        </li> --%>
+        </li> --%>      
         <li class="dropdown">        	
             <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i>${user.getNomComplet()}<b class="caret"></b></a>
             <ul class="dropdown-menu">

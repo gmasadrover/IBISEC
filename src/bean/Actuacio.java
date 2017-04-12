@@ -2,33 +2,37 @@ package bean;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import utils.Fitxers;
 
 public class Actuacio {
-	 private int referencia;
+	 private String referencia;
 	 private String descripcio;
 	 private Date dataCreacio;
 	 private int idUsuariCreacio;
 	 private String idCentre;	
 	 private String nomCentre;
-	 private boolean activa;
 	 private Date dataTancament;
-	 private boolean aprovada;
 	 private Date dataAprovacio;
-	 private int idInformePrevi;
-	 private int idIncidencia;
+	 private InformeActuacio informePrevi;
+	 private String idIncidencia;
 	 private Date darreraModificacio;
 	 private String modificacio;
+	 private Date dataAprovarPa;
+	 private List<Fitxers.Fitxer> arxiusAdjunts = new ArrayList<Fitxers.Fitxer>();
 	 
 	 public Actuacio() {
  
 	 }
  
-	 public int getReferencia() {
+	 public String getReferencia() {
 		 return referencia;
 	 }
  
-	 public void setReferencia(int referencia) {
+	 public void setReferencia(String referencia) {
 		 this.referencia = referencia;
 	 }
 	 
@@ -49,15 +53,11 @@ public class Actuacio {
 	 }
 	 	 
 	public boolean isActiva() {
-		return activa;
-	}
-
-	public void setActiva(boolean activa) {
-		this.activa = activa;
+		return this.dataTancament == null;
 	}
 	
 	public String estatNom(){
-		if (this.activa) {
+		if (this.dataTancament == null) {
 			return "Activa";
 		}else{
 			return "Tancada";
@@ -80,11 +80,7 @@ public class Actuacio {
 	}
 
 	public boolean isAprovada() {
-		return aprovada;
-	}
-
-	public void setAprovada(boolean aprovada) {
-		this.aprovada = aprovada;
+		return this.dataAprovacio != null;
 	}
 
 	public Date getDataAprovacio() {
@@ -102,19 +98,11 @@ public class Actuacio {
 		this.dataAprovacio = dataAprovacio;
 	}
 
-	public int getIdInformePrevi() {
-		return idInformePrevi;
-	}
-
-	public void setIdInformePrevi(int idInformePrevi) {
-		this.idInformePrevi = idInformePrevi;
-	}
-
-	public int getIdIncidencia() {
+	public String getIdIncidencia() {
 		return idIncidencia;
 	}
 
-	public void setIdIncidencia(int idIncidencia) {
+	public void setIdIncidencia(String idIncidencia) {
 		this.idIncidencia = idIncidencia;
 	}
 
@@ -170,5 +158,40 @@ public class Actuacio {
 
 	public void setNomCentre(String nomCentre) {
 		this.nomCentre = nomCentre;
+	}
+
+	public InformeActuacio getInformePrevi() {
+		return informePrevi;
+	}
+
+	public void setInformePrevi(InformeActuacio informePrevi) {
+		this.informePrevi = informePrevi;
+	}
+
+	public boolean isPaAprovada() {
+		return this.dataAprovarPa != null;
+	}
+	
+	public Date getDataAprovarPa() {
+		return dataAprovarPa;
+	}
+
+	public String getDataAprovarPaString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");	
+		String dataString = "";
+		if (this.dataAprovarPa != null) dataString = df.format(this.dataAprovarPa);
+		return dataString;
+	}
+	
+	public void setDataAprovarPa(Date dataAprovarPa) {
+		this.dataAprovarPa = dataAprovarPa;
+	}
+
+	public List<Fitxers.Fitxer> getArxiusAdjunts() {
+		return arxiusAdjunts;
+	}
+
+	public void setArxiusAdjunts(List<Fitxers.Fitxer> arxiusAdjunts) {
+		this.arxiusAdjunts = arxiusAdjunts;
 	}
 }

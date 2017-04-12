@@ -1,30 +1,37 @@
 $(document).ready(function() {
-	$('.filerTable.normal').DataTable({
-		"order": [[ 0, "desc" ]],
+	$('.filerTable').DataTable({
+		dom: 'Bfrtip',
+        buttons: [ {
+	            extend: 'excelHtml5',
+	            customize: function( xlsx ) {
+	                var sheet = xlsx.xl.worksheets['sheet1.xml']; 
+	                $('row c[r^="C"]', sheet).attr( 's', '2' );
+	            },
+	            exportOptions: {
+                    columns: ':visible'
+                }
+        	},
+	        {
+	            extend: 'collection',
+	            text: 'Editar columnes',
+	            buttons: [ 'columnsVisibility' ],
+	            visibility: true
+	        }
+        ],
 		"aoColumns": [
     		null,
     		null,
     		null,
     		{"iDataSort": 4},
     		{"bVisible": false},
-    		null,
-    		{"iDataSort": 7},
-    		{"bVisible": false}
-		]
-	});
-	$('.filerTable.withTancades').DataTable({
-		"order": [[ 0, "desc" ]],
-		"aoColumns": [
-    		null,
-    		null,
-    		null,
-    		{"iDataSort": 4},
+    		{"iDataSort": 6},
+    		{"bVisible": false},
+    		{"iDataSort": 8},
+    		{"bVisible": false},
+    		{"iDataSort": 10},
     		{"bVisible": false},
     		null,
-    		{"iDataSort": 7},
-    		{"bVisible": false},
-    		null,
-    		{"iDataSort": 9},
+    		{"iDataSort": 13},
     		{"bVisible": false}
 		]
 	});

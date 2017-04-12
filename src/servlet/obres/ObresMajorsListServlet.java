@@ -3,7 +3,12 @@ package servlet.obres;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -15,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import bean.User;
 import bean.ControlPage.SectionPage;
-import bean.ObraMajor;
+import bean.Obra;
 import core.ControlPageCore;
 import core.ObresCore;
 import core.UsuariCore;
@@ -47,34 +52,46 @@ public class ObresMajorsListServlet extends HttpServlet {
 		}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.obres_list)) {
     		response.sendRedirect(request.getContextPath() + "/");	
 		} else {
-			String filtrar = request.getParameter("filtrar");
-			boolean onlyActives = false;
+			String filtrar = request.getParameter("filtrar");			
 			String idCentre = "";
 			String idCentreSelector = "";
+			String filterWithOutDate = request.getParameter("filterWithOutDate");
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			Calendar cal = Calendar.getInstance(); 
+			Date dataFi = cal.getTime();
+			String dataFiString = df.format(dataFi);	 
+			cal.add(Calendar.MONTH, -2);
+			Date dataInici = cal.getTime();
+			String dataIniciString = df.format(dataInici);	
 			
 			String errorString = null;
-			List<ObraMajor> list = new ArrayList<ObraMajor>();
+			List<Obra> list = new ArrayList<Obra>();
 			try {
 				if (filtrar != null) {
-					onlyActives = request.getParameter("nomesActives") != null;
-					if (request.getParameter("filterCentre") != null) {
+					if (!"-1".equals(request.getParameter("idCentre").split("_")[0])) {						
 						idCentre = request.getParameter("idCentre").split("_")[0];
 						idCentreSelector = request.getParameter("idCentre");
 					}
-					list = ObresCore.ObresMajor(conn);
-
-				} else {
-					list = ObresCore.ObresMajor(conn);
+					dataInici = null;					
+					dataFi = null;
+					if (filterWithOutDate == null){
+						dataInici = df.parse(request.getParameter("dataInici"));
+		    			dataIniciString = request.getParameter("dataInici");
+		    			dataFi = df.parse(request.getParameter("dataFi"));
+		    			dataFiString = request.getParameter("dataFi");
+					}
 				}
-			} catch (SQLException e) {
+				list = ObresCore.ObresMajor(conn, idCentre, dataInici, dataFi);
+			} catch (SQLException | ParseException e) {
 				e.printStackTrace();
 				errorString = e.getMessage();
 			}
 
 			// Store info in request attribute, before forward to views
 			request.setAttribute("errorString", errorString);
-			request.setAttribute("actuacionsList", list);
-			request.setAttribute("nomesActives", onlyActives);
+			request.setAttribute("obresList", list);
+			request.setAttribute("dataInici", dataIniciString);
+		    request.setAttribute("dataFi", dataFiString);
 			request.setAttribute("idCentre", idCentreSelector);
 			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Obres"));
 			// Forward to /WEB-INF/views/homeView.jsp

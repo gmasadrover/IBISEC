@@ -64,7 +64,12 @@
 							</div>
 						</div>	
 					</form>
-				</div>				
+				</div>	
+				<div class="row">
+					<div class="col-lg-2">
+						<a href="novaIncidencia" class="btn btn-primary" role="button">Crear nova incidència</a>
+					</div>
+				</div>			
                 <div class="row">
                     <div class="col-lg-12">
                         <h2>Incidencies</h2>

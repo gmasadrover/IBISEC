@@ -66,7 +66,7 @@
 	                  	</div>
 		             	<div class="col-xs-offset-1 col-lg-5">
 		             		<p> 
-	                        	<label>Oferta: </label> ${factura.idOferta}
+	                        	<label>Informe: </label> ${factura.idInforme}
                             </p> 
 		                    <p> 
 	                        	<label>Proveïdor: </label> ${factura.idProveidor}

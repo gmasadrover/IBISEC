@@ -11,7 +11,7 @@ public class ControlPage {
 		empreses_list, empreses_crear,
 		usuari_detalls,
 		obres_list,
-		factures_list
+		factures_list, factures_crear
 	}
 	public ControlPage(){
 		

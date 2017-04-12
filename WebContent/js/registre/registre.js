@@ -19,12 +19,21 @@ function loadTipus(){
     	$.each( data, function( key, data ) {
     		$('#tipusList').append('<option value=' + encodeURIComponent(data.NOM) + '>' + data.NOM + '</option>');
     	});
-    	$('.selectpicker').selectpicker('refresh');
+    	if ($('#tipusSelected').val() != '') {
+      		$('#tipusList option[value="' + encodeURIComponent($('#tipusSelected').val()) + '"]').attr('selected', 'selected');
+    	}
+    	if ($('.selectpicker').size() > 0) {
+    		$('.selectpicker').selectpicker('refresh');
+    	}
     });
 }
 
 function searchIncidencies(idCentre) {
-	$('#incidenciesList').html("<option value='-1'>Nova incidència</option>");
+	if ($('#tipusRegistre').val() == 'E') {
+		$('#incidenciesList').html("<option value='-1'>Nova incidència</option>");
+	} else {
+		$('#incidenciesList').html("<option value='-1'>Sense incidència</option>");
+	}
 	$.ajax({
         type: "POST",
         url: "LlistatIncidencies",

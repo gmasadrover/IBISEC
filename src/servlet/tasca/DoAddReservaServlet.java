@@ -39,8 +39,8 @@ public class DoAddReservaServlet extends HttpServlet {
 		Connection conn = MyUtils.getStoredConnection(request);		
 		
 	    int idTasca = Integer.parseInt(request.getParameter("idTasca"));
-	    int idInforme = Integer.parseInt(request.getParameter("idInformePrevi"));
-	    int idActuacio = Integer.parseInt(request.getParameter("idActuacio"));
+	    String idInforme = request.getParameter("idInformePrevi");
+	    String idActuacio = request.getParameter("idActuacio");
 	    String idPartida = request.getParameter("llistaPartides");
 	    double valor = Double.parseDouble(request.getParameter("importReserva"));
 	    String reservar = request.getParameter("reservar");

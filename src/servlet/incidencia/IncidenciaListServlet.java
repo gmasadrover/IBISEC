@@ -74,16 +74,16 @@ public class IncidenciaListServlet extends HttpServlet {
 						idCentreSelector = request.getParameter("idCentre");
 					}				
 					dataInici = null;
-					dataIniciString = "";
 					dataFi = null;
-					dataFiString = "";
 					if (filterWithOutDate == null){
 						dataInici = df.parse(request.getParameter("dataInici"));
 		    			dataIniciString = request.getParameter("dataInici");
 		    			dataFi = df.parse(request.getParameter("dataFi"));
 		    			dataFiString = request.getParameter("dataFi");
 					}		
-				}
+				} else {
+					filterWithOutDate = "on";
+				}				
 				list = IncidenciaCore.searchIncidencies(conn, idCentre, onlyActives, dataInici, dataFi);
 			} catch (SQLException | ParseException e) {
 				e.printStackTrace();

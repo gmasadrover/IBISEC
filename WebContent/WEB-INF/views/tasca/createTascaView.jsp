@@ -24,7 +24,7 @@
                             <small>
                             	<c:choose>
 								    <c:when test="${tipus=='infPrev'}">
-								        Sol·licitud proposta d'actuació
+								        Sol·licitud informe
 								    </c:when>
 								    <c:otherwise>
 								       Nova tasca
@@ -58,9 +58,12 @@
 		    					<input type="hidden" name="idActuacio" value="${idActuacio}">
 		    					<input type="hidden" name="idIncidencia" value="${idIncidencia}">
 		    					<input type="hidden" name="tipus" value="${tipus}">
-                                <label class="col-xs-3 control-label">Referència</label>
+		    					<input type="hidden" name="referencia" value="${nouCodi}">                       
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label">Comentari</label>
                                 <div class="col-xs-3">
-                                	<input class="form-control" name="referencia" placeholder="referència" value="${nouCodi}">
+                                	<textarea class="form-control" name="comentari" placeholder="comentari inter" rows="3">Revisar</textarea>
                                 </div>
                             </div>
                             <div class="form-group">

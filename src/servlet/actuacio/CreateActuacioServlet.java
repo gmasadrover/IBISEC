@@ -48,7 +48,7 @@ public class CreateActuacioServlet extends HttpServlet {
 	        Incidencia incidencia = new Incidencia();
 	        try {
 				request.setAttribute("nouCodi", ActuacioCore.getNewCode(conn));
-				incidencia = IncidenciaCore.findIncidencia(conn, Integer.parseInt(request.getParameter("idIncidencia")));
+				incidencia = IncidenciaCore.findIncidencia(conn, request.getParameter("idIncidencia"));
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

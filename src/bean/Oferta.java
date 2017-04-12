@@ -6,8 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Oferta {
-	private int idOferta;
-	private int idActuacio;
+	private String idOferta;
+	private String idActuacio;
 	private String cifEmpresa;
 	private String nomEmpresa;
 	private double vec;
@@ -21,25 +21,27 @@ public class Oferta {
 	private Date dataCreacio;
 	private User usuariAprovacio;
 	private Date dataAprovacio;
-	private int idInforme;
+	private User usuariCapValidacio;
+	private Date dataCapValidacio;
+	private String idInforme;
 	
 	public Oferta(){
 		
 	}
 
-	public int getIdOferta() {
+	public String getIdOferta() {
 		return idOferta;
 	}
 
-	public void setIdOferta(int idOferta) {
+	public void setIdOferta(String idOferta) {
 		this.idOferta = idOferta;
 	}
 
-	public int getIdActuacio() {
+	public String getIdActuacio() {
 		return idActuacio;
 	}
 
-	public void setIdActuacio(int idActuacio) {
+	public void setIdActuacio(String idActuacio) {
 		this.idActuacio = idActuacio;
 	}
 
@@ -169,11 +171,34 @@ public class Oferta {
 		this.dataAprovacio = dataAprovacio;
 	}
 
-	public int getIdInforme() {
+	public String getIdInforme() {
 		return idInforme;
 	}
 
-	public void setIdInforme(int idInforme) {
+	public void setIdInforme(String idInforme) {
 		this.idInforme = idInforme;
+	}
+
+	public User getUsuariCapValidacio() {
+		return usuariCapValidacio;
+	}
+
+	public void setUsuariCapValidacio(User usuariCapValidacio) {
+		this.usuariCapValidacio = usuariCapValidacio;
+	}
+
+	public Date getDataCapValidacio() {
+		return dataCapValidacio;
+	}
+	
+	public String getDataCapValidacioString(){
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");	
+		String dataString = "";
+		if (this.dataCapValidacio != null) dataString = df.format(this.dataCapValidacio);
+		return dataString;		 
+	}
+
+	public void setDataCapValidacio(Date dataCapValidacio) {
+		this.dataCapValidacio = dataCapValidacio;
 	}
 }

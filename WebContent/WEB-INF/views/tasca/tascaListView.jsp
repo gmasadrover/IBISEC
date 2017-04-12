@@ -42,6 +42,10 @@
 							<div class="col-lg-offset-1  col-lg-3">
 								<label>Usuari / Àrea</label>
 							    <select class="form-control selectpicker" name="idUsuari" data-live-search="true" id="usuarisList">
+                                	<c:if test="${veureTotes}">
+	                                	<option value='totes'>Totes les tasques actives</option>
+	                                	<option data-divider="true"></option>
+                                	</c:if>                                	
                                 	<c:forEach items="${llistaUsuaris}" var="usuari" >
                                 		<option value='${usuari.idUsuari}'>${usuari.getNomComplet()}</option>
                                 	</c:forEach>
@@ -101,7 +105,6 @@
 
         </div>
         <!-- /#page-wrapper -->
-
     </div>
     <jsp:include page="../_footer.jsp"></jsp:include>
     <script src="js/tasca/llistat.js"></script>

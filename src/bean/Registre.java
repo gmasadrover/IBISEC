@@ -6,12 +6,12 @@ import java.util.Date;
 
 public class Registre {
 	
-	private int id;
+	private String id;
 	private Date data;
 	private String tipus;
 	private String remDes;
 	private String contingut;
-	private int idIncidencia;
+	private String idIncidencia;
 	private String idCentre;
 	private String nomCentre;
 	private int idUsuari;
@@ -21,7 +21,7 @@ public class Registre {
 		 
 	}
  
-	public Registre(int id, Date data, String tipus, String remdes, String contingut, int idIncidencia, String idCentre, String nomCentre, int idUsuari, Date usuMod) {
+	public Registre(String id, Date data, String tipus, String remdes, String contingut, String idIncidencia, String idCentre, String nomCentre, int idUsuari, Date usuMod) {
 		this.setId(id);
 		this.setData(data);
 		this.setTipus(tipus);
@@ -34,11 +34,11 @@ public class Registre {
 		this.setUsuMod(usuMod);		
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -111,11 +111,11 @@ public class Registre {
 		this.nomCentre = nomCentre;
 	}
 
-	public int getIdIncidencia() {
+	public String getIdIncidencia() {
 		return idIncidencia;
 	}
 
-	public void setIdIncidencia(int idIncidencia) {
+	public void setIdIncidencia(String idIncidencia) {
 		this.idIncidencia = idIncidencia;
 	}
 	

@@ -97,7 +97,7 @@
 							            	<td>${sortida.contingut}</td>	
 							            	<td>${sortida.nomCentre}</td>	
 							             	<c:choose>
-											    <c:when test="${sortida.idIncidencia == 0}">
+											    <c:when test="${sortida.idIncidencia != ''}">
 											        <td></td>
 											    </c:when>    
 											    <c:otherwise>

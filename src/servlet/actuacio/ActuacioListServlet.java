@@ -64,9 +64,7 @@ public class ActuacioListServlet extends HttpServlet {
 						idCentreSelector = request.getParameter("idCentre");
 					}
 					dataInici = null;
-					dataIniciString = "";
 					dataFi = null;
-					dataFiString = "";
 					if (filterWithOutDate == null){
 						dataInici = df.parse(request.getParameter("dataInici"));
 		    			dataIniciString = request.getParameter("dataInici");
@@ -75,6 +73,7 @@ public class ActuacioListServlet extends HttpServlet {
 					}					
 					result = ActuacioCore.searchActuacions(conn, idCentre, estat, dataInici, dataFi);
 				} else {
+					filterWithOutDate = "on";
 					result = ActuacioCore.topAcuacions(conn);
 				}
 			} catch (SQLException e) {
@@ -88,7 +87,8 @@ public class ActuacioListServlet extends HttpServlet {
 			// Store info in request attribute, before forward to views
 			request.setAttribute("errorString", errorString);
 			request.setAttribute("actuacionsList", result.getLlistaActuacions());
-			request.setAttribute("actuacionsAprovades", result.getEstad().getAprovades());
+			request.setAttribute("actuacionsAprovadesPA", result.getEstad().getAprovadesPA());
+			request.setAttribute("actuacionsAprovadesPT", result.getEstad().getAprovadesPT());
 			request.setAttribute("actuacionsPendents", result.getEstad().getPendents());
 			request.setAttribute("actuacionsTancades", result.getEstad().getTancades());
 			request.setAttribute("filterWithOutDate", "on".equals(filterWithOutDate));

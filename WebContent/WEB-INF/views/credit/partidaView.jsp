@@ -55,7 +55,7 @@
 	                        	<label>Total: </label> ${partida.getTotalPartidaFormat()}
                             </p>
 	                        <p> 
-	                        	<label>Gastat: </label> ${partida.getGastadaPartidaFormat()}
+	                        	<label>Assignat / previst: </label> ${partida.getPrevistPartidaFormat()}
                             </p>                            
 	                  	</div>
 		             	<div class="col-xs-offset-1 col-lg-5">
@@ -67,6 +67,9 @@
                             </p> 	
 	                        <p> 
 	                        	<label>Reservat: </label> ${partida.getReservaPartidaFormat()}
+                            </p>
+                            <p> 
+	                        	<label>Pagat: </label> ${partida.getPartidaPagatFormat()} 
                             </p>                                                	
 	                    </div>		            	
                 	</div>    
@@ -76,7 +79,6 @@
 		                    <table class="table table-striped table-bordered filerTable" id="assignacionsTable">
 		                        <thead>
 		                            <tr>
-		                                <th>Codi</th>
 		                                <th>Actuacio</th>
 		                                <th>valor PA</th>
 		                                <th>valor PD</th>				                                        							                                       
@@ -85,8 +87,7 @@
 		                        <tbody>
 								<c:forEach items="${llistaAssignacions}" var="assignacio" >
 						          	<tr>							          	
-						           		<td>${assignacio.idAssignacio}</td>
-						            	<td>${assignacio.idActuacio}</td>
+						            	<td><a href="actuacionsDetalls?ref=${assignacio.idActuacio}">${assignacio.idActuacio}</a></td>
 						            	<td>${assignacio.valorPA}</td>
 						            	<td>${assignacio.valorPD}</td>
 						            </tr>
@@ -103,5 +104,6 @@
 		<!-- /#page-wrapper -->
 	</div>
     <jsp:include page="../_footer.jsp"></jsp:include>
+    <script src="js/credit/partida.js"></script>
 </body>
 </html>

@@ -9,6 +9,7 @@ public class User {
 	private String password;
 	private String carreg;
 	private String departament;
+	private String alias;
 	 
 	   public User() {
 	 
@@ -39,7 +40,11 @@ public class User {
 	   }
 	   
 	   public String getNomComplet() {
-		   return name + " " + llinatges;
+		   if (this.alias == null || this.alias.isEmpty()){
+			   return this.name + " " + this.llinatges;
+		   } else {
+			   return this.alias;
+		   }
 	   }
 	   
 	   public String getRol() {
@@ -80,5 +85,13 @@ public class User {
 
 	public void setDepartament(String departament) {
 		this.departament = departament;
+	}
+
+	public String getAlias() {
+		return alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias = alias;
 	}
 }

@@ -70,40 +70,42 @@
 	                        	<label>Localitat: </label> ${centre.localitat}
                             </p>                                            	
 	                    </div>		            	
-                	</div>                	
-                	<h2 class="margin_bottom30">Incidencies</h2>
-                	<div class="row">
-	                	<div class="table-responsive col-xs-offset-1 col-lg-10">							                        
-		                    <table class="table table-striped table-bordered filerTable" id="incidenciesTable">
-		                        <thead>
-		                            <tr>
-		                                <th>Referència</th>
-                                        <th>Descripció</th>
-                                        <th>Centre</th>
-                                        <th>Data petició</th>
-                                        <th>Data petició</th>
-                                        <th>Actuacions derivades</th>	
-                                        <th>Data tancament</th>
-										<th>Data tancament</th>				                                        							                                       
-		                            </tr>
-		                        </thead>
-		                        <tbody>
-								<c:forEach items="${centre.llistaIncidencies}" var="incidencia" >
-						          	<tr class=${incidencia.activa ? "success" : "danger"}>							          	
-						           		<td><a href="incidenciaDetalls?ref=${incidencia.idIncidencia}">${incidencia.idIncidencia}</a></td>
-						            	<td>${incidencia.descripcio}</td>
-						            	<td>${incidencia.nomCentre}</td>
-						            	<td>${incidencia.getPeticioString()}</td>
-						            	<td>${incidencia.usuMod}</td>
-						            	<td>${incidencia.getLlistaIdActuacions()}</td>
-									   	<td>${incidencia.getTancamentString()}</td>
-									   	<td>${incidencia.dataTancament}</td>				            	
-						          	</tr>
-					       		</c:forEach>						                                	                              	
-		                        </tbody>
-		                    </table>
-		                </div>
-			    	</div>
+                	</div>  
+                	<c:if test="${canViewIncidencies}">              	
+	                	<h2 class="margin_bottom30">Incidencies</h2>
+	                	<div class="row">
+		                	<div class="table-responsive col-xs-offset-1 col-lg-10">							                        
+			                    <table class="table table-striped table-bordered filerTable" id="incidenciesTable">
+			                        <thead>
+			                            <tr>
+			                                <th>Referència</th>
+	                                        <th>Descripció</th>
+	                                        <th>Centre</th>
+	                                        <th>Data petició</th>
+	                                        <th>Data petició</th>
+	                                        <th>Actuacions derivades</th>	
+	                                        <th>Data tancament</th>
+											<th>Data tancament</th>				                                        							                                       
+			                            </tr>
+			                        </thead>
+			                        <tbody>
+									<c:forEach items="${centre.llistaIncidencies}" var="incidencia" >
+							          	<tr class=${incidencia.activa ? "success" : "danger"}>							          	
+							           		<td><a href="incidenciaDetalls?ref=${incidencia.idIncidencia}">${incidencia.idIncidencia}</a></td>
+							            	<td>${incidencia.descripcio}</td>
+							            	<td>${incidencia.nomCentre}</td>
+							            	<td>${incidencia.getPeticioString()}</td>
+							            	<td>${incidencia.usuMod}</td>
+							            	<td>${incidencia.getLlistaIdActuacions()}</td>
+										   	<td>${incidencia.getTancamentString()}</td>
+										   	<td>${incidencia.dataTancament}</td>				            	
+							          	</tr>
+						       		</c:forEach>						                                	                              	
+			                        </tbody>
+			                    </table>
+			                </div>
+				    	</div>
+				    </c:if>
 	                <h2 class="margin_bottom30">Actuacions</h2>
                 	<div class="row">
 	                	<div class="table-responsive col-xs-offset-1 col-lg-10">							                        

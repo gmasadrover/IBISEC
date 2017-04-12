@@ -52,7 +52,7 @@ public class IncidenciaDetailsServlet extends HttpServlet {
 	   }else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.incidencia_detalls)) {
 		   response.sendRedirect(request.getContextPath() + "/");	 	
 	   }else{		   
-		   int referencia = Integer.parseInt(request.getParameter("ref"));
+		   String referencia = request.getParameter("ref");
 	       String errorString = null;
 	       Incidencia incidencia = new Incidencia();
 	       List<Registre> entrades = new ArrayList<Registre>();

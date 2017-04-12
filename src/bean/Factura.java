@@ -5,9 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Factura {
-	private int idFactura;
-	private int idOferta;
-	private int idActuacio;
+	private String idFactura;
+	private String idInforme;
+	private String idActuacio;
 	private String idProveidor;
 	private Date dataFactura;
 	private String concepte;
@@ -23,27 +23,27 @@ public class Factura {
 	
 	}
 
-	public int getIdFactura() {
+	public String getIdFactura() {
 		return idFactura;
 	}
 
-	public void setIdFactura(int idFactura) {
+	public void setIdFactura(String idFactura) {
 		this.idFactura = idFactura;
 	}
 
-	public int getIdOferta() {
-		return idOferta;
+	public String getIdInforme() {
+		return idInforme;
 	}
 
-	public void setIdOferta(int idOferta) {
-		this.idOferta = idOferta;
+	public void setIdInforme(String idInforme) {
+		this.idInforme = idInforme;
 	}
 
-	public int getIdActuacio() {
+	public String getIdActuacio() {
 		return idActuacio;
 	}
 
-	public void setIdActuacio(int idActuacio) {
+	public void setIdActuacio(String idActuacio) {
 		this.idActuacio = idActuacio;
 	}
 

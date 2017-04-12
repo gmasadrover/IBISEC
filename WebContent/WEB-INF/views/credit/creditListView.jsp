@@ -48,8 +48,8 @@
                                         <th>Tipus</th>
                                         <th>Total</th>
                                         <th>Per asignar</th>
-                                        <th>Asignat</th>
-                                        <th>Gastat</th>                                     
+                                        <th>Reservat</th>
+                                        <th>Assignat / previst</th>                                     
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -61,7 +61,7 @@
 							            	<td>${partida.getTotalPartidaFormat()}</td>
 							            	<td>${partida.getPartidaPerAsignarFormat()}</td>
 							            	<td>${partida.getReservaPartidaFormat()}</td>
-							            	<td>${partida.getGastadaPartidaFormat()}</td>							            	
+							            	<td>${partida.getPrevistPartidaFormat()}</td>							            	
 							          	</tr>
 							       	</c:forEach>
                                 </tbody>

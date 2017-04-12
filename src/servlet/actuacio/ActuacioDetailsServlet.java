@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import bean.Actuacio;
-import bean.PropostaActuacio;
-import bean.Oferta;
+import bean.InformeActuacio;
+import bean.Registre;
 import bean.Tasca;
 import bean.User;
 import bean.ControlPage.SectionPage;
@@ -26,7 +26,7 @@ import core.ControlPageCore;
 import core.FacturaCore;
 import core.IncidenciaCore;
 import core.InformeCore;
-import core.OfertaCore;
+import core.RegistreCore;
 import core.TascaCore;
 import core.UsuariCore;
 import utils.Fitxers;
@@ -50,34 +50,40 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	   }else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.actuacio_detalls)) {
    		response.sendRedirect(request.getContextPath() + "/");	 	
 	   }else{		   
-		   int referencia = Integer.parseInt(request.getParameter("ref"));
+		   String referencia = request.getParameter("ref");
 	       String errorString = null;
 	       Actuacio actuacio = new Actuacio();	
 	       Incidencia incidencia = new Incidencia();
 	       List<Tasca> tasques = new ArrayList<Tasca>();
 	       List<Fitxers.Fitxer> arxius = new ArrayList<Fitxers.Fitxer>();
-	       List<PropostaActuacio> informes = new ArrayList<PropostaActuacio>();	       
+	       List<InformeActuacio> informes = new ArrayList<InformeActuacio>();	       
 	       List<Factura> factures = new ArrayList<Factura>();	      
-	       String rutaActuacio = "V:/INTERCANVI D'OBRES/MAS, GUILLEM/documents/";
+	       List<Registre> entrades = new ArrayList<Registre>();
+	       List<Registre> sortides = new ArrayList<Registre>();
+	       String rutaActuacio = Fitxers.RUTA_BASE +  "/documents/";
 	       boolean canModificarActuacio = false;
 	       boolean canCreateInformePrevi = false;
 	       boolean canCreateTasca = false;
+	       boolean canCreateFactura = false;
 	       try {
 	    	   actuacio = ActuacioCore.findActuacio(conn, referencia);
 	    	   incidencia = IncidenciaCore.findIncidencia(conn, actuacio.getIdIncidencia());
+	    	   actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia()));
 	    	   tasques = TascaCore.findTasquesActuacio(conn, referencia);	    	  	    	  
-	    	   arxius = Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia());
+	    	   actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia()));
 	    	   informes = InformeCore.getInformesActuacio(conn, referencia);
 	    	   factures = FacturaCore.getFacturesActuacio(conn, referencia);  
+	    	   entrades = RegistreCore.searchEntradesIncidencia(conn, incidencia.getIdIncidencia());
+	    	   sortides = RegistreCore.searchSortidesIncidencia(conn, incidencia.getIdIncidencia());
 	    	   rutaActuacio += incidencia.getIdIncidencia() + "/Actuacio";
-	    	   canModificarActuacio = usuari.getRol().contains("GERENT");
-	    	   canCreateInformePrevi = usuari.getRol().contains("GERENT");
-	    	   canCreateTasca = UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_crear);
+	    	   canModificarActuacio = "gerencia".equals(usuari.getDepartament()) || usuari.getRol().contains("ADMIN");
+	    	   canCreateInformePrevi = "gerencia".equals(usuari.getDepartament()) || usuari.getRol().contains("ADMIN");
+	    	   canCreateTasca = UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_crear) || "gerencia".equals(usuari.getDepartament());
+	    	   canCreateFactura = UsuariCore.hasPermision(conn, usuari, SectionPage.factures_crear);
 	       } catch (SQLException e) {
 	           e.printStackTrace();
 	           errorString = e.getMessage();
 	       }
-	  
 	       // Store info in request attribute, before forward to views
 	       request.setAttribute("errorString", errorString);
 	       request.setAttribute("actuacio", actuacio);
@@ -85,11 +91,14 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       request.setAttribute("tasques", tasques);
 	       request.setAttribute("arxius", arxius);	   
 	       request.setAttribute("informes", informes);	      
+	       request.setAttribute("entrades", entrades);
+	       request.setAttribute("sortides", sortides);
 	       request.setAttribute("factures", factures);
 	       request.setAttribute("rutaActuacio", rutaActuacio);
 	       request.setAttribute("canCreateInformePrevi", canCreateInformePrevi);
 	       request.setAttribute("canCreateTasca", canCreateTasca);
 	       request.setAttribute("canModificarActuacio", canModificarActuacio);
+	       request.setAttribute("canCreateFactura", canCreateFactura);
 	       request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "Actuacions"));
 	       // Forward to /WEB-INF/views/homeView.jsp
 	       // (Users can not access directly into JSP pages placed in WEB-INF)

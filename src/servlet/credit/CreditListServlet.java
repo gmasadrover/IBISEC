@@ -43,7 +43,6 @@ public class CreditListServlet extends HttpServlet {
 	       List<Partida> list = new ArrayList<Partida>();
 	       try {
 	           list = CreditCore.getPartides(conn, true);
-	           System.out.println(list.get(0).getTipus());
 	       } catch (SQLException e) {
 	           e.printStackTrace();
 	           errorString = e.getMessage();

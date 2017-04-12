@@ -21,9 +21,13 @@
       <form class="form-signin" method="POST" action="doLogin">
         <h2 class="form-signin-heading">Iniciar sessió</h2>
         <label for="userName" class="sr-only">Usuari</label>
-        <input name="userName" class="form-control" placeholder="Usuari" required autofocus>
-        <label for="password" class="sr-only">Password</label>
-        <input type="password" name="password" class="form-control" placeholder="Password" required>
+        <input name="userName" class="form-control" placeholder="Usuari" value="${user.usuari}" required autofocus>
+        <label for="password" class="sr-only">Password</label>       
+        <input type="password" name="password" class="form-control" placeholder="Password">
+        <c:if test="${newUser}">
+        	<label for="repeatPassword" class="sr-only">Repeteix password</label>
+        	<input type="password" name="repeatPassword" class="form-control" placeholder="Repeteix password" required>
+        </c:if>
         <!-- <div class="checkbox">
           <label>
             <input type="checkbox" name="rememberMe" value="remember-me"> Recordar

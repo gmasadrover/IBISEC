@@ -3,9 +3,9 @@ package bean;
 import java.util.Date;
 
 public class AssignacioCredit {
-	private int idAssignacio;	
-	private int idActuacio;
-	private int idInf;
+	private String idAssignacio;	
+	private String idActuacio;
+	private String idInf;
 	private boolean reserva;
 	private User usuReserva;
 	private Date datareserva;
@@ -23,27 +23,27 @@ public class AssignacioCredit {
 		
 	}
 
-	public int getIdAssignacio() {
+	public String getIdAssignacio() {
 		return idAssignacio;
 	}
 
-	public void setIdAssignacio(int idAssignacio) {
+	public void setIdAssignacio(String idAssignacio) {
 		this.idAssignacio = idAssignacio;
 	}
 
-	public int getIdActuacio() {
+	public String getIdActuacio() {
 		return idActuacio;
 	}
 
-	public void setIdActuacio(int idActuacio) {
+	public void setIdActuacio(String idActuacio) {
 		this.idActuacio = idActuacio;
 	}
 
-	public int getIdInf() {
+	public String getIdInf() {
 		return idInf;
 	}
 
-	public void setIdInf(int idInf) {
+	public void setIdInf(String idInf) {
 		this.idInf = idInf;
 	}
 

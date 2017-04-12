@@ -36,29 +36,36 @@
                 <!-- /.row -->
 				
 				<div class="row">
-					<form class="form-horizontal" method="POST" action="actuacions">						
+					<form class="form-horizontal" method="POST" action="obresMajors">						
 						<div class="form-group">
-							<input type="hidden" id="idCentreSelected" value="${idCentre}" />
-							<div class="col-lg-offset-1  col-lg-3">
-							    <div class="checkbox">
-							      <label>
-							        <input type="checkbox" name="filterCentre" ${idCentre != "" ? "checked" : ""}> Filtrar per centre
-							      </label>
-							      <div>
-		                                <select class="form-control selectpicker" name="idCentre" data-live-search="true" id="centresList">
-		                                </select>
-		                             </div>
-							    </div>						    
-						  	</div>		
-						  	<div class="col-lg-2">
-							    <div class="checkbox">
-							      <label>
-							        <input type="checkbox" name="nomesActives" ${nomesActives ? "checked" : ""}> Només actives
-							      </label>
-							    </div>
-						  	</div>						  				 
-						  	<div class="col-lg-2">
-						    	<input type="submit" class="btn btn-primary" name="filtrar" value="Aplicar Filtres">
+							<div class="form-group">						
+								<input type="hidden" id="idCentreSelected" value="${idCentre}" />
+								<div class="col-lg-offset-1  col-lg-3">
+								    <div class="col-lg-12">
+								      <label>Filtrar per centre</label>
+								      <div>
+			                                <select class="form-control selectpicker" name="idCentre" data-live-search="true" id="centresList">
+			                                	<option value="-1">Tots els centres</option>
+			                                </select>
+			                             </div>
+								    </div>						    
+							  	</div>	
+							  	<div class="col-lg-4">
+							  		<div class="col-lg-12">
+								  		<label>Filtrar per data petició</label>
+									  	<div class="input-group input-daterange datepicker">
+										    <input type="text" class="form-control" name="dataInici" value="${dataInici}">
+										    <div class="input-group-addon">fins</div>
+										    <input type="text" class="form-control" name="dataFi" value="${dataFi}">
+										</div>
+										<input type="checkbox" name="filterWithOutDate" ${filterWithOutDate ? "checked" : ""}> Filtrar fora dates
+									</div>                                
+							  	</div>							  	
+							</div>	
+							<div class="form-group">
+								<div class="col-lg-offset-10 col-lg-2">
+							    	<input type="submit" class="btn btn-primary" name="filtrar" value="Aplicar Filtres">
+								</div>
 							</div>
 						</div>	
 					</form>
@@ -67,24 +74,31 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h2>Contractes majors</h2>
-                        <div class="table-responsive">
-                        
-                            <table class="table table-striped table-bordered filerTable ${nomesActives ? "normal" : "withTancades"}">
+                        <div class="table-responsive">                        
+                            <table class="table table-striped table-bordered filerTable">
                                 <thead>
                                     <tr>
-                                        <th>Referència</th>
-                                        <th>Actuació</th>
-                                        <th>Data inici</th>
-                                        <th>Data fi</th>                                        
+                                        <th>Actuació</th>                                        
+                                        <th>Centre</th>
+                                        <th>Descripció</th>
+                                        <th>Preu adjudicació</th>  
+                                        <th>informe</th>
+                                        <th>Empresa</th>    
+                                        <th>Valor Pagat</th>  
+                                        <th>Notes</th>                                  
                                     </tr>
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${obresList}" var="obra" >
-							          	<tr class=${obra.obert ? "success" : "danger"}>							          	
-							           		<td><a href="obraMajorDetall?ref=${obra.id}">${obra.id}</a></td>
+							          	<tr class=${obra.dataTancament != null ? "danger" : "info"}>
 							            	<td>${obra.idActuacio}</td>
-							            	<td>${obra.getDataIniciString()}</td>
-							            	<td>${obra.getDataTancamentString()}</td>							            				            	
+							            	<td>${obra.nomCentre}</td>
+							            	<td>${obra.descripcio}</td>
+							            	<td>${obra.valor}</td>
+							            	<td>${obra.idInforme}</td>
+							            	<td>${obra.empresa.name}</td>
+							            	<td>${obra.getTotalFacturat()}</td>		
+							            	<td>${obra.notes}</td>							            				            	
 							          	</tr>
 							       	</c:forEach>                                	
                                 </tbody>
