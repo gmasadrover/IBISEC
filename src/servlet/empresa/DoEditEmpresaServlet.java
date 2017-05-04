@@ -48,11 +48,14 @@ public class DoEditEmpresaServlet extends HttpServlet {
 		}
        	
        	String cif = multipartParams.getParametres().get("cif");
+       	Boolean isUte = "true".equals(multipartParams.getParametres().get("isute"));       	
 		String name = multipartParams.getParametres().get("name");
 		String direccio = multipartParams.getParametres().get("direccio");
 		String cp = multipartParams.getParametres().get("cp");
-		String ciutat = URLDecoder.decode(multipartParams.getParametres().get("localitat"), "UTF-8");
-		String provincia = URLDecoder.decode(multipartParams.getParametres().get("provincia").split("_")[1], "UTF-8");
+		String ciutat = "";
+		if (multipartParams.getParametres().get("localitat") != null) ciutat = URLDecoder.decode(multipartParams.getParametres().get("localitat"), "UTF-8");
+		String provincia = "";
+		if (multipartParams.getParametres().get("provincia") != null) provincia = URLDecoder.decode(multipartParams.getParametres().get("provincia").split("_")[1], "UTF-8");
 		String telefon = multipartParams.getParametres().get("telefon");
 		String fax = multipartParams.getParametres().get("fax");
 		String email = multipartParams.getParametres().get("email");
@@ -75,18 +78,18 @@ public class DoEditEmpresaServlet extends HttpServlet {
 		Date dataExerciciEconomic = null;
 		
 		double ratioAP = 0;
-		if (! multipartParams.getParametres().get("ratioAP").isEmpty()) ratioAP = Double.parseDouble(multipartParams.getParametres().get("ratioAP"));
+		if (multipartParams.getParametres().get("ratioAP") != null && ! multipartParams.getParametres().get("ratioAP").isEmpty()) ratioAP = Double.parseDouble(multipartParams.getParametres().get("ratioAP"));
 		
 		Empresa empresa = new Empresa();
 		List<Empresa.Administrador> administradors = new ArrayList<Empresa.Administrador>();
 		String errorString = null;
 		try {
-			if (! multipartParams.getParametres().get("constitucio").isEmpty()) dataConstitucio = formatter.parse(multipartParams.getParametres().get("constitucio"));
-			if (! multipartParams.getParametres().get("dateExpAcreditacio1").isEmpty()) dateExpAcreditacio1 = formatter.parse(multipartParams.getParametres().get("dateExpAcreditacio1"));
-			if (! multipartParams.getParametres().get("dateExpAcreditacio2").isEmpty()) dateExpAcreditacio2 = formatter.parse(multipartParams.getParametres().get("dateExpAcreditacio2"));
-			if (! multipartParams.getParametres().get("dateExpAcreditacio3").isEmpty()) dateExpAcreditacio3 = formatter.parse(multipartParams.getParametres().get("dateExpAcreditacio3"));
-			if (! multipartParams.getParametres().get("dataRegistreMercantil").isEmpty()) dataRegistreMercantil = formatter.parse(multipartParams.getParametres().get("dataRegistreMercantil"));
-			if (! multipartParams.getParametres().get("dataExerciciEconomic").isEmpty()) dataExerciciEconomic = formatterYear.parse(multipartParams.getParametres().get("dataExerciciEconomic"));
+			if (multipartParams.getParametres().get("constitucio") != null && ! multipartParams.getParametres().get("constitucio").isEmpty()) dataConstitucio = formatter.parse(multipartParams.getParametres().get("constitucio"));
+			if (multipartParams.getParametres().get("dateExpAcreditacio1") != null && ! multipartParams.getParametres().get("dateExpAcreditacio1").isEmpty()) dateExpAcreditacio1 = formatter.parse(multipartParams.getParametres().get("dateExpAcreditacio1"));
+			if (multipartParams.getParametres().get("dateExpAcreditacio2") != null && ! multipartParams.getParametres().get("dateExpAcreditacio2").isEmpty()) dateExpAcreditacio2 = formatter.parse(multipartParams.getParametres().get("dateExpAcreditacio2"));
+			if (multipartParams.getParametres().get("dateExpAcreditacio3") != null && ! multipartParams.getParametres().get("dateExpAcreditacio3").isEmpty()) dateExpAcreditacio3 = formatter.parse(multipartParams.getParametres().get("dateExpAcreditacio3"));
+			if (multipartParams.getParametres().get("dataRegistreMercantil") != null && ! multipartParams.getParametres().get("dataRegistreMercantil").isEmpty()) dataRegistreMercantil = formatter.parse(multipartParams.getParametres().get("dataRegistreMercantil"));
+			if (multipartParams.getParametres().get("dataExerciciEconomic") != null && ! multipartParams.getParametres().get("dataExerciciEconomic").isEmpty()) dataExerciciEconomic = formatterYear.parse(multipartParams.getParametres().get("dataExerciciEconomic"));
 			
 			empresa.setCif(cif);
 			empresa.setName(name);
@@ -111,31 +114,32 @@ public class DoEditEmpresaServlet extends HttpServlet {
 			empresa.setExerciciEconomic(dataExerciciEconomic);
 			empresa.setRatioAP(ratioAP);
 			
-			Empresa.Administrador administrador = empresa.new Administrador();			
-		    String[] administradorsString = multipartParams.getParametres().get("llistatAdministradors").split(";"); //Agafam tots els administradors
-		    if (administradorsString != null) {
-			    for(int i=0; i<administradorsString.length; i++) {
-			    	if (! administradorsString[i].isEmpty()) {
-				    	administrador = empresa.new Administrador();	
-				    	administrador.setNom(administradorsString[i].split("#")[0]);
-				    	administrador.setDni(administradorsString[i].split("#")[1]);
-				    	administrador.setTipus(administradorsString[i].split("#")[2]);
-				    	if (! administradorsString[i].split("#")[3].isEmpty()) administrador.setDataValidesaFins(formatter.parse(administradorsString[i].split("#")[3]));
-				    	administrador.setNotariModificacio(administradorsString[i].split("#")[4]);
-				    	administrador.setProtocolModificacio(Integer.parseInt(administradorsString[i].split("#")[5]));
-				    	if (! administradorsString[i].split("#")[6].isEmpty()) administrador.setDataModificacio(formatter.parse(administradorsString[i].split("#")[6]));
-				    	if (administradorsString[i].split("#")[7] != null) {
-				    		administrador.setDataValidacio(formatter.parse(administradorsString[i].split("#")[7]));
-				    		administrador.setEntitatValidacio(administradorsString[i].split("#")[8]);
-				    	}				  
-				    	if (administradorsString[i].indexOf("eliminar") >= 0) {
-				    		administrador.setEliminar(true);
-				    	}			    	
-				    	administradors.add(administrador);
-			    	}
+			if (multipartParams.getParametres().get("llistatAdministradors") != null) {
+				Empresa.Administrador administrador = empresa.new Administrador();			
+			    String[] administradorsString = multipartParams.getParametres().get("llistatAdministradors").split(";"); //Agafam tots els administradors
+			    if (administradorsString != null) {
+				    for(int i=0; i<administradorsString.length; i++) {
+				    	if (! administradorsString[i].isEmpty()) {
+					    	administrador = empresa.new Administrador();	
+					    	administrador.setNom(administradorsString[i].split("#")[0]);
+					    	administrador.setDni(administradorsString[i].split("#")[1]);
+					    	administrador.setTipus(administradorsString[i].split("#")[2]);
+					    	if (! administradorsString[i].split("#")[3].isEmpty()) administrador.setDataValidesaFins(formatter.parse(administradorsString[i].split("#")[3]));
+					    	administrador.setNotariModificacio(administradorsString[i].split("#")[4]);
+					    	if (! administradorsString[i].split("#")[5].isEmpty()) administrador.setProtocolModificacio(Integer.parseInt(administradorsString[i].split("#")[5]));
+					    	if (! administradorsString[i].split("#")[6].isEmpty()) administrador.setDataModificacio(formatter.parse(administradorsString[i].split("#")[6]));
+					    	if (! administradorsString[i].split("#")[7].isEmpty()) {
+					    		administrador.setDataValidacio(formatter.parse(administradorsString[i].split("#")[7]));
+					    		administrador.setEntitatValidacio(administradorsString[i].split("#")[8]);
+					    	}				  
+					    	if (administradorsString[i].indexOf("eliminar") >= 0) {
+					    		administrador.setEliminar(true);
+					    	}			    	
+					    	administradors.add(administrador);
+				    	}
+				    }
 			    }
-		    }
-		    
+			}
 			//Guardar adjunts
 		   	EmpresaCore.guardarFitxer(multipartParams.getFitxers(), empresa.getCif());
 		    
@@ -144,7 +148,11 @@ public class DoEditEmpresaServlet extends HttpServlet {
 		}
 		
 		try {
-           EmpresaCore.updateEmpresa(conn, empresa, administradors, usuari.getIdUsuari());
+			if (isUte) {
+				 EmpresaCore.updateEmpresaUTE(conn, empresa, administradors, usuari.getIdUsuari());
+			}else{
+				 EmpresaCore.updateEmpresa(conn, empresa, administradors, usuari.getIdUsuari());
+			}          
 		} catch (SQLException e) {
            e.printStackTrace();
            errorString = e.getMessage();

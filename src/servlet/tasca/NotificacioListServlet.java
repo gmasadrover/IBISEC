@@ -1,9 +1,9 @@
 package servlet.tasca;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -13,24 +13,28 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.math.NumberUtils;
+
+import bean.Tasca;
 import bean.User;
 import bean.ControlPage.SectionPage;
 import core.ControlPageCore;
+import core.LoggerCore;
 import core.TascaCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
 /**
- * Servlet implementation class CreateTascaServlet
+ * Servlet implementation class NotificacioListServlet
  */
-@WebServlet("/createTasca")
-public class CreateTascaServlet extends HttpServlet {
+@WebServlet("/notificacioList")
+public class NotificacioListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public CreateTascaServlet() {
+    public NotificacioListServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -39,36 +43,34 @@ public class CreateTascaServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		User usuari = MyUtils.getLoginedUser(request.getSession());
     	Connection conn = MyUtils.getStoredConnection(request);
-		if (usuari == null){
+    	if (usuari == null){
  		   response.sendRedirect(request.getContextPath() + "/preLogin");
-		}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_crear)) {
+    	}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_list)) {
     		response.sendRedirect(request.getContextPath() + "/");	
- 	   	}else{ 
+ 	   	}else{	   		
+	        String errorString = null;
+	        List<Tasca> list = null;
+	        String usuariSelected = String.valueOf(usuari.getIdUsuari());
 	        try {
-	        	String tipus = request.getParameter("tipus");
-	        	List<User> llistaUsuaris = new ArrayList<User>();
-	        	request.setAttribute("idActuacio", request.getParameter("idActuacio"));
-	        	request.setAttribute("idIncidencia", request.getParameter("idIncidencia"));
-	        	request.setAttribute("tipus", tipus);
-				request.setAttribute("nouCodi", TascaCore.idNovaTasca(conn));
-				if ("infPrev".equals(tipus)) {
-					llistaUsuaris = UsuariCore.findUsuarisByDepartament(conn, usuari.getDepartament());
-				} else {
-					llistaUsuaris = UsuariCore.findUsuarisByRol(conn, "");
-				}
-				request.setAttribute("llistaUsuaris", llistaUsuaris);
-				request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Tasques"));
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	        	list = TascaCore.llistaNotificacionsUsuari(conn, usuari.getIdUsuari());
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            errorString = e.getMessage();
+	        }	        
+	        
+	        // Store info in request attribute, before forward to views
+	        request.setAttribute("errorString", errorString);
+	        request.setAttribute("notificacionsList", list);  
+	        request.setAttribute("usuariSelected", usuariSelected);
+		    request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "Notificacions"));
+		    
+	        // Forward to /WEB-INF/views/productListView.jsp
 	        RequestDispatcher dispatcher = request.getServletContext()
-	                .getRequestDispatcher("/WEB-INF/views/tasca/createTascaView.jsp");
+					.getRequestDispatcher("/WEB-INF/views/tasca/notificacioListView.jsp");
 	        dispatcher.forward(request, response);
- 	   }
+ 	   	}
 	}
 
 	/**

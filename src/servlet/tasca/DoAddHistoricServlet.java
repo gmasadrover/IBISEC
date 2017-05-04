@@ -11,9 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.lang.math.NumberUtils;
 
 import bean.User;
 import core.TascaCore;
+import core.UsuariCore;
 import utils.Fitxers;
 import utils.MyUtils;
 
@@ -77,9 +79,13 @@ public class DoAddHistoricServlet extends HttpServlet {
 	   	}// If everything nice. Redirect to the product listing page.            
 	   	else {
 	   		if (reasignar != null) { //reassignem la incid�ncia
-	   			int idUsuariNou = Integer.parseInt(multipartParams.getParametres().get("idUsuari"));
+	   			String idUsuariNou = multipartParams.getParametres().get("idUsuari");
 	   			try {
-					TascaCore.reasignar(conn, idUsuariNou, idTasca);
+	   				if (NumberUtils.isNumber(idUsuariNou)) {
+	   					TascaCore.reasignar(conn, Integer.parseInt(idUsuariNou), idTasca);
+	   				} else {
+	   					TascaCore.reasignar(conn, UsuariCore.finCap(conn, idUsuariNou).getIdUsuari(), idTasca);
+	   				}
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

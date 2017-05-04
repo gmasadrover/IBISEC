@@ -8,6 +8,7 @@ import java.util.Date;
 public class Oferta {
 	private String idOferta;
 	private String idActuacio;
+	private Actuacio actuacio;
 	private String cifEmpresa;
 	private String nomEmpresa;
 	private double vec;
@@ -200,5 +201,13 @@ public class Oferta {
 
 	public void setDataCapValidacio(Date dataCapValidacio) {
 		this.dataCapValidacio = dataCapValidacio;
+	}
+
+	public Actuacio getActuacio() {
+		return actuacio;
+	}
+
+	public void setActuacio(Actuacio actuacio) {
+		this.actuacio = actuacio;
 	}
 }

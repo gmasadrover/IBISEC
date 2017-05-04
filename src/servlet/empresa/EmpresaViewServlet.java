@@ -3,6 +3,8 @@ package servlet.empresa;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -12,10 +14,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import bean.Empresa;
+import bean.Oferta;
 import bean.User;
 import bean.ControlPage.SectionPage;
 import core.ControlPageCore;
 import core.EmpresaCore;
+import core.OfertaCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
@@ -48,11 +52,12 @@ public class EmpresaViewServlet extends HttpServlet {
 			String cif = request.getParameter("cif");
 	 
 	        Empresa empresa = null;
-	 
+	        List<Oferta> empresaOfertes = new ArrayList<Oferta>();
 	        String errorString = null;
 	 
 	        try {
-	            empresa = EmpresaCore.findEmpresa(conn, cif);
+	            empresa = EmpresaCore.findEmpresa(conn, cif);	   
+	            empresaOfertes = OfertaCore.findOfertesEmpresa(conn, cif);
 	        } catch (SQLException e) {
 	            e.printStackTrace();
 	            errorString = e.getMessage();
@@ -69,6 +74,7 @@ public class EmpresaViewServlet extends HttpServlet {
 	 
 	        // Store errorString in request attribute, before forward to views.
 	        request.setAttribute("errorString", errorString);
+	        request.setAttribute("empresaOfertes", empresaOfertes);
 	        request.setAttribute("empresa", empresa);
 	        request.setAttribute("canModificar", UsuariCore.hasPermision(conn, usuari, SectionPage.empreses_crear));
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Empreses"));

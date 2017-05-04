@@ -36,21 +36,23 @@
                 <!-- /.row -->
 				
 				<div class="row">
-					<form class="form-horizontal" method="POST" action="factures">						
-						<div class="form-group">							
-						  	<div class="col-lg-4">
-						  		<span>Data factura</span>
-							  	<div class="input-group input-daterange datepicker">
-								    <input type="text" class="form-control" name="dataInici" value="${dataInici}">
-								    <div class="input-group-addon">fins</div>
-								    <input type="text" class="form-control" name="dataFi" value="${dataFi}">
-								</div>                                
-						  	</div>							  				  				 
-						  	<div class="col-lg-2">
-						    	<input type="submit" class="btn btn-primary" name="filtrar" value="Aplicar Filtres">
-							</div>
-						</div>	
-					</form>
+					<div class="col-lg-12">
+						<form class="form-horizontal" method="POST" action="factures">						
+							<div class="form-group">							
+							  	<div class="col-lg-offset-1 col-lg-4">
+							  		<label>Data factura</label>
+								  	<div class="input-group input-daterange datepicker">
+									    <input type="text" class="form-control" name="dataInici" value="${dataInici}">
+									    <div class="input-group-addon">fins</div>
+									    <input type="text" class="form-control" name="dataFi" value="${dataFi}">
+									</div>                                
+							  	</div>							  				  				 
+							  	<div class="col-lg-2">
+							    	<input type="submit" class="btn btn-primary" name="filtrar" value="Aplicar Filtres">
+								</div>
+							</div>	
+						</form>
+					</div>
 				</div>
 				
                 <div class="row">

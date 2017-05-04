@@ -55,6 +55,7 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       Actuacio actuacio = new Actuacio();	
 	       Incidencia incidencia = new Incidencia();
 	       List<Tasca> tasques = new ArrayList<Tasca>();
+	       List<Tasca> notificacions = new ArrayList<Tasca>();
 	       List<Fitxers.Fitxer> arxius = new ArrayList<Fitxers.Fitxer>();
 	       List<InformeActuacio> informes = new ArrayList<InformeActuacio>();	       
 	       List<Factura> factures = new ArrayList<Factura>();	      
@@ -69,7 +70,8 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	    	   actuacio = ActuacioCore.findActuacio(conn, referencia);
 	    	   incidencia = IncidenciaCore.findIncidencia(conn, actuacio.getIdIncidencia());
 	    	   actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia()));
-	    	   tasques = TascaCore.findTasquesActuacio(conn, referencia);	    	  	    	  
+	    	   tasques = TascaCore.findTasquesActuacio(conn, referencia);	    
+	    	   notificacions = TascaCore.findNotificacionsActuacio(conn, referencia);
 	    	   actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia()));
 	    	   informes = InformeCore.getInformesActuacio(conn, referencia);
 	    	   factures = FacturaCore.getFacturesActuacio(conn, referencia);  
@@ -77,7 +79,7 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	    	   sortides = RegistreCore.searchSortidesIncidencia(conn, incidencia.getIdIncidencia());
 	    	   rutaActuacio += incidencia.getIdIncidencia() + "/Actuacio";
 	    	   canModificarActuacio = "gerencia".equals(usuari.getDepartament()) || usuari.getRol().contains("ADMIN");
-	    	   canCreateInformePrevi = "gerencia".equals(usuari.getDepartament()) || usuari.getRol().contains("ADMIN");
+	    	   canCreateInformePrevi = UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_crear) || "gerencia".equals(usuari.getDepartament());
 	    	   canCreateTasca = UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_crear) || "gerencia".equals(usuari.getDepartament());
 	    	   canCreateFactura = UsuariCore.hasPermision(conn, usuari, SectionPage.factures_crear);
 	       } catch (SQLException e) {
@@ -89,6 +91,7 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       request.setAttribute("actuacio", actuacio);
 	       request.setAttribute("incidencia", incidencia);
 	       request.setAttribute("tasques", tasques);
+	       request.setAttribute("notificacions", notificacions);
 	       request.setAttribute("arxius", arxius);	   
 	       request.setAttribute("informes", informes);	      
 	       request.setAttribute("entrades", entrades);

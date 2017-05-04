@@ -245,6 +245,8 @@ public class UsuariCore {
 			case factures_crear:
 				permision = rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("CONTA");
 				break;
+			case llistats_list:
+				permision = rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("GER");
 			default:
 				break;
 		}

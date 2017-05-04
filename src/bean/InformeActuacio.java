@@ -21,7 +21,6 @@ public class InformeActuacio {
 	private double iva;
 	private double plic;
 	private String termini;
-	private String servei;
 	private String comentari;
 	private List<Fitxers.Fitxer> adjunts; 
 	private User usuari;
@@ -36,7 +35,7 @@ public class InformeActuacio {
 	private Oferta ofertaSeleccionada;
 	private List<Factura> llistaFactures;
 	private Date dataTancament;
-	
+	private String notes;
 	
 	public InformeActuacio() {		
 	}
@@ -142,14 +141,6 @@ public class InformeActuacio {
 
 	public void setTermini(String termini) {
 		this.termini = termini;
-	}
-
-	public String getServei() {
-		return servei;
-	}
-
-	public void setServei(String servei) {
-		this.servei = servei;
 	}
 
 	public String getComentari() {
@@ -298,5 +289,13 @@ public class InformeActuacio {
 		String dataString = "";
 		if (this.dataTancament != null) dataString = df.format(this.dataTancament);
 		return dataString;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 }

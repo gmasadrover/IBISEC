@@ -11,6 +11,8 @@ public class Centre {
 	private String localitat;
 	private String adreca;
 	private String cp;
+	private double lat;
+	private double lng;
 	private Resultat llistaActuacions;
 	private List<Incidencia> llistaIncidencies;
 	public Centre() {
@@ -125,5 +127,21 @@ public class Centre {
 
 	public void setCp(String cp) {
 		this.cp = cp;
+	}
+
+	public double getLat() {
+		return lat;
+	}
+
+	public void setLat(double lat) {
+		this.lat = lat;
+	}
+
+	public double getLng() {
+		return lng;
+	}
+
+	public void setLng(double lng) {
+		this.lng = lng;
 	}
 }

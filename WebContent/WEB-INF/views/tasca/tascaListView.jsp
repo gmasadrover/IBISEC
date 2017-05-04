@@ -36,6 +36,10 @@
                 <!-- /.row -->
  
 				<div class="row">
+					
+				</div> 
+ 
+				<div class="row">
 					<form class="form-horizontal" method="POST" action="tascaList">	
 						<input type="hidden" id="usuariSelected" value="${usuariSelected}"/>					
 						<div class="form-group">
@@ -47,7 +51,7 @@
 	                                	<option data-divider="true"></option>
                                 	</c:if>                                	
                                 	<c:forEach items="${llistaUsuaris}" var="usuari" >
-                                		<option value='${usuari.idUsuari}'>${usuari.getNomComplet()}</option>
+                                		<option value='${usuari.idUsuari}'>${usuari.getNomCompletReal()}</option>
                                 	</c:forEach>
                                 	<option data-divider="true"></option>
                                 		<option value='gerencia'>Gerència</option>
@@ -84,7 +88,7 @@
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${tasquesList}" var="tasca" >
-							          	<tr class="${tasca.activa ? "success" : "danger"}">							          	
+							          	<tr class="${tasca.activa ? tasca.tipus == 'notificacio' ? "warning" : "success" : "danger"}">							          	
 							           		<td><a href="tasca?id=${tasca.idTasca}">${tasca.idTasca} - ${tasca.descripcio}</a></td>
 							            	<td><a href="actuacionsDetalls?ref=${tasca.actuacio.referencia}">${tasca.actuacio.referencia}</a></td>
 							            	<td><a href="incidenciaDetalls?ref=${tasca.incidencia.idIncidencia}">${tasca.incidencia.idIncidencia}</a></td>

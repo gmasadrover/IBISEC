@@ -11,6 +11,7 @@ import utils.Fitxers;
 public class Actuacio {
 	 private String referencia;
 	 private String descripcio;
+	 private String notes;
 	 private Date dataCreacio;
 	 private int idUsuariCreacio;
 	 private String idCentre;	
@@ -193,5 +194,13 @@ public class Actuacio {
 
 	public void setArxiusAdjunts(List<Fitxers.Fitxer> arxiusAdjunts) {
 		this.arxiusAdjunts = arxiusAdjunts;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 }

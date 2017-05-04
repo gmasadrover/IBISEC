@@ -21,6 +21,8 @@ public class CentreCore {
 		centre.setLocalitat(rs.getString("localitat"));
 		centre.setAdreca(rs.getString("adreca"));
 		centre.setCp(rs.getString("cp"));
+		centre.setLat(rs.getDouble("lat"));
+		centre.setLng(rs.getDouble("lng"));
 		if (complet) {
 			centre.setActuacions(ActuacioCore.searchActuacions(conn, rs.getString("codi"), null,null,null));
 			centre.setIncidencies(IncidenciaCore.searchIncidencies(conn, rs.getString("codi"), false, null, null));
@@ -56,8 +58,23 @@ public class CentreCore {
 	
 	public static List<Centre> findCentres(Connection conn, boolean ambIncidencies) throws SQLException {
 		List<Centre> centres = new ArrayList<Centre>();
-		String sql = "SELECT codi, tipo, nom, illa, municipi, localitat, adreca, cp"
+		String sql = "SELECT codi, tipo, nom, illa, municipi, localitat, adreca, cp, lat, lng"
 					+ " FROM public.tbl_centres;";
+		PreparedStatement pstm = conn.prepareStatement(sql);				
+		ResultSet rs = pstm.executeQuery();	 
+		while (rs.next()) {
+			Centre centre = initCentre(conn, rs, ambIncidencies);
+			centres.add(centre);
+		}
+		return centres;
+	}
+	
+	public static List<Centre> findCentresWithIncidencies(Connection conn) throws SQLException {
+		List<Centre> centres = new ArrayList<Centre>();
+		String sql = "SELECT codi, tipo, nom, illa, municipi, localitat, adreca, cp, lat, lng"
+					+ " FROM public.tbl_centres c" 
+					+ " WHERE EXISTS(SELECT * FROM  public.tbl_actuacio a WHERE a.idcentre = c.codi" 
+																			+ " AND a.datatancament IS null AND a.dataaprovacio IS NOT null )";
 		PreparedStatement pstm = conn.prepareStatement(sql);				
 		ResultSet rs = pstm.executeQuery();	 
 		while (rs.next()) {
@@ -67,8 +84,9 @@ public class CentreCore {
 		return centres;
 	}
 	
+	
 	public static Centre findCentre(Connection conn, String codi) throws SQLException {		
-		String sql = "SELECT codi, tipo, nom, illa, municipi, localitat, adreca, cp"
+		String sql = "SELECT codi, tipo, nom, illa, municipi, localitat, adreca, cp, lat, lng"
 					+ " FROM public.tbl_centres"
 					+ " WHERE codi = ?;";
 		PreparedStatement pstm = conn.prepareStatement(sql);	

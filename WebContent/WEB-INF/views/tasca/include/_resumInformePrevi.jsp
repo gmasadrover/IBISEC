@@ -4,11 +4,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="m"  %>
 <c:set var="language" value="${not empty param.language ? param.language : not empty language ? language : pageContext.request.locale}" scope="session" />
 <m:setLocale value="${language}" />
-<m:setBundle basename="i18n.base"/>			                         	
-<div class="panel-heading">
-	Proposta d'actuació
-</div>
-<div class="panel-body">	
+<m:setBundle basename="i18n.base"/>		
+<div class="panel-body">
+	<h4>Informe inicial</h4>	
+	<br />
 	<p>
 		<label>Tècnic:</label> ${informePrevi.usuari.getNomComplet()}
 	</p>
@@ -69,6 +68,9 @@
 	</p>
 	<p>
 		<label>Vistiplau:</label> ${informePrevi.usuariCapValidacio.getNomComplet()} - ${informePrevi.getDataCapValidacioString()}
+	</p>
+	<p>			                     				
+		<label>Notes:</label> ${informePrevi.notes}
 	</p>
 	<p>
 		<label>Partida:</label> ${informePrevi.partida}

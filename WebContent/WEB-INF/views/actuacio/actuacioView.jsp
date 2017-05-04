@@ -50,6 +50,8 @@
 	                        </div>
 	                        <div class="panel-body">
 	                            <p>${actuacio.descripcio}</p>
+	                            <br />
+	                            <p>Notes: ${actuacio.notes}</p>
 	                        </div>
 	                        <div class="panel-footer">
 	                        	<div class="row">
@@ -85,11 +87,16 @@
                				<div class="col-lg-6">
                					
                				</div>
-		        			<div class="col-lg-6">
+		        			<div class="col-lg-3">
 				        		<c:if test="${actuacio.isActiva() && canModificarActuacio}">
 				        			<input class="btn btn-danger" data-toggle="modal" data-target="#myModal" name="tancar" value="Tancar actuació">
 				        		</c:if>
-				        	</div> 
+				        	</div>
+				        	<div class="col-lg-2"> 
+					        	<c:if test="${actuacio.activa && canCreateInformePrevi}">					      			
+						      		<a href="createTasca?idActuacio=${actuacio.referencia}&tipus=infPrev" class="btn btn-primary right" role="button">Sol·licitar valoració econòmica ${informes.size() > 0 ? "nova" : ""}</a>
+								</c:if> 
+							</div>   
 							<!-- Modal -->
 							<div id="myModal" class="modal fade" role="dialog">
 								<div class="modal-dialog">																	
@@ -121,18 +128,20 @@
 					    </div>
 					    <div id="dadesTecniques" class="panel-collapse collapse">					    	
 					      	<div class="panel-body">
-					      		<h4>Informe d'actuació</h4>					      		
+					      		<h4>Informes d'actuació</h4>					      		
 					      		<div class="col-lg-12 panel-group" id="accordionInformes">
 					      			<c:forEach items="${informes}" var="informePrevi" >					      				
 					      				<div class="panel panel-default">
 						      				<div class="panel-heading">
 										      <h4 class="panel-title">
-										        <a data-toggle="collapse" data-parent="#accordionInformes" href="#informe${informePrevi.idInf}">Proposta despesa ${informePrevi.idInf} - ${informePrevi.getDataCreacioString()} ${informePrevi.partida == "" ? "Pendent de reserva de partida" : "Partida reservada" }</a>
+										        <a data-toggle="collapse" data-parent="#accordionInformes" href="#informe${informePrevi.idInf}">Informe ${informePrevi.idInf} - ${informePrevi.objecte} - ${informePrevi.getDataCreacioString()} ${informePrevi.partida == "" ? "Pendent de reserva de partida" : "Partida reservada" }</a>
 										      </h4>
 										    </div>
 										    <div id="informe${informePrevi.idInf}" class="panel-collapse collapse">
-										    	<c:set var="informePrevi" scope="request" value="${informePrevi}"></c:set>
-										      	<jsp:include page="../tasca/include/_resumInformePrevi.jsp"></jsp:include>
+										    	<div class="panel-body">
+											    	<c:set var="informePrevi" scope="request" value="${informePrevi}"></c:set>
+											      	<jsp:include page="../tasca/include/_resumInformePrevi.jsp"></jsp:include>
+											    </div>
 										      	<div class="panel-body">
 								    				<c:if test="${informePrevi.llistaOfertes.size()>0}">
 								    					<c:set var="ofertes" scope="request" value="${informePrevi.llistaOfertes}"></c:set>
@@ -222,14 +231,7 @@
 								    		</div>
 					      				</div>
 					      			</c:forEach>
-					      		</div>
-					      		<c:if test="${actuacio.activa && canCreateInformePrevi}">					      			
-						      		<div class="row margin_bottom10">
-							    		<div class="col-lg-12 panel">
-											<a href="createTasca?idActuacio=${actuacio.referencia}&tipus=infPrev" class="btn btn-primary right" role="button">Sol·licitar informe prèvi amb valoració econòmica ${informes.size() > 0 ? "nova" : ""}</a>
-										</div>
-						    		</div>
-					    		</c:if>      					          	
+					      		</div>					      		  					          	
 				    		</div>
 				    	</div>
             		  </div>
@@ -256,6 +258,7 @@
 			                            	<thead>
 			                                    <tr>                                        
 			                                        <th>Tasca</th>
+			                                        <th>Assumpte</th>
 			                                        <th>id Actuació</th>
 			                                        <th>id Incidència</th>
 			                                        <th>Centre</th>                                        
@@ -267,11 +270,58 @@
 			                                	<c:forEach items="${tasques}" var="tasca" >
 										          	<tr class="${tasca.activa ? "success" : "danger"}">							          	
 										           		<td><a href="tasca?id=${tasca.idTasca}">${tasca.idTasca} - ${tasca.descripcio}</a></td>
+										            	<td>${tasca.primerComentari}</td>	
 										            	<td><a href="actuacionsDetalls?ref=${tasca.actuacio.referencia}">${tasca.actuacio.referencia}</a></td>
 										            	<td><a href="incidenciaDetalls?ref=${tasca.incidencia.idIncidencia}">${tasca.incidencia.idIncidencia}</a></td>
 										            	<td>${tasca.actuacio.nomCentre}</td>							            	
 										            	<td>${tasca.getDataCreacioString()}</td>
 										            	<td>${tasca.usuari.getNomComplet()}					            	
+										          	</tr>
+										       	</c:forEach>
+			                                </tbody>
+			                            </table>
+			                        </div>
+			                	</div>
+							</div>
+					    </div>
+					  </div>
+					  <div class="panel panel-default">
+					    <div class="panel-heading">
+					      <h4 class="panel-title">
+					        <a data-toggle="collapse" data-parent="#accordion" href="#notificacions">Notificacions</a>
+					      </h4>
+					    </div>
+					    <div id="notificacions" class="panel-collapse collapse">	
+					      	<div class="panel-body">
+					      		<c:if test="${actuacio.activa && canCreateTasca}">
+						      		<div class="row margin_bottom10">
+							    		<div class="col-lg-12 panel">
+											<a href="createTasca?idActuacio=${actuacio.referencia}&tipus=notificacio" class="btn btn-primary" role="button">Nova notificació</a>
+										</div>
+						    		</div>
+						    	</c:if>
+					    		<div class="row panel-body">
+									<div class="table-responsive">                        
+			                            <table class="table table-striped table-bordered">
+			                            	<thead>
+			                                    <tr>                                        
+			                                        <th>Notificació</th>
+			                                        <th>id Actuació</th>
+			                                        <th>id Incidència</th>
+			                                        <th>Centre</th>                                        
+			                                        <th>Data creació</th>
+			                                        <th>Notificat a</th>
+			                                    </tr>
+			                                </thead>
+			                                <tbody>
+			                                	<c:forEach items="${notificacions}" var="notificacio" >
+										          	<tr class="${notificacio.activa ? notificacio.llegida ? "success" : "warning" : "danger"}">					          	
+										           		<td><a href="tasca?id=${notificacio.idTasca}">${notificacio.idTasca} - ${notificacio.descripcio}</a></td>
+										            	<td><a href="actuacionsDetalls?ref=${notificacio.actuacio.referencia}">${notificacio.actuacio.referencia}</a></td>
+										            	<td><a href="incidenciaDetalls?ref=${notificacio.incidencia.idIncidencia}">${notificacio.incidencia.idIncidencia}</a></td>
+										            	<td>${notificacio.actuacio.nomCentre}</td>							            	
+										            	<td>${notificacio.getDataCreacioString()}</td>
+										            	<td>${notificacio.usuari.getNomComplet()}					            	
 										          	</tr>
 										       	</c:forEach>
 			                                </tbody>

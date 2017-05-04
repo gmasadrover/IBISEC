@@ -1,6 +1,8 @@
 package core;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+
 import bean.ControlPage.SectionPage;
 import bean.User;
 
@@ -14,6 +16,21 @@ public class ControlPageCore {
 			if (seccio.equals("Tasques")) active = "active"; 
 			menu.append("<li class='" + active + "'>");
 			menu.append("	<a href='tascaList'><i class='fa fa-fw fa-tasks'></i> Tasques</a>");
+			menu.append("</li>");
+			active = "";
+			collapse = "";
+		}
+		//Notificació
+		if (UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_list)) {			
+			if (seccio.equals("Notificacions")) active = "active"; 
+			menu.append("<li class='" + active + "'>");
+			int notificacions = 0;
+			try {
+				notificacions = TascaCore.numNotificacions(conn, usuari.getIdUsuari());
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			menu.append("	<a href='notificacioList'><i class='fa fa-fw fa-tasks'></i> Notificacions <span class='badge'> " + notificacions + "</span></a>");
 			menu.append("</li>");
 			active = "";
 			collapse = "";
@@ -168,6 +185,11 @@ public class ControlPageCore {
 				menu.append("        	<a href='createEmpresa'>Afegir empresa</a>");
 				menu.append("    	</li>");
 			}
+			if (UsuariCore.hasPermision(conn, usuari, SectionPage.empreses_crear)) {
+				menu.append("     	<li>");
+				menu.append("        	<a href='createUTE'>Afegir UTE</a>");
+				menu.append("    	</li>");
+			}
 			menu.append("	</ul>");
 			menu.append("</li>");
 			active = "";
@@ -206,6 +228,15 @@ public class ControlPageCore {
 			active = "";
 			collapse = "";
 		}
+		//Llistats
+		if (UsuariCore.hasPermision(conn, usuari, SectionPage.llistats_list)) {			
+			if (seccio.equals("Llistats")) active = "active"; 
+			menu.append("<li class='" + active + "'>");
+			menu.append("	<a href='llistats'><i class='fa fa-fw fa-edit'></i> Mapa</a>");
+			menu.append("</li>");
+			active = "";
+			collapse = "";
+		}	
 		return menu.toString();
 	}
 	

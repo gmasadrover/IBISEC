@@ -20,11 +20,21 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Tasca 
+                            <c:choose>
+							    <c:when test="${tipus=='notificacio'}">
+							        Notificació
+							    </c:when>
+							    <c:otherwise>
+							       Tasca
+							    </c:otherwise>
+							</c:choose> 
                             <small>
                             	<c:choose>
 								    <c:when test="${tipus=='infPrev'}">
 								        Sol·licitud informe
+								    </c:when>
+								    <c:when test="${tipus=='notificacio'}">
+								        Nova notificació
 								    </c:when>
 								    <c:otherwise>
 								       Nova tasca
@@ -33,12 +43,24 @@
                             </small>
                         </h1>
                         <ol class="breadcrumb">
-                            <li class="active">
-                                <i class="fa fa-dashboard"></i> Tasca
-                            </li>
-                            <li class="active">
-                                <i class="fa fa-table"></i> Nova tasca
-                            </li>
+                        	<c:choose>
+							    <c:when test="${tipus=='notificacio'}">
+							        <li class="active">
+		                                <i class="fa fa-dashboard"></i> Notificació
+		                            </li>
+		                            <li class="active">
+		                                <i class="fa fa-table"></i> Nova notificació
+		                            </li>
+							    </c:when>
+							    <c:otherwise>
+							       	<li class="active">
+		                                <i class="fa fa-dashboard"></i> Tasca
+		                            </li>
+		                            <li class="active">
+		                                <i class="fa fa-table"></i> Nova tasca
+		                            </li>
+							    </c:otherwise>
+							</c:choose>                             
                         </ol>
                     </div>
                 </div>
@@ -59,9 +81,21 @@
 		    					<input type="hidden" name="idIncidencia" value="${idIncidencia}">
 		    					<input type="hidden" name="tipus" value="${tipus}">
 		    					<input type="hidden" name="referencia" value="${nouCodi}">                       
-                            </div>
-                            <div class="form-group">
-                                <label class="col-xs-3 control-label">Comentari</label>
+                            </div>                            
+                            <c:choose>
+							    <c:when test="${tipus=='infPrev'}">	
+							    </c:when>
+							    <c:otherwise>
+							       	<div class="form-group">
+		                                <label class="col-xs-3  control-label">Assumpte</label>
+		                                <div class="col-xs-3">
+			                                <input class="form-control" name="assumpte" placeholder="assumpte">
+			                             </div>
+		                            </div>		                            
+							    </c:otherwise>
+							</c:choose> 
+						    <div class="form-group">
+                                <label class="col-xs-3 control-label">Assumpte</label>
                                 <div class="col-xs-3">
                                 	<textarea class="form-control" name="comentari" placeholder="comentari inter" rows="3">Revisar</textarea>
                                 </div>
@@ -71,30 +105,17 @@
                                 <div class="col-xs-3">
 	                                <select class="form-control selectpicker" name="idUsuari" data-live-search="true" id="usuarisList">
 	                                	<c:forEach items="${llistaUsuaris}" var="usuari" >
-	                                		<option value='${usuari.idUsuari}'>${usuari.getNomComplet()}</option>
-	                                	</c:forEach>	                                
+	                                		<option value='${usuari.idUsuari}'>${usuari.getNomCompletReal()}</option>	                                		
+	                                	</c:forEach>
+	                                	<option data-divider="true"></option>
+                                		<option value='gerencia'>Gerència</option>
+                                		<option value='juridica'>Assessoria Jurídica</option>
+                                		<option value='obres'>Obres , Projectes i Supervisió</option>
+                                		<option value='comptabilitat'>Administració i comptabilitat</option>
+                                		<option value='instalacions'>Instal·lacions i Manteniment</option>              	                                
 	                                </select>
 	                             </div>
-                            </div>	
-                            <c:choose>
-							    <c:when test="${tipus=='infPrev'}">
-							        
-							    </c:when>
-							    <c:otherwise>
-							       	<div class="form-group">
-		                                <label class="col-xs-3  control-label">Assumpte</label>
-		                                <div class="col-xs-3">
-			                                <input class="form-control" name="assumpte" placeholder="assumpte">
-			                             </div>
-		                            </div>
-		                            <div class="form-group">
-		                                <label class="col-xs-3 control-label">Comentari asignació</label>
-		                                <div class="col-xs-3">
-		                                	<textarea class="form-control" name="comentari" placeholder="comentari inter" rows="3">Revisar</textarea>
-		                                </div>
-		                            </div>
-							    </c:otherwise>
-							</c:choose>                            	
+                            </div>                     	
                             <br>
 						    <div class="form-group">
 						        <div class="col-xs-offset-3 col-xs-9">

@@ -69,7 +69,6 @@ public class TascaDetailsServlet extends HttpServlet {
  	       List<Partida> partidesList = new ArrayList<Partida>();
  	       List<Empresa> empresesList = new ArrayList<Empresa>();
  	       List<User> llistaUsuaris = new ArrayList<User>();
- 	       List<User> llistaCaps = new ArrayList<User>();
  	       boolean canRealitzarTasca = false;
  	       List<Oferta> ofertes = new ArrayList<Oferta>();
 	       Oferta ofertaSeleccionada = new Oferta();
@@ -77,11 +76,11 @@ public class TascaDetailsServlet extends HttpServlet {
  	    	   tasca = TascaCore.findTascaId(conn, idTasca);
  	    	   actuacio = tasca.getActuacio(); 	    	  
  	    	   incidencia = tasca.getIncidencia();
- 	    	   actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia()));
  	    	   llistaUsuaris = UsuariCore.findUsuarisByDepartament(conn, tasca.getUsuari().getDepartament());
- 	    	   llistaCaps.addAll(UsuariCore.findUsuarisByRol(conn, "CAP"));
+ 	    	   if (usuari.getRol().contains("CAP")) llistaUsuaris = UsuariCore.llistaUsuaris(conn); 	    	   
  	    	   canRealitzarTasca = usuari.getDepartament().equals(tasca.getUsuari().getDepartament()) || "ADMIN".equals(usuari.getRol()); 
  	    	   if (actuacio != null) {
+ 	    		  actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia()));
  	    		  historial = TascaCore.findHistorial(conn, idTasca, incidencia.getIdIncidencia(), actuacio.getReferencia());
  	    		  ofertes = OfertaCore.findOfertes(conn, tasca.getIdinforme());
  	    		  ofertaSeleccionada = OfertaCore.findOfertaSeleccionada(conn, tasca.getIdinforme());
@@ -89,7 +88,7 @@ public class TascaDetailsServlet extends HttpServlet {
  	    		  historial = TascaCore.findHistorial(conn, idTasca, incidencia.getIdIncidencia(), "");
  	    	   } 	    	  
  	    	   String tipusTasca = tasca.getTipus();
- 	    	   if ((tasca.getUsuari().getDepartament().equals(usuari.getDepartament()) && usuari.getRol().contains("CAP")) || "ADMIN".equals(usuari.getRol())) esCap = true;
+ 	    	   if ((tasca.getUsuari().getDepartament().equals(usuari.getDepartament()) && usuari.getRol().contains("CAP"))) esCap = true;
  	    	   if ("infPrev".equals(tipusTasca)) {
  	    		  informePrevi = InformeCore.getInformeTasca(conn, idTasca);  
  	    		  if (!esCap) {
@@ -108,6 +107,8 @@ public class TascaDetailsServlet extends HttpServlet {
 	 	    		  llistaUsuaris.clear();
 		    		  llistaUsuaris.add(UsuariCore.finCap(conn, tasca.getUsuari().getDepartament()));
  	    		  }
+ 	    	   }else if ("notificacio".equals(tipusTasca)) {
+ 	    		   TascaCore.llegirNotificacio(conn, tasca.getIdTasca());
  	    	   }
  	    	   
  	       } catch (SQLException e) {
@@ -125,7 +126,6 @@ public class TascaDetailsServlet extends HttpServlet {
  	       request.setAttribute("partidesList", partidesList);
  	       request.setAttribute("empresesList", empresesList);
  	       request.setAttribute("llistaUsuaris", llistaUsuaris);
- 	       request.setAttribute("llistaCaps", llistaCaps);
  	       request.setAttribute("ofertes", ofertes);
 	       request.setAttribute("ofertaSeleccionada", ofertaSeleccionada);
  	       request.setAttribute("canRealitzarTasca", canRealitzarTasca);

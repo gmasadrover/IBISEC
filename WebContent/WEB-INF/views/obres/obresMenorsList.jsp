@@ -130,7 +130,7 @@
 
     </div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/obres/llistat.js"></script>
+    <script src="js/obres/llistatMenors.js"></script>
     <!-- /#wrapper -->
 </body>
 </html>

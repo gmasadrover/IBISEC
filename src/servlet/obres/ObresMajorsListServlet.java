@@ -56,11 +56,12 @@ public class ObresMajorsListServlet extends HttpServlet {
 			String idCentre = "";
 			String idCentreSelector = "";
 			String filterWithOutDate = request.getParameter("filterWithOutDate");
+			boolean filterWithTancades = "on".equals(request.getParameter("filterWithTancades"));
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			Calendar cal = Calendar.getInstance(); 
 			Date dataFi = cal.getTime();
 			String dataFiString = df.format(dataFi);	 
-			cal.add(Calendar.MONTH, -2);
+			cal.add(Calendar.YEAR, -1);
 			Date dataInici = cal.getTime();
 			String dataIniciString = df.format(dataInici);	
 			
@@ -80,8 +81,13 @@ public class ObresMajorsListServlet extends HttpServlet {
 		    			dataFi = df.parse(request.getParameter("dataFi"));
 		    			dataFiString = request.getParameter("dataFi");
 					}
+				} else {
+					dataInici = null;					
+					dataFi = null;
+					filterWithOutDate = "on";
+					filterWithTancades = false;
 				}
-				list = ObresCore.ObresMajor(conn, idCentre, dataInici, dataFi);
+				list = ObresCore.ObresMajor(conn, idCentre, dataInici, dataFi, filterWithTancades);
 			} catch (SQLException | ParseException e) {
 				e.printStackTrace();
 				errorString = e.getMessage();

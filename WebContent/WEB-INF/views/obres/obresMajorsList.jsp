@@ -60,6 +60,9 @@
 										</div>
 										<input type="checkbox" name="filterWithOutDate" ${filterWithOutDate ? "checked" : ""}> Filtrar fora dates
 									</div>                                
+							  	</div>	
+							  	<div class="col-lg-4">
+							  		<input type="checkbox" name="filterWithTancades" ${filterWithTancades ? "checked" : ""}> Mostrar tancades					  	
 							  	</div>							  	
 							</div>	
 							<div class="form-group">
@@ -69,8 +72,7 @@
 							</div>
 						</div>	
 					</form>
-				</div>
-				
+				</div>				
                 <div class="row">
                     <div class="col-lg-12">
                         <h2>Contractes majors</h2>
@@ -84,6 +86,9 @@
                                         <th>Preu adjudicació</th>  
                                         <th>informe</th>
                                         <th>Empresa</th>    
+                                        <th>Data petició</th>
+                                        <th>Data petició</th>
+                                        <th>Valor Pagat</th>  
                                         <th>Valor Pagat</th>  
                                         <th>Notes</th>                                  
                                     </tr>
@@ -97,6 +102,9 @@
 							            	<td>${obra.valor}</td>
 							            	<td>${obra.idInforme}</td>
 							            	<td>${obra.empresa.name}</td>
+							            	<td>${obra.getDataCreacioString()}</td>	
+							            	<td>${obra.getDataCreacio()}</td>
+							            	<td>${obra.getTotalFacturatFormat()}</td>	
 							            	<td>${obra.getTotalFacturat()}</td>		
 							            	<td>${obra.notes}</td>							            				            	
 							          	</tr>
@@ -115,7 +123,7 @@
 
     </div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/obres/llistat.js"></script>
+    <script src="js/obres/llistatMajors.js"></script>
     <!-- /#wrapper -->
 </body>
 </html>

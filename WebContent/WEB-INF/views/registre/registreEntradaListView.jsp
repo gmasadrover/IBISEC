@@ -100,7 +100,7 @@
 							            	<td>${entrada.contingut}</td>	
 							            	<td>${entrada.nomCentre}</td>	
 							             	<c:choose>
-											    <c:when test="${entrada.idIncidencia == 0}">
+											    <c:when test="${entrada.idIncidencia == '-1'}">
 											        <td></td>
 											    </c:when>    
 											    <c:otherwise>

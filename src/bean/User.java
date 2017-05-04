@@ -47,6 +47,10 @@ public class User {
 		   }
 	   }
 	   
+	   public String getNomCompletReal() {
+		   return this.name + " " + this.llinatges;		  
+	   }
+	   
 	   public String getRol() {
 	       return rol;
 	   }

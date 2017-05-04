@@ -75,7 +75,6 @@ public class DoAddInformeServlet extends HttpServlet {
 		    double iva = Double.parseDouble(multipartParams.getParametres().get("iva"));
 		    double plic = Double.parseDouble(multipartParams.getParametres().get("plic"));
 		    String termini = multipartParams.getParametres().get("termini");
-		    String servei = multipartParams.getParametres().get("tipusServei");
 		    String comentari = multipartParams.getParametres().get("comentariTecnic");
 		    
 		    InformeActuacio informe = new InformeActuacio();
@@ -91,7 +90,6 @@ public class DoAddInformeServlet extends HttpServlet {
 		    informe.setIva(iva);
 		    informe.setPlic(plic);
 		    informe.setTermini(termini);
-		    informe.setServei(servei);
 		    informe.setComentari(comentari);		   
 		   	//Registrar informe + comentari;	   
 		   	try {

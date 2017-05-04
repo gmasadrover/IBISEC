@@ -1,5 +1,5 @@
 <footer class="text-center footer">
-	<p>v0.1.170412</p>
+	<p>v0.1.170502</p>
 	<p>Institut Balear d'Infraestructures i Serveis Educatius (IBISEC)</p>	
 	<p>Domini <a href="http://ibisec.caib.es">http://ibisec.caib.es</a></p>
 </footer>

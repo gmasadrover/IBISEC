@@ -5,6 +5,20 @@ $(document).ready(function() {
 	$('#classificacioTable').dataTable( {
 		 
 	} );
+	$('#empresesUTETable').dataTable( {
+		 
+	} );
+	$('#ofertesTable').dataTable( {
+		 
+	} );
+	$('#ratioAP').on('keyup', function(){
+		var ratio = $('#ratioAP').val().replace(',','.');
+		if ($.isNumeric(ratio)) {			
+			$('#ratioAP').val(ratio);
+		} else {
+			$('#ratioAP').val('');
+		}
+	});
 	$("#dataExerciciEconomic").datepicker( {
 	    format: " yyyy", // Notice the Extra space at the beginning
 	    viewMode: "years", 
@@ -29,6 +43,9 @@ $(document).ready(function() {
 		table.row('.selected').remove().draw( false );
 	});
 	$('#afegirAdmin').on('click', function(){
+		if (! $.isNumeric($('#numProtocol').val())) {			
+			$('#numProtocol').val('');
+		}
 		var admin = $('#nomAdmin').val() + "#" + $('#dniAdmin').val() + "#" + $('#tipusAdmin').val() + "#" + $('#validAdmin').val() + "#" + $('#nomNotari').val() + "#" + $('#numProtocol').val() + "#" + $('#dataAlta').val() + "#" + $('#dataValidacio').val() + "#" + $('#organValidador').val() + ";";
 		$('#llistatAdministradors').val($('#llistatAdministradors').val() + admin);
     	var table = $('#administradorsTable').DataTable();        	

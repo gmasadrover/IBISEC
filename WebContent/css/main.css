@@ -1,6 +1,9 @@
 body{
 	background-color: #FFFFFF;
 }
+.fullbody{
+	margin-top: 0px;
+}
 .logo {
 	width: 30px;
 	float: left;
@@ -8,6 +11,9 @@ body{
 .tittleLogo{
 	margin-left: 10px;
     line-height: 25px;
+}
+ #map {
+  	height: 100%;
 }
 .footer{
 	background: #E0E0E0; 

@@ -42,6 +42,7 @@ public class EmpresaListServlet extends HttpServlet {
 	        List<Empresa> list = null;
 	        try {
 	            list = EmpresaCore.getEmpreses(conn);
+	            list.addAll(EmpresaCore.getEmpresesUTE(conn));
 	        } catch (SQLException e) {
 	            e.printStackTrace();
 	            errorString = e.getMessage();

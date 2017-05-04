@@ -14,6 +14,8 @@ public class Tasca {
 	private boolean activa;
 	private Date dataCreacio;
 	private String idinforme;
+	private boolean llegida;
+	private String primerComentari;
 	
 	public Tasca() {
 
@@ -94,5 +96,21 @@ public class Tasca {
 
 	public void setIdinforme(String idinforme) {
 		this.idinforme = idinforme;
+	}
+
+	public boolean isLlegida() {
+		return llegida;
+	}
+
+	public void setLlegida(boolean llegida) {
+		this.llegida = llegida;
+	}
+
+	public String getPrimerComentari() {
+		return primerComentari;
+	}
+
+	public void setPrimerComentari(String primerComentari) {
+		this.primerComentari = primerComentari;
 	}
 }

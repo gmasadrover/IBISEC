@@ -19,6 +19,7 @@ import bean.Incidencia;
 import bean.Registre;
 import core.IncidenciaCore;
 import core.RegistreCore;
+import core.TascaCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
@@ -90,6 +91,11 @@ public class DoCreateEntradaServlet extends HttpServlet {
 		   		    incidencia.setSolicitant(remitent);
 		   		    IncidenciaCore.novaIncidencia(conn, incidencia);
 		   			RegistreCore.actualitzarIdIncidencia(conn, "E", referencia, referenciaIncidencia);
+	   			} else { //Cream notificació a gerència
+	   				String comentari = "S'ha registrat una nova entrada per la incidencia " + idIncidencia;
+	   				comentari += "<br/> Veure registre: <a href='registre?tipus=E&referencia=" + registre.getId() + "'>" + registre.getId() + "</a>";
+	   				String assumpte = "Nova entrada";
+	   				TascaCore.novaTasca(conn, "notificacio", 1, idUsuari, "", idIncidencia, comentari, assumpte, "");
 	   			}	   			
 	   		} catch (SQLException e) {
 	  			e.printStackTrace();

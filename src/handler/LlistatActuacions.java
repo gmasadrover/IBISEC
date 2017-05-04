@@ -17,7 +17,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import bean.Actuacio;
 import bean.Incidencia;
+import core.ActuacioCore;
 import core.IncidenciaCore;
 import utils.MyUtils;
 
@@ -58,12 +60,12 @@ public class LlistatActuacions extends HttpServlet {
         Gson gson = new Gson(); 
         JsonObject myObj = new JsonObject();
         Connection conn = MyUtils.getStoredConnection(request);
-        List<Incidencia> llistatIncidencies = new ArrayList<Incidencia>();
+        List<Actuacio> llistatActuacions = new ArrayList<Actuacio>();
 		try {
-			llistatIncidencies = IncidenciaCore.searchIncidencies(conn, idCentre, true, null, null);
+			llistatActuacions = ActuacioCore.searchActuacions(conn, idCentre, "AprovadaPT", null, null).getLlistaActuacions();
 			myObj.addProperty("success", true);
-			JsonElement llistatObj = gson.toJsonTree(llistatIncidencies);
-			myObj.add("llistatIncidencies", llistatObj);
+			JsonElement llistatObj = gson.toJsonTree(llistatActuacions);
+			myObj.add("llistatActuacions", llistatObj);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

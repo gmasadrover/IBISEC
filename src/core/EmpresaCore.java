@@ -53,6 +53,30 @@ public class EmpresaCore {
 		return empresa;
 	}
 	
+	private static Empresa initUTE(Connection conn, ResultSet rs) throws SQLException{
+		Empresa empresa = new Empresa();
+		 empresa.setCif(rs.getString("cif"));
+		 empresa.setName(rs.getString("nom"));
+		 empresa.setInformacioAdicional(rs.getString("informacioadicional"));
+		 Empresa.UTE ute = empresa.new UTE();
+		 String[] empresesString = rs.getString("empreses").split("#");
+		 List<Empresa> empreses = new ArrayList<Empresa>();			
+		 for(int i=0; i<empresesString.length; i++) {
+			 if (! empresesString[i].isEmpty()) {
+				 try {
+					 empreses.add(EmpresaCore.findEmpresa(conn, empresesString[i]));
+				 } catch (SQLException e) {
+					 e.printStackTrace();
+				 }	    	
+			 }
+		 }				 
+		 ute.setEmpreses(empreses);
+		 List<Empresa.Administrador> administradorsList = getAdministradors(conn, empresa.getCif());				
+		 empresa.setAdministradors(administradorsList);	
+		 empresa.setUte(ute);			 
+		 return empresa;
+	}
+	
 	public static void deleteEmpresa(Connection conn, String codi) throws SQLException {
 		String sql = "DELETE FROM public.tbl_empreses"
 					+ " WHERE cif= ?";		 
@@ -81,12 +105,12 @@ public class EmpresaCore {
 		
 	}
 	
-	 public static void updateEmpresa(Connection conn, Empresa empresa, List<Empresa.Administrador> administradorsList, int idUsuari) throws SQLException {
+	public static void updateEmpresa(Connection conn, Empresa empresa, List<Empresa.Administrador> administradorsList, int idUsuari) throws SQLException {
 		 String sql = "UPDATE public.tbl_empreses"
 				 	+ " SET nom=?, direccio=?, cp=?, ciutat=?, provincia=?, telefon=?, fax=?, email=?, usumod=?, datamod=localtimestamp, objectesocial=?," 
 				 		+ " acreditacio1=?, dataexpacreditacio1=?, acreditacio2=?, dataexpacreditacio2=?, acreditacio3=?, dataexpacreditacio3=?," 
 				 		+ " classificacio=?, dataconstitucio=?, informacioadicional=?, exercicieconomic=?,  dataregistremercantil=?,  ratioap=?"
-				 	+ " WHERE cif = ?";	 		 
+				 	+ " WHERE cif = ?";	 
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 		 
 		 pstm.setString(1, empresa.getName());
 		 pstm.setString(2, empresa.getDireccio());
@@ -146,12 +170,22 @@ public class EmpresaCore {
 				 	+ " WHERE cif=?";
 	 
 		 PreparedStatement pstm = conn.prepareStatement(sql);
-	     pstm.setString(1, cif);
-	 
-	     ResultSet rs = pstm.executeQuery();
-	 
-	     while (rs.next()) {
+	     pstm.setString(1, cif);	 
+	     ResultSet rs = pstm.executeQuery();	 
+	     if (rs.next()) {
 	    	 return initEmpresa(conn, rs);
+	     } else { // és una UTE
+	    	 sql = "SELECT cif, nom, empreses, informacioadicional"
+					 	+ " FROM public.tbl_ute"
+					 	+ " WHERE cif=?";
+		 
+	    	 
+			 pstm = conn.prepareStatement(sql);
+		     pstm.setString(1, cif);	 
+		     rs = pstm.executeQuery();	 
+		     if (rs.next()) {
+		    	 return initUTE(conn, rs);
+		     }
 	     }
 	     return null;
 	 }
@@ -177,6 +211,46 @@ public class EmpresaCore {
 	     return list;
      }	
 	 
+	 public static void insertUTE(Connection conn, Empresa empresa, int idUsuari) throws SQLException {
+		String sql = "INSERT INTO public.tbl_ute(cif, nom, empreses, datacre, usucre)"
+					+ " VALUES (?, ?, ?, localtimestamp, ?)";		 
+		PreparedStatement pstm = conn.prepareStatement(sql);	 
+		pstm.setString(1, empresa.getCif());
+		pstm.setString(2, empresa.getName());
+		pstm.setString(3, empresa.getUte().getEmpresesString());		
+		pstm.setInt(4, idUsuari);		
+		pstm.executeUpdate();
+	 }
+		
+	 public static List<Empresa> getEmpresesUTE(Connection conn) throws SQLException {
+		 String sql = "SELECT cif, nom, empreses"
+				 	+ " FROM public.tbl_ute";	 
+		 PreparedStatement pstm = conn.prepareStatement(sql);	 
+		 ResultSet rs = pstm.executeQuery();
+		 List<Empresa> list = new ArrayList<Empresa>();
+		 while (rs.next()) {
+			 Empresa empresa = new Empresa();
+			 empresa.setCif(rs.getString("cif"));
+			 empresa.setName(rs.getString("nom"));
+			 Empresa.UTE ute = empresa.new UTE();		
+			 empresa.setUte(ute);			 
+			 list.add(empresa);
+		 }
+	     return list;
+     }
+	 
+	 public static void updateEmpresaUTE(Connection conn, Empresa empresa, List<Empresa.Administrador> administradorsList, int idUsuari) throws SQLException {
+		 String sql = "UPDATE public.tbl_ute"
+				 	+ " SET nom=?, informacioadicional=?"
+				 	+ " WHERE cif = ?";
+		 PreparedStatement pstm = conn.prepareStatement(sql);	 		 
+		 pstm.setString(1, empresa.getName());
+		 pstm.setString(2, empresa.getInformacioAdicional());
+		 pstm.setString(3, empresa.getCif());
+		 pstm.executeUpdate();
+		 addAdministradors(conn, empresa.getCif(), administradorsList, idUsuari);
+	 }
+	 
 	 private static void addAdministradors(Connection conn, String cif, List<Empresa.Administrador> administradorsList, int idUsuari) throws SQLException {
 		 String sqlInsert = "INSERT INTO public.tbl_administradorsempresa(nifempresa, nom, dni, validfins, usucre, datacre, protocolmod, notarimod, datamod, tipus, datavalidacio, organvalidacio)"
 			 			+ " VALUES (?, ?, ?, ?, ?, localtimestamp,?,?,?,?,?,?);";	 
@@ -197,13 +271,25 @@ public class EmpresaCore {
 			 } else if (existAdministrador(conn, cif, administrador.getDni())) {
 				 pstmUpdate = conn.prepareStatement(sqlUpdate);	
 				 pstmUpdate.setString(1, administrador.getNom());
-				 pstmUpdate.setDate(2, new java.sql.Date(administrador.getDataValidesaFins().getTime()));
+				 if (administrador.getDataValidesaFins() != null) {
+					 pstmUpdate.setDate(2, new java.sql.Date(administrador.getDataValidesaFins().getTime()));
+				 } else {
+					 pstmUpdate.setDate(2, null);
+				 }	
 				 pstmUpdate.setInt(3, idUsuari);
 				 pstmUpdate.setInt(4, administrador.getProtocolModificacio());
 				 pstmUpdate.setString(5, administrador.getNotariModificacio());
-				 pstmUpdate.setDate(6, new java.sql.Date(administrador.getDataModificacio().getTime()));
+				 if (administrador.getDataModificacio() != null) {
+					 pstmUpdate.setDate(6, new java.sql.Date(administrador.getDataModificacio().getTime()));
+				 } else {
+					 pstmUpdate.setDate(6, null);
+				 }				
 				 pstmUpdate.setString(7, administrador.getTipus());
-				 pstmUpdate.setDate(8, new java.sql.Date(administrador.getDataValidacio().getTime()));
+				 if (administrador.getDataValidacio() != null) {
+					 pstmUpdate.setDate(8, new java.sql.Date(administrador.getDataValidacio().getTime()));
+				 } else {
+					 pstmUpdate.setDate(8, null);
+				 }				 
 				 pstmUpdate.setString(9, administrador.getEntitatValidacio());
 				 pstmUpdate.setString(10, administrador.getDni());
 				 pstmUpdate.executeUpdate();	
@@ -212,13 +298,25 @@ public class EmpresaCore {
 				 pstmInsert.setString(1, cif);
 				 pstmInsert.setString(2, administrador.getNom());
 				 pstmInsert.setString(3, administrador.getDni());
-				 pstmInsert.setDate(4, new java.sql.Date(administrador.getDataValidesaFins().getTime()));
+				 if (administrador.getDataValidesaFins() != null) {
+					 pstmInsert.setDate(4, new java.sql.Date(administrador.getDataValidesaFins().getTime()));
+				 } else {
+					 pstmInsert.setDate(4, null);
+				 }				
 				 pstmInsert.setInt(5, idUsuari);
 				 pstmInsert.setInt(6, administrador.getProtocolModificacio());
 				 pstmInsert.setString(7, administrador.getNotariModificacio());
-				 pstmInsert.setDate(8, new java.sql.Date(administrador.getDataModificacio().getTime()));
+				 if (administrador.getDataModificacio() != null) {
+					 pstmInsert.setDate(8, new java.sql.Date(administrador.getDataModificacio().getTime()));
+				 } else {
+					 pstmInsert.setDate(8, null);
+				 }
 				 pstmInsert.setString(9, administrador.getTipus());
-				 pstmInsert.setDate(10, new java.sql.Date(administrador.getDataValidacio().getTime()));
+				 if (administrador.getDataValidacio() != null) {
+					 pstmInsert.setDate(10, new java.sql.Date(administrador.getDataValidacio().getTime()));
+				 } else {
+					 pstmInsert.setDate(10, null);
+				 }				
 				 pstmInsert.setString(11, administrador.getEntitatValidacio());
 				 pstmInsert.executeUpdate();		
 			 }

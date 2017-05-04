@@ -60,6 +60,7 @@
 					            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.ruta}">
 											${arxiu.nom}
 										</a>
+										<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
 										<br>
 									</c:forEach>
 	                        	</div>

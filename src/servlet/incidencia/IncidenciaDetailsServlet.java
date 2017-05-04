@@ -58,6 +58,7 @@ public class IncidenciaDetailsServlet extends HttpServlet {
 	       List<Registre> entrades = new ArrayList<Registre>();
 	       List<Registre> sortides = new ArrayList<Registre>();
 	       List<Tasca> tasques = new ArrayList<Tasca>();
+	       List<Tasca> notificacions = new ArrayList<Tasca>();
 	       List<Fitxers.Fitxer> arxius = new ArrayList<Fitxers.Fitxer>();	
 	       
 	       boolean canCreateActuacio = false;
@@ -66,7 +67,8 @@ public class IncidenciaDetailsServlet extends HttpServlet {
 	       
 	       try {
 	    	   incidencia = IncidenciaCore.findIncidencia(conn, referencia);
-	    	   tasques = TascaCore.findTasquesIncidencia(conn, referencia);	    	  	    	  
+	    	   tasques = TascaCore.findTasquesIncidencia(conn, referencia);	    
+	    	   notificacions = TascaCore.findNotificacionsIncidencia(conn, referencia);
 	    	   entrades = RegistreCore.searchEntradesIncidencia(conn, referencia);
 	    	   sortides = RegistreCore.searchSortidesIncidencia(conn, referencia);
 	    	   arxius = Fitxers.ObtenirTotsFitxers(referencia);	    
@@ -82,6 +84,7 @@ public class IncidenciaDetailsServlet extends HttpServlet {
 	       request.setAttribute("errorString", errorString);
 	       request.setAttribute("incidencia", incidencia);
 	       request.setAttribute("tasques", tasques);
+	       request.setAttribute("notificacions", notificacions);
 	       request.setAttribute("entrades", entrades);
 	       request.setAttribute("sortides", sortides);
 	       request.setAttribute("arxius", arxius);	   

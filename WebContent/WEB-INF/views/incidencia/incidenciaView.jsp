@@ -249,6 +249,51 @@
 					  <div class="panel panel-default">
 					    <div class="panel-heading">
 					      <h4 class="panel-title">
+					        <a data-toggle="collapse" data-parent="#accordion" href="#notificacions">
+					        Notificacions</a>
+					      </h4>
+					    </div>
+						  <div id="notificacions" class="panel-collapse collapse">	
+					      	<div class="panel-body">
+					      		<c:if test="${incidencia.activa && canCreateTasca}">
+						      		<div class="row margin_bottom10">
+							    		<div class="col-lg-12 panel">
+											<a href="createTasca?idIncidencia=${incidencia.idIncidencia}&tipus=notificacio" class="btn btn-primary" role="button">Nova notificació</a>
+										</div>
+						    		</div>
+						    	</c:if>
+					    		<div class="row panel-body">
+									<div class="table-responsive">                        
+			                            <table class="table table-striped table-bordered">
+			                                <thead>
+			                                    <tr>                                        
+			                                        <th>Notificació</th>
+			                                        <th>id Actuació</th>
+			                                        <th>id Incidència</th>			                                                                          
+			                                        <th>Data creació</th>
+			                                        <th>Notificat a</th>
+			                                    </tr>
+			                                </thead>
+			                                <tbody>
+			                                	<c:forEach items="${notificacions}" var="notificacio" >
+										          	<tr class="${notificacio.activa ? notificacio.llegida ? "success" : "warning" : "danger"}">							          	
+										           		<td><a href="tasca?id=${notificacio.idTasca}">${notificacio.idTasca} - ${notificacio.descripcio}</a></td>
+										            	<td><a href="actuacionsDetalls?ref=${notificacio.actuacio.referencia}">${notificacio.actuacio.referencia}</a></td>
+										            	<td><a href="incidenciaDetalls?ref=${notificacio.incidencia.idIncidencia}">${notificacio.incidencia.idIncidencia}</a></td>
+										            	<td>${notificacio.getDataCreacioString()}</td>
+										            	<td>${notificacio.usuari.getNomComplet()}					            	
+										          	</tr>
+										       	</c:forEach>
+			                                </tbody>
+			                            </table>
+			                        </div>
+			                	</div>
+							</div>
+					    </div>
+					  </div>
+					  <div class="panel panel-default">
+					    <div class="panel-heading">
+					      <h4 class="panel-title">
 					        <a data-toggle="collapse" data-parent="#accordion" href="#arxiusAdjunts">Arxius adjunts</a>
 					      </h4>
 					    </div>

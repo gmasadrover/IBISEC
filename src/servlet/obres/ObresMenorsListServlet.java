@@ -82,9 +82,11 @@ public class ObresMenorsListServlet extends HttpServlet {
 		    			dataFiString = request.getParameter("dataFi");
 					}	
 				} else {
+					dataInici = null;					
+					dataFi = null;
 					filterWithOutDate = "on";
-				}
-				
+					filterWithTancades = false;
+				}				
 				list = ObresCore.ObresMenors(conn, idCentre, dataInici, dataFi, filterWithTancades);				
 			} catch (SQLException | ParseException e) {
 				e.printStackTrace();

@@ -69,8 +69,8 @@ public class Fitxers {
 	
 	public static List<Fitxer> ObtenirTotsFitxers(String idIncidencia) {
 		List<Fitxer> arxius = new ArrayList<Fitxer>();		
-		String rutaBase = RUTA_BASE + "/documents/" + idIncidencia + "/";
-		arxius = ObtenirTotsFitxers(rutaBase, "Incidencia");		
+		String rutaBase = RUTA_BASE + "/documents/" + idIncidencia + "/";		
+		arxius = ObtenirTotsFitxers(rutaBase, "Incidencia");			
 		return arxius;	
 	}
 	
@@ -78,8 +78,8 @@ public class Fitxers {
 		List<Fitxer> arxius = new ArrayList<Fitxer>();		
 		File dir = new File(ruta);
 		File[] ficheros = dir.listFiles();
-		if (ficheros == null) {
-		} else { 
+		if (ficheros == null) {			
+		} else {
 			for (int x=0;x<ficheros.length;x++) {
 				if (ficheros[x].isDirectory()) {
 					arxius.addAll(ObtenirTotsFitxers(ruta + "/" + ficheros[x].getName(), seccio + "/" + ficheros[x].getName()));

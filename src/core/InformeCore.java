@@ -28,7 +28,6 @@ public class InformeCore {
 		informe.setIva(rs.getDouble("iva"));
 		informe.setPlic(rs.getDouble("plic"));
 		informe.setTermini(rs.getString("termini"));
-		informe.setServei(rs.getString("servei"));
 		informe.setComentari(rs.getString("comentari"));	
 		User usuari = UsuariCore.findUsuariByID(conn, rs.getInt("usucre"));
 		informe.setUsuari(usuari);
@@ -40,6 +39,7 @@ public class InformeCore {
 		informe.setComentariCap(rs.getString("comentaricap"));
 		informe.setUsuariAprovacio(UsuariCore.findUsuariByID(conn, rs.getInt("usuaprovacio")));
 		informe.setDataAprovacio(rs.getTimestamp("dataaprovacio"));
+		informe.setNotes(rs.getString("notes"));
 		informe.setLlistaOfertes(OfertaCore.findOfertes(conn, rs.getString("idinf")));
 		informe.setOfertaSeleccionada(OfertaCore.findOfertaSeleccionada(conn, rs.getString("idinf")));
 		if (OfertaCore.findOfertaSeleccionada(conn, rs.getString("idinf")) != null) {
@@ -49,8 +49,8 @@ public class InformeCore {
 	}
 	
 	public static String nouInforme(Connection conn, InformeActuacio informe, int idUsuari) throws SQLException {
-		String sql = "INSERT INTO public.tbl_informeactuacio(idinf, idtasca, idincidencia, idactuacio, objecte, tipusobra, llicencia, tipusllicencia, contracte, vec, iva, plic, termini, servei, comentari, usucre, datacre)"
-					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, localtimestamp);";		 
+		String sql = "INSERT INTO public.tbl_informeactuacio(idinf, idtasca, idincidencia, idactuacio, objecte, tipusobra, llicencia, tipusllicencia, contracte, vec, iva, plic, termini, comentari, usucre, datacre)"
+					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, localtimestamp);";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		pstm = conn.prepareStatement(sql);	
 		String idNouInforme = idNouInforme(conn);
@@ -67,9 +67,8 @@ public class InformeCore {
 		pstm.setDouble(11, informe.getIva());
 		pstm.setDouble(12, informe.getPlic());
 		pstm.setString(13, informe.getTermini());
-		pstm.setString(14, informe.getServei());
-		pstm.setString(15, informe.getComentari());
-		pstm.setInt(16, idUsuari);
+		pstm.setString(14, informe.getComentari());
+		pstm.setInt(15, idUsuari);
 		pstm.executeUpdate();
 		
 		return idNouInforme;
@@ -77,7 +76,7 @@ public class InformeCore {
 	
 	public static void modificar(Connection conn, InformeActuacio informe, int idUsuari) throws SQLException {
 		String sql = "UPDATE public.tbl_informeactuacio"
-					+ " SET objecte=?, tipusobra=?, llicencia=?, tipusllicencia=?, contracte=?, vec=?, iva=?, plic=?, termini=?, servei=?, comentari=?, usucre=?, usuaprovacio=?, dataaprovacio=?"
+					+ " SET objecte=?, tipusobra=?, llicencia=?, tipusllicencia=?, contracte=?, vec=?, iva=?, plic=?, termini=?, comentari=?, usucre=?, usuaprovacio=?, dataaprovacio=?"
 					+ " WHERE idInf=?";
 		
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
@@ -91,19 +90,18 @@ public class InformeCore {
 		pstm.setDouble(7, informe.getIva());
 		pstm.setDouble(8, informe.getPlic());
 		pstm.setString(9, informe.getTermini());
-		pstm.setString(10, informe.getServei());
-		pstm.setString(11, informe.getComentari());
-		pstm.setInt(12, idUsuari);
-		pstm.setNull(13, java.sql.Types.INTEGER);
-		pstm.setDate(14, null);
-		pstm.setString(15, informe.getIdInf());
+		pstm.setString(10, informe.getComentari());
+		pstm.setInt(11, idUsuari);
+		pstm.setNull(12, java.sql.Types.INTEGER);
+		pstm.setDate(13, null);
+		pstm.setString(14, informe.getIdInf());
 		pstm.executeUpdate();
 	}
 	
 	public static InformeActuacio getInformePrevi(Connection conn, String idInforme) throws SQLException {
 		InformeActuacio informePrevi = new InformeActuacio();
 		String sql = "SELECT idinf, idtasca, idincidencia, idactuacio, objecte, tipusobra, llicencia, tipusllicencia, contracte, vec, iva,"
-					+ " plic, termini, servei, comentari, usucre, datacre, usucapvalidacio, datacapvalidacio, comentaricap, usuaprovacio, dataaprovacio"
+					+ " plic, termini, comentari, usucre, datacre, usucapvalidacio, datacapvalidacio, comentaricap, usuaprovacio, dataaprovacio, notes"
 					+ " FROM public.tbl_informeactuacio"
 					+ " WHERE idinf = ?";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);
@@ -118,7 +116,7 @@ public class InformeCore {
 	public static InformeActuacio getInformeTasca(Connection conn, int idTasca) throws SQLException {
 		InformeActuacio informe = new InformeActuacio();
 		String sql = "SELECT idinf, idtasca, idincidencia, idactuacio, objecte, tipusobra, llicencia, tipusllicencia, contracte, vec, iva,"
-					+ " plic, termini, servei, comentari, usucre, datacre, usucapvalidacio, datacapvalidacio, comentaricap, usuaprovacio, dataaprovacio" 
+					+ " plic, termini, comentari, usucre, datacre, usucapvalidacio, datacapvalidacio, comentaricap, usuaprovacio, dataaprovacio, notes" 
 					+ " FROM public.tbl_informeactuacio"
 					+ " WHERE idtasca = ?"
 					+ " ORDER BY idinf DESC LIMIT 1;";		 
@@ -135,7 +133,7 @@ public class InformeCore {
 	public static List<InformeActuacio> getInformesActuacio(Connection conn, String idActuacio) throws SQLException {
 		 List<InformeActuacio> informes = new ArrayList<InformeActuacio>();
 		 String sql = "SELECT idinf, idtasca, idincidencia, idactuacio, objecte, tipusobra, llicencia, tipusllicencia, contracte, vec, iva,"
-				 	+ " plic, termini, servei, comentari, usucre, datacre, usucapvalidacio, datacapvalidacio, comentaricap, usuaprovacio, dataaprovacio" 
+				 	+ " plic, termini, comentari, usucre, datacre, usucapvalidacio, datacapvalidacio, comentaricap, usuaprovacio, dataaprovacio, notes" 
 					+ " FROM public.tbl_informeactuacio"
 					+ " WHERE idactuacio = ?"
 					+ " ORDER BY idinf DESC;";		 

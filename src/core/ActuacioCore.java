@@ -14,7 +14,7 @@ import bean.Resultat;
 import bean.Resultat.Estadistiques;
 public class ActuacioCore {
 	
-	static final String SQL_CAMPS = "id, idincidencia, descripcio, idcentre, usucre, datacre, dataaprovacio, usuaprovacio, datatancament, usutancament, datamodificacio, darreramodificacio, usuaprovarpa, dataaprovarpa";
+	static final String SQL_CAMPS = "id, idincidencia, descripcio, idcentre, usucre, datacre, dataaprovacio, usuaprovacio, datatancament, usutancament, datamodificacio, darreramodificacio, usuaprovarpa, dataaprovarpa, notes";
 	
 	private static Actuacio initActuacio(Connection conn, ResultSet rs, Estadistiques estad) throws SQLException{
 		Actuacio actuacio = new Actuacio();
@@ -32,6 +32,7 @@ public class ActuacioCore {
 		actuacio.setDarreraModificacio(rs.getTimestamp("datamodificacio"));
 		actuacio.setModificacio(rs.getString("darreramodificacio"));
 		actuacio.setDataAprovarPa(rs.getTimestamp("dataaprovarpa"));
+		actuacio.setNotes(rs.getString("notes"));
 		if (estad != null) {
 			if (actuacio.getDataTancament() == null) {
 				if (actuacio.getDataAprovacio() != null) {
@@ -50,7 +51,7 @@ public class ActuacioCore {
 	
 	public static void novaActuacio(Connection conn, Actuacio actuacio) throws SQLException {
 		String sql = "INSERT INTO public.tbl_actuacio(" + SQL_CAMPS + ")"
-					+ "VALUES (?,?,?,?,?,localtimestamp,null,null,null,null,localtimestamp,?,null,null)";
+					+ "VALUES (?,?,?,?,?,localtimestamp,null,null,null,null,localtimestamp,?,null,null,'')";
 	 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 	 

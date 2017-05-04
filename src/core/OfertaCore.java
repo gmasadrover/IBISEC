@@ -11,7 +11,7 @@ import java.util.List;
 import bean.Oferta;
 
 public class OfertaCore {
-	private static Oferta initOferta(Connection conn, ResultSet rs) throws SQLException{
+	private static Oferta initOferta(Connection conn, ResultSet rs, boolean complet) throws SQLException{
 		Oferta oferta = new Oferta();
 		oferta.setIdOferta(rs.getString("idoferta"));
 		oferta.setIdActuacio(rs.getString("idactuacio"));		
@@ -31,6 +31,9 @@ public class OfertaCore {
    		oferta.setUsuariCapValidacio(UsuariCore.findUsuariByID(conn, rs.getInt("usucapvalidacio")));
    		oferta.setDataCapValidacio(rs.getTimestamp("datacapvalidacio"));
    		oferta.setIdInforme(rs.getString("idinforme"));
+   		if (complet) {
+   			oferta.setActuacio(ActuacioCore.findActuacio(conn, rs.getString("idactuacio")));
+   		}
    		return oferta;
 	}
 	
@@ -65,7 +68,23 @@ public class OfertaCore {
 		pstm.setString(1, idInforme);		
 		ResultSet rs = pstm.executeQuery();		
 		while (rs.next()) {
-			Oferta oferta = initOferta(conn, rs);
+			Oferta oferta = initOferta(conn, rs, false);
+			ofertes.add(oferta);
+		}
+		return ofertes;
+	}
+	
+	public static List<Oferta> findOfertesEmpresa(Connection conn, String cif) throws SQLException {
+		List<Oferta> ofertes = new ArrayList<Oferta>();
+		String sql = "SELECT idoferta, idactuacio, cifempresa, vec, iva, plic, termini, seleccionada, descalificada, comentari, usucre, datacre, usuaprovacio, dataaprovacio, idinforme, usucapvalidacio, datacapvalidacio"
+					+ " FROM public.tbl_empresaoferta"
+					+ " WHERE cifempresa = ? ;";
+		
+		PreparedStatement pstm = conn.prepareStatement(sql);	 
+		pstm.setString(1, cif);		
+		ResultSet rs = pstm.executeQuery();		
+		while (rs.next()) {
+			Oferta oferta = initOferta(conn, rs, true);
 			ofertes.add(oferta);
 		}
 		return ofertes;
@@ -80,7 +99,7 @@ public class OfertaCore {
 		pstm.setString(1, idInforme);		
 		ResultSet rs = pstm.executeQuery();		
 		while (rs.next()) {
-			Oferta oferta = initOferta(conn, rs);
+			Oferta oferta = initOferta(conn, rs, false);
 			return oferta;
 		}
 		return null;

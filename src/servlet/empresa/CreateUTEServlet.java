@@ -1,4 +1,4 @@
-package servlet.tasca;
+package servlet.empresa;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -13,24 +13,25 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import bean.Empresa;
 import bean.User;
 import bean.ControlPage.SectionPage;
 import core.ControlPageCore;
-import core.TascaCore;
+import core.EmpresaCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
 /**
- * Servlet implementation class CreateTascaServlet
+ * Servlet implementation class CreateUTEServlet
  */
-@WebServlet("/createTasca")
-public class CreateTascaServlet extends HttpServlet {
+@WebServlet("/createUTE")
+public class CreateUTEServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public CreateTascaServlet() {
+    public CreateUTEServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -42,33 +43,23 @@ public class CreateTascaServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		User usuari = MyUtils.getLoginedUser(request.getSession());
     	Connection conn = MyUtils.getStoredConnection(request);
-		if (usuari == null){
- 		   response.sendRedirect(request.getContextPath() + "/preLogin");
-		}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_crear)) {
-    		response.sendRedirect(request.getContextPath() + "/");	
- 	   	}else{ 
-	        try {
-	        	String tipus = request.getParameter("tipus");
-	        	List<User> llistaUsuaris = new ArrayList<User>();
-	        	request.setAttribute("idActuacio", request.getParameter("idActuacio"));
-	        	request.setAttribute("idIncidencia", request.getParameter("idIncidencia"));
-	        	request.setAttribute("tipus", tipus);
-				request.setAttribute("nouCodi", TascaCore.idNovaTasca(conn));
-				if ("infPrev".equals(tipus)) {
-					llistaUsuaris = UsuariCore.findUsuarisByDepartament(conn, usuari.getDepartament());
-				} else {
-					llistaUsuaris = UsuariCore.findUsuarisByRol(conn, "");
-				}
-				request.setAttribute("llistaUsuaris", llistaUsuaris);
-				request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Tasques"));
+    	if (MyUtils.getLoginedUser(request.getSession()) == null){
+ 		   response.sendRedirect(request.getContextPath() + "/");
+    	}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.empreses_crear)) {
+    		response.sendRedirect(request.getContextPath() + "/");	 
+ 	   	}else{
+ 	   		List<Empresa> empresesList = new ArrayList<Empresa>();
+ 	   		try {
+				empresesList = EmpresaCore.getEmpreses(conn);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+ 	   		request.setAttribute("empresesList", empresesList);
+ 	   		request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Empreses"));
 	        RequestDispatcher dispatcher = request.getServletContext()
-	                .getRequestDispatcher("/WEB-INF/views/tasca/createTascaView.jsp");
+	                .getRequestDispatcher("/WEB-INF/views/empresa/createUTEView.jsp");
 	        dispatcher.forward(request, response);
- 	   }
+ 	   	}
 	}
 
 	/**

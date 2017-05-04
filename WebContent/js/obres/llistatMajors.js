@@ -18,28 +18,18 @@ $(document).ready(function() {
 	            visibility: true
 	        }
         ],
-        "order": [[ 4, "desc" ]],
 		"aoColumns": [
     		null,
     		null,
+    		null,    		
     		null,
-    		{"iDataSort": 4},
-    		{"bVisible": false},
-    		{"iDataSort": 6},
-    		{"bVisible": false},
-    		{"iDataSort": 8},
-    		{"bVisible": false},
-    		{"iDataSort": 10},
-    		{"bVisible": false},
-    		null,
-    		{"iDataSort": 13},
-    		{"bVisible": false}
+    		null, 
+    		null, 
+    		{"iDataSort": 7},
+    		{"bVisible": false}, 
+    		{"iDataSort": 9},
+    		{"bVisible": false}, 
+    		null
 		]
 	});
-	if ($('#estatSelected').val() != '') {		  		
-	  		$('#estatList option[value="' + $('#estatSelected').val() + '"]').attr('selected', 'selected');
-		}
-    if ($('#estatList').size() > 0) {
-  	  $('#estatList').selectpicker('refresh');
-    }
-});	
+});

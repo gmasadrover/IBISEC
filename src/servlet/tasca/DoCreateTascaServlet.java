@@ -11,8 +11,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.math.NumberUtils;
+
 import core.ActuacioCore;
 import core.TascaCore;
+import core.UsuariCore;
 import utils.MyUtils;
 
 /**
@@ -43,7 +46,7 @@ public class DoCreateTascaServlet extends HttpServlet {
 	    String tipus = request.getParameter("tipus");
 	    String assumpte = request.getParameter("assumpte");
 	   	String comentari = request.getParameter("comentari");
-	   	int usuariTasca = Integer.parseInt(request.getParameter("idUsuari"));
+	   	String usuariTasca = request.getParameter("idUsuari");
 	   	String errorString = null;	   		   	
 	   	try {
 	   		idIncidencia = request.getParameter("idIncidencia"); 
@@ -52,11 +55,17 @@ public class DoCreateTascaServlet extends HttpServlet {
 				String modificacio = "Crear nova tasca";
 				if ("infPrev".equals(tipus)) {
 					modificacio = "Sol·licitar proposta d'actuació";
+				} else if ("notificacio".equals(tipus)) {
+					modificacio = "Enviar nova notificació";
 				}
 				ActuacioCore.actualitzarActuacio(conn, idActuacio, modificacio);
 				idIncidencia = ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia();
 			}	
-			TascaCore.novaTasca(conn, tipus, usuariTasca, idUsuari, idActuacio, idIncidencia, comentari, assumpte, "");
+			if (NumberUtils.isNumber(usuariTasca)) {
+				TascaCore.novaTasca(conn, tipus, Integer.parseInt(usuariTasca), idUsuari, idActuacio, idIncidencia, comentari, assumpte, "");
+			} else {
+				TascaCore.novaTasca(conn, tipus, UsuariCore.finCap(conn, usuariTasca).getIdUsuari(), idUsuari, idActuacio, idIncidencia, comentari, assumpte, "");
+			}			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

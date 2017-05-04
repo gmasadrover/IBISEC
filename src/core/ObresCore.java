@@ -73,9 +73,8 @@ public class ObresCore {
 				pstm = conn.prepareStatement(sql);
 			}	
 		}
-		
-		
 		ResultSet rs = pstm.executeQuery();
+		System.out.println(pstm.toString());
 		List<Obra> list = new ArrayList<Obra>();
 		while (rs.next()) {
 			Obra obra = initObra(conn, rs);
@@ -84,12 +83,12 @@ public class ObresCore {
 		return list;
 	}
 	
-	public static List<Obra> ObresMajor(Connection conn, String idCentre, Date dataIni, Date dataFi) throws SQLException {
+	public static List<Obra> ObresMajor(Connection conn, String idCentre, Date dataIni, Date dataFi, boolean withTancades) throws SQLException {
 		String sql = "SELECT a.id AS idactuacio, a.descripcio AS desc, a.datacre AS datacre, a.dataaprovacio AS dataaprovacio, a.idcentre AS idcentre, i.idinf AS idinf, i.datatancament AS tancament, e.notes AS notes"
 				+ " FROM public.tbl_informeactuacio i LEFT JOIN public.tbl_actuacio a ON i.idactuacio = a.id"
 				+ "		LEFT JOIN public.tbl_informacioextra e ON i.idinf = e.idinf"
 				+ " WHERE i.tipusobra = 'obr' AND i.vec >= 50000";
-				
+		if (!withTancades) sql += " AND i.datatancament IS NULL";			
 		PreparedStatement pstm = conn.prepareStatement(sql);			
 		if (dataIni != null && dataFi != null) {
 			sql += " AND i.datacre >= ? AND i.datacre <= ? ";
