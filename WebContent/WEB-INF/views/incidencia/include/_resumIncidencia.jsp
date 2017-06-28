@@ -9,7 +9,7 @@
 	<div class="panel panel-${incidencia.activa ? "success" : "danger"}">
 	    <div class="panel-heading">
 	        <div class="row">    		
-	    		<div class="col-lg-6">
+	    		<div class="col-md-6">
 	    			Centre: ${incidencia.nomCentre}
 	   			</div>
 	    	</div>
@@ -19,10 +19,10 @@
 	    </div>
 	    <div class="panel-footer">
 	    	<div class="row">
-	    		<div class="col-lg-6">
+	    		<div class="col-md-6">
 	    			Data Petició: ${incidencia.getPeticioString()}
 	    		</div>
-	    		<div class="col-lg-6">
+	    		<div class="col-md-6">
 	    			Solicitant: ${incidencia.solicitant}
 	   			</div>
 	    	</div>

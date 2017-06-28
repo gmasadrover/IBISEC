@@ -19,7 +19,7 @@
 
                 <!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Contractes <small>Majors</small>
                         </h1>
@@ -40,8 +40,8 @@
 						<div class="form-group">
 							<div class="form-group">						
 								<input type="hidden" id="idCentreSelected" value="${idCentre}" />
-								<div class="col-lg-offset-1  col-lg-3">
-								    <div class="col-lg-12">
+								<div class="col-md-offset-1  col-md-3">
+								    <div class="col-md-12">
 								      <label>Filtrar per centre</label>
 								      <div>
 			                                <select class="form-control selectpicker" name="idCentre" data-live-search="true" id="centresList">
@@ -50,8 +50,8 @@
 			                             </div>
 								    </div>						    
 							  	</div>	
-							  	<div class="col-lg-4">
-							  		<div class="col-lg-12">
+							  	<div class="col-md-4">
+							  		<div class="col-md-12">
 								  		<label>Filtrar per data petició</label>
 									  	<div class="input-group input-daterange datepicker">
 										    <input type="text" class="form-control" name="dataInici" value="${dataInici}">
@@ -63,7 +63,7 @@
 							  	</div>							  	
 							</div>	
 							<div class="form-group">
-								<div class="col-lg-offset-10 col-lg-2">
+								<div class="col-md-offset-10 col-md-2">
 							    	<input type="submit" class="btn btn-primary" name="filtrar" value="Aplicar Filtres">
 								</div>
 							</div>
@@ -72,7 +72,7 @@
 				</div>
 				
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h2>Contractes majors</h2>
                         <div class="table-responsive">                        
                             <table class="table table-striped table-bordered filerTable">
@@ -115,7 +115,7 @@
 
     </div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/subministrament/llistat.js"></script>
+    <script src="js/subministrament/llistat.js?<%=application.getInitParameter("datakey")%>"></script>
     <!-- /#wrapper -->
 </body>
 </html>

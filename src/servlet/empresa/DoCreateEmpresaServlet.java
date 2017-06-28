@@ -43,6 +43,7 @@ public class DoCreateEmpresaServlet extends HttpServlet {
 		
 		String cif = request.getParameter("cif");
 		String name = request.getParameter("name");
+		if (cif.isEmpty()) cif = name;
 		String direccio = request.getParameter("direccio");
 		String cp = request.getParameter("cp");
 		String ciutat = URLDecoder.decode(request.getParameter("localitat"), "UTF-8");

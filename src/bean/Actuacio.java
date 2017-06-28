@@ -9,6 +9,76 @@ import java.util.List;
 import utils.Fitxers;
 
 public class Actuacio {
+	 public class Feina {
+		 private String idFeina;
+		 private String nomRemitent;
+		 private String nomDestinatari;
+		 private Date data;
+		 private String contingut;
+		 private String notes;
+		 private String informe;
+		 
+		 public Feina() {
+			 
+		 }
+
+		public String getIdFeina() {
+			return idFeina;
+		}
+
+		public void setIdFeina(String idFeina) {
+			this.idFeina = idFeina;
+		}
+
+		public String getNomRemitent() {
+			return nomRemitent;
+		}
+
+		public void setNomRemitent(String nomRemitent) {
+			this.nomRemitent = nomRemitent;
+		}
+
+		public String getNomDestinatari() {
+			return nomDestinatari;
+		}
+
+		public void setNomDestinatari(String nomDestinatari) {
+			this.nomDestinatari = nomDestinatari;
+		}
+
+		public Date getData() {
+			return data;
+		}
+
+		public void setData(Date data) {
+			this.data = data;
+		}
+
+		public String getContingut() {
+			return contingut;
+		}
+
+		public void setContingut(String contingut) {
+			this.contingut = contingut;
+		}
+
+		public String getNotes() {
+			return notes;
+		}
+
+		public void setNotes(String notes) {
+			this.notes = notes;
+		}
+
+		public String getInforme() {
+			return informe;
+		}
+
+		public void setInforme(String informe) {
+			this.informe = informe;
+		}
+	 }
+	
 	 private String referencia;
 	 private String descripcio;
 	 private String notes;
@@ -23,7 +93,10 @@ public class Actuacio {
 	 private Date darreraModificacio;
 	 private String modificacio;
 	 private Date dataAprovarPa;
+	 private String refExt;
 	 private List<Fitxers.Fitxer> arxiusAdjunts = new ArrayList<Fitxers.Fitxer>();
+	 private List<Feina> Feines = new ArrayList<Feina>();
+	 private boolean seguiment;
 	 
 	 public Actuacio() {
  
@@ -202,5 +275,33 @@ public class Actuacio {
 
 	public void setNotes(String notes) {
 		this.notes = notes;
+	}
+
+	public String getRefExt() {
+		return refExt;
+	}
+
+	public void setRefExt(String refExt) {
+		this.refExt = refExt;
+	}
+
+	public List<Feina> getFeines() {
+		return Feines;
+	}
+
+	public void setFeines(List<Feina> feines) {
+		Feines = feines;
+	}
+	
+	public String getEstat() {
+		return "";
+	}
+
+	public boolean isSeguiment() {
+		return seguiment;
+	}
+
+	public void setSeguiment(boolean seguiment) {
+		this.seguiment = seguiment;
 	}
 }

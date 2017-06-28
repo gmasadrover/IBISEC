@@ -5,21 +5,31 @@ $(document).ready(function() {
 	loadCentres();
 	
 	$('.deleteFile').on('click', function(){
-		$.ajax({
-	        type: "POST",
-	        url: "DeleteDocument",
-	        dataType: "json",
-	        data: {"ruta": $(this).data('ruta')},
-	        //if received a response from the server
-	        success: function( data, textStatus, jqXHR) {
-	            //our country code was correct so we have some information to display
-	        	location.reload();      
-	        },        
-	        //If there was no resonse from the server
-	        error: function(jqXHR, textStatus, errorThrown){
-	             console.log("Something really bad happened " + jqXHR.responseText);
-	        }  
-	    });
+		if(confirm("Segur que voleu eliminar aquest document?")) {
+			$.ajax({
+		        type: "POST",
+		        url: "DeleteDocument",
+		        dataType: "json",
+		        data: {"ruta": $(this).data('ruta')},
+		        //if received a response from the server
+		        success: function( data, textStatus, jqXHR) {
+		            //our country code was correct so we have some information to display
+		        	location.reload();      
+		        },        
+		        //If there was no resonse from the server
+		        error: function(jqXHR, textStatus, errorThrown){
+		             console.log("Something really bad happened " + jqXHR.responseText);
+		        }  
+		    });
+		}		
+	});
+	
+	$('.signedFile').on('click', function(){
+		if ($(this).parent().find('.infoSign').hasClass('hidden')){
+			$(this).parent().find('.infoSign').removeClass('hidden');
+		} else {
+			$(this).parent().find('.infoSign').addClass('hidden');
+		}
 	});
 	
 	$('.openFolder').on('click', function(){

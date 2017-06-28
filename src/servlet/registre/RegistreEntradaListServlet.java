@@ -52,6 +52,7 @@ public class RegistreEntradaListServlet extends HttpServlet {
   		response.sendRedirect(request.getContextPath() + "/");	
  	   }else{
  		   String filtrar = request.getParameter("filtrar");
+ 		   Boolean canViewIncidencies = UsuariCore.hasPermision(conn, usuari, SectionPage.incidencia_list);
  		   String filterWithOutDate = request.getParameter("filterWithOutDate");
  		   String idCentre = "";
 		   String idCentreSelector = "";
@@ -111,6 +112,7 @@ public class RegistreEntradaListServlet extends HttpServlet {
 	       request.setAttribute("dataInici", dataIniciString);
 	       request.setAttribute("dataFi", dataFiString);
 	       request.setAttribute("canCreateRegistre", UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_crear));
+	       request.setAttribute("canViewIncidencies", canViewIncidencies);
 	       request.setAttribute("menu", ControlPageCore.renderMenu(conn,usuari, "Registre"));
  	       // Forward to /WEB-INF/views/homeView.jsp
  	       // (Users can not access directly into JSP pages placed in WEB-INF)

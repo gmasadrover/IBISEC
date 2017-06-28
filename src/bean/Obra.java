@@ -19,6 +19,7 @@ public class Obra {
 	private List<Factura> factures;
 	private String notes;
 	private Date dataTancament;	
+	private String expContratacio;
 	
 	public Obra(){
 		
@@ -102,7 +103,7 @@ public class Obra {
 
 	public String getValorAdjudicacio() {		
 		DecimalFormat num = new DecimalFormat("#,##0.00");
-	    return num.format(this.valor) + 'â‚¬';
+	    return num.format(this.valor) + '€';
 	}
 
 	public void setValor(double valor) {
@@ -135,7 +136,7 @@ public class Obra {
 			totalFacturat += iter.previous().getValor();
 		}
 		DecimalFormat num = new DecimalFormat("#,##0.00");
-	    return num.format(totalFacturat) + 'â‚¬';
+	    return num.format(totalFacturat) + '€';
 	}
 
 	public String getIdInforme() {
@@ -167,6 +168,14 @@ public class Obra {
 		String dataString = "";
 		if (this.dataTancament != null) dataString = df.format(this.dataTancament);
 		return dataString;
+	}
+
+	public String getExpContratacio() {
+		return expContratacio;
+	}
+
+	public void setExpContratacio(String expContratacio) {
+		this.expContratacio = expContratacio;
 	}
 
 }

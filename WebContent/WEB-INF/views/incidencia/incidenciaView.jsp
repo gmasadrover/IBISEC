@@ -19,7 +19,7 @@
 
                 <!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Incidència <small>Detalls incidència</small>
                         </h1>
@@ -36,17 +36,17 @@
                 <!-- /.row -->
 				<c:if test="${not empty incidencia}">
 				<div class="row">
-	                <div class="col-lg-12">
+	                <div class="col-md-12">
 	                    <div class="panel panel-${incidencia.activa ? "success" : "danger"}">
 	                        <div class="panel-heading">
 	                           	<div class="row">
-	                        		<div class="col-lg-3">
+	                        		<div class="col-md-3">
 	                        			 Identificador incidència: ${incidencia.idIncidencia}
 	                        		</div>
-	                        		<div class="col-lg-5">
+	                        		<div class="col-md-5">
 	                        			 Centre: ${incidencia.nomCentre}
 	                        		</div>
-	                        		<div class="col-lg-4">
+	                        		<div class="col-md-4">
 	                        			 Solicitant: ${incidencia.solicitant}
 	                        		</div>
 	                        	</div>
@@ -56,10 +56,10 @@
 	                        </div>
 	                        <div class="panel-footer">
 	                        	<div class="row">
-	                        		<div class="col-lg-4">
+	                        		<div class="col-md-4">
 	                        			Data Petició: ${incidencia.getPeticioString()}
 	                        		</div>
-	                        		<div class="col-lg-4">
+	                        		<div class="col-md-4">
 	                        			<c:if test="${!incidencia.activa}">
 	                        				Data Tancament: ${actuacio.getTancamentString()}
 	                        			</c:if>
@@ -70,7 +70,7 @@
 	                </div>
             	</div>
             	<div class="row">
-            		<div class="col-lg-12 panel-group" id="accordion">
+            		<div class="col-md-12 panel-group" id="accordion">
             			<div class="panel panel-default">
 						    <div class="panel-heading">
 						      <h4 class="panel-title">
@@ -81,7 +81,7 @@
 						      	<div class="panel-body">
 						      		<c:if test="${incidencia.activa && canCreateActuacio}">
 							      		<div class="row margin_bottom10">
-								    		<div class="col-lg-12 panel">
+								    		<div class="col-md-12 panel">
 												<a href="createActuacio?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary" role="button">Nova actuacio</a>
 											</div>
 							    		</div>
@@ -127,7 +127,7 @@
 					      	<div class="panel-body">
 					      		<c:if test="${canCreateRegistre}">
 						      		<div class="row margin_bottom10">
-							    		<div class="col-lg-12 panel">
+							    		<div class="col-md-12 panel">
 											<a href="novaEntrada?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary" role="button">Nova entrada</a>
 										</div>
 						    		</div>
@@ -169,7 +169,7 @@
 					      	<div class="panel-body">
 					      		<c:if test="${canCreateRegistre}">
 						      		<div class="row margin_bottom10">
-							    		<div class="col-lg-12 panel">
+							    		<div class="col-md-12 panel">
 											<a href="novaSortida?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary" role="button">Nova sortida</a>
 										</div>
 						    		</div>
@@ -200,96 +200,6 @@
 									</div>
 								</div>
 					    	</div>
-					  </div>				  
-					  <div class="panel panel-default">
-					    <div class="panel-heading">
-					      <h4 class="panel-title">
-					        <a data-toggle="collapse" data-parent="#accordion" href="#tasques">
-					        Tasques</a>
-					      </h4>
-					    </div>
-					    <div id="tasques" class="panel-collapse collapse">	
-					      	<div class="panel-body">
-					      		<c:if test="${incidencia.activa && canCreateTasca}">
-						      		<div class="row margin_bottom10">
-							    		<div class="col-lg-12 panel">
-											<a href="createTasca?idIncidencia=${incidencia.idIncidencia}&tipus=generic" class="btn btn-primary" role="button">Nova tasca</a>
-										</div>
-						    		</div>
-						    	</c:if>
-					    		<div class="row panel-body">
-									<div class="table-responsive">                        
-			                            <table class="table table-striped table-bordered">
-			                                <thead>
-			                                    <tr>                                        
-			                                        <th>Tasca</th>
-			                                        <th>id Actuació</th>
-			                                        <th>id Incidència</th>			                                                                          
-			                                        <th>Data creació</th>
-			                                        <th>Responsable</th>
-			                                    </tr>
-			                                </thead>
-			                                <tbody>
-			                                	<c:forEach items="${tasques}" var="tasca" >
-										          	<tr class="${tasca.activa ? "success" : "danger"}">							          	
-										           		<td><a href="tasca?id=${tasca.idTasca}">${tasca.idTasca} - ${tasca.descripcio}</a></td>
-										            	<td><a href="actuacionsDetalls?ref=${tasca.actuacio.referencia}">${tasca.actuacio.referencia}</a></td>
-										            	<td><a href="incidenciaDetalls?ref=${tasca.incidencia.idIncidencia}">${tasca.incidencia.idIncidencia}</a></td>
-										            	<td>${tasca.getDataCreacioString()}</td>
-										            	<td>${tasca.usuari.getNomComplet()}					            	
-										          	</tr>
-										       	</c:forEach>
-			                                </tbody>
-			                            </table>
-			                        </div>
-			                	</div>
-							</div>
-					    </div>
-					  </div>
-					  <div class="panel panel-default">
-					    <div class="panel-heading">
-					      <h4 class="panel-title">
-					        <a data-toggle="collapse" data-parent="#accordion" href="#notificacions">
-					        Notificacions</a>
-					      </h4>
-					    </div>
-						  <div id="notificacions" class="panel-collapse collapse">	
-					      	<div class="panel-body">
-					      		<c:if test="${incidencia.activa && canCreateTasca}">
-						      		<div class="row margin_bottom10">
-							    		<div class="col-lg-12 panel">
-											<a href="createTasca?idIncidencia=${incidencia.idIncidencia}&tipus=notificacio" class="btn btn-primary" role="button">Nova notificació</a>
-										</div>
-						    		</div>
-						    	</c:if>
-					    		<div class="row panel-body">
-									<div class="table-responsive">                        
-			                            <table class="table table-striped table-bordered">
-			                                <thead>
-			                                    <tr>                                        
-			                                        <th>Notificació</th>
-			                                        <th>id Actuació</th>
-			                                        <th>id Incidència</th>			                                                                          
-			                                        <th>Data creació</th>
-			                                        <th>Notificat a</th>
-			                                    </tr>
-			                                </thead>
-			                                <tbody>
-			                                	<c:forEach items="${notificacions}" var="notificacio" >
-										          	<tr class="${notificacio.activa ? notificacio.llegida ? "success" : "warning" : "danger"}">							          	
-										           		<td><a href="tasca?id=${notificacio.idTasca}">${notificacio.idTasca} - ${notificacio.descripcio}</a></td>
-										            	<td><a href="actuacionsDetalls?ref=${notificacio.actuacio.referencia}">${notificacio.actuacio.referencia}</a></td>
-										            	<td><a href="incidenciaDetalls?ref=${notificacio.incidencia.idIncidencia}">${notificacio.incidencia.idIncidencia}</a></td>
-										            	<td>${notificacio.getDataCreacioString()}</td>
-										            	<td>${notificacio.usuari.getNomComplet()}					            	
-										          	</tr>
-										       	</c:forEach>
-			                                </tbody>
-			                            </table>
-			                        </div>
-			                	</div>
-							</div>
-					    </div>
 					  </div>
 					  <div class="panel panel-default">
 					    <div class="panel-heading">
@@ -304,6 +214,7 @@
 					            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.ruta}">
 											${arxiu.seccio} - ${arxiu.nom}
 										</a>
+										<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
 										<br>
 									</c:forEach>	
 								</div>
@@ -314,7 +225,7 @@
 				                            <div class="col-xs-5">   
 				                                <input type="file" class="btn" name="file" /><br/>
 											</div> 
-											<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">
+											<input type="hidden" name="idIncidencies" value="${incidencia.idIncidencia}">
 											<input type="hidden" name="redirect" value="/incidenciaDetalls?ref=${incidencia.idIncidencia}">				    
 											<div class="col-xs-2"> 
 				         						<input type="submit" class="btn btn-primary" value="Pujar" />
@@ -336,7 +247,7 @@
 
     </div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/usuari/usuari.js"></script>
+    <script src="js/usuari/usuari.js?<%=application.getInitParameter("datakey")%>"></script>
     <!-- /#wrapper -->
 </body>
 </html>

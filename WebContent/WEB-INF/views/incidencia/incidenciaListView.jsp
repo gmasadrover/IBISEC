@@ -19,7 +19,7 @@
 
                 <!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Incidències <small>Incidències</small>
                         </h1>
@@ -39,17 +39,18 @@
 					<form class="form-horizontal" method="POST" action="incidencies">						
 						<div class="form-group">
 							<input type="hidden" id="idCentreSelected" value="${idCentre}" />
-							<div class="col-lg-offset-1  col-lg-3">
-							    <div class="col-lg-12">
+							<div class="col-md-offset-1  col-md-3">
+							    <div class="col-md-12">
 							      <label>Filtrar per centre</label>
 							      <div>
 		                                <select class="form-control selectpicker" name="idCentre" data-live-search="true" id="centresList">
+		                                	<option value="-1">Tots els centres</option>
 		                                </select>
 		                             </div>
 							    </div>						    
 						  	</div>	
-						  	<div class="col-lg-4">
-						  		<div class="col-lg-12">
+						  	<div class="col-md-4">
+						  		<div class="col-md-12">
 							  		<label>Filtrar per data petició</label>
 								  	<div class="input-group input-daterange datepicker">
 									    <input type="text" class="form-control" name="dataInici" value="${dataInici}">
@@ -59,22 +60,22 @@
 									<input type="checkbox" name="filterWithOutDate" ${filterWithOutDate ? "checked" : ""}> Filtrar fora dates
 								</div>                                
 						  	</div>						  				 
-						  	<div class="col-lg-2">
+						  	<div class="col-md-2">
 						    	<input type="submit" class="btn btn-primary" name="filtrar" value="Aplicar Filtres">
 							</div>
 						</div>	
 					</form>
 				</div>	
 				<div class="row">
-					<div class="col-lg-2">
+					<div class="col-md-2">
 						<a href="novaIncidencia" class="btn btn-primary" role="button">Crear nova incidència</a>
 					</div>
 				</div>			
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h2>Incidencies</h2>
                         <div class="table-responsive">                        
-                            <table class="table table-striped table-bordered filerTable ${nomesActives ? "normal" : "withTancades"}">
+                            <table class="table table-striped table-bordered filerTable">
                                 <thead>
                                     <tr>
                                         <th>Referència</th>
@@ -82,11 +83,9 @@
                                         <th>Centre</th>
                                         <th>Data petició</th>
                                         <th>Data petició</th>
-                                        <th>Actuacions derivades</th>
-                                        <c:if test="${!nomesActives}">											
-										   	<th>Data tancament</th>
-										   	<th>Data tancament</th>
-										</c:if>
+                                        <th>Actuacions derivades</th>                                        								
+									   	<th>Data tancament</th>
+									   	<th>Data tancament</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -97,11 +96,9 @@
 							            	<td>${incidencia.nomCentre}</td>
 							            	<td>${incidencia.getPeticioString()}</td>
 							            	<td>${incidencia.usuMod}</td>
-							            	<td>${incidencia.getLlistaIdActuacions()}</td>
-							            	<c:if test="${!nomesActives}">
-											   	<td>${incidencia.getTancamentString()}</td>
-											   	<td>${incidencia.dataTancament}</td>
-											</c:if>							            	
+							            	<td>${incidencia.getLlistaIdActuacions()}</td>							            	
+										   	<td>${incidencia.getTancamentString()}</td>
+										   	<td>${incidencia.dataTancament}</td>																	            	
 							          	</tr>
 							       	</c:forEach>                                	
                                 </tbody>
@@ -118,7 +115,7 @@
 
     </div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/incidencia/llistat.js"></script>
+    <script src="js/incidencia/llistat.js?<%=application.getInitParameter("datakey")%>"></script>
     <!-- /#wrapper -->
 </body>
 </html>

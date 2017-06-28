@@ -76,7 +76,7 @@ public class Partida {
 	
 	public String getTotalPartidaFormat(){
 		DecimalFormat num = new DecimalFormat("#,##0.00");
-	    return num.format(totalPartida) + 'â‚¬';
+	    return num.format(totalPartida) + '€';
 	}
 	
 	public void setTotalPartida(double totalPartida){		
@@ -89,7 +89,7 @@ public class Partida {
 	
 	public String getReservaPartidaFormat(){
 		DecimalFormat num = new DecimalFormat("#,##0.00");
-	    return num.format(getReservaPartida()) + 'â‚¬';
+	    return num.format(getReservaPartida()) + '€';
 	}
 	
 	public void setReservaPartida(double reservaPartida){
@@ -102,7 +102,7 @@ public class Partida {
 	
 	public String getPrevistPartidaFormat(){
 		DecimalFormat num = new DecimalFormat("#,##0.00");
-	    return num.format(previstPartida) + 'â‚¬';
+	    return num.format(previstPartida) + '€';
 	}
 	
 	public void setPrevistPartida(double previstPartida){
@@ -115,7 +115,7 @@ public class Partida {
 	
 	public String getPartidaPerAsignarFormat(){
 		DecimalFormat num = new DecimalFormat("#,##0.00");
-	    return num.format(getPartidaPerAsignar()) + 'â‚¬';
+	    return num.format(getPartidaPerAsignar()) + '€';
 	}
 
 	public double getPagatPartida() {
@@ -128,6 +128,6 @@ public class Partida {
 	
 	public String getPartidaPagatFormat(){
 		DecimalFormat num = new DecimalFormat("#,##0.00");
-	    return num.format(this.pagatPartida ) + 'â‚¬';
+	    return num.format(this.pagatPartida ) + '€';
 	}
 }

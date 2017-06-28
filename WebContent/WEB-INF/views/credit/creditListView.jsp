@@ -19,7 +19,7 @@
 
                 <!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Crèdit <small>Partides creades</small>
                         </h1>
@@ -37,7 +37,7 @@
 
 
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h2>Partides</h2>
                         <div class="table-responsive">                        
                             <table class="table table-striped table-bordered filerTable">
@@ -68,7 +68,7 @@
                             </table>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-md-6">
                     </div>
                 </div>
 
@@ -80,7 +80,7 @@
 
     </div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/credit/creditLlistat.js"></script>
+    <script src="js/credit/creditLlistat.js?<%=application.getInitParameter("datakey")%>"></script>
     <!-- /#wrapper -->
 </body>
 </html>

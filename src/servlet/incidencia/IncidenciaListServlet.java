@@ -84,7 +84,7 @@ public class IncidenciaListServlet extends HttpServlet {
 				} else {
 					filterWithOutDate = "on";
 				}				
-				list = IncidenciaCore.searchIncidencies(conn, idCentre, onlyActives, dataInici, dataFi);
+				list = IncidenciaCore.searchIncidencies(conn, idCentre, false, dataInici, dataFi);
 			} catch (SQLException | ParseException e) {
 				e.printStackTrace();
 				errorString = e.getMessage();

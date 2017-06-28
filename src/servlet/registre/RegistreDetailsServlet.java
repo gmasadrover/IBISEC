@@ -17,6 +17,7 @@ import bean.User;
 import bean.ControlPage.SectionPage;
 import core.ControlPageCore;
 import core.RegistreCore;
+import core.TascaCore;
 import core.UsuariCore;
 import utils.Fitxers;
 import utils.MyUtils;
@@ -50,17 +51,23 @@ public class RegistreDetailsServlet extends HttpServlet {
 		   }else{			   
 			   String referencia =	request.getParameter("referencia");
 			   String tipus = request.getParameter("tipus");
+			   String from = request.getParameter("from");
+			   int idTasca = -1;					  
 		       String errorString = null;
 		       
 		       Registre registre = new Registre();
 		       try {
-		    	   registre = RegistreCore.findRegistre(conn, tipus, referencia);				    	  
+		    	   registre = RegistreCore.findRegistre(conn, tipus, referencia);			
+		    	   if (from != null || "notificacio".equals(from)) {
+		    		   idTasca = Integer.parseInt(request.getParameter("idTasca"));
+		    		   TascaCore.llegirNotificacio(conn, idTasca);
+		    	   }
 		       } catch (SQLException e) {
 		           e.printStackTrace();
 		           errorString = e.getMessage();
 		       }
-		  
-		       List<Fitxers.Fitxer> arxius = Fitxers.ObtenirFitxers(registre.getIdIncidencia(), "", "RegistreE", registre.getId(), "");
+		       System.out.println(registre.getPrimeraIncidencia() + registre.getId());
+		       List<Fitxers.Fitxer> arxius = Fitxers.ObtenirFitxers(registre.getPrimeraIncidencia(), "", "RegistreE", registre.getId(), "");
 		      
 		       // Store info in request attribute, before forward to views
 		       request.setAttribute("errorString", errorString);

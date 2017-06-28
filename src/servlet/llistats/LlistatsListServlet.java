@@ -55,15 +55,69 @@ public class LlistatsListServlet extends HttpServlet {
 		}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.llistats_list)) {
     		response.sendRedirect(request.getContextPath() + "/");	
 		} else {
+			String filtrar = request.getParameter("filtrar");
+			String filterWithOutDate = request.getParameter("filterWithOutDate");
+			String filterWithOutDateExec = request.getParameter("filterWithOutDateExec");
+			String estat = "";
+			String tipus = "";
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			Calendar cal = Calendar.getInstance(); 
+			Date dataFi = cal.getTime();
+			Date dataFiExec = cal.getTime();
+			String dataFiString = df.format(dataFi);	 
+			String dataFiExecString = df.format(dataFiExec);	 
+			cal.set(2017, 0, 1);
+			Date dataInici = cal.getTime();
+			Date dataIniciExec = cal.getTime();
+			String dataIniciString = df.format(dataInici);	
+			String dataIniciExecString = df.format(dataIniciExec);	
 			String errorString = "";
+			
 			List<Centre> centres = new ArrayList<Centre>();
-			try {
-				centres = CentreCore.findCentresWithIncidencies(conn);
-			} catch (SQLException e) {
+			try {				
+				if (filtrar != null) {					
+					estat = request.getParameter("estat");		
+					tipus = request.getParameter("tipus");		
+					dataInici = null;
+					dataFi = null;
+					if (filterWithOutDate == null){
+						dataInici = null;
+						dataFi = null;
+						if (!request.getParameter("dataInici").isEmpty()) dataInici = df.parse(request.getParameter("dataInici"));
+						dataIniciString = request.getParameter("dataInici");
+		    			if (!request.getParameter("dataFi").isEmpty()) dataFi = df.parse(request.getParameter("dataFi"));	    			
+		    			dataFiString = request.getParameter("dataFi");
+					}	
+					dataIniciExec = null;
+					dataFiExec = null;
+					if (filterWithOutDateExec == null){
+						dataIniciExec = null;
+						dataFiExec = null;
+						if (!request.getParameter("dataIniciExec").isEmpty()) dataIniciExec = df.parse(request.getParameter("dataIniciExec"));
+						dataIniciExecString = request.getParameter("dataIniciExec");
+		    			if (!request.getParameter("dataFiExec").isEmpty()) dataFiExec = df.parse(request.getParameter("dataFiExec"));	    			
+		    			dataFiExecString = request.getParameter("dataFiExec");
+					}
+					centres = CentreCore.findCentresWithIncidencies(conn, tipus, dataInici, dataFi, estat, dataIniciExec, dataFiExec);
+				} else {
+					centres = CentreCore.findCentresWithIncidencies(conn, tipus, dataInici, dataFi, estat, null, null);
+					filterWithOutDateExec = "on";
+				}				
+			} catch (SQLException | ParseException e) {
 				errorString = e.getMessage();
 				e.printStackTrace();
 			}
 			// Store info in request attribute, before forward to views
+			request.setAttribute("filterWithOutDate", "on".equals(filterWithOutDate));
+			request.setAttribute("filterWithOutDateExec", "on".equals(filterWithOutDateExec));
+			request.setAttribute("dataInici", dataIniciString);
+		    request.setAttribute("dataFi", dataFiString);
+		    request.setAttribute("dataIniciExec", dataIniciExecString);
+		    request.setAttribute("dataFiExec", dataFiExecString);
+			request.setAttribute("estatFilter", estat);
+			request.setAttribute("tipusFilter", tipus);
+			System.out.println(estat + " " + tipus);
+			
 			request.setAttribute("errorString", errorString);
 			request.setAttribute("centresList", centres);
 			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Llistats"));

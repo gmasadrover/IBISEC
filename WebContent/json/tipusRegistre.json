@@ -7,7 +7,6 @@
 {"NOM":"Burofax"},
 {"NOM":"Carta"},
 {"NOM":"Certificació"},
-{"NOM":"Convocatòria"},
 {"NOM":"Documentació"},
 {"NOM":"Email"},
 {"NOM":"Escrit"},
@@ -20,4 +19,7 @@
 {"NOM":"Notificació"},
 {"NOM":"Ofici"},
 {"NOM":"Rebut"},
-{"NOM":"Sol·licitud"}]
+{"NOM":"Sol·licitud"},
+{"NOM":"Sol·licitud Personal"},
+{"NOM":"Resposta Sol·licitud Personal"},
+{"NOM":"Tramesa documentació Personal"}]

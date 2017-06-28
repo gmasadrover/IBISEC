@@ -18,7 +18,7 @@
             <div class="container-fluid">
             	<!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Factura <small>Registrar factura</small>
                         </h1>
@@ -35,14 +35,14 @@
                 <!-- /.row -->
                 
                 <div class="row">
-                	<div class="col-lg-12">
+                	<div class="col-md-12">
                			<p style="color: red;">${errorString}</p>
                		</div>
                	 </div>
                 <!-- /.row -->
                 
     			<div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
 						<form class="form-horizontal" method="POST" action="doCreateFactura">
 		    				<div class="form-group">
                                 <label class="col-xs-3 control-label">id factura</label>
@@ -139,6 +139,6 @@
 		<!-- /#page-wrapper -->
 	</div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/factura/crear.js"></script>
+    <script src="js/factura/crear.js?<%=application.getInitParameter("datakey")%>"></script>
 </body>
 </html>

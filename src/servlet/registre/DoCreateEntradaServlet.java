@@ -6,7 +6,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -15,8 +17,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import bean.Actuacio;
 import bean.Incidencia;
 import bean.Registre;
+import core.ActuacioCore;
 import core.IncidenciaCore;
 import core.RegistreCore;
 import core.TascaCore;
@@ -45,35 +49,63 @@ public class DoCreateEntradaServlet extends HttpServlet {
 	
 		Connection conn = MyUtils.getStoredConnection(request);
 		
-	    String referencia = request.getParameter("referencia");
+	    String referencia = "";
 	    String remitent = request.getParameter("remitent");
 	    String tipus = URLDecoder.decode(request.getParameter("tipus"),  "UTF-8");	    
-	    String idCentre = "";
+	    String idCentresSeleccionats = "";
+	    String[] idCentres = null;
 	    String contingut = request.getParameter("contingut");
-	    String idIncidencia = "";
+	    String idIncidencies = "";
+	    List<String> idIncidenciesList = new ArrayList<String>();
 	    if (request.getParameter("idIncidenciaSeleccionada") != null && request.getParameter("idIncidenciaSeleccionada") != "") {
-	    	idIncidencia = request.getParameter("idIncidenciaSeleccionada");
 	    	try {
-				idCentre = IncidenciaCore.findIncidencia(conn,idIncidencia).getIdCentre();
+	    		idIncidencies = request.getParameter("idIncidenciaSeleccionada");
+	    		idIncidenciesList.add(request.getParameter("idIncidenciaSeleccionada"));
+	    		idCentres = new String[] {IncidenciaCore.findIncidencia(conn,idIncidencies).getIdCentre()};
+	    		idCentresSeleccionats = IncidenciaCore.findIncidencia(conn,idIncidencies).getIdCentre();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 	    } else {
-	    	idIncidencia = request.getParameter("idIncidencia");
-	    	idCentre = request.getParameter("idCentre").split("_")[0];
+	    	idCentres = request.getParameterValues("idCentre");
+	    	if (idCentres != null) {
+	    		idCentresSeleccionats = "";
+	    		idIncidencies = "";
+ 		        for(int i=0; i<idCentres.length; i++) { 		
+ 		        	idCentresSeleccionats += idCentres[i] + "#";
+ 		        	try {
+ 		        		if (!"-1".equals(idCentres[i])) {
+	 		        		if (!"-1".equals(request.getParameter("incidenciesList" + idCentres[i]))) { 		        			
+								Actuacio actuacio = ActuacioCore.findActuacio(conn, request.getParameter("incidenciesList" + idCentres[i]));							
+								idIncidenciesList.add(actuacio.getIdIncidencia());
+			 		        	idIncidencies =  actuacio.getIdIncidencia() + "#";
+	 		        		} else {
+	 		        			idIncidenciesList.add(request.getParameter("incidenciesList" + idCentres[i]));
+			 		        	idIncidencies =  request.getParameter("incidenciesList" + idCentres[i]) + "#";
+	 		        		}
+ 		        		}
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+ 		        	
+ 		        }
+	    	}
 	    }
 	    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 	    int idUsuari = MyUtils.getLoginedUser(request.getSession()).getIdUsuari();
 	    String referenciaIncidencia = "";
+	    String referenciesIncidencies = "";
 	    Date peticio = new Date();
 		try {
+			referencia = RegistreCore.getNewCode(conn, "E");
 			peticio = formatter.parse(request.getParameter("peticio"));
-		} catch (ParseException e1) {
+		} catch (ParseException | SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-	    Registre registre = new Registre(referencia, peticio, tipus, remitent, contingut, idIncidencia, idCentre, "", idUsuari, new Date());
+	    Registre registre = new Registre(referencia, peticio, tipus, remitent, contingut, idIncidencies, idCentresSeleccionats, idUsuari, new Date());
 	    
 	    String errorString = null;
 	 	      
@@ -81,22 +113,36 @@ public class DoCreateEntradaServlet extends HttpServlet {
 	   		try {
 	   			RegistreCore.nouRegistre(conn, "E", registre);	
 	   			//Crear Incidencia
-	   			if (!"-1".equals(idCentre) && "-1".equals(idIncidencia)) {
-		   		    referenciaIncidencia = IncidenciaCore.getNewCode(conn);
-		   		    Incidencia incidencia = new Incidencia();
-		   		    incidencia.setIdIncidencia(referenciaIncidencia);
-		   		    incidencia.setIdCentre(idCentre);
-		   		    incidencia.setUsuCre(UsuariCore.findUsuariByID(conn, idUsuari));
-		   		    incidencia.setDescripcio(contingut);
-		   		    incidencia.setSolicitant(remitent);
-		   		    IncidenciaCore.novaIncidencia(conn, incidencia);
-		   			RegistreCore.actualitzarIdIncidencia(conn, "E", referencia, referenciaIncidencia);
-	   			} else { //Cream notificació a gerència
-	   				String comentari = "S'ha registrat una nova entrada per la incidencia " + idIncidencia;
-	   				comentari += "<br/> Veure registre: <a href='registre?tipus=E&referencia=" + registre.getId() + "'>" + registre.getId() + "</a>";
-	   				String assumpte = "Nova entrada";
-	   				TascaCore.novaTasca(conn, "notificacio", 1, idUsuari, "", idIncidencia, comentari, assumpte, "");
-	   			}	   			
+	   			for(int i=0; i<idCentres.length; i++) { 
+	   				if (!idIncidenciesList.isEmpty()) {
+		   				if ("-1".equals(idIncidenciesList.get(i))) {
+		   					referenciaIncidencia = IncidenciaCore.getNewCode(conn);
+				   		    referenciesIncidencies += referenciaIncidencia + "#";
+				   		    Incidencia incidencia = new Incidencia();
+				   		    incidencia.setIdIncidencia(referenciaIncidencia);
+				   		    incidencia.setIdCentre(idCentres[i]);
+				   		    incidencia.setUsuCre(UsuariCore.findUsuariByID(conn, idUsuari));
+				   		    incidencia.setDescripcio(contingut);
+				   		    incidencia.setSolicitant(remitent);
+				   		    IncidenciaCore.novaIncidencia(conn, incidencia);			   			
+			   			} else { //Cream notificació a gerència
+			   				String idIncidencia = idIncidenciesList.get(i);
+			   				if (idIncidencia == null) idIncidencia = "-1";
+			   				int idNovaTasca = TascaCore.idNovaTasca(conn);
+			   				String assumpte = "<a href='registre?from=notificacio&idTasca=" + idNovaTasca + "&tipus=E&referencia=" + registre.getId() + "'>Nova entrada registre: " + registre.getId() + "</a>";
+			   				TascaCore.novaTasca(conn, "notificacio", 1, idUsuari, "", idIncidencia, "", assumpte, "");
+			   				referenciesIncidencies += idIncidencia + "#";
+			   			}	
+	   				} else {
+	   					String idIncidencia = "-1";
+		   				int idNovaTasca = TascaCore.idNovaTasca(conn);
+		   				String assumpte = "<a href='registre?from=notificacio&idTasca=" + idNovaTasca + "&tipus=E&referencia=" + registre.getId() + "'>Nova entrada registre: " + registre.getId() + "</a>";
+		   				TascaCore.novaTasca(conn, "notificacio", 1, idUsuari, "", idIncidencia, "", assumpte, "");
+		   				referenciesIncidencies += idIncidencia + "#";
+	   				}
+	   			}	 
+	   			//Actualitzam referències registres
+	   			RegistreCore.actualitzarIdIncidencia(conn, "E", referencia, referenciesIncidencies);
 	   		} catch (SQLException e) {
 	  			e.printStackTrace();
 	  			errorString = e.getMessage();

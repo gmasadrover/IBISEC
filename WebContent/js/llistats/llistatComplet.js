@@ -22,9 +22,8 @@ function initMap() {
 
 	  	google.maps.event.addListener(marker, 'click', (function(marker, info) {
 	  		return function() {
-	        	infowindow.setContent(info.val());
-	        	infowindow.open(map, marker);
-	        	loadInfoCentre(info);	        	
+	        	infowindow.setContent(loadInfoCentre(info));
+	        	infowindow.open(map, marker);  	
 	        }
 	  	})(marker, $(info)));
 	});
@@ -32,20 +31,21 @@ function initMap() {
 }
 
 function loadInfoCentre(info){
+	var text = "";
 	$.ajax({
         type: "POST",
         url: "LlistatActuacions",
+        async: false,
         dataType: "json",
-        data: {"idCentre": info.data('idcentre')},
+        data: {"idCentre": info.data('idcentre'), "filterWithOutDate" : $('#filterWithOutDate').val(), "dataPeticioIni": $('#dataInici').val(), "dataPeticioFi": $('#dataFi').val(), "filterWithOutDateExec": $('#filterWithOutDateExec').val(), "dataExecucioIni": $('#dataIniciExec').val(), "dataExecucioFi": $('#dataFiExec').val(), "estat":$('#estatList').val(), "tipus":$('#tipusList').val()},
         //if received a response from the server
         success: function( data, textStatus, jqXHR) {
             //our country code was correct so we have some information to display
              if(data.success){
-            	 var text = '<h4>' + info.val() + '</h4>';            	
+            	 text = '<h4>' + info.val() + '</h4>';            	
             	 $.each(data.llistatActuacions, function( key, actuacio ) {
-            		 text += '<a target="_blanck" href="actuacionsDetalls?ref=' + actuacio.referencia + '">' + actuacio.referencia + ' ' + actuacio.descripcio + '</a></br></br>';
-            	 });
-            	 $('.infoActuacions').html(text);
+            		 text += '<a href="actuacionsDetalls?ref=' + actuacio.referencia + '">EXP: ' + actuacio.informePrevi.expcontratacio + ' ' + actuacio.referencia + ' ' + actuacio.descripcio + '</a></br></br>';
+                 });            	
              }             
         },        
         //If there was no resonse from the server
@@ -53,4 +53,5 @@ function loadInfoCentre(info){
              console.log("Something really bad happened " + jqXHR.responseText);
         }  
     });
+	return text;
 }

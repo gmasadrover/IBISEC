@@ -18,7 +18,7 @@
             <div class="container-fluid">
             	<!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Empresa <small>Modificar</small>
                         </h1>
@@ -35,7 +35,7 @@
                 <!-- /.row -->
                 
                 <div class="row">
-                	<div class="col-lg-12">
+                	<div class="col-md-12">
                			<p style="color: red;">${errorString}</p>
                		</div>
                	 </div>
@@ -44,11 +44,11 @@
                 	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="doEditEmpresa">                		
                 		<h2 class="margin_bottom30">Informació bàsica</h2>
 			    		<div class="row">			    				    				    		
-		                    <div class="col-lg-6">		                    	
+		                    <div class="col-md-6">		                    	
 			    				<div class="form-group">
 	                                <label class="col-xs-4 control-label">CIF</label>
 	                                <div class="col-xs-6">
-	                                	<input class="form-control" value="${empresa.cif}" disabled>
+	                                	<input class="form-control" name="newcif" value="${empresa.cif}" ${empresa.cif == empresa.name ? '' : 'disabled'}>
 	                                	<input type="hidden" name="cif" value="${empresa.cif}">
 	                                	<input type="hidden" name="isute" value="${empresa.isUte()}">	                                	
 	                                </div>
@@ -83,7 +83,7 @@
 		                            </div>
 		                    	</c:if>                     
 		                    </div>
-		                    <div class="col-lg-6">
+		                    <div class="col-md-6">
 		                    	<div class="form-group">
 	                                <label class="col-xs-3 control-label">Nom</label>
 	                                <div class="col-xs-6">
@@ -122,7 +122,7 @@
 	                	</div>
 	                	<c:if test="${! empresa.isUte()}"> 
 		                	<div class="row">
-		                		<div class="col-lg-12">
+		                		<div class="col-md-12">
 			                		<div class="form-group">
 		                                <label class="col-xs-2  control-label">Objecte social</label>
 		                                <div class="col-xs-8">
@@ -137,11 +137,11 @@
 	                			<h2 class="margin_bottom30">Gerents</h2>
 	                		</c:when>
 	                		<c:otherwise>
-	                			<h2 class="margin_bottom30">Administradors</h2>
+	                			<h2 class="margin_bottom30">Representació</h2>
 	                		</c:otherwise>
 	                	</c:choose>	     		                 
 	                	<div class="row">
-	                		<div class="col-lg-6">
+	                		<div class="col-md-6">
 		                		<div class="form-group">
 	                                <label class="col-xs-4 control-label">Nom</label>
 	                                <div class="col-xs-6">
@@ -167,7 +167,7 @@
 	                                </div>
 	                            </div> 	                              
 	                        </div>
-	                        <div class="col-lg-6">
+	                        <div class="col-md-6">
 	                        	<div class="form-group">
 	                                <label class="col-xs-3 control-label">DNI</label>
 	                                <div class="col-xs-6">
@@ -207,7 +207,7 @@
 	                            </div>     			
 	                        </div>	
                         	<input type="hidden" name="llistatAdministradors" id="llistatAdministradors" value="${empresa.administradorsString}">                        
-				     		<div class="col-lg-12">	
+				     		<div class="col-md-12">	
 								<label>Administradors actius</label>							                        
 				                <div class="table-responsive">							                        
 				                    <table class="table table-striped table-bordered filerTable" id="administradorsTable">
@@ -295,7 +295,13 @@
 							</div> 
 		                	<h4 class="margin_bottom30">Classificació</h4>
 		                	<div class="row">
-		                		<div class="col-lg-3">
+		                		<label class="col-xs-2 control-label">Darrera data vigència</label>
+	                            <div class="input-group date col-xs-2 datepicker">
+								  	<input type="text" class="form-control" name="dataVigenciaClassificacio" id="dataVigenciaClassificacio" value="${empresa.getDataVigenciaClassificacioString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+								</div>	                		
+		                	</div>
+		                	<div class="row">
+		                		<div class="col-md-3">
 			                		<div class="form-group">
 		                                <label class="col-xs-8 control-label">Grup</label>
 		                                <div class="col-xs-4">
@@ -315,7 +321,7 @@
 		                                </div>
 		                            </div>	
 		                        </div>
-		                        <div class="col-lg-3">
+		                        <div class="col-md-3">
 			                		<div class="form-group">
 		                                <label class="col-xs-8 control-label">Subgrup</label>
 		                                <div class="col-xs-4">
@@ -330,7 +336,7 @@
 		                                </div>
 		                            </div>	
 		                        </div>
-		                        <div class="col-lg-3">
+		                        <div class="col-md-3">
 			                		<div class="form-group">
 		                                <label class="col-xs-8 control-label">Categoria</label>
 		                                <div class="col-xs-4">
@@ -351,13 +357,13 @@
 		                                </div>
 		                            </div>	
 		                        </div>
-		                        <div class="col-lg-3">
+		                        <div class="col-md-3">
 			                		<div class="form-group">
 		                                <input class="btn btn-primary" type="button" name="afegirClassificacio" id="afegirClassificacio" value="Afegir">
 		                            </div>	
 		                        </div>
 	                        	<input type="hidden" name="llistatClassificacio" id="llistatClassificacio" value="${empresa.classificacioString}">                        
-					     		<div class="col-xs-offset-2 col-lg-7">	
+					     		<div class="col-xs-offset-2 col-md-7">	
 									<label>Classificació</label>							                        
 					                <div class="table-responsive">							                        
 					                    <table class="table table-striped table-bordered filerTable" id="classificacioTable">
@@ -385,9 +391,9 @@
 		                	</div> 
 		                	<h2 class="margin_bottom30">Acreditació d'obligacions fiscals i de seguretat social</h2>
 		                	<div class="row">
-		                		<div class="col-lg-12">
+		                		<div class="col-md-12">
 		                			<div class="form-group">
-		                				<div class="col-xs-offset-1 col-lg-10">
+		                				<div class="col-xs-offset-1 col-md-10">
 			                				<div class="checkbox">
 						                        <label>
 						                          	<input name="acreditacio1" type="checkbox" ${empresa.acreditacio1 ? 'checked' : ''}> Certificat positiu de l'Agència Estatal d'Administració Tributària, 
@@ -396,7 +402,7 @@
 						                	</div>
 						                </div>
 		                			</div>
-		                			<div class="col-lg-6">
+		                			<div class="col-md-6">
 			                			<div class="form-group">
 			                                <label class="col-xs-6 control-label">Expedit amb data</label>
 			                                <div class="input-group date col-xs-4 datepicker">
@@ -404,7 +410,7 @@
 											</div>				
 			                            </div>
 			                        </div>
-			                        <div class="col-lg-6">
+			                        <div class="col-md-6">
 			                			<div class="form-group">		                                
 											<c:if test="${empresa.isCaducadaAcreditacio1()}">
 												<label class="col-xs-1 control-label">Caducat</label>
@@ -412,7 +418,7 @@
 			                            </div>
 			                        </div>      
 		                			<div class="form-group">
-		                				<div class="col-xs-offset-1 col-lg-10">
+		                				<div class="col-xs-offset-1 col-md-10">
 			                				<div class="checkbox">
 						                        <label>
 						                          	<input name="acreditacio2" type="checkbox" ${empresa.acreditacio2 ? 'checked' : ''}> Certificat de la Tresoreria General de la Seguretat Social del Ministeri
@@ -422,7 +428,7 @@
 						                	</div>
 						                </div>
 		                			</div>
-		                			<div class="col-lg-6">
+		                			<div class="col-md-6">
 			                			<div class="form-group">
 			                                <label class="col-xs-6 control-label">Expedit amb data</label>
 			                                <div class="input-group date col-xs-4 datepicker">
@@ -430,7 +436,7 @@
 											</div>
 			                            </div>
 			                        </div>
-			                        <div class="col-lg-6">
+			                        <div class="col-md-6">
 			                			<div class="form-group">		                                
 											<c:if test="${empresa.isCaducadaAcreditacio2()}">
 												<label class="col-xs-1 control-label">Caducat</label>
@@ -438,7 +444,7 @@
 			                            </div>
 			                        </div>        
 		                			<div class="form-group">
-		                				<div class="col-xs-offset-1 col-lg-10">
+		                				<div class="col-xs-offset-1 col-md-10">
 			                				<div class="checkbox">
 						                        <label>
 						                          	<input name="acreditacio3" type="checkbox" ${empresa.acreditacio3 ? 'checked' : ''}> Certificat de la secretària de la Junta Consultiva de Contratació Administrativa
@@ -448,7 +454,7 @@
 						                	</div>
 						                </div>
 		                			</div>
-		                			<div class="col-lg-6">
+		                			<div class="col-md-6">
 			                			<div class="form-group">
 			                                <label class="col-xs-6 control-label">Expedit amb data</label>
 			                                <div class="input-group date col-xs-4 datepicker">
@@ -456,7 +462,7 @@
 											</div>
 			                            </div>
 			                        </div>
-			                        <div class="col-lg-6">
+			                        <div class="col-md-6">
 			                			<div class="form-group">		                                
 											<c:if test="${empresa.isCaducadaAcreditacio3()}">
 												<label class="col-xs-1 control-label">Caducat</label>
@@ -469,7 +475,7 @@
 		                <c:if test="${empresa.isUte()}">
 		                	<h2 class="margin_bottom30">Empreses</h2>
 		                	<div class="row">
-			                	<div class="table-responsive col-lg-12">							                        
+			                	<div class="table-responsive col-md-12">							                        
 				                    <table class="table table-striped table-bordered filerTable" id="empresesUTETable">
 				                        <thead>
 				                            <tr>
@@ -491,7 +497,7 @@
 					    </c:if>
 	                	<h2 class="margin_bottom30">Altra informació</h2>
 	                	<div class="row">
-	                		<div class="col-lg-12">
+	                		<div class="col-md-12">
 		                		<div class="form-group">
 	                                <label class="col-xs-2  control-label">informació adicional</label>
 	                                <div class="col-xs-8">
@@ -516,7 +522,7 @@
 		<!-- /#page-wrapper -->
 	</div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/empresa/modificar.js"></script>
-    <script src="js/zones/zones.js"></script>
+    <script src="js/empresa/modificar.js?<%=application.getInitParameter("datakey")%>"></script>
+    <script src="js/zones/zones.js?<%=application.getInitParameter("datakey")%>"></script>
 </body>
 </html>

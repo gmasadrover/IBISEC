@@ -18,7 +18,7 @@
             <div class="container-fluid">
             	<!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Actuacions <small>Nova actuació</small>
                         </h1>
@@ -35,14 +35,14 @@
                 <!-- /.row -->
                 
                 <div class="row">
-                	<div class="col-lg-12">
+                	<div class="col-md-12">
                			<p style="color: red;">${errorString}</p>
                		</div>
                	 </div>
                 <!-- /.row -->
                 
     			<div class="row">
-                    <div class="col-lg-12">                    	                    	
+                    <div class="col-md-12">                    	                    	
 		    			<form class="form-horizontal" method="POST" action="DoCreateActuacio">
 		    				<input type="hidden" id="idCentreSelected" value="${incidencia.idCentre}">
 		    				<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">
@@ -102,7 +102,7 @@
 		<!-- /#page-wrapper -->
 	</div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/usuari/usuari.js"></script>
-    <script src="js/actuacio/crear.js"></script>
+    <script src="js/usuari/usuari.js?<%=application.getInitParameter("datakey")%>"></script>
+    <script src="js/actuacio/crear.js?<%=application.getInitParameter("datakey")%>"></script>
 </body>
 </html>

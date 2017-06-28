@@ -169,6 +169,7 @@ public class Empresa {
    private Date dataConstitucio;
    private String objecteSocial;
    private String classificacioString;
+   private Date dataVigenciaClassificacio;
    private String administradorsString;
    private List<Administrador> administradors;   
    private boolean acreditacio1;
@@ -481,18 +482,6 @@ public class Empresa {
 		this.registreMercantilData = registreMercantilData;
 	}
 	
-	public boolean isCaducatSolvenciaEconomica() {
-		//Caduca dia 30 de Juny el de fa 2 anys
-		boolean caducat = false;
-		if (this.registreMercantilData != null) {
-			Calendar cad = Calendar.getInstance();
-			cad.setTime(this.registreMercantilData);
-			cad.add(Calendar.MONTH, 6);
-			if (cad.before(Calendar.getInstance())) caducat = true;
-		}
-		return caducat;
-	}
-	
 	public double getRatioAP() {
 		return ratioAP;
 	}
@@ -510,6 +499,21 @@ public class Empresa {
 	}
 	public boolean isUte() {
 		return this.ute != null;
+	}
+
+	public Date getDataVigenciaClassificacio() {
+		return dataVigenciaClassificacio;
+	}
+	
+	public String getDataVigenciaClassificacioString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+		String dataString = "";
+		if (this.dataVigenciaClassificacio != null) dataString = df.format(this.dataVigenciaClassificacio);
+		return dataString;
+	}
+
+	public void setDataVigenciaClassificacio(Date dataVigenciaClassificacio) {
+		this.dataVigenciaClassificacio = dataVigenciaClassificacio;
 	}
 
 }

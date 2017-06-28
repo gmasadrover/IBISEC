@@ -19,7 +19,7 @@
 
                 <!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Licitacions <small>Licitacions en curs</small>
                         </h1>
@@ -37,7 +37,7 @@
 
 
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-md-6">
                         <h2>Licitacions</h2>
                         <div class="table-responsive">
                         
@@ -64,7 +64,7 @@
                             </table>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-md-6">
                     </div>
                 </div>
 

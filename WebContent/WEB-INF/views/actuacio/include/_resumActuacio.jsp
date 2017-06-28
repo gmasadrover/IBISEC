@@ -8,10 +8,10 @@
 <div class="panel panel-${actuacio.activa ? actuacio.aprovada ? "success" : "warning" : "danger"}">
     <div class="panel-heading">
         <div class="row">
-    		<div class="col-lg-6">
+    		<div class="col-md-6">
     			id actuació: <a href="actuacionsDetalls?ref=${actuacio.referencia}">${actuacio.referencia}</a>
     		</div>
-    		<div class="col-lg-6">
+    		<div class="col-md-6">
     			Centre: ${actuacio.nomCentre}
    			</div>
     	</div>
@@ -28,7 +28,7 @@
     </div>
     <div class="panel-footer">
     	<div class="row">
-    		<div class="col-lg-6">
+    		<div class="col-md-6">
     			Data Creació: ${actuacio.getDataCreacioString()}
     		</div>
     	</div>

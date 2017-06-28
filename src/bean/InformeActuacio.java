@@ -1,31 +1,167 @@
 package bean;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import utils.Fitxers;
 
 public class InformeActuacio {
+	
+	public class PropostaInforme {
+		private String idProposta;
+		private String objecte;
+		private String tipusObra;
+		private boolean llicencia;
+		private String tipusLlicencia;
+		private boolean contracte;
+		private double vec;
+		private double iva;
+		private double plic;
+		private String termini;
+		private String comentari;
+		private boolean seleccionada;
+				
+		public PropostaInforme() {
+			
+		}
+		
+		public String getObjecte() {
+			return objecte;
+		}
+
+		public void setObjecte(String objecte) {
+			this.objecte = objecte;
+		}
+
+		public String getTipusObra() {
+			return tipusObra;
+		}
+		
+		public String getTipusObraFormat() {
+			if ("obr".equals(this.tipusObra)) return "Obra";
+			if ("srv".equals(this.tipusObra)) return "Servei";
+			if ("submi".equals(this.tipusObra)) return "Subministrament";
+			return "";
+		}
+
+		public void setTipusObra(String tipusObra) {
+			this.tipusObra = tipusObra;
+		}
+
+		public boolean isLlicencia() {
+			return llicencia;
+		}
+
+		public void setLlicencia(boolean llicencia) {
+			this.llicencia = llicencia;
+		}
+
+		public String getTipusLlicencia() {
+			return tipusLlicencia;
+		}
+
+		public void setTipusLlicencia(String tipusLlicencia) {
+			this.tipusLlicencia = tipusLlicencia;
+		}
+
+		public boolean isContracte() {
+			return contracte;
+		}
+
+		public void setContracte(boolean contracte) {
+			this.contracte = contracte;
+		}
+
+		public double getVec() {
+			return vec;
+		}
+		
+		public String getVecFormat(){
+			DecimalFormat num = new DecimalFormat("#,##0.00");
+		    return num.format(this.vec) + '€';
+		}
+
+		public void setVec(double vec) {
+			this.vec = vec;
+		}
+
+		public double getIva() {
+			return iva;
+		}
+		
+		public String getIvaFormat(){
+			DecimalFormat num = new DecimalFormat("#,##0.00");
+		    return num.format(this.iva) + '€';
+		}
+
+		public void setIva(double iva) {
+			this.iva = iva;
+		}
+
+		public double getPlic() {
+			return plic;
+		}
+
+		public String getPlicFormat(){
+			DecimalFormat num = new DecimalFormat("#,##0.00");
+		    return num.format(this.plic) + '€';
+		}
+		
+		public void setPlic(double plic) {
+			this.plic = plic;
+		}
+
+		public String getTermini() {
+			return termini;
+		}
+
+		public void setTermini(String termini) {
+			this.termini = termini;
+		}
+
+		public String getComentari() {
+			return comentari;
+		}
+
+		public void setComentari(String comentari) {
+			this.comentari = comentari;
+		}
+
+		public String getIdProposta() {
+			return idProposta;
+		}
+
+		public void setIdProposta(String idProposta) {
+			this.idProposta = idProposta;
+		}
+
+		public boolean isSeleccionada() {
+			return seleccionada;
+		}
+
+		public void setSeleccionada(boolean seleccionada) {
+			this.seleccionada = seleccionada;
+		}
+		
+	}
+	
 	private String idInf;
 	private int idTasca;
 	private String idActuacio;
-	private String idIncidencia;
-	private String objecte;
-	private String tipusObra;
-	private boolean llicencia;
-	private String tipusLlicencia;
-	private boolean contracte;
-	private double vec;
-	private double iva;
-	private double plic;
-	private String termini;
-	private String comentari;
+	private String idIncidencia;	
 	private List<Fitxers.Fitxer> adjunts; 
+	private List<PropostaInforme> llistaPropostes;
+	private PropostaInforme propostaInformeSeleccionada;
 	private User usuari;
 	private Date dataCreacio;
+	private String partidaRebutjadaMotiu;
+	private Date dataRebujada;
 	private String partida;
+	private String comentariPartida;
 	private User usuariCapValidacio;
 	private Date dataCapValidacio;
 	private String comentariCap;
@@ -36,8 +172,13 @@ public class InformeActuacio {
 	private List<Factura> llistaFactures;
 	private Date dataTancament;
 	private String notes;
+	private String tipo;
+	private String expcontratacio;
+	private Date dataPD;
+	private String tipoPD;
 	
-	public InformeActuacio() {		
+	public InformeActuacio() {	
+		this.llistaPropostes = new ArrayList<PropostaInforme>();
 	}
 
 	public String getIdInf() {
@@ -64,92 +205,7 @@ public class InformeActuacio {
 		this.idActuacio = idActuacio;
 	}
 
-	public String getObjecte() {
-		return objecte;
-	}
-
-	public void setObjecte(String objecte) {
-		this.objecte = objecte;
-	}
-
-	public String getTipusObra() {
-		return tipusObra;
-	}
 	
-	public String getTipusObraFormat() {
-		if ("obr".equals(this.tipusObra)) return "Obra";
-		if ("srv".equals(this.tipusObra)) return "Servei";
-		if ("submi".equals(this.tipusObra)) return "Subministrament";
-		return "";
-	}
-
-	public void setTipusObra(String tipusObra) {
-		this.tipusObra = tipusObra;
-	}
-
-	public boolean isLlicencia() {
-		return llicencia;
-	}
-
-	public void setLlicencia(boolean llicencia) {
-		this.llicencia = llicencia;
-	}
-
-	public String getTipusLlicencia() {
-		return tipusLlicencia;
-	}
-
-	public void setTipusLlicencia(String tipusLlicencia) {
-		this.tipusLlicencia = tipusLlicencia;
-	}
-
-	public boolean isContracte() {
-		return contracte;
-	}
-
-	public void setContracte(boolean contracte) {
-		this.contracte = contracte;
-	}
-
-	public double getVec() {
-		return vec;
-	}
-
-	public void setVec(double vec) {
-		this.vec = vec;
-	}
-
-	public double getIva() {
-		return iva;
-	}
-
-	public void setIva(double iva) {
-		this.iva = iva;
-	}
-
-	public double getPlic() {
-		return plic;
-	}
-
-	public void setPlic(double plic) {
-		this.plic = plic;
-	}
-
-	public String getTermini() {
-		return termini;
-	}
-
-	public void setTermini(String termini) {
-		this.termini = termini;
-	}
-
-	public String getComentari() {
-		return comentari;
-	}
-
-	public void setComentari(String comentari) {
-		this.comentari = comentari;
-	}
 
 	public List<Fitxers.Fitxer> getAdjunts() {
 		return adjunts;
@@ -211,7 +267,7 @@ public class InformeActuacio {
 	}
 
 	public String getDataAprovacioString() {
-		DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");	
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
 		String dataString = "";
 		if (this.dataAprovacio != null) dataString = df.format(this.dataAprovacio);
 		return dataString;
@@ -297,5 +353,84 @@ public class InformeActuacio {
 
 	public void setNotes(String notes) {
 		this.notes = notes;
+	}
+
+	public List<PropostaInforme> getLlistaPropostes() {
+		return llistaPropostes;
+	}
+
+	public void setLlistaPropostes(List<PropostaInforme> llistaPropostes) {
+		this.llistaPropostes = llistaPropostes;
+	}
+
+	public PropostaInforme getPropostaInformeSeleccionada() {
+		return propostaInformeSeleccionada;
+	}
+
+	public void setPropostaInformeSeleccionada(PropostaInforme propostaInformeSeleccionada) {
+		this.propostaInformeSeleccionada = propostaInformeSeleccionada;
+	}
+
+	public String getPartidaRebutjadaMotiu() {
+		return partidaRebutjadaMotiu;
+	}
+
+	public void setPartidaRebutjadaMotiu(String partidaRebutjadaMotiu) {
+		this.partidaRebutjadaMotiu = partidaRebutjadaMotiu;
+	}
+
+	public Date getDataRebujada() {
+		return dataRebujada;
+	}
+
+	public void setDataRebujada(Date dataRebujada) {
+		this.dataRebujada = dataRebujada;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
+
+	public String getExpcontratacio() {
+		return expcontratacio;
+	}
+
+	public void setExpcontratacio(String expcontratacio) {
+		this.expcontratacio = expcontratacio;
+	}
+
+	public Date getDataPD() {
+		return dataPD;
+	}
+	
+	public String getDataPDString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+		String dataString = "";
+		if (this.dataPD != null) dataString = df.format(this.dataPD);
+		return dataString;
+	}
+
+	public void setDataPD(Date dataPD) {
+		this.dataPD = dataPD;
+	}
+
+	public String getTipoPD() {
+		return tipoPD;
+	}
+
+	public void setTipoPD(String tipoPD) {
+		this.tipoPD = tipoPD;
+	}
+
+	public String getComentariPartida() {
+		return comentariPartida;
+	}
+
+	public void setComentariPartida(String comentariPartida) {
+		this.comentariPartida = comentariPartida;
 	}
 }

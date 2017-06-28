@@ -83,7 +83,7 @@ public class UsuariCore {
 		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari, password, alias"
 					+ " FROM public.tbl_usuaris"
 					+ " WHERE actiu = true and departament <> '' and rol LIKE '%" + tipus + "%' "
-					+ " ORDER BY 3, 2";		 
+					+ " ORDER BY 6, 3, 2";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);		
 		ResultSet rs = pstm.executeQuery();		 
 		while (rs.next()) {
@@ -106,7 +106,7 @@ public class UsuariCore {
 			sql += "and departament <> ''";
 		}
 		
-		sql += " ORDER BY 3, 2";		 
+		sql += " ORDER BY 6, 3, 2";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);		
 		ResultSet rs = pstm.executeQuery();	
 		while (rs.next()) {			
@@ -118,8 +118,9 @@ public class UsuariCore {
 	
 	public static List<User> llistaUsuaris(Connection conn) throws SQLException {
 		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari, password, alias"
-					+ " FROM public.tbl_usuaris";
-		 
+					+ " FROM public.tbl_usuaris"
+					+ " WHERE actiu = true "
+					+ " ORDER BY 6, 3, 2";
 		PreparedStatement pstm = conn.prepareStatement(sql);
 	 
 		ResultSet rs = pstm.executeQuery();
@@ -197,6 +198,12 @@ public class UsuariCore {
 			case empreses_list:
 				permision = true;
 				break;
+			case expedient_list:
+				permision = true;
+				break;
+			case expedient_detalls:
+				permision = true;
+				break;
 			case centres_list:
 				permision = true;
 				break;
@@ -225,7 +232,7 @@ public class UsuariCore {
 				permision = true;
 				break;
 			case tasques_crear:
-				permision = (rols.toUpperCase().contains("ADMIN")) || (rols.toUpperCase().contains("CAP")) ;
+				permision = (rols.toUpperCase().contains("ADMIN")) ||(rols.toUpperCase().contains("GER")) || (rols.toUpperCase().contains("CAP")) ;
 				break;
 			case tasques_list:
 				permision = true;

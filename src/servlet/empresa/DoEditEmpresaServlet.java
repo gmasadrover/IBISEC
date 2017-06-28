@@ -47,7 +47,8 @@ public class DoEditEmpresaServlet extends HttpServlet {
 			e1.printStackTrace();
 		}
        	
-       	String cif = multipartParams.getParametres().get("cif");
+       	String cif = multipartParams.getParametres().get("newcif");
+       	if (cif == null) cif = multipartParams.getParametres().get("cif");
        	Boolean isUte = "true".equals(multipartParams.getParametres().get("isute"));       	
 		String name = multipartParams.getParametres().get("name");
 		String direccio = multipartParams.getParametres().get("direccio");
@@ -73,6 +74,7 @@ public class DoEditEmpresaServlet extends HttpServlet {
 		Date dateExpAcreditacio2 = null;
 		Date dateExpAcreditacio3 = null;
 		Date dataRegistreMercantil = null;
+		Date dataVigenciaClassificacio = null;
 		
 		SimpleDateFormat formatterYear = new SimpleDateFormat("yyyy");
 		Date dataExerciciEconomic = null;
@@ -90,6 +92,7 @@ public class DoEditEmpresaServlet extends HttpServlet {
 			if (multipartParams.getParametres().get("dateExpAcreditacio3") != null && ! multipartParams.getParametres().get("dateExpAcreditacio3").isEmpty()) dateExpAcreditacio3 = formatter.parse(multipartParams.getParametres().get("dateExpAcreditacio3"));
 			if (multipartParams.getParametres().get("dataRegistreMercantil") != null && ! multipartParams.getParametres().get("dataRegistreMercantil").isEmpty()) dataRegistreMercantil = formatter.parse(multipartParams.getParametres().get("dataRegistreMercantil"));
 			if (multipartParams.getParametres().get("dataExerciciEconomic") != null && ! multipartParams.getParametres().get("dataExerciciEconomic").isEmpty()) dataExerciciEconomic = formatterYear.parse(multipartParams.getParametres().get("dataExerciciEconomic"));
+			if (multipartParams.getParametres().get("dataVigenciaClassificacio") != null && ! multipartParams.getParametres().get("dataVigenciaClassificacio").isEmpty()) dataVigenciaClassificacio = formatter.parse(multipartParams.getParametres().get("dataVigenciaClassificacio"));
 			
 			empresa.setCif(cif);
 			empresa.setName(name);
@@ -112,6 +115,7 @@ public class DoEditEmpresaServlet extends HttpServlet {
 			empresa.setInformacioAdicional(informacioAdicional);
 			empresa.setRegistreMercantilData(dataRegistreMercantil);
 			empresa.setExerciciEconomic(dataExerciciEconomic);
+			empresa.setDataVigenciaClassificacio(dataVigenciaClassificacio);
 			empresa.setRatioAP(ratioAP);
 			
 			if (multipartParams.getParametres().get("llistatAdministradors") != null) {
@@ -151,7 +155,7 @@ public class DoEditEmpresaServlet extends HttpServlet {
 			if (isUte) {
 				 EmpresaCore.updateEmpresaUTE(conn, empresa, administradors, usuari.getIdUsuari());
 			}else{
-				 EmpresaCore.updateEmpresa(conn, empresa, administradors, usuari.getIdUsuari());
+				 EmpresaCore.updateEmpresa(conn, empresa, multipartParams.getParametres().get("cif"), administradors, usuari.getIdUsuari());
 			}          
 		} catch (SQLException e) {
            e.printStackTrace();

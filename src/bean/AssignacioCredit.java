@@ -1,5 +1,6 @@
 package bean;
 
+import java.text.DecimalFormat;
 import java.util.Date;
 
 public class AssignacioCredit {
@@ -130,6 +131,11 @@ public class AssignacioCredit {
 	public double getValorPA() {
 		return valorPA;
 	}
+	
+	public String getValorPAFormat() {
+		DecimalFormat num = new DecimalFormat("#,##0.00");
+	    return num.format(this.valorPA) + '€';
+	}
 
 	public void setValorPA(double valorPA) {
 		this.valorPA = valorPA;
@@ -137,6 +143,11 @@ public class AssignacioCredit {
 
 	public double getValorPD() {
 		return valorPD;
+	}
+	
+	public String getValorPDFormat() {
+		DecimalFormat num = new DecimalFormat("#,##0.00");
+	    return num.format(this.valorPD) + '€';
 	}
 
 	public void setValorPD(double valorPD) {

@@ -122,7 +122,7 @@ public class Subministrament {
 			totalFacturat += iter.previous().getValor();
 		}
 		DecimalFormat num = new DecimalFormat("#,##0.00");
-	    return num.format(totalFacturat) + 'â‚¬';
+	    return num.format(totalFacturat) + '€';
 	}
 
 	public String getIdInforme() {

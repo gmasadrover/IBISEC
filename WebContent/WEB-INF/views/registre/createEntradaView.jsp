@@ -18,7 +18,7 @@
             <div class="container-fluid">
             	<!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Registre <small>Nova entrada</small>
                         </h1>
@@ -35,14 +35,14 @@
                 <!-- /.row -->
                 
                 <div class="row">
-                	<div class="col-lg-12">
+                	<div class="col-md-12">
                			<p style="color: red;">${errorString}</p>
                		</div>
                	 </div>
                 <!-- /.row -->
                 
     			<div class="row">
-                    <div class="col-lg-12">                    	
+                    <div class="col-md-12">                    	
 		    			<form class="form-horizontal" method="POST" action="DoCreateRegistreEntrada">
 		    				<div class="form-group">
 		    					<input type="hidden" id="tipusRegistre" value="E"> 
@@ -83,19 +83,12 @@
                             	<div class="form-group">
 	                                <label class="col-xs-3  control-label">Centre</label>
 	                                <div class="col-xs-3">
-		                                <select class="form-control selectpicker" name="idCentre" data-live-search="true" data-size="5" id="centresList">
+		                                <select class="form-control selectpicker centresList" name="idCentre" data-live-search="true" data-size="5" id="centresList" multiple>
 			                            	<option value="-1">No hi ha relació</option>
 			                            </select>
 		                             </div>
 	                            </div> 
-                            	<div class="form-group incidencies hidden">
-	                             	<label class="col-xs-3 control-label">Incidència</label>
-	                                <div class="col-xs-3">   
-		                                <select class="form-control selectpicker" name="idIncidencia" data-live-search="true" data-size="5" id="incidenciesList">
-		                                	<option value="-1">Nova incidència</option>
-		                                </select>
-									</div>
-								</div>
+	                            <div id="incidencies"></div>                            	
 							</c:if>									
                             <br>
 						    <div class="form-group">
@@ -114,6 +107,6 @@
 		<!-- /#page-wrapper -->
 	</div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/registre/registre.js"></script>
+    <script src="js/registre/registre.js?<%=application.getInitParameter("datakey")%>"></script>
 </body>
 </html>

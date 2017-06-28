@@ -18,7 +18,7 @@
             <div class="container-fluid">
             	<!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             <c:choose>
 							    <c:when test="${tipus=='notificacio'}">
@@ -67,14 +67,14 @@
                 <!-- /.row -->
                 
                 <div class="row">
-                	<div class="col-lg-12">
+                	<div class="col-md-12">
                			<p style="color: red;">${errorString}</p>
                		</div>
                	 </div>
                 <!-- /.row -->
                 
     			<div class="row">
-                    <div class="col-lg-12">                    	
+                    <div class="col-md-12">                    	
 		    			<form class="form-horizontal" method="POST" action="DoCreateTasca">
 		    				<div class="form-group">
 		    					<input type="hidden" name="idActuacio" value="${idActuacio}">
@@ -95,7 +95,7 @@
 							    </c:otherwise>
 							</c:choose> 
 						    <div class="form-group">
-                                <label class="col-xs-3 control-label">Assumpte</label>
+                                <label class="col-xs-3 control-label">Comentari</label>
                                 <div class="col-xs-3">
                                 	<textarea class="form-control" name="comentari" placeholder="comentari inter" rows="3">Revisar</textarea>
                                 </div>
@@ -103,7 +103,7 @@
                             <div class="form-group">
                                 <label class="col-xs-3  control-label">Asignar</label>
                                 <div class="col-xs-3">
-	                                <select class="form-control selectpicker" name="idUsuari" data-live-search="true" id="usuarisList">
+	                                <select class="form-control selectpicker" name="idUsuari" data-live-search="true" data-size="5" id="usuarisList">
 	                                	<c:forEach items="${llistaUsuaris}" var="usuari" >
 	                                		<option value='${usuari.idUsuari}'>${usuari.getNomCompletReal()}</option>	                                		
 	                                	</c:forEach>

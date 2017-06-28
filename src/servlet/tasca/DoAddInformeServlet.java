@@ -3,6 +3,8 @@ package servlet.tasca;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileUploadException;
 
 import bean.InformeActuacio;
+import bean.InformeActuacio.PropostaInforme;
 import bean.User;
 import core.ActuacioCore;
 import core.InformeCore;
@@ -51,85 +54,101 @@ public class DoAddInformeServlet extends HttpServlet {
 			e1.printStackTrace();
 		}
 		
-	    int idTasca = Integer.parseInt(multipartParams.getParametres().get("idTasca"));	    
+		int idTasca = Integer.parseInt(multipartParams.getParametres().get("idTasca"));	    
 	    String idActuacio = multipartParams.getParametres().get("idActuacio");
 	    String idIncidencia = multipartParams.getParametres().get("idIncidencia");
-	    String idInformePrevi = multipartParams.getParametres().get("idInformePrevi");
 	    String guardar = multipartParams.getParametres().get("guardar");	    
 	    String errorString = null;
-	    User Usuari = MyUtils.getLoginedUser(request.getSession());	  
-	    if (guardar != null) {
-	    	String objecte = multipartParams.getParametres().get("objecteActuacio");
-		    String tipusObra = multipartParams.getParametres().get("tipusContracte");
-		    boolean llicencia = false;
-		    String tipusLlicencia = "";
-		    boolean contracte = false;
-		    if (new String("obr").equals(tipusObra)) {
-		    	llicencia = new String("si").equals(multipartParams.getParametres().get("reqLlicencia"));	 	   
-				if (llicencia) {
-					tipusLlicencia = multipartParams.getParametres().get("tipusLlicencia");
-				}
-				contracte = new String("si").equals(multipartParams.getParametres().get("formContracte"));
-		    }	    
-		    double vec = Double.parseDouble(multipartParams.getParametres().get("vec").replace(',','.'));
-		    double iva = Double.parseDouble(multipartParams.getParametres().get("iva"));
-		    double plic = Double.parseDouble(multipartParams.getParametres().get("plic"));
-		    String termini = multipartParams.getParametres().get("termini");
-		    String comentari = multipartParams.getParametres().get("comentariTecnic");
-		    
-		    InformeActuacio informe = new InformeActuacio();
-		    informe.setIdTasca(idTasca);
-		    informe.setIdIncidencia(idIncidencia);
-		    informe.setIdActuacio(idActuacio);
-		    informe.setObjecte(objecte);
-		    informe.setTipusObra(tipusObra);
-		    informe.setLlicencia(llicencia);
-		    informe.setTipusLlicencia(tipusLlicencia);
-		    informe.setContracte(contracte);
-		    informe.setVec(vec);
-		    informe.setIva(iva);
-		    informe.setPlic(plic);
-		    informe.setTermini(termini);
-		    informe.setComentari(comentari);		   
-		   	//Registrar informe + comentari;	   
+	    User Usuari = MyUtils.getLoginedUser(request.getSession());	
+	    int infPrev = Integer.parseInt(multipartParams.getParametres().get("infPrev"));	    
+	    String idInformePrevi = "";
+	    String idProposta = "";
+		String objecte = "";
+		String tipusObra = "";
+		boolean llicencia = false;
+		String tipusLlicencia = "";
+		boolean contracte = false;
+		double vec = 0;
+		double iva = 0;
+		double plic = 0;
+		String termini = "";
+		String comentari = "";
+		List<PropostaInforme> llistaPropostes = new ArrayList<PropostaInforme>();
+		//Guardar adjunts
+		if (guardar != null) Fitxers.guardarFitxer(multipartParams.getFitxers(), idIncidencia, idActuacio, "Informe Previ", String.valueOf(idTasca), "", "", "");
+		 
+	    InformeActuacio informe = new InformeActuacio();
+	    PropostaInforme proposta = informe.new PropostaInforme();
+	    informe.setIdTasca(idTasca);
+	    informe.setIdIncidencia(idIncidencia);
+	    informe.setIdActuacio(idActuacio);
+	    idInformePrevi = multipartParams.getParametres().get("idInformePrevi");
+	    if (guardar != null) {	    	
+	    	for(int i=1; i<=infPrev; i++) {	
+	    		idProposta = multipartParams.getParametres().get("idProposta" + i);
+				objecte = multipartParams.getParametres().get("objecteActuacio" + i);
+				tipusObra = multipartParams.getParametres().get("tipusContracte" + i);		
+				llicencia = false;
+				tipusLlicencia = "";
+				contracte = false;		 
+			    if (new String("obr").equals(tipusObra)) {
+			    	llicencia = new String("si").equals(multipartParams.getParametres().get("reqLlicencia" + i));	 	   
+					if (llicencia) tipusLlicencia = multipartParams.getParametres().get("tipusLlicencia" + i);					
+					contracte = new String("si").equals(multipartParams.getParametres().get("formContracte" + i));
+			    }			    
+			    vec = Double.parseDouble(multipartParams.getParametres().get("vec" + i).replace(',','.'));
+			    iva = Double.parseDouble(multipartParams.getParametres().get("iva" + i));
+			    plic = Double.parseDouble(multipartParams.getParametres().get("plic" + i).replace(',','.'));	
+			    termini = multipartParams.getParametres().get("termini" + i);
+			    comentari = multipartParams.getParametres().get("comentariTecnic" + i);			   
+			    	
+			    proposta = informe.new PropostaInforme();
+			    proposta.setIdProposta(idProposta);
+			    proposta.setObjecte(objecte);
+			    proposta.setTipusObra(tipusObra);
+			    proposta.setLlicencia(llicencia);
+			    proposta.setTipusLlicencia(tipusLlicencia);
+			    proposta.setContracte(contracte);
+			    proposta.setVec(vec);
+			    proposta.setIva(iva);
+			    proposta.setPlic(plic);
+			    proposta.setTermini(termini);
+			    proposta.setComentari(comentari);
+			    llistaPropostes.add(proposta);
+	    	}
+	    	
+	    	informe.setLlistaPropostes(llistaPropostes);
+	    	//Registrar informe + comentari;	   
 		   	try {
 		   		String msg = "S'ha afegit l'informe";
 		   		if (! idInformePrevi.isEmpty()) {
 		   			informe.setIdInf(idInformePrevi);
-		   			InformeCore.modificar(conn, informe, Usuari.getIdUsuari());
+		   			InformeCore.modificarInforme(conn, informe, Usuari.getIdUsuari());
 		   			msg = "S'ha modificat l'informe";	   				
 		   		}else{
-		   			InformeCore.nouInforme(conn, informe, Usuari.getIdUsuari());
+		   			idInformePrevi = InformeCore.nouInforme(conn, informe, Usuari.getIdUsuari());
 		   		}
-		   		TascaCore.nouHistoric(conn, idTasca, msg, Usuari.getIdUsuari());	
+		   		TascaCore.nouHistoric(conn, String.valueOf(idTasca), msg, Usuari.getIdUsuari());	
 		   		if (idActuacio != "") idIncidencia = String.valueOf(ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia());
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				errorString = e.getMessage();
-			}
-		   	//Guardar adjunts
-		   	Fitxers.guardarFitxer(multipartParams.getFitxers(), idIncidencia, idActuacio, "Informe Previ", String.valueOf(idTasca), "");
+			}		   
 	    } else {
-	    	//Aprovació d'informe
-	    	//Registrar nova tasca d'asignament de partida
+	    	//Aprovaci� d'informe
 			try {
 				String comentariCap = multipartParams.getParametres().get("comentariCap");	
-				InformeCore.validacioCapInforme(conn, idInformePrevi, Usuari.getIdUsuari(), comentariCap);
-				TascaCore.nouHistoric(conn, idTasca, "Informe aprovat", Usuari.getIdUsuari());
-				ActuacioCore.actualitzarActuacio(conn, idActuacio, "Proposta d'actuació realitzada");
-				TascaCore.reasignar(conn, 900, idTasca);
-				TascaCore.tancar(conn, idTasca);
-				int idUsuari = UsuariCore.findUsuarisByRol(conn, "CAP,CONTA").get(0).getIdUsuari();
-				TascaCore.novaTasca(conn, "resPartida", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, "", String.valueOf(idTasca), idInformePrevi);
+				InformeCore.validacioCapInforme(conn, idInformePrevi, Usuari.getIdUsuari(), comentariCap);				
+				informe = InformeCore.getInformePrevi(conn, idInformePrevi);				
+				if (informe.getLlistaPropostes().size() == 1) InformeCore.seleccionarProposta(conn, informe.getLlistaPropostes().get(0).getIdProposta(), idInformePrevi);
 				if (idActuacio != "") idIncidencia = String.valueOf(ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia());
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
-	   			
-	    }
-	   	
+			}		   			
+	    }			
+			   	
 	   	// Store infomation to request attribute, before forward to views.
 	   	request.setAttribute("errorString", errorString);
 	  	// If error, forward to Edit page.
@@ -139,7 +158,11 @@ public class DoAddInformeServlet extends HttpServlet {
 	   		dispatcher.forward(request, response);
 	   	}// If everything nice. Redirect to the product listing page.            
 	   	else {
-	   		response.sendRedirect(request.getContextPath() + "/tasca?id=" + idTasca);   		
+	   		if (guardar != null) {
+			   	response.sendRedirect(request.getContextPath() + "/CrearDocument?tipus=PAObres&idIncidencia=" + idIncidencia + "&idActuacio=" + idActuacio + "&idInforme=" + idInformePrevi); 
+	   		} else {
+	   			response.sendRedirect(request.getContextPath() + "/CrearDocument?tipus=VistiplauPAObres&idIncidencia=" + idIncidencia + "&idActuacio=" + idActuacio + "&idInforme=" + idInformePrevi); 
+	   		}  
 	   	}
 	}
 

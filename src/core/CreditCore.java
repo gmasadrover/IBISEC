@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import bean.AssignacioCredit;
@@ -155,6 +156,18 @@ public class CreditCore {
 		return idPartida;
 	}
 	
+	public static String getComentariPartida(Connection conn, String idInforme) throws SQLException {
+		String comentari = "";
+		String sql = "SELECT comentari"
+					+ " FROM public.tbl_assignacionscredit"
+					+ " WHERE idinf = ?";
+		PreparedStatement pstm = conn.prepareStatement(sql);		 
+		pstm.setString(1, idInforme);
+		ResultSet rs = pstm.executeQuery();
+		if (rs.next()) comentari = rs.getString("comentari");		
+		return comentari;
+	}
+	
 	public static String getPartidaActuacio(Connection conn, String idActuacio) throws SQLException {
 		String idPartida = "";
 		String sql = "SELECT idpartida"
@@ -197,7 +210,7 @@ public class CreditCore {
 		return newCode;
 	}
 
-	public static List<AssignacioCredit> findAssignacions(Connection conn, String codi) throws SQLException {
+	public static List<AssignacioCredit> findAssignacionsPartida(Connection conn, String codi) throws SQLException {
 		List<AssignacioCredit> assignacionsList = new ArrayList<AssignacioCredit>();
 		String sql = "SELECT idassignacio, idactuacio, idinf, reserva, usureserva, datareserva, assignacio, usuassignacio,"
 					+ " dataassignacio, comentari, usucre, datacre, idpartida, valorpa, valorpd"
@@ -228,20 +241,91 @@ public class CreditCore {
 		return assignacionsList;
 	}
 	
+	public static List<AssignacioCredit> findAssignacions(Connection conn, String idPartida, Date dataIni, Date dataFi) throws SQLException {
+		List<AssignacioCredit> assignacionsList = new ArrayList<AssignacioCredit>();
+		String sql = "SELECT idassignacio, idactuacio, idinf, reserva, usureserva, datareserva, assignacio, usuassignacio,"
+					+ " dataassignacio, comentari, usucre, datacre, idpartida, valorpa, valorpd"
+					+ " FROM public.tbl_assignacionscredit";	 
+		PreparedStatement pstm = null;
+		if (dataIni != null && dataFi != null) {
+			sql += " WHERE datacre >= ? AND datacre <= ? ";
+			if (idPartida != "") {
+				sql += " AND idpartida = ?";
+			}
+			pstm = conn.prepareStatement(sql);
+			pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
+			Calendar fi = Calendar.getInstance();
+		    fi.setTime(dataFi);
+		    fi.add(Calendar.DATE, 1);	
+		    dataFi = fi.getTime();
+			pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
+			if (idPartida != "") pstm.setString(3, idPartida);	
+		} else {
+			if (idPartida != "") {
+				sql += " WHERE idpartida = ?";				
+				pstm = conn.prepareStatement(sql);
+				pstm.setString(1, idPartida);			
+			} else {
+				pstm = conn.prepareStatement(sql);
+			}	
+		}
+		ResultSet rs = pstm.executeQuery();
+		while (rs.next()) {
+			AssignacioCredit assignacio = new AssignacioCredit();
+			assignacio.setIdAssignacio(rs.getString("idassignacio"));
+			assignacio.setIdActuacio(rs.getString("idactuacio"));
+			assignacio.setIdInf(rs.getString("idinf"));
+			assignacio.setReserva(rs.getBoolean("reserva"));
+			assignacio.setUsuReserva(UsuariCore.findUsuariByID(conn, rs.getInt("usureserva")));
+			assignacio.setDatareserva(rs.getTimestamp("datareserva"));
+			assignacio.setAssignacio(rs.getBoolean("assignacio"));
+			assignacio.setUsuAssignacio(UsuariCore.findUsuariByID(conn, rs.getInt("usuassignacio")));
+			assignacio.setDataAssignacio(rs.getTimestamp("dataassignacio"));
+			assignacio.setComentari(rs.getString("comentari"));
+			assignacio.setUsuCre(UsuariCore.findUsuariByID(conn, rs.getInt("usucre")));
+			assignacio.setDataCre(rs.getTimestamp("datacre"));
+			assignacio.setIdPartida(rs.getString("idpartida"));
+			assignacio.setValorPA(rs.getDouble("valorpa"));
+			assignacio.setValorPD(rs.getDouble("valorpd"));
+			assignacionsList.add(assignacio);
+		}
+		return assignacionsList;
+	}
+	
 	public static void reservar(Connection conn, String idPartida, String idActuacio, String idInforme, double valor, String comentari, int idUsuari) throws SQLException {
-		String sql = "INSERT INTO public.tbl_assignacionscredit(idassignacio, idactuacio, idinf, reserva, usureserva, datareserva, assignacio, comentari, usucre, datacre, idpartida, valorpa)"
-					+ " VALUES (?, ?, ?, true, ?, localtimestamp, false, ?, ?, localtimestamp, ?, ?);";
-		
-		PreparedStatement pstm = conn.prepareStatement(sql);
-		 
-		pstm.setString(1, newAssignacioCode(conn));		
-		pstm.setString(2, idActuacio);
-		pstm.setString(3, idInforme);
-		pstm.setInt(4, idUsuari);		
-		pstm.setString(5, comentari);
-		pstm.setInt(6, idUsuari);
-		pstm.setString(7, idPartida);
-		pstm.setDouble(8, valor);
+		String sql = "";
+		PreparedStatement pstm = null;
+		if (getPartidaInforme(conn, idInforme).isEmpty()) {		
+			sql = "INSERT INTO public.tbl_assignacionscredit(idassignacio, idactuacio, idinf, reserva, usureserva, datareserva, assignacio, comentari, usucre, datacre, idpartida, valorpa)"
+						+ " VALUES (?, ?, ?, true, ?, localtimestamp, false, ?, ?, localtimestamp, ?, ?);";
+			
+			pstm = conn.prepareStatement(sql);
+			 
+			pstm.setString(1, newAssignacioCode(conn));		
+			pstm.setString(2, idActuacio);
+			pstm.setString(3, idInforme);
+			pstm.setInt(4, idUsuari);		
+			pstm.setString(5, comentari);
+			pstm.setInt(6, idUsuari);
+			pstm.setString(7, idPartida);
+			pstm.setDouble(8, valor);
+			pstm.executeUpdate();
+		} else {
+			sql = "UPDATE public.tbl_assignacionscredit"
+				+ " SET datareserva=localtimestamp, comentari=?, idpartida=?, valorpa=?"
+				+ " WHERE idinf = ?;";
+			pstm = conn.prepareStatement(sql);		
+			pstm.setString(1, comentari);
+			pstm.setString(2, idPartida);
+			pstm.setDouble(3, valor);
+			pstm.setString(4, idInforme);
+			pstm.executeUpdate();
+		}
+		sql = "UPDATE public.tbl_informeactuacio"
+				+ " SET datapartidarebujada = null, motiupartidarebujada = '', usupartidarebujada = null"
+				+ " WHERE idinf=?";
+		pstm = conn.prepareStatement(sql);
+		pstm.setString(1, idInforme);	
 		pstm.executeUpdate();
 		
 	}

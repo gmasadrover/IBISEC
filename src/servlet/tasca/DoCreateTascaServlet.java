@@ -46,26 +46,41 @@ public class DoCreateTascaServlet extends HttpServlet {
 	    String tipus = request.getParameter("tipus");
 	    String assumpte = request.getParameter("assumpte");
 	   	String comentari = request.getParameter("comentari");
-	   	String usuariTasca = request.getParameter("idUsuari");
+	   	String[] usuarisValues = request.getParameterValues("idUsuari");
+	   	String idUsuaris = "#";
 	   	String errorString = null;	   		   	
 	   	try {
+	   		for(int i=0; i<usuarisValues.length; i++) { 
+	   			if (NumberUtils.isNumber(usuarisValues[i])) {
+	   				idUsuaris += usuarisValues[i] + "#";
+	   			}else{
+	   				idUsuaris += UsuariCore.finCap(conn, usuarisValues[i]).getIdUsuari() + "#";
+	   			}	   			
+	   		}
 	   		idIncidencia = request.getParameter("idIncidencia"); 
 	   		if (request.getParameter("idActuacio") != "") {
 				idActuacio = request.getParameter("idActuacio"); 
 				String modificacio = "Crear nova tasca";
 				if ("infPrev".equals(tipus)) {
-					modificacio = "SolÂ·licitar proposta d'actuaciÃ³";
+					modificacio = "Sollicitar proposta d'actuació";
 				} else if ("notificacio".equals(tipus)) {
-					modificacio = "Enviar nova notificaciÃ³";
+					modificacio = "Enviar nova notificació";
 				}
 				ActuacioCore.actualitzarActuacio(conn, idActuacio, modificacio);
 				idIncidencia = ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia();
 			}	
-			if (NumberUtils.isNumber(usuariTasca)) {
-				TascaCore.novaTasca(conn, tipus, Integer.parseInt(usuariTasca), idUsuari, idActuacio, idIncidencia, comentari, assumpte, "");
-			} else {
-				TascaCore.novaTasca(conn, tipus, UsuariCore.finCap(conn, usuariTasca).getIdUsuari(), idUsuari, idActuacio, idIncidencia, comentari, assumpte, "");
-			}			
+	   		if (usuarisValues.length == 1) {
+	   			int idUsuariTasca = -1;
+	   			if (NumberUtils.isNumber(usuarisValues[0])) {
+	   				idUsuariTasca = Integer.parseInt(usuarisValues[0]);
+	   			}else{
+	   				idUsuariTasca = UsuariCore.finCap(conn, usuarisValues[0]).getIdUsuari();
+	   			}	
+	   			TascaCore.novaTasca(conn, tipus, idUsuariTasca, idUsuari, idActuacio, idIncidencia, comentari, assumpte, "");
+	   		} else {
+	   			TascaCore.novaTasca(conn, tipus, idUsuaris, idUsuari, idActuacio, idIncidencia, comentari, assumpte, "");
+	   		}			
+						
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

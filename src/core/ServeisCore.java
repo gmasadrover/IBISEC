@@ -36,7 +36,8 @@ public class ServeisCore {
 		String sql = "SELECT a.id AS idactuacio, a.descripcio AS desc, a.datacre AS datacre, a.dataaprovacio AS dataaprovacio, a.idcentre AS idcentre, i.idinf AS idinf, i.datatancament AS tancament, e.notes AS notes"
 					+ " FROM public.tbl_informeactuacio i LEFT JOIN public.tbl_actuacio a ON i.idactuacio = a.id"
 					+ "		LEFT JOIN public.tbl_informacioextra e ON i.idinf = e.idinf"
-					+ " WHERE i.tipusobra = 'srv' AND i.vec < 50000";
+					+ "		LEFT JOIN public.tbl_propostesinforme p ON p.idinf = i.idinf AND p.seleccionada = true"
+					+ " WHERE p.tipusobra = 'srv' AND p.vec < 50000";
 					
 		PreparedStatement pstm = conn.prepareStatement(sql);			
 		if (dataIni != null && dataFi != null) {
@@ -88,7 +89,8 @@ public class ServeisCore {
 		String sql = "SELECT a.id AS idactuacio, a.descripcio AS desc, a.datacre AS datacre, a.dataaprovacio AS dataaprovacio, a.idcentre AS idcentre, i.idinf AS idinf, i.datatancament AS tancament, e.notes AS notes"
 				+ " FROM public.tbl_informeactuacio i LEFT JOIN public.tbl_actuacio a ON i.idactuacio = a.id"
 				+ "		LEFT JOIN public.tbl_informacioextra e ON i.idinf = e.idinf"
-				+ " WHERE i.tipusobra = 'srv' AND i.vec >= 50000";
+				+ "		LEFT JOIN public.tbl_propostesinforme p ON p.idinf = i.idinf AND p.seleccionada = true"
+				+ " WHERE p.tipusobra = 'srv' AND p.vec >= 50000";
 				
 		PreparedStatement pstm = conn.prepareStatement(sql);			
 		if (dataIni != null && dataFi != null) {

@@ -3,23 +3,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Intranet IBISEC</title>
 <!-- Bootstrap Core CSS -->
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/bootstrap-datepicker.min.css" rel="stylesheet">
-<link href="css/bootstrap-datepicker.standalone.min.css" rel="stylesheet">
-<link href="css/bootstrap-datepicker3.min.css" rel="stylesheet">
-<link href="css/bootstrap-datepicker3.standalone.min.css" rel="stylesheet">
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-<link href="//cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css" rel="stylesheet">
-<link href="//cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css" rel="stylesheet">
+<link href="css/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-<link href="css/bootstrap-select.min.css" rel="stylesheet">
+<!-- MetisMenu CSS -->
+<link href="css/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
 
 <!-- Custom CSS -->
-<link href="css/sb-admin.css" rel="stylesheet">
+<link href="css/dist/css/sb-admin-2.css" rel="stylesheet">
+
+<!-- Morris Charts CSS -->
 
 <!-- Custom Fonts -->
-<link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-
+<link href="css/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        
+        
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<link href="//cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css" rel="stylesheet">
+<link href="//cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css" rel="stylesheet">           
+<link href="css/bootstrap-select.min.css" rel="stylesheet">
+<link href="css/bootstrap-datepicker3.standalone.min.css" rel="stylesheet">
 <link href="css/main.css" rel="stylesheet">
 <link rel="shortcut icon" href="favicon.png" type="image/png">
 

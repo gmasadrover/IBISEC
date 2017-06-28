@@ -1,60 +1,58 @@
 $(document).ready(function() {
+	//funcionalitat seguiment tasca
+	$('#seguiment').on('change', function(){
+		$.ajax({
+	        type: "POST",
+	        url: "seguirTasca",
+	        data: {"idTasca":$(this).data('idtasca'), "idUsuari":$(this).data('idusuari'), "seguir":$(this).data('seguir')},
+	        dataType: "html",	        
+	        //if received a response from the server
+	        success: function( data, textStatus, jqXHR) {
+	            //our country code was correct so we have some information to display	  
+	        	location.reload();
+	        },        
+	        //If there was no resonse from the server
+	        error: function(jqXHR, textStatus, errorThrown){
+	             console.log("Something really bad happened " + jqXHR.responseText);
+	        }  
+	    });
+	});
+	//funcionalitat seguiment actuació
+	$('#seguimentActuacio').on('change', function(){
+		$.ajax({
+	        type: "POST",
+	        url: "seguirActuacio",
+	        data: {"idActuacio":$(this).data('idactuacio'), "idUsuari":$(this).data('idusuari'), "seguir":$(this).data('seguir')},
+	        dataType: "html",	        
+	        //if received a response from the server
+	        success: function( data, textStatus, jqXHR) {
+	            //our country code was correct so we have some information to display	  
+	        	location.reload();
+	        },        
+	        //If there was no resonse from the server
+	        error: function(jqXHR, textStatus, errorThrown){
+	             console.log("Something really bad happened " + jqXHR.responseText);
+	        }  
+	    });
+	});
+	
 	//funcionalitats informe previ
 	if ($('#infPrev').size() == 1) {
+		console.log('entra');
 		initInformePrevi();
-		$('#vec').on('keyup', function(){
-			var vec = $('#vec').val().replace(',','.');
-			if ($.isNumeric(vec)) {			
-				$('#iva').val((vec * 0.21).toFixed(2));
-				$('#inputIVA').val($('#iva').val());
-				$('#plic').val((vec * 1.21).toFixed(2));
-				$('#inputPLIC').val($('#plic').val());
-			} else {
-				$('#vec').val('');
-				$('#iva').val('');
-				$('#plic').val('');
-			}
-		});
-		$('#plic').on('keyup', function(){
-			var plic = $('#plic').val().replace(',','.');
-			if ($.isNumeric(plic)) {			
-				$('#iva').val((plic * 0.21).toFixed(2));
-				$('#inputIVA').val($('#iva').val());
-				$('#vec').val((plic / 1.21).toFixed(2));
-			} else {
-				$('#vec').val('');
-				$('#iva').val('');
-				$('#plic').val('');
-			}
-		});
-		$('#tipusContracte').on('change', function(){
-			var tipus = $(this).val();
-			if (tipus != 'obr') {
-				$('.visibleObres').addClass('hidden');
-			}else{
-				$('.visibleObres').removeClass('hidden');
-			}
-		});
-		$('#reqLlicencia').on('change', function(){
-			var tipus = $(this).val();
-			if (tipus == 'si') {
-				$('.visibleTipusLlicencia').removeClass('hidden');
-			}else{
-				$('.visibleTipusLlicencia').addClass('hidden');
-			}
-		});
 	}
 	//funcionalitats recerca presuposts
 	if ($('#liciMenor').size() == 1) {
-		var numOferta = 1;
 		$('.filerTable').DataTable({
-			"order": [[ 3, "asc" ]],
+			"order": [[ 4, "asc" ]],
 			"aoColumns": [
+				null,
 	    		null,
 	    		{"bVisible": false},
 	    		{"bVisible": false},
-	    		{"iDataSort": 3},
+	    		{"iDataSort": 4},
 	    		{"bVisible": false},
+	    		null,
 	    		null
 			]
 		});
@@ -67,42 +65,93 @@ $(document).ready(function() {
 			}
 		});
 		$('#afegirOferta').on('click', function(){
-			var oferta = "<input name='ofertes' value='" + $('#llistaEmpreses').val() + "#" + $('#oferta').val().replace(',','.') + "'>";
-			numOferta += 1;
-			$('#llistatOfertes').append(oferta);
-        	var table = $('.filerTable').DataTable();        	
-        	table.row.add( [
-        		 "<a href='editEmpresa?cif=" + $('#llistaEmpreses').val() + "'>" + $("#llistaEmpreses option[value='" + $('#llistaEmpreses').val() + "']").text() + ' (' + $('#llistaEmpreses').val() + ")</a>",
-        		 $("#llistaEmpreses option[value='" + $('#llistaEmpreses').val() + "']").text() + ' (' + $('#llistaEmpreses').val() + ")",
-        		 $('#llistaEmpreses').val(),
-        		 $('#oferta').val().replace(',','.') + "€",
-        		 $('#oferta').val().replace(',','.'),
-        		 "<input class='btn btn-primary btn-sm ofertaSeleccionada' type='button' value='Seleccionar'><input class='btn btn-danger btn-sm eliminarSeleccionada margin_left10' type='button' value='Eliminar'>"
-            ] ).draw( false );
-        	$('.ofertaSeleccionada').on('click', function(){
-        		var table = $('.filerTable').DataTable();      
-        		$(this).parents('tr').addClass('selected');
-        		$('#ofertaSeleccionada').text(table.row('.selected').data()[1]);  
-        		$('#ofertaSeleccionadaNIF').val(table.row('.selected').data()[2]);  
-        		$(this).parents('tr').removeClass('selected');
-        	});
-			$('.eliminarSeleccionada').on('click', function(){	
-				var table = $('.filerTable').DataTable();
-				$(this).parents('tr').addClass('selected');
-				if (table.row('.selected').data() != undefined && $('#llistatOfertes input[value="' + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[4] + '"]').size() > 0) {
-					$('#llistatOfertes input[value="' + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[4] + '"]').remove();
-					if ($('#ofertaSeleccionadaNIF').val() == table.row('.selected').data()[2]) {
-						$('#ofertaSeleccionada').text('');  
-		        		$('#ofertaSeleccionadaNIF').val('');  
-					}
-				}
-				table.row('.selected').remove().draw( false );
-        	});
+			if ($('#oferta').val() != '') {
+				var oferta = "<input name='ofertes' value='" + $('#llistaEmpreses').val() + "#" + $('#oferta').val().replace(',','.') + "'>";
+				$('#llistatOfertes').append(oferta);
+	        	var table = $('.filerTable').DataTable();        	
+	        	table.row.add( [
+	        		 "<a target='_blanck' href='empresa?cif=" + $('#llistaEmpreses').val() + "'>" + $("#llistaEmpreses option[value='" + $('#llistaEmpreses').val() + "']").text() + ' (' + $('#llistaEmpreses').val() + ")</a>",
+	        		 $("#llistaEmpreses option[value='" + $('#llistaEmpreses').val() + "']").text() + ' (' + $('#llistaEmpreses').val() + ")",
+	        		 $('#llistaEmpreses').val(),
+	        		 $('#oferta').val().replace(',','.') + "€",
+	        		 $('#oferta').val().replace(',','.'),
+	        		 "<input class='btn btn-primary btn-sm ofertaSeleccionada' type='button' value='Seleccionar'><input class='btn btn-danger btn-sm eliminarSeleccionada margin_left10' type='button' value='Eliminar'>"
+	            ] ).draw( false );
+	        	$('.ofertaSeleccionada').on('click', function(){
+	        		var table = $('.filerTable').DataTable();      
+	        		$(this).parents('tr').addClass('selected');
+	        		$('#ofertaSeleccionada').text(table.row('.selected').data()[2]);  
+	        		$('#idOfertaSeleccionada').val(table.row('.selected').data()[0]);  
+	        		$(this).parents('tr').removeClass('selected');
+	        	});
+	        	$('.deleteOferta').on('click', function(){
+	        		var table = $('.filerTable').DataTable();
+	        		$(this).parents('tr').addClass('selected');
+	        		if (table.row('.selected').data() != undefined && $('#llistatOfertes input[value="' + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[4] + '"]').size() > 0) {
+	        			$('#llistatOfertes input[value="' + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[4] + '"]').remove();
+	        			if ($('#ofertaSeleccionadaNIF').val() == table.row('.selected').data()[2]) {
+	        				$('#ofertaSeleccionada').text('');  
+	                		$('#ofertaSeleccionadaNIF').val('');  
+	        			}
+	        		}
+	        		table.row('.selected').remove().draw( false );
+	        		$.ajax({
+	        	        type: "POST",
+	        	        url: "DoDeleteOferta",
+	        	        dataType: "json",
+	        	        data: {"idOferta": $(this).data('idoferta')},
+	        	        //if received a response from the server
+	        	        success: function( data, textStatus, jqXHR) {
+	        	            //our country code was correct so we have some information to display
+	        	        	location.reload();      
+	        	        },        
+	        	        //If there was no resonse from the server
+	        	        error: function(jqXHR, textStatus, errorThrown){
+	        	             console.log("Something really bad happened " + jqXHR.responseText);
+	        	        }  
+	        	    });
+	        	});
+			}
 		});
+		$('.ofertaSeleccionada').on('click', function(){
+    		var table = $('.filerTable').DataTable();      
+    		$(this).parents('tr').addClass('selected');
+    		$('#ofertaSeleccionada').text(table.row('.selected').data()[2]);  
+    		$('#idOfertaSeleccionada').val(table.row('.selected').data()[0]);  
+    		$(this).parents('tr').removeClass('selected');
+    	});		
 	}
 	
+	$('.deleteOferta').on('click', function(){
+		var table = $('.filerTable').DataTable();
+		$(this).parents('tr').addClass('selected');
+		if (table.row('.selected').data() != undefined && $('#llistatOfertes input[value="' + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[4] + '"]').size() > 0) {
+			$('#llistatOfertes input[value="' + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[4] + '"]').remove();
+			if ($('#ofertaSeleccionadaNIF').val() == table.row('.selected').data()[2]) {
+				$('#ofertaSeleccionada').text('');  
+        		$('#ofertaSeleccionadaNIF').val('');  
+			}
+		}
+		table.row('.selected').remove().draw( false );
+		$.ajax({
+	        type: "POST",
+	        url: "DoDeleteOferta",
+	        dataType: "json",
+	        data: {"idOferta": $(this).data('idoferta')},
+	        //if received a response from the server
+	        success: function( data, textStatus, jqXHR) {
+	            //our country code was correct so we have some information to display
+	        	location.reload();      
+	        },        
+	        //If there was no resonse from the server
+	        error: function(jqXHR, textStatus, errorThrown){
+	             console.log("Something really bad happened " + jqXHR.responseText);
+	        }  
+	    });
+	});
+	
 	$('#novaProposta').on('click', function(){
-		var numPA = $('#infPrev').data('pa') + 1;
+		var numPA = parseInt($('#infPrev').val()) + 1;
 		var newForm = '<div class="panel panel-default">';
 		newForm += '	<div class="panel-heading">';
 		newForm += '		<h4 class="panel-title">';
@@ -111,36 +160,36 @@ $(document).ready(function() {
 		newForm += '	</div>';
 		newForm += '	<div id="propostaActuacio' + numPA + '" class="panel-collapse collapse">';				    	
 		newForm += '		<div class="panel-body">';				      		
-		newForm += '			<div class="col-lg-12 panel-group" id="accordionInformes">';
-		newForm += '				<input type="hidden" name="idInformePrevi" id="idInformePrevi" value="">';								                    		
+		newForm += '			<div class="col-md-12 panel-group" id="accordionInformes">';
+		newForm += '				<input type="hidden" name="idInformePrevi' + numPA + '" value="">';								                    		
 		newForm += '				<div class="form-group">';
-		newForm += '		     		<div class="col-lg-2">';
+		newForm += '		     		<div class="col-md-2">';
 		newForm += '		     	 		<label>Tipus de Contracte</label>';							            	 	
-		newForm += '		            	<select class="form-control selectpicker" name="tipusContracte" id="tipusContracte">';
+		newForm += '		            	<select class="form-control selectpicker" name="tipusContracte' + numPA + '" id="tipusContracte' + numPA + '">';
 		newForm += '			           		<option value="obr">Obra</option>';
 		newForm += '			           		<option value="srv">Servei</option>';
 		newForm += '			           		<option value="submi">subministrament</option>';
 		newForm += '			            </select>';
 		newForm += '			        </div>';	
-		newForm += '			       	<div class="visibleObres">';					                             	
-		newForm += '			        	<div class="col-lg-2">';
+		newForm += '			       	<div class="visibleObres' + numPA + '">';					                             	
+		newForm += '			        	<div class="col-md-2">';
 		newForm += '				      	 	<label>Llicència</label>';
-		newForm += '				            <select class="form-control selectpicker" name="reqLlicencia" id="reqLlicencia">';
+		newForm += '				            <select class="form-control selectpicker" name="reqLlicencia' + numPA + '" id="reqLlicencia' + numPA + '">';
 		newForm += '				            	<option value="si">Si</option>';
 		newForm += '				            	<option value="no">No</option>';
 		newForm += '				            </select>';
 		newForm += '		    	        </div>';	
-		newForm += '		       	     	<div class="col-lg-3 visibleTipusLlicencia">';
+		newForm += '		       	     	<div class="col-md-3 visibleTipusLlicencia' + numPA + '">';
 		newForm += '			   		   	 	<label>Tipus de llicència</label>';
-		newForm += '		                	<select class="form-control selectpicker" name="tipusLlicencia" id="tipusLlicencia">';
+		newForm += '		                	<select class="form-control selectpicker" name="tipusLlicencia' + numPA + '" id="tipusLlicencia' + numPA + '">';
 		newForm += '		                		<option value="major">Major</option>';
 		newForm += '		                		<option value="menor">menor</option>';
 		newForm += '		                		<option value="comun">Comunicació prèvia</option>';
 		newForm += '		                	</select>';
 		newForm += '			           	</div>';
-		newForm += '			           	<div class="col-lg-3">';
+		newForm += '			           	<div class="col-md-3">';
 		newForm += '			      	 		<label>Formalització contracte</label>';
-		newForm += '			                <select class="form-control selectpicker" name="formContracte" id="formContracte">';
+		newForm += '			                <select class="form-control selectpicker" name="formContracte' + numPA + '" id="formContracte' + numPA + '">';
 		newForm += '			                	<option value="si">Si</option>';
 		newForm += '			                	<option value="no">No</option>';
 		newForm += '			                </select>';
@@ -148,46 +197,45 @@ $(document).ready(function() {
 		newForm += '					</div>';				                       																
 		newForm += '				</div>';					                    						                    		
 		newForm += '				<div class="form-group">';
-		newForm += '					<div class="col-lg-12">';					                    			
+		newForm += '					<div class="col-md-12">';					                    			
 		newForm += '						<label>Objecte</label>';
-		newForm += '						<textarea class="form-control" name="objecteActuacio" placeholder="objecte" rows="3" required></textarea>';
+		newForm += '						<textarea class="form-control" name="objecteActuacio' + numPA + '" placeholder="objecte" rows="3" required></textarea>';
 		newForm += '					</div>';
 		newForm += '				</div>';
 		newForm += '				<div class="form-group">';
-		newForm += '					<div class="col-lg-12">';
+		newForm += '					<div class="col-md-12">';
 		newForm += '						<label>Pressupost</label>';
 		newForm += '					</div>';
 		newForm += '				</div>';
 		newForm += '				<div class="form-group">';
-		newForm += '					<div class="col-lg-4">';
+		newForm += '					<div class="col-md-4">';
 		newForm += '			          	<label>VEC</label>';
-		newForm += '			          	<input class="" name="vec" id="vec" placeholder="0000,00"required>';
+		newForm += '			          	<input class="" name="vec' + numPA + '" id="vec' + numPA + '" placeholder="0000,00" required>';
 		newForm += '			          	<label class="">€</label>';
 		newForm += '			        </div>';
-		newForm += '			        <div class="col-lg-4">';
+		newForm += '			        <div class="col-md-4">';
 		newForm += '				     	<label>IVA</label>';
-		newForm += '				       	<input disabled id="iva" placeholder="0000,00">';
-		newForm += '				     	<input type="hidden" name="iva" id="inputIVA">';
+		newForm += '				       	<input disabled id="iva' + numPA + '" placeholder="0000,00">';
+		newForm += '				     	<input type="hidden" name="iva' + numPA + '" id="inputIVA' + numPA + '">';
 		newForm += '				       	<label class="">€</label>';
 		newForm += '					</div>';
-		newForm += '					<div class="col-lg-4">';
+		newForm += '					<div class="col-md-4">';
 		newForm += '						<label>PLic</label>';
-		newForm += '						<input id="plic" placeholder="0000,00">';
-		newForm += '						<input type="hidden" name="plic" id="inputPLIC">';
+		newForm += '						<input name="plic' + numPA + '" id="plic' + numPA + '" placeholder="0000,00">';
 		newForm += '						<label class="">€</label>';
 		newForm += '					</div>';				                                
 		newForm += '				</div>';
 		newForm += '				<div class="form-group">';
-		newForm += '					<div class="col-lg-6">';
+		newForm += '					<div class="col-md-6">';
 		newForm += '						<label>Termini d\'execució</label>';
-		newForm += '						<input name="termini" placeholder="" required>';
+		newForm += '						<input name="termini' + numPA + '" placeholder="" required>';
 		newForm += '					</div>';
 		newForm += '				</div>';
 		newForm += '				<div class="form-group">';
-		newForm += '					<div class="col-lg-12">';	
+		newForm += '					<div class="col-md-12">';	
 		newForm += '						<div class="row">';	 
-		newForm += '							<div class="col-lg-12">';					                    						
-		newForm += '		       		   			<textarea class="form-control" name="comentariTecnic" placeholder="comentari tècnic" rows="3"></textarea>'; 
+		newForm += '							<div class="col-md-12">';					                    						
+		newForm += '		       		   			<textarea class="form-control" name="comentariTecnic' + numPA + '" placeholder="comentari tècnic" rows="3"></textarea>'; 
 		newForm += '		           		 	</div>';
 		newForm += '		        		</div>';	        	
 		newForm += '					</div>';						                       		
@@ -197,27 +245,112 @@ $(document).ready(function() {
 		newForm += '	</div>';
 		newForm += '</div>';
 		$('#accordion').append(newForm);
-		$('#infPrev').data('pa', numPA);
+		$('#infPrev').val(numPA);
+		$('.selectpicker').selectpicker('refresh');	
+		
+		$('#vec' + numPA).on('keyup', function(){
+			var vec = $('#vec' + numPA).val().replace(',','.');
+			if ($.isNumeric(vec)) {			
+				$('#iva' + numPA).val((vec * 0.21).toFixed(2));
+				$('#inputIVA' + numPA).val($('#iva' + numPA).val());
+				$('#plic' + numPA).val((vec * 1.21).toFixed(2));
+			} else {
+				$('#vec' + numPA).val('');
+				$('#iva' + numPA).val('');
+				$('#plic' + numPA).val('');
+			}
+		});
+		$('#plic' + numPA).on('keyup', function(){
+			var plic = $('#plic' + numPA).val().replace(',','.');
+			if ($.isNumeric(plic)) {
+				$('#vec' + numPA).val((plic / 1.21).toFixed(2));
+				$('#iva' + numPA).val(($('#vec' + numPA).val() * 0.21).toFixed(2));
+				$('#inputIVA' + numPA).val($('#iva' + numPA).val());
+			} else {
+				$('#vec' + numPA).val('');
+				$('#iva' + numPA).val('');
+				$('#plic' + numPA).val('');
+			}
+		});
+		$('#tipusContracte' + numPA).on('change', function(){
+			var tipus = $(this).val();
+			if (tipus != 'obr') {
+				$('.visibleObres' + numPA).addClass('hidden');
+			}else{
+				$('.visibleObres' + numPA).removeClass('hidden');
+			}
+		});
+		$('#reqLlicencia' + numPA).on('change', function(){
+			var tipus = $(this).val();
+			if (tipus == 'si') {
+				$('.visibleTipusLlicencia' + numPA).removeClass('hidden');
+			}else{
+				$('.visibleTipusLlicencia' + numPA).addClass('hidden');
+			}
+		});
 	});
 });
 
 function initInformePrevi() {
-	if ($('#idInformePrevi').val() != '') {
-		$('#tipusContracte option[value="' + $('#tipusContractePrev').val() + '"]').attr('selected', 'selected');	
-		if ($('#tipusContractePrev').val() != 'obr') {
-			$('.visibleObres').addClass('hidden');
+	var numPA = parseInt($('#infPrev').val());
+	for (i = 1; i <= numPA; i++) { 
+		console.log(i);
+		$('#tipusContracte' + i + ' option[value="' + $('#tipusContractePrev' + i).val() + '"]').attr('selected', 'selected');	
+		if ($('#tipusContractePrev' + i).val() != 'obr') {
+			$('.visibleObres' + i).addClass('hidden');
 		}
 		else {
-			$('#reqLlicencia option[value="' + $('#reqLlicenciaPrev').val() + '"]').attr('selected', 'selected');
-			if ($('#reqLlicenciaPrev').val() != 'si') {
-				$('.visibleTipusLlicencia').addClass('hidden');
+			$('#reqLlicencia' + i + ' option[value="' + $('#reqLlicenciaPrev' + i).val() + '"]').attr('selected', 'selected');
+			if ($('#reqLlicenciaPrev' + i).val() != 'si') {
+				$('.visibleTipusLlicencia' + i).addClass('hidden');
 			}
 			else {
-				$('#tipusLlicencia option[value="' + $('#tipusLlicenciaPrev').val() + '"]').attr('selected', 'selected');
+				$('#tipusLlicencia' + i + ' option[value="' + $('#tipusLlicenciaPrev' + i).val() + '"]').attr('selected', 'selected');
 			}
-			$('#formContracte option[value="' + $('#formContractePrev').val() + '"]').attr('selected', 'selected');
+			$('#formContracte' + i + ' option[value="' + $('#formContractePrev' + i).val() + '"]').attr('selected', 'selected');
 		}
-		$('#tipusServei option[value="' + $('#tipusServeiPrev').val() + '"]').attr('selected', 'selected');	
 		$('.selectpicker').selectpicker('refresh');		
-	}	
+		$('#vec' + i).on('keyup', function(){
+			var vec = $(this).val().replace(',','.');
+			if ($.isNumeric(vec)) {			
+				$(this).closest('.form-group').find('.iva').val((vec * 0.21).toFixed(2));
+				$(this).closest('.form-group').find('.inputIVA').val($(this).closest('.form-group').find('.iva').val());
+				$(this).closest('.form-group').find('.plic').val((vec * 1.21).toFixed(2));
+			} else {
+				$(this).val('');
+				$(this).closest('.form-group').find('.iva').val('');
+				$(this).closest('.form-group').find('.plic').val('');
+			}
+		});
+		$('#plic' + i).on('keyup', function(){
+			var plic = $(this).val().replace(',','.');
+			if ($.isNumeric(plic)) {
+				$(this).closest('.form-group').find('.vec').val((plic / 1.21).toFixed(2));
+				var vec = $(this).closest('.form-group').find('.vec').val()
+				$(this).closest('.form-group').find('.iva').val((vec * 0.21).toFixed(2));
+				$(this).closest('.form-group').find('.inputIVA').val($(this).closest('.form-group').find('.iva').val());
+				
+			} else {
+				$(this).closest('.form-group').find('.vec').val('');
+				$(this).closest('.form-group').find('.iva').val('');
+				$(this).val('');
+			}
+		});
+		$('#tipusContracte' + i).on('change', function(){
+			var tipus = $(this).val();
+			if (tipus != 'obr') {
+				$(this).closest('.form-group').find('.visibleObres').addClass('hidden');
+			}else{
+				$(this).closest('.form-group').find('.visibleObres').removeClass('hidden');
+			}
+		});
+		$('#reqLlicencia' + i).on('change', function(){
+			var tipus = $(this).val();
+			if (tipus == 'si') {
+				$(this).closest('.form-group').find('.visibleTipusLlicencia').removeClass('hidden');
+			}else{
+				$(this).closest('.form-group').find('.visibleTipusLlicencia').addClass('hidden');
+			}
+		});
+	}
 }

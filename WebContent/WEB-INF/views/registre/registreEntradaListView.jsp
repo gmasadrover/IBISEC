@@ -19,7 +19,7 @@
 
                 <!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Registre <small>Entrades</small>
                         </h1>
@@ -38,8 +38,8 @@
 					<form class="form-horizontal" method="POST" action="registreEntrada">						
 						<div class="form-group">
 							<input type="hidden" id="idCentreSelected" value="${idCentre}" />
-							<div class="col-lg-offset-1  col-lg-3">
-							    <div class="col-lg-12">
+							<div class="col-md-offset-1  col-md-3">
+							    <div class="col-md-12">
 							      <label>Filtrar per centre</label>
 							      <div>
 	                              	<select class="form-control selectpicker" name="idCentre" data-live-search="true" id="centresList">
@@ -48,8 +48,8 @@
 	                              </div>
 							    </div>						    
 						  	</div>		
-						  	<div class="col-lg-4">
-						  		<div class="col-lg-12">
+						  	<div class="col-md-4">
+						  		<div class="col-md-12">
 							  		<label>Filtrar per data petició</label>
 								  	<div class="input-group input-daterange datepicker">
 									    <input type="text" class="form-control" name="dataInici" value="${dataInici}">
@@ -59,15 +59,15 @@
 									<input type="checkbox" name="filterWithOutDate" ${filterWithOutDate ? "checked" : ""}> Filtrar fora dates
 								</div>                                
 						  	</div>
-						  	<div class="col-lg-4">
-							  	<div class="col-lg-2">
+						  	<div class="col-md-4">
+							  	<div class="col-md-2">
 							    	<input type="submit" class="btn btn-primary" name="filtrar" value="Aplicar Filtres">
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
 							<c:if test="${canCreateRegistre}">
-								<div class="col-lg-offset-1 col-lg-2">
+								<div class="col-md-offset-1 col-md-2">
 									<a href="novaEntrada" class="btn btn-primary" role="button">Nova entrada</a>
 								</div>
 							</c:if>
@@ -75,11 +75,11 @@
 					</form>
 				</div>
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h2>Entrades</h2>
                         <div class="table-responsive">
                         
-                            <table class="table table-striped table-bordered filerTable">
+                            <table class="table table-striped table-bordered filerTable ${canViewIncidencies ? 'withIncidencies' : 'withOutIncidencies'}">
                                 <thead>
                                     <tr>
                                         <th>Referència</th>
@@ -87,7 +87,10 @@
                                         <th>Remitent</th>
                                         <th>Contingut</th>
                                         <th>Centre</th>
-                                        <th>Incidència relacionada</th>
+                                        <c:if test="${canViewIncidencies}">
+                                        	<th>Incidència relacionada</th>
+                                        </c:if>
+                                        <th>Actuació relacionada</th>
                                         <th>Data</th>
                                     </tr>
                                 </thead>
@@ -97,16 +100,39 @@
 							          		<td><a href="registre?tipus=E&referencia=${entrada.id}">${entrada.id}</a></td>
 							            	<td>${entrada.getDataString()}</td>
 							            	<td>${entrada.remDes}</td>
-							            	<td>${entrada.contingut}</td>	
-							            	<td>${entrada.nomCentre}</td>	
-							             	<c:choose>
-											    <c:when test="${entrada.idIncidencia == '-1'}">
-											        <td></td>
-											    </c:when>    
+							            	<c:choose>
+											    <c:when test="${entrada.tipus == 'Sol·licitud Personal'}">												        
+											    	<td>Sol·licitud personal</td>	
+											   </c:when>    
 											    <c:otherwise>
-											        <td><a href="incidenciaDetalls?ref=${entrada.idIncidencia}">${entrada.idIncidencia}</a></td>
+											    	<td>${entrada.contingut}</td>									        
 							            	    </c:otherwise>
-											</c:choose>		
+											</c:choose>								            		
+							            	<td>${entrada.getNomCentresString()}</td>	
+							            	<c:if test="${canViewIncidencies}">
+								            	<td>
+								            	<c:forEach items="${entrada.getIdIncidenciesList()}" var="idIncidencia" >
+									             	<c:choose>
+													    <c:when test="${idIncidencia == '-1'}">												        
+													    </c:when>    
+													    <c:otherwise>
+													    	<a href="incidenciaDetalls?ref=${idIncidencia}">${idIncidencia}</a></br>										        
+									            	    </c:otherwise>
+													</c:choose>	
+												</c:forEach> 
+												</td>	
+											</c:if>
+											<td>
+							            	<c:forEach items="${entrada.getIdActuacionsList()}" var="idActuacio" >
+								             	<c:choose>
+												    <c:when test="${idActuacio == '-1'}">												        
+												    </c:when>    
+												    <c:otherwise>
+												    	<a href="actuacionsDetalls?ref=${idActuacio}">${idActuacio}</a></br>										        
+								            	    </c:otherwise>
+												</c:choose>	
+											</c:forEach> 
+											</td>	
 											<td>${entrada.data}</td>					           								            	
 							          	</tr>
 							       	</c:forEach>                                	
@@ -114,7 +140,7 @@
                             </table>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-md-6">
                     </div>
                 </div>
 
@@ -126,7 +152,7 @@
 
     </div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/registre/llistat.js"></script>
+    <script src="js/registre/llistat.js?<%=application.getInitParameter("datakey")%>"></script>
     <!-- /#wrapper -->
 </body>
 </html>

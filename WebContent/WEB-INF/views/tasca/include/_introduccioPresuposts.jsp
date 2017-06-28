@@ -6,17 +6,90 @@
 <m:setLocale value="${language}" />
 <m:setBundle basename="i18n.base"/>	
 <input type="hidden" id="liciMenor">
-<jsp:include page="_resumInformePrevi.jsp"></jsp:include>
 <div class="panel-body">
+	<c:set var="numPA" value="1" scope="request" />
+	<h2>Informe inicial</h2>	
+	<br />
+	<p>
+		<label>Tècnic:</label> ${informePrevi.usuari.getNomComplet()}
+	</p>
+	<p>
+		<label>Data:</label> ${informePrevi.getDataCreacioString()}
+	</p>
+	<p>			                     				
+		<label>Objecte:</label> ${informePrevi.propostaInformeSeleccionada.objecte}
+	</p>	
+	<p>			                     				
+		<label>Comentari tècnic:</label> ${informePrevi.propostaInformeSeleccionada.comentari}
+	</p>				                         	
+	<p>
+		<label>Tipus de contracte:</label> <m:message key="${informePrevi.propostaInformeSeleccionada.tipusObra}"/>
+	</p>
+	<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra} == 'obr'">
+		<div class="row">
+			<div class="col-md-4">
+				<label>Requereix llicència:</label> ${informePrevi.propostaInformeSeleccionada.llicencia ? "Si" : "No"}
+			</div>
+			<c:if test="${informePrevi.propostaInformeSeleccionada.llicencia}">
+				<div class="col-md-4">
+					<label>Tipus llicència:</label> ${informePrevi.propostaInformeSeleccionada.tipusLlicencia}
+				</div>
+			</c:if>
+		</div>
+		<p></p>
+	</c:if>
+	<p>
+		<label>Requereix formalització contracte:</label> ${informePrevi.propostaInformeSeleccionada.contracte ? "Si" : "No"}
+	</p>
+	<p>
+		<label>Termini d'execució:</label> ${informePrevi.propostaInformeSeleccionada.termini}
+	</p>	
+	<div class="row">
+		<div class="col-md-4">
+	       	<label>VEC:</label> ${informePrevi.propostaInformeSeleccionada.vec}€						                                
+		</div>
+		<div class="col-md-4"> 
+			<label>IVA:</label> ${informePrevi.propostaInformeSeleccionada.iva}€
+		</div>
+		<div class="col-md-4">
+			<label>Plic:</label> ${informePrevi.propostaInformeSeleccionada.plic}€
+	   	</div>					  
+	</div>	
+	<p></p>
+	<p>
+		<label>Arxius ajunts:</label>
+	</p>	
+	<div class="row col-md-12">
+		<c:forEach items="${informePrevi.adjunts}" var="arxiu" >
+			<a target="_blanck" href="downloadFichero?ruta=${arxiu.ruta}">${arxiu.nom}</a>
+			<br>
+		</c:forEach>					            		
+	</div>
+	<p>
+		<label>Comentari Cap:</label> ${informePrevi.comentariCap}
+	</p>
+	<p>
+		<label>Vistiplau:</label> ${informePrevi.usuariCapValidacio.getNomComplet()} - ${informePrevi.getDataCapValidacioString()}
+	</p>
+	<p>			                     				
+		<label>Notes:</label> ${informePrevi.notes}
+	</p>
+	<p>
+		<label>Partida:</label> ${informePrevi.partida}
+	</p>
+</div>
+<div class="panel-body">
+	<div id="afegirOfertes"></div>
 	<h2>Recerca presuposts</h2>
 	<p></p>
-	<form class="form-horizontal margin_top30" method="POST" action="DoAddPresuposts">
+	<form class="form-horizontal margin_top30" enctype="multipart/form-data" method="POST" action="DoAddOferta">
 		<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
+		<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">
+		<input type="hidden" name="idProposta" value="${informePrevi.idInf}">
    		<input type="hidden" name="idTasca" value="${tasca.idTasca}">
-   		<input type="hidden" name="idInformePrevi" id="idInformePrevi" value="${informePrevi.idInf}">	
-   		<input type="hidden" name="importReserva" value="${informePrevi.plic}">					                    		
+   		<input type="hidden" name="idInformePrevi" id="idInformePrevi" value="${informePrevi.idInf}">				                    		
    		<div class="form-group">
-        	<div class="col-lg-4">	
+        	<div class="col-md-4">	
          		<label>Empresa</label>									            	 										            	 	
             	<select class="selectpicker" name="llistaEmpreses" id="llistaEmpreses" data-live-search="true" data-size="10">						                                					                                	
                		<c:forEach items="${empresesList}" var="empresa">
@@ -24,77 +97,152 @@
                    	</c:forEach>	
                 </select>	
         	</div>
-         	<div class="col-lg-4">
+         	<div class="col-md-4">
            		<label>Oferta</label>
-            	<input name="oferta" id="oferta" placeholder="0000,00" required>
+            	<input name="oferta" id="oferta" placeholder="0000,00">
             	<label class="">€</label>
            	</div>	
-           	<div class="col-lg-4">												        
-            	<input class="btn btn-primary" type="button" name="afegirOferta" id="afegirOferta" value="Afegir oferta">
+           	<div class="col-md-4">												        
+            	<input class="btn btn-primary" type="submit" name="afegirOferta" value="Afegir oferta">
 			</div>				                       		
    		</div>
-  		<div class="form-group">
-     		<div class="col-lg-10">	
-				<label>Resum presupostos</label>							                        
-                <div class="table-responsive">							                        
-                    <table class="table table-striped table-bordered filerTable" id="ofertaTable">
-                        <thead>
-                            <tr>
-                                <th>Licitador</th>
-                                <th>Licitador</th>
-                                <th>Licitador</th>
-                                <th>Import Oferta</th>
-                                <th>Import Oferta</th>
-                                <th>Control</th>							                                        							                                       
-                            </tr>
-                        </thead>
-                        <tbody>							                                	                              	
-                        </tbody>
-                    </table>
-                </div>
+   		<div class="form.group">
+   			<div class="col-md-2">
+           		<label>Presupost:</label>
            	</div>
-		</div>		
-     	<div class="form-group">
-        	<div class="col-lg-6">
-            	<h2>Proposta tècnica</h2>	
-           		<label>Oferta seleccionada: </label>
-           		<label id="ofertaSeleccionada"></label>
-           		<input type="hidden" name="ofertaSeleccionadaNIF" id="ofertaSeleccionadaNIF" value="">
-           	</div>
-         	<div class="hidden" id="llistatOfertes"></div>
-       	</div>					                    	
-       	<div class="form-group">					                    			
-        	<div class="col-lg-12">							                    			
-     			<div class="row">	 
-     				<div class="col-lg-12">						                    						
-     					<textarea class="form-control" name="propostaTecnica" placeholder="Proposta tècnica" rows="3" required></textarea> 
-       				</div>
-       			</div>
-       		</div>						                       		
-       	</div>	
-      	<div class="form-group">
-        	<div class="col-lg-6">
-            	<label>Termini d'execució definitiu</label>
-             	<input name="termini" placeholder="1 mes" value="${informePrevi.termini}" required>
-        	</div>
-       	</div>
-     	<div class="form-group">
-        	<div class="col-lg-6">
-       			<div class="row">
-           			<div class="col-lg-12">
-                  		<input class="btn btn-primary" type="submit" name="guardar" value="Guardar proposta tècnica">
-					</div>
-       			</div>
-   			</div>	
-   			<c:if test="${esCap}">
-	 			<div class="col-lg-6">
-		    		<div class="row">
-		        		<div class="col-lg-12">
-		              		<input class="btn btn-success" type="submit" name="enviar" value="Vistiplau">
+            <div class="col-md-5">   
+                <input type="file" class="btn" name="file" /><br/>
+			</div> 
+   		</div>
+   	</form>
+   	
+ 		<div class="form-group">
+ 			<div class="hidden" id="llistatOfertes">
+ 				<c:forEach items="${informePrevi.llistaOfertes}" var="oferta" >
+ 					<input name="ofertes" value="${oferta.cifEmpresa}#${oferta.plic}">
+ 				</c:forEach>
+ 			</div>  			
+    		<div class="col-md-12">	
+			<label>Resum presupostos</label>							                        
+               <div class="table-responsive">							                        
+                   <table class="table table-striped table-bordered filerTable" id="ofertaTable">
+                       <thead>
+                           <tr>
+                           	<th>Oferta</th>
+                               <th>Licitador</th>
+                               <th>Licitador</th>
+                               <th>Licitador</th>
+                               <th>Import Oferta</th>
+                               <th>Import Oferta</th>
+                               <th>Presupost</th>
+                               <th>Control</th>							                                        							                                       
+                           </tr>
+                       </thead>
+                       <tbody>	
+                       	<c:forEach items="${informePrevi.llistaOfertes}" var="oferta" >
+                       		<tr>
+                       			<td>${oferta.idOferta}</td>
+                        		<td><a target="_blanck" href="empresa?cif=${oferta.cifEmpresa}">${oferta.nomEmpresa} (${oferta.cifEmpresa})</a></td>
+                        		<td>${oferta.nomEmpresa} (${oferta.cifEmpresa})</td>
+                        		<td>${oferta.cifEmpresa}</td>
+                        		<td>${oferta.plic} €</td>
+                        		<td>${oferta.plic}</td>
+                        		<td><a target="_blanck" href="downloadFichero?ruta=${oferta.presupost.ruta}">${oferta.presupost.nom}</a></td>
+                        		<td>
+                        			<input class="btn btn-danger btn-sm deleteOferta" data-idoferta="${oferta.idOferta}" type="button" value="Eliminar">
+                        			<c:if test="${canRealitzarPropostaTecnica}">
+                        				<input class="btn btn-primary btn-sm ofertaSeleccionada" type="button" value="Seleccionar">
+                        			</c:if>	                        			
+                        		</td>
+                       		</tr>
+                       	</c:forEach>						                                	                              	
+                       </tbody>
+                   </table>
+               </div>
+          	</div>
+	</div>
+	<form class="form-horizontal margin_top30" method="POST" target="_blank"  action="DoAddPropostaTecnica" onsubmit="setTimeout(function () { window.location.reload(); }, 10)">
+		<input type="hidden" name="idOfertaSeleccionada" id="idOfertaSeleccionada" value="">
+   		<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
+   		<input type="hidden" name="idIncidencia" value="${actuacio.idIncidencia}">
+   		<input type="hidden" name="idTasca" value="${tasca.idTasca}">
+   		<input type="hidden" name="idInformePrevi" id="idInformePrevi" value="${informePrevi.idInf}">	
+   		<input type="hidden" name="importReserva" value="${informePrevi.propostaInformeSeleccionada.plic}">		
+		<c:if test="${canRealitzarPropostaTecnica}">
+			<div class="form-group">
+	        	<div class="col-md-6">
+	            	<h2>Proposta tècnica</h2>	
+	           		<label>Oferta seleccionada: </label>
+	           		<label id="ofertaSeleccionada">${informePrevi.ofertaSeleccionada.nomEmpresa} (${informePrevi.ofertaSeleccionada.cifEmpresa})</label>	           		
+	           	</div>	         	
+	       	</div>					                    	
+	       	<div class="form-group">					                    			
+	        	<div class="col-md-12">							                    			
+	     			<div class="row">	 
+	     				<div class="col-md-12">						                    						
+	     					<textarea class="form-control" name="propostaTecnica" placeholder="Proposta tècnica" rows="3" required>${informePrevi.ofertaSeleccionada.comentari}</textarea> 
+	       				</div>
+	       			</div>
+	       		</div>						                       		
+	       	</div>	
+	      	<div class="form-group">
+	        	<div class="col-md-6">
+	            	<label>Termini d'execució definitiu</label>
+	             	<input name="termini" placeholder="1 mes" value="${informePrevi.ofertaSeleccionada.termini == '' ? informePrevi.propostaInformeSeleccionada.termini : informePrevi.ofertaSeleccionada.termini}" required>
+	        	</div>
+	       	</div>
+	       	<div class="form-group">
+	        	<div class="col-md-6">
+	       			<div class="row">
+	           			<div class="col-md-12">
+	                  		<input class="btn btn-primary" type="submit" name="guardar" value="Generar proposta tècnica">
 						</div>
-		     		</div>
-		 		</div>
-	 		</c:if>											    
-    	</div>	                       	
+	       			</div>
+	   			</div>	
+	   			<c:if test="${estatActuacio == 7 && esCap}">
+		 			<div class="col-md-6">
+			    		<div class="row">
+			        		<div class="col-md-12">
+			              		<input class="btn btn-success" type="submit" name="enviar" value="Vistiplau">
+							</div>
+			     		</div>
+			 		</div>
+		 		</c:if>											    
+    		</div> 
+		</c:if>	     	                     	
 	</form>
+	<c:if test="${estatActuacio == 6 || estatActuacio == 7}">
+		<div class="separator"></div>												        	
+		<div class="panel-body">
+	     	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddPA">
+		     	<input type="hidden" name="document" value="propostaTecnica">
+				<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
+				<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">
+				<input type="hidden" name="idTasca" value="${tasca.idTasca}">
+				<input type="hidden" name="idInforme" value="${informePrevi.idInf}">																	
+		       	<c:if test="${hasPropostaTecnica}">
+					<div class="col-md-12">	
+		               	<p>Proposta Tècnica signada:</p>													                  	
+		           		<a target="_blanck" href="downloadFichero?ruta=${propostaTecnicaFirmada.ruta}">
+							${propostaTecnicaFirmada.nom}
+						</a>																			
+					</div>
+				</c:if>																	
+				<div class="col-md-8">
+					<div class="row margin_top10">
+		    			<div class="col-md-12">
+		           			Pujar proposta tècnica signada: <input type="file" class="btn" name="informe" /><br/>																 		
+		    			</div>
+		    		</div>																													        			
+	      		</div>	
+	      		<div class="col-md-4">												        		
+	    		<div class="row">
+	        		<div class="col-md-12">															        																						 				
+				 		<input class="btn btn-success margin_top30" type="submit" name="guardar" value="Enviar proposta tècnica signada">
+				 	</div>
+	     		</div>
+	    		</div>
+	  		</form>	
+	  	</div>	
+	</c:if>
 </div>

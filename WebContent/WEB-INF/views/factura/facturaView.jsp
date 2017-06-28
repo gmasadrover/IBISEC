@@ -18,7 +18,7 @@
             <div class="container-fluid">
             	<!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Factura <small>Detalls</small>
                         </h1>
@@ -35,7 +35,7 @@
                 <!-- /.row -->
                 
                 <div class="row">
-                	<div class="col-lg-12">
+                	<div class="col-md-12">
                			<p style="color: red;">${errorString}</p>
                		</div>
                	 </div>
@@ -43,7 +43,7 @@
                 <c:if test="${not empty factura}">                	                		
                		<h2 class="margin_bottom30">Informació bàsica</h2>
 		    		<div class="row">			    				    				    		
-	                    <div class="col-xs-offset-1 col-lg-5">
+	                    <div class="col-xs-offset-1 col-md-5">
 	    					<p>
 								<label>Codi:</label> ${factura.idFactura}
 							</p>
@@ -64,7 +64,7 @@
 	                        	<label>Conformador: </label> ${factura.usuariConformador.getNomComplet()}
                             </p>    	                            
 	                  	</div>
-		             	<div class="col-xs-offset-1 col-lg-5">
+		             	<div class="col-xs-offset-1 col-md-5">
 		             		<p> 
 	                        	<label>Informe: </label> ${factura.idInforme}
                             </p> 
@@ -86,7 +86,7 @@
 	                    </div>		            	
                 	</div>
                 	<div class="row">
-                		<div class="col-xs-offset-1 col-lg-10 longText">
+                		<div class="col-xs-offset-1 col-md-10 longText">
                 			<p> 
 	                        	<label>Notes: </label> 
 	                        	${factura.notes}

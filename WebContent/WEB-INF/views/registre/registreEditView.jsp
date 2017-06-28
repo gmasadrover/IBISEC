@@ -18,7 +18,7 @@
             <div class="container-fluid">
             	<!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Registre <small>Modificar</small>
                         </h1>
@@ -35,14 +35,14 @@
                 <!-- /.row -->
                 
                 <div class="row">
-                	<div class="col-lg-12">
+                	<div class="col-md-12">
                			<p style="color: red;">${errorString}</p>
                		</div>
                	 </div>
                 <!-- /.row -->
                 
     			<div class="row">
-                    <div class="col-lg-12">                    	
+                    <div class="col-md-12">                    	
 		    			<form class="form-horizontal" method="POST" action="DoEditRegistre">
 		    				<div class="form-group">
 		    					<input type="hidden" name="idCodiRegistre" value="${registre.id}">        
@@ -94,6 +94,6 @@
 		<!-- /#page-wrapper -->
 	</div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/registre/registre.js"></script>
+    <script src="js/registre/registre.js?<%=application.getInitParameter("datakey")%>"></script>
 </body>
 </html>

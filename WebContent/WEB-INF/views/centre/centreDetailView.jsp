@@ -18,7 +18,7 @@
             <div class="container-fluid">
             	<!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Centre <small>Detalls</small>
                         </h1>
@@ -35,7 +35,7 @@
                 <!-- /.row -->
                 
                 <div class="row">
-                	<div class="col-lg-12">
+                	<div class="col-md-12">
                			<p style="color: red;">${errorString}</p>
                		</div>
                	 </div>
@@ -43,7 +43,7 @@
                 <c:if test="${not empty centre}">                	                		
                		<h2 class="margin_bottom30">Informació bàsica</h2>
 		    		<div class="row">			    				    				    		
-	                    <div class="col-xs-offset-1 col-lg-5">
+	                    <div class="col-xs-offset-1 col-md-5">
 	    					<p>
 								<label>Codi:</label> ${centre.idCentre}
 							</p>
@@ -59,7 +59,7 @@
                             </p>                          	
 	                         	                            
 	                  	</div>
-		             	<div class="col-xs-offset-1 col-lg-5">
+		             	<div class="col-xs-offset-1 col-md-5">
 		             		<p> 
 	                        	<label>Nom: </label> ${centre.nom}
                             </p> 
@@ -74,7 +74,7 @@
                 	<c:if test="${canViewIncidencies}">              	
 	                	<h2 class="margin_bottom30">Incidencies</h2>
 	                	<div class="row">
-		                	<div class="table-responsive col-xs-offset-1 col-lg-10">							                        
+		                	<div class="table-responsive col-xs-offset-1 col-md-10">							                        
 			                    <table class="table table-striped table-bordered filerTable" id="incidenciesTable">
 			                        <thead>
 			                            <tr>
@@ -108,7 +108,7 @@
 				    </c:if>
 	                <h2 class="margin_bottom30">Actuacions</h2>
                 	<div class="row">
-	                	<div class="table-responsive col-xs-offset-1 col-lg-10">							                        
+	                	<div class="table-responsive col-xs-offset-1 col-md-10">							                        
 		                    <table class="table table-striped table-bordered filerTable" id="actuacionsTable">
 		                        <thead>
 		                            <tr>
@@ -147,7 +147,7 @@
 		<!-- /#page-wrapper -->
 	</div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/centres/detalls.js"></script>
-    <script src="js/zones/zones.js"></script>
+    <script src="js/centres/detalls.js?<%=application.getInitParameter("datakey")%>"></script>
+    <script src="js/zones/zones.js?<%=application.getInitParameter("datakey")%>"></script>
 </body>
 </html>

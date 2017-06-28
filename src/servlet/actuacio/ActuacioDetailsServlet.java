@@ -30,6 +30,7 @@ import core.RegistreCore;
 import core.TascaCore;
 import core.UsuariCore;
 import utils.Fitxers;
+import utils.Fitxers.Fitxer;
 import utils.MyUtils;
 
 @WebServlet(urlPatterns = { "/actuacionsDetalls"})
@@ -51,6 +52,8 @@ public class ActuacioDetailsServlet extends HttpServlet {
    		response.sendRedirect(request.getContextPath() + "/");	 	
 	   }else{		   
 		   String referencia = request.getParameter("ref");
+		   String view = request.getParameter("view");
+		   int estatActuacio = 1;
 	       String errorString = null;
 	       Actuacio actuacio = new Actuacio();	
 	       Incidencia incidencia = new Incidencia();
@@ -66,8 +69,12 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       boolean canCreateInformePrevi = false;
 	       boolean canCreateTasca = false;
 	       boolean canCreateFactura = false;
+	       boolean canCreateRegistre = false;
+	       boolean hasAutoritzacioPA = false;
+	       Fitxer vistiplauPropostaActuacioFirmada = new Fitxer();
 	       try {
 	    	   actuacio = ActuacioCore.findActuacio(conn, referencia);
+	    	   actuacio.setSeguiment(ActuacioCore.isSeguimentActuacio(conn, referencia, usuari.getIdUsuari()));
 	    	   incidencia = IncidenciaCore.findIncidencia(conn, actuacio.getIdIncidencia());
 	    	   actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia()));
 	    	   tasques = TascaCore.findTasquesActuacio(conn, referencia);	    
@@ -82,12 +89,19 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	    	   canCreateInformePrevi = UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_crear) || "gerencia".equals(usuari.getDepartament());
 	    	   canCreateTasca = UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_crear) || "gerencia".equals(usuari.getDepartament());
 	    	   canCreateFactura = UsuariCore.hasPermision(conn, usuari, SectionPage.factures_crear);
+	    	   canCreateRegistre = UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_crear);
+	    	   if (actuacio.isPaAprovada()) {
+	    		   estatActuacio = 5;
+	    		   hasAutoritzacioPA = true;
+	    		   //if ()
+	    	   }
 	       } catch (SQLException e) {
 	           e.printStackTrace();
 	           errorString = e.getMessage();
 	       }
 	       // Store info in request attribute, before forward to views
 	       request.setAttribute("errorString", errorString);
+	       request.setAttribute("view", view);
 	       request.setAttribute("actuacio", actuacio);
 	       request.setAttribute("incidencia", incidencia);
 	       request.setAttribute("tasques", tasques);
@@ -102,7 +116,11 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       request.setAttribute("canCreateTasca", canCreateTasca);
 	       request.setAttribute("canModificarActuacio", canModificarActuacio);
 	       request.setAttribute("canCreateFactura", canCreateFactura);
+	       request.setAttribute("canCreateRegistre", canCreateRegistre);
+	       request.setAttribute("estatActuacio", estatActuacio);
+	       request.setAttribute("hasAutoritzacioPA", hasAutoritzacioPA);
 	       request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "Actuacions"));
+	       request.setAttribute("idUsuariLogg", usuari.getIdUsuari());
 	       // Forward to /WEB-INF/views/homeView.jsp
 	       // (Users can not access directly into JSP pages placed in WEB-INF)
 	       RequestDispatcher dispatcher = this.getServletContext().getRequestDispatcher("/WEB-INF/views/actuacio/actuacioView.jsp");

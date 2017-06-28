@@ -18,7 +18,7 @@
             <div class="container-fluid">
             	<!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Empresa <small>Afegir UTE</small>
                         </h1>
@@ -35,18 +35,18 @@
                 <!-- /.row -->
                 
                 <div class="row">
-                	<div class="col-lg-12">
+                	<div class="col-md-12">
                			<p style="color: red;">${errorString}</p>
                		</div>
                	 </div>
                 <!-- /.row -->
                 
     			<div class="row">
-                    <div class="col-lg-12">                    	
+                    <div class="col-md-12">                    	
 		    			<form class="form-horizontal" method="POST" action="doCreateUTE">
 		    				<h2 class="margin_bottom30">Informació UTE</h2>
 		    				<div class="row">
-			    				<div class="col-lg-6">	
+			    				<div class="col-md-6">	
 			    				 	<div class="form-group">
 		                                <label class="col-xs-3 control-label">CIF</label>
 		                                <div class="col-xs-6">
@@ -54,7 +54,7 @@
 		                                </div>
 		                            </div>			                            
 			    				</div>
-			    				<div class="col-lg-6">	
+			    				<div class="col-md-6">	
 			    					<div class="form-group">
 		                                <label class="col-xs-3 control-label">Nom</label>
 		                                <div class="col-xs-6">
@@ -65,10 +65,10 @@
 			    			</div>  
 			    			<h2 class="margin_bottom30">Empreses UTE</h2>
 			    			<div class="row">
-			    				<div class="col-lg-12">	
+			    				<div class="col-md-12">	
 		                            <div class="form-group">
 		                            	<div class="hidden" id="llistatEmpreses"></div>
-							        	<div class="col-lg-offset-1 col-lg-4">	
+							        	<div class="col-md-offset-1 col-md-4">	
 							         		<label>Empresa</label>									            	 										            	 	
 							            	<select class="selectpicker" name="llistaEmpreses" id="llistaEmpreses" data-live-search="true" data-size="10">						                                					                                	
 							               		<c:forEach items="${empresesList}" var="empresa">
@@ -76,7 +76,7 @@
 							                   	</c:forEach>	
 							                </select>	
 							        	</div>					         	
-							           	<div class="col-lg-4">												        
+							           	<div class="col-md-4">												        
 							            	<input class="btn btn-primary" type="button" name="afegir" id="afegir" value="Afegir">
 										</div>				                       		
 							   		</div>	
@@ -84,7 +84,7 @@
 						   	</div>
 						   	<div class="row">
 			    				<div class="form-group">
-				   					<div class="col-lg-offset-1 col-lg-10">						     						                        
+				   					<div class="col-md-offset-1 col-md-10">						     						                        
 						                <div class="table-responsive">							                        
 						                    <table class="table table-striped table-bordered filerTable" id="empresesTable">
 						                        <thead>
@@ -119,7 +119,7 @@
 		<!-- /#page-wrapper -->
 	</div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/zones/zones.js"></script>
-    <script src="js/empresa/crearUTE.js"></script>
+    <script src="js/zones/zones.js?<%=application.getInitParameter("datakey")%>"></script>
+    <script src="js/empresa/crearUTE.js?<%=application.getInitParameter("datakey")%>"></script>
 </body>
 </html>

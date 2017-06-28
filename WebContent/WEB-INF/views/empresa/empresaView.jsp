@@ -18,7 +18,7 @@
             <div class="container-fluid">
             	<!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Empresa <small>${empresa.name}</small>
                         </h1>
@@ -35,12 +35,12 @@
                 <!-- /.row -->
                 
                 <div class="row">
-                	<div class="col-lg-12">
+                	<div class="col-md-12">
                			<p style="color: red;">${errorString}</p>
                		</div>
                	 </div>
                 <!-- /.row -->
-                <div class="col-lg-12 panel-group" id="accordion">
+                <div class="col-md-12 panel-group" id="accordion">
 	                <c:if test="${not empty empresa}">        
 	                	<div class="panel panel-default">
 	            		  	<div class="panel-heading">
@@ -51,7 +51,7 @@
 						    <div id="informacioBasica" class="panel-collapse collapse">					    	
 						      	<div class="panel-body">  
 						    		<div class="row">			    				    				    		
-					                    <div class="col-xs-offset-1 col-lg-5">
+					                    <div class="col-xs-offset-1 col-md-5">
 					    					<p>
 												<label>CIF:</label> ${empresa.cif}
 											</p>
@@ -71,7 +71,7 @@
 					                            </p>
 					                    	</c:if> 	                    		                            
 					                  	</div>
-						             	<div class="col-xs-offset-1 col-lg-5">
+						             	<div class="col-xs-offset-1 col-md-5">
 						             		<p> 
 					                        	<label>Nom: </label> ${empresa.name}
 				                            </p>
@@ -93,7 +93,7 @@
 				                	</div>
 				                	<c:if test="${! empresa.isUte()}"> 
 					                	<div class="row">
-					                		<div class="col-xs-offset-1 col-lg-10 longText">
+					                		<div class="col-xs-offset-1 col-md-10 longText">
 					                			<p> 
 						                        	<label>Objecte social: </label> 
 						                        	${empresa.objecteSocial}
@@ -110,7 +110,7 @@
 						        	<a data-toggle="collapse" data-parent="#accordion" href="#administradors">
 										<c:choose>
 						                 	<c:when test="${empresa.isUte()}">Gerents</c:when>
-					                		<c:otherwise>Administradors</c:otherwise>
+					                		<c:otherwise>Representació</c:otherwise>
 					                	</c:choose>	 
 									</a>
 						      	</h4>
@@ -118,7 +118,7 @@
 						    <div id="administradors" class="panel-collapse collapse">					    	
 						      	<div class="panel-body">  
 				                	<div class="row">
-					                	<div class="table-responsive col-lg-12">							                        
+					                	<div class="table-responsive col-md-12">							                        
 						                    <table class="table table-striped table-bordered filerTable" id="administradorsTable">
 						                        <thead>
 						                            <tr>
@@ -170,21 +170,21 @@
 						                		<a target="_blanck" href="downloadFichero?ruta=${empresa.solEconomica.ruta}">${empresa.solEconomica.nom}</a>
 						                	</div>
 						                	<div class="row">
-						                		<div class="col-lg-10">
+						                		<div class="col-md-10">
 						                			<p>
 							                        	<label>Exercici:</label> ${empresa.getExerciciEconomicString()}
 							                        </p> 	                		
 					                        	</div>
 						                	</div>
 						                	<div class="row">
-						                		<div class="col-lg-10">
+						                		<div class="col-md-10">
 						                			<p>
 							                        	<label>Dipositat en Registre Mercantil amb data:</label> ${empresa.getRegistreMercantilDataString()}
 							                        </p> 	                		
-					                        	</div>
+					                        	</div>					                        	
 						                	</div>
 						                	<div class="row">
-						                		<div class="col-lg-10">
+						                		<div class="col-md-10">
 						                			<p>
 							                        	<label>Ràtio A/P:</label> ${empresa.getRatioAP()}
 							                        </p> 	                		
@@ -208,9 +208,16 @@
 							      	</h4>
 							    </div>
 							    <div id="classificacio" class="panel-collapse collapse">					    	
-						      		<div class="panel-body">        	                
+						      		<div class="panel-body">    
+						      			<div class="row">
+					                		<div class="col-md-10">
+					                			<p>
+						                        	<label>Darrera data vigència:</label> ${empresa.getDataVigenciaClassificacioString()}
+						                        </p> 	                		
+				                        	</div>
+					                	</div>    	                
 						                <div class="row">	                		
-					                        <div class="col-xs-offset-2 col-lg-7">	
+					                        <div class="col-xs-offset-2 col-md-7">	
 												<label>Classificació</label>							                        
 								                <div class="table-responsive">							                        
 								                    <table class="table table-striped table-bordered filerTable" id="classificacioTable">
@@ -246,9 +253,9 @@
 							    <div id="acreditacions" class="panel-collapse collapse">					    	
 						      		<div class="panel-body">        	                
 						                <div class="row">
-					                		<div class="col-lg-12">
+					                		<div class="col-md-12">
 					                			<div class="form-group">
-					                				<div class="col-xs-offset-1 col-lg-10">
+					                				<div class="col-xs-offset-1 col-md-10">
 						                				<div class="checkbox">
 									                        <label>
 									                          	<input name="acreditacio1" type="checkbox" ${empresa.acreditacio1 ? 'checked' : ''} disabled> Certificat positiu de l'Agència Estatal d'Administració Tributària, 
@@ -257,14 +264,14 @@
 									                	</div>
 									                </div>
 					                			</div>
-					                			<div class="col-xs-offset-2 col-lg-4">
+					                			<div class="col-xs-offset-2 col-md-4">
 						                			<div class="form-group">
 						                                <div class="form-group">
 							                                <label>Expedit amb data: </label> ${empresa.getDateExpAcreditacio1String()}
 							                            </div>			
 						                            </div>
 						                        </div>
-						                        <div class="col-lg-6">
+						                        <div class="col-md-6">
 						                			<div class="form-group">		                                
 														<c:if test="${empresa.isCaducadaAcreditacio1()}">
 															<label class="col-xs-1 control-label">Caducat</label>
@@ -272,7 +279,7 @@
 						                            </div>
 						                        </div>      
 					                			<div class="form-group">
-					                				<div class="col-xs-offset-1 col-lg-10">
+					                				<div class="col-xs-offset-1 col-md-10">
 						                				<div class="checkbox">
 									                        <label>
 									                          	<input name="acreditacio2" type="checkbox" ${empresa.acreditacio2 ? 'checked' : ''} disabled> Certificat de la Tresoreria General de la Seguretat Social del Ministeri
@@ -282,12 +289,12 @@
 									                	</div>
 									                </div>
 					                			</div>
-					                			<div class="col-xs-offset-2 col-lg-4">
+					                			<div class="col-xs-offset-2 col-md-4">
 						                			<div class="form-group">
 						                                <label>Expedit amb data: </label> ${empresa.getDateExpAcreditacio2String()}
 						                            </div>
 						                        </div>
-						                        <div class="col-lg-6">
+						                        <div class="col-md-6">
 						                			<div class="form-group">		                                
 														<c:if test="${empresa.isCaducadaAcreditacio2()}">
 															<label class="col-xs-1 control-label">Caducat</label>
@@ -295,7 +302,7 @@
 						                            </div>
 						                        </div>        
 					                			<div class="form-group">
-					                				<div class="col-xs-offset-1 col-lg-10">
+					                				<div class="col-xs-offset-1 col-md-10">
 						                				<div class="checkbox">
 									                        <label>
 									                          	<input name="acreditacio3" type="checkbox" ${empresa.acreditacio3 ? 'checked' : ''} disabled> Certificat de la secretària de la Junta Consultiva de Contratació Administrativa
@@ -305,14 +312,14 @@
 									                	</div>
 									                </div>
 					                			</div>
-					                			<div class="col-xs-offset-2 col-lg-4">
+					                			<div class="col-xs-offset-2 col-md-4">
 						                			<div class="form-group">
 						                                <div class="form-group">
 							                                <label>Expedit amb data: </label> ${empresa.getDateExpAcreditacio3String()}
 							                            </div>
 						                            </div>
 						                        </div>
-						                        <div class="col-lg-6">
+						                        <div class="col-md-6">
 						                			<div class="form-group">		                                
 														<c:if test="${empresa.isCaducadaAcreditacio3()}">
 															<label class="col-xs-1 control-label">Caducat</label>
@@ -335,7 +342,7 @@
 							    <div id="empreses" class="panel-collapse collapse">					    	
 						      		<div class="panel-body">        
 					                	<div class="row">
-						                	<div class="table-responsive col-lg-12">							                        
+						                	<div class="table-responsive col-md-12">							                        
 							                    <table class="table table-striped table-bordered filerTable" id="empresesUTETable">
 							                        <thead>
 							                            <tr>
@@ -367,7 +374,7 @@
 						    <div id="ofertes" class="panel-collapse collapse">					    	
 					      		<div class="panel-body">
 				                	<div class="row">	                		
-					                        <div class="col-xs-offset-2 col-lg-7">	
+					                        <div class="col-xs-offset-2 col-md-7">	
 												<label>Ofertes</label>							                        
 								                <div class="table-responsive">							                        
 								                    <table class="table table-striped table-bordered filerTable" id="ofertesTable">
@@ -407,7 +414,7 @@
 						    <div id="infoadicional" class="panel-collapse collapse">					    	
 					      		<div class="panel-body">
 				                	<div class="row">
-				                		<div class="col-xs-offset-1 col-lg-10 longText">
+				                		<div class="col-xs-offset-1 col-md-10 longText">
 				                			<p> 
 					                        	<label>Informació adicional: </label> 
 					                        	${empresa.informacioAdicional}
@@ -420,7 +427,7 @@
 			                	
 	                	<div class="row">
 	               			<c:if test="${canModificar}">
-								<div class="col-md-offset-9 col-lg-2 margin_top30">
+								<div class="col-md-offset-9 col-md-2 margin_top30">
 									<a href="editEmpresa?cif=${empresa.cif}" class="btn btn-primary" role="button">Modificar</a>
 								</div>
 							</c:if>
@@ -434,7 +441,7 @@
 		<!-- /#page-wrapper -->
 	</div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/empresa/modificar.js"></script>
-    <script src="js/zones/zones.js"></script>
+    <script src="js/empresa/modificar.js?<%=application.getInitParameter("datakey")%>"></script>
+    <script src="js/zones/zones.js?<%=application.getInitParameter("datakey")%>"></script>
 </body>
 </html>

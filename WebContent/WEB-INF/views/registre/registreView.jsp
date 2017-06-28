@@ -19,7 +19,7 @@
 
                 <!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Registre <small>Detalls registre</small>
                         </h1>
@@ -35,35 +35,57 @@
                 </div>
                 <!-- /.row -->
 				<div class="row">
-	                <div class="col-lg-12">
+	                <div class="col-md-12">
 	                    <div class="panel panel-success">
 	                        <div class="panel-heading">
 	                           	<div class="row">
-	                        		<div class="col-lg-4">
+	                        		<div class="col-md-4">
 	                        			 Referència: ${registre.id} 
 	                        	    </div>
-	                        	    <div class="col-lg-4">
+	                        	    <div class="col-md-4">
 	                        			 Data entrada: ${registre.getDataString()} 
 	                        	    </div>	  
-	                        	    <div class="col-lg-4">
-	                        			 Centre: ${registre.nomCentre} 
+	                        	    <div class="col-md-4">
+	                        			 Centre: </br>
+	                        			 <c:forEach items="${registre.getNomCentresList()}" var="nomCentre" >
+	                        			 	${nomCentre} </br>
+	                        			 </c:forEach>	                        			 
 	                        	    </div>	                        		
 	                        	</div>
 	                        </div>
 	                        <div class="panel-body">
-	                        	<div class="row panel-body">
-	                        		<p>${registre.contingut}</p>
-	                        	</div>	
-	                        	<div class="row panel-body">
-	                        		<p>Arxius adjunts:</p>
-	                        		<c:forEach items="${arxius}" var="arxiu" >
-					            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.ruta}">
-											${arxiu.nom}
-										</a>
-										<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
-										<br>
-									</c:forEach>
-	                        	</div>
+	                        	<c:choose>
+								    <c:when test="${registre.tipus == 'Sol·licitud Personal'}">			
+								    	<div class="row panel-body">
+			                        		<p>Sol·licitud personal</p>
+			                        	</div>		
+								   	</c:when>    
+								   	 <c:when test="${registre.tipus == 'Resposta Sol·licitud Personal'}">			
+								    	<div class="row panel-body">
+			                        		<p>Resposta Sol·licitud Personal</p>
+			                        	</div>		
+								   	</c:when>    
+								   	 <c:when test="${registre.tipus == 'Tramesa documentació Personal'}">			
+								    	<div class="row panel-body">
+			                        		<p>Tramesa documentació Personal</p>
+			                        	</div>		
+								   	</c:when>    
+								    <c:otherwise>
+								    	<div class="row panel-body">
+			                        		<p>${registre.contingut}</p>
+			                        	</div>	
+			                        	<div class="row panel-body">
+			                        		<p>Arxius adjunts:</p>
+			                        		<c:forEach items="${arxius}" var="arxiu" >
+							            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.ruta}">
+													${arxiu.nom}
+												</a>
+												<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
+												<br>
+											</c:forEach>
+			                        	</div>								        
+				            	    </c:otherwise>
+								</c:choose>		                        	
 	                        	<c:if test="${canCreateRegistre}">	  
 		                        	<div class="row">            			
 										<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadFichero">
@@ -72,7 +94,7 @@
 					                            <div class="col-xs-5">   
 					                                <input type="file" class="btn" name="file" /><br/>
 												</div> 
-												<input type="hidden" name="idIncidencia" value="${registre.idIncidencia}">
+												<input type="hidden" name="idIncidencies" value="${registre.idIncidencies}">
 												<input type="hidden" name="tipus" value="RegistreE">
 												<input type="hidden" name="idTipus" value="${registre.id}">
 												<input type="hidden" name="redirect" value="/registre?tipus=${tipus}&referencia=${registre.id}">				    
@@ -86,14 +108,17 @@
 	                        </div>
 	                        <div class="panel-footer">
 	                        	<div class="row">
-	                        		<div class="col-lg-4">
+	                        		<div class="col-md-4">
 	                        			${tipus == "E" ? "Remitent" : "Destinatari"}: ${registre.remDes}	                        			
 	                        		</div>
-	                        		<div class="col-lg-4">            			
+	                        		<div class="col-md-4">            			
 	                        		</div>
-	                        		<c:if test="${registre.idIncidencia != '-1'}">
-		                        		<div class="col-lg-4">
-		                        			Incidència relacionada: <a href="incidenciaDetalls?ref=${registre.idIncidencia}">${registre.idIncidencia}</a>                        			
+	                        		<c:if test="${registre.idIncidencies != '-1#' && registre.idIncidencies != '-1'}">
+		                        		<div class="col-md-4">
+		                        			Incidències relacionades: </br>
+		                        			<c:forEach items="${registre.getIdIncidenciesList()}" var="idIncidencia" >
+	                        			 		<a href="incidenciaDetalls?ref=${idIncidencia}">${idIncidencia}</a></br>
+	                        			 	</c:forEach>           			
 		                        		</div>
 		                        	</c:if>
 	                        	</div>

@@ -51,7 +51,7 @@ public class ActuacioListServlet extends HttpServlet {
 			Calendar cal = Calendar.getInstance(); 
 			Date dataFi = cal.getTime();
 			String dataFiString = df.format(dataFi);	 
-			cal.add(Calendar.MONTH, -2);
+			cal.set(2017, 0, 1);
 			Date dataInici = cal.getTime();
 			String dataIniciString = df.format(dataInici);	
 			String errorString = null;
@@ -66,15 +66,17 @@ public class ActuacioListServlet extends HttpServlet {
 					dataInici = null;
 					dataFi = null;
 					if (filterWithOutDate == null){
-						dataInici = df.parse(request.getParameter("dataInici"));
-		    			dataIniciString = request.getParameter("dataInici");
-		    			dataFi = df.parse(request.getParameter("dataFi"));
+						dataInici = null;
+						dataFi = null;
+						if (!request.getParameter("dataInici").isEmpty()) dataInici = df.parse(request.getParameter("dataInici"));
+						dataIniciString = request.getParameter("dataInici");
+		    			if (!request.getParameter("dataFi").isEmpty()) dataFi = df.parse(request.getParameter("dataFi"));	    			
 		    			dataFiString = request.getParameter("dataFi");
 					}					
 					result = ActuacioCore.searchActuacions(conn, idCentre, estat, dataInici, dataFi);
 				} else {
 					filterWithOutDate = "on";
-					result = ActuacioCore.topAcuacions(conn);
+					result = ActuacioCore.searchActuacions(conn, idCentre, estat, dataInici, dataFi);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();

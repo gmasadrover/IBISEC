@@ -49,7 +49,7 @@ public class DoAddHistoricServlet extends HttpServlet {
 			e1.printStackTrace();
 		}
 		
-	    int idTasca = Integer.parseInt(multipartParams.getParametres().get("idTasca"));
+	    String idTasca = multipartParams.getParametres().get("idTasca");
 	    String idIncidencia = multipartParams.getParametres().get("idIncidencia");
 	    String idActuacio = multipartParams.getParametres().get("idActuacio");
 	    String reasignar = multipartParams.getParametres().get("reasignar");
@@ -67,7 +67,7 @@ public class DoAddHistoricServlet extends HttpServlet {
 			errorString = e.getMessage();
 		}
 	   	//Guardar adjunts
-	   	Fitxers.guardarFitxer(multipartParams.getFitxers(), idIncidencia, idActuacio, "Tasca", String.valueOf(idTasca), idComentari);
+	   	Fitxers.guardarFitxer(multipartParams.getFitxers(), idIncidencia, idActuacio, "Tasca", idTasca, idComentari, "", "");
 	   	
 	   	// Store infomation to request attribute, before forward to views.
 	   	request.setAttribute("errorString", errorString);
@@ -82,9 +82,9 @@ public class DoAddHistoricServlet extends HttpServlet {
 	   			String idUsuariNou = multipartParams.getParametres().get("idUsuari");
 	   			try {
 	   				if (NumberUtils.isNumber(idUsuariNou)) {
-	   					TascaCore.reasignar(conn, Integer.parseInt(idUsuariNou), idTasca);
+	   					TascaCore.reasignar(conn, Integer.parseInt(idUsuariNou), Integer.parseInt(idTasca));
 	   				} else {
-	   					TascaCore.reasignar(conn, UsuariCore.finCap(conn, idUsuariNou).getIdUsuari(), idTasca);
+	   					TascaCore.reasignar(conn, UsuariCore.finCap(conn, idUsuariNou).getIdUsuari(),  Integer.parseInt(idTasca));
 	   				}
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
@@ -93,7 +93,7 @@ public class DoAddHistoricServlet extends HttpServlet {
 	   			response.sendRedirect(request.getContextPath() + "/tascaList");
 	   		}else if (tancar != null) { // tancam incid�ncia
 	   			try {
-					TascaCore.tancar(conn, idTasca);
+					TascaCore.tancar(conn, Integer.parseInt(idTasca));
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

@@ -3,7 +3,6 @@ package servlet.tasca;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -12,25 +11,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.Oferta;
 import bean.User;
 import core.ActuacioCore;
-import core.EmpresaCore;
 import core.OfertaCore;
 import core.TascaCore;
+import core.UsuariCore;
 import utils.MyUtils;
 
 /**
  * Servlet implementation class DoAddPresupostsServlet
  */
-@WebServlet("/DoAddPresuposts")
-public class DoAddPresupostsServlet extends HttpServlet {
+@WebServlet("/DoAddPropostaTecnica")
+public class DoAddPropostaTecnicaServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public DoAddPresupostsServlet() {
+    public DoAddPropostaTecnicaServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -42,48 +40,20 @@ public class DoAddPresupostsServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		
 		Connection conn = MyUtils.getStoredConnection(request);		
-		
 	    int idTasca = Integer.parseInt(request.getParameter("idTasca"));
+	    String idIncidencia = request.getParameter("idIncidencia");
 	    String idActuacio = request.getParameter("idActuacio");
 	    String idInforme = request.getParameter("idInformePrevi");
 	    User Usuari = MyUtils.getLoginedUser(request.getSession());	   
 	    String comentari = request.getParameter("propostaTecnica");	   
 	    String errorString = null;
 	    String termini = request.getParameter("termini");
-	    String seleccionada = request.getParameter("ofertaSeleccionadaNIF");
+	    String seleccionada = request.getParameter("idOfertaSeleccionada");
 	    //Agafam totes les ofertes
-	    String[] paramValues = request.getParameterValues("ofertes");
-	    String cifEmpresa = "";
-	    double plic = 0;
-	    String ofertesPresentades = "Les ofertes han estat les següents:<br>"; 
 	    String guardar = request.getParameter("guardar");
 	    if (guardar != null) {
 		  	try {	   	
-		  		for(int i=0; i<paramValues.length; i++) {
-			    	cifEmpresa = paramValues[i].split("#")[0];
-			    	plic = Double.parseDouble(paramValues[i].split("#")[1]);
-			    	Oferta oferta = new Oferta();
-			    	oferta.setIdInforme(idInforme);
-			   		oferta.setIdActuacio(idActuacio);
-			   		oferta.setCifEmpresa(cifEmpresa);
-			   		oferta.setPlic(plic);
-			   		DecimalFormat df = new DecimalFormat("#.##");  
-			   		double vec = plic / 1.21;
-			   		oferta.setVec(Double.valueOf(df.format(vec).replace(",",".")));
-			   		oferta.setIva(Double.valueOf(df.format(vec * 0.21).replace(",",".")));
-			   		if (seleccionada.equals(cifEmpresa)) {
-			   			oferta.setTermini(termini);
-			   			oferta.setComentari(comentari);
-			   		}
-			   		oferta.setSeleccionada(seleccionada.equals(cifEmpresa));
-			   		oferta.setDescalificada(false);
-			   		ofertesPresentades += "Empresa: " + EmpresaCore.findEmpresa(conn, cifEmpresa).getName() + " Oferta: " + plic + "€<br>";
-			   		//Guardar oferta	
-			   		OfertaCore.novaOferta(conn, oferta, Usuari.getIdUsuari());
-			    }
-		  		//Registrar comentari;	 
-		   		String comentariHistoral = ofertesPresentades + "El tècnic proposa:<br>" + comentari + "<br>Amb un termini d'execució de: " + termini;	   		
-		   		TascaCore.nouHistoric(conn, idTasca, comentariHistoral, Usuari.getIdUsuari());
+		  		OfertaCore.seleccionarOferta(conn, idInforme, seleccionada, termini, comentari);	
 		   		/*;*/
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -91,16 +61,7 @@ public class DoAddPresupostsServlet extends HttpServlet {
 				errorString = e.getMessage();
 			} 
 	    } else {	    	
-	   		try {
-	   			OfertaCore.validacioCapOferta(conn, idInforme, Usuari.getIdUsuari());
-	   			ActuacioCore.actualitzarActuacio(conn, idActuacio, "Proposta tècnica realitzada");
-	   			TascaCore.nouHistoric(conn, idTasca, "Proposta tècnica aprovada", Usuari.getIdUsuari());
-	   			TascaCore.reasignar(conn, 902, idTasca);
-				TascaCore.tancar(conn, idTasca);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	   		
 	    }
 	   	// Store infomation to request attribute, before forward to views.
 	   	request.setAttribute("errorString", errorString);
@@ -111,7 +72,11 @@ public class DoAddPresupostsServlet extends HttpServlet {
 	   		dispatcher.forward(request, response);
 	   	}// If everything nice. Redirect to the product listing page.            
 	   	else {
-	   		response.sendRedirect(request.getContextPath() + "/tasca?id=" + idTasca);	   		
+	   		if (guardar != null) {
+	   			response.sendRedirect(request.getContextPath() + "/CrearDocument?tipus=PTObres&idIncidencia=" + idIncidencia + "&idActuacio=" + idActuacio + "&idInforme=" + idInforme); 
+	   		} else {
+	   			response.sendRedirect(request.getContextPath() + "/tasca?id=" + idTasca);	  
+	   		}
 	   	}		
 	}
 

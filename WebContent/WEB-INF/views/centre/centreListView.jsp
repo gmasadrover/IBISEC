@@ -19,7 +19,7 @@
 
                 <!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Centres <small>Centres</small>
                         </h1>
@@ -38,21 +38,21 @@
 				<%-- <div class="row">
 					<form class="form-horizontal" method="POST" action="centres">						
 						<div class="form-group">
-						  	<div class="col-lg-2">
+						  	<div class="col-md-2">
 							    <div class="checkbox">
 							      <label>
 							        <input type="checkbox" name="ambIncidencia" ${ambIncidencia ? "checked" : ""}> Amb incidències actives
 							      </label>
 							    </div>
 						  	</div>						  				 
-						  	<div class="col-lg-2">
+						  	<div class="col-md-2">
 						    	<input type="submit" class="btn btn-primary" name="filtrar" value="Aplicar Filtres">
 							</div>
 						</div>	
 					</form>
 				</div>			 --%>	
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h2>Centres</h2>
                         <div class="table-responsive">                        
                             <table class="table table-striped table-bordered filerTable">
@@ -83,7 +83,7 @@
 
     </div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/centres/llistat.js"></script>
+    <script src="js/centres/llistat.js?<%=application.getInitParameter("datakey")%>"></script>
     <!-- /#wrapper -->
 </body>
 </html>

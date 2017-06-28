@@ -19,7 +19,7 @@
        		<div class="container-fluid" style="height:100%">
        			<!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Actuacions <small>Actuacions</small>
                         </h1>
@@ -33,91 +33,82 @@
                         </ol>
                     </div>
                 </div>
-	       		<%-- <div class="row">
-					<form class="form-horizontal" method="POST" action="actuacions">						
-						<div class="form-group">						
-							<input type="hidden" id="idCentreSelected" value="${idCentre}" />
+	       		<div class="row">
+					<form class="form-horizontal" method="POST" action="llistats">						
+						<div class="form-group">				
+							<input type="hidden" id="tipusSelected" value="${tipusFilter}" />
 							<input type="hidden" id="estatSelected" value="${estatFilter}" />
-							<div class="col-lg-offset-1  col-lg-3">
-							    <div class="col-lg-12">
-							      <label>Filtrar per centre</label>
+							<div class="col-md-offset-1  col-md-3">
+							    <div class="col-md-12">
+							      <label>Tipus actuació</label>
 							      <div>
-		                                <select class="form-control selectpicker" name="idCentre" data-live-search="true" id="centresList">
-		                                	<option value="-1">Tots els centres</option>
+		                                <select class="form-control selectpicker" name="tipus" data-live-search="true" id="tipusList">
+		                                	<option value="-1">Qualsevol</option>
+		                                	<option value="obra menor">Obra Menor</option>
+		                                	<option value="obra major">Obra Major</option>
 		                                </select>
 		                             </div>
 							    </div>						    
 						  	</div>	
-						  	<div class="col-lg-4">
-						  		<div class="col-lg-12">
-							  		<label>Filtrar per data petició</label>
+						  	<div class="col-md-4">
+						  		<div class="col-md-12">
+							  		<label>Data petició del centre</label>
 								  	<div class="input-group input-daterange datepicker">
-									    <input type="text" class="form-control" name="dataInici" value="${dataInici}">
+									    <input type="text" class="form-control" id="dataInici" name="dataInici" value="${dataInici}">
 									    <div class="input-group-addon">fins</div>
-									    <input type="text" class="form-control" name="dataFi" value="${dataFi}">
+									    <input type="text" class="form-control" id="dataFi" name="dataFi" value="${dataFi}">
 									</div>
-									<input type="checkbox" name="filterWithOutDate" ${filterWithOutDate ? "checked" : ""}> Filtrar fora dates
+									<input type="checkbox" id="filterWithOutDate" name="filterWithOutDate" ${filterWithOutDate ? "checked" : ""}> Filtrar fora dates
 								</div>                                
 						  	</div>	
-						  	<div class="col-lg-2">
-							    <div class="col-lg-12">
-							      <label>Filtrar per estat</label>
+						  	<div class="col-md-2">
+							    <div class="col-md-12">
+							      <label>Estat</label>
 							      <div>
 							      	<select class="selectpicker" id="estatList" name="estat">
-									  <option value="-1">Qualsevol</option>
-									  <option value="AprovadaPT">PT Aprovada</option>
-									  <option value="AprovadaPA">PA Aprovada</option>
-									  <option value="Pendent">Pendent</option>
-									  <option value="Tancada">Tancada</option>
+									  	<option value="-1">Qualsevol</option>
+									  	<option value="redaccio">En redacció</option>
+									  	<option value="iniciExpedient">Inici expedient</option>
+									  	<option value="publicat">Publicats</option>
+									  	<option value="licitacio">Licitació</option>
+									  	<option value="adjudicacio">Adjudicació</option>
+									  	<option value="firmat">Contracte Firmat</option>
+									  	<option value="execucio">Execució obra</option>
+									  	<option value="garantia">Garantia</option>
+									  	<option value="acabat">Acabat</option>
 									</select>							      	
 							      </div>
 							    </div>
 						  	</div>
 						</div>	
 						<div class="form-group">
-							<div class="col-lg-offset-10 col-lg-2">
+							<div class="col-md-offset-1 col-md-3">
+						  		<div class="col-md-12">
+							  		<label>Data execució</label>
+								  	<div class="input-group input-daterange datepicker">
+									    <input type="text" class="form-control" id="dataIniciExec" name="dataIniciExec" value="${dataIniciExec}">
+									    <div class="input-group-addon">fins</div>
+									    <input type="text" class="form-control" id="dataFiExec" name="dataFiExec" value="${dataFiExec}">
+									</div>
+									<input type="checkbox" id="filterWithOutDateExec" name="filterWithOutDateExec" ${filterWithOutDateExec ? "checked" : ""}> Filtrar fora dates
+								</div>                                
+						  	</div>	
+						  	<div class="col-md-offset-5 col-md-2">
 						    	<input type="submit" class="btn btn-primary" name="filtrar" value="Aplicar Filtres">
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="row">
-								<div class="col-lg-offset-1 col-lg-2">
-									<div class="container">
-								 		<div class="circunferencia yellow">${actuacionsPendents}</div>		
-								 	</div>
-								</div>
-								<div class="col-lg-2">
-									<div class="container">						
-										<div class="circunferencia blue">${actuacionsAprovadesPA}</div>
-									</div>
-								</div>
-								<div class="col-lg-2">
-									<div class="container">
-										<div class="circunferencia green">${actuacionsAprovadesPT}</div>
-									</div>
-								</div>
-								<div class="col-lg-2">
-									<div class="container">
-										<div class="circunferencia red">${actuacionsTancades}</div>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-offset-1 col-md-2">Actuacions pendents</div>							
-								<div class="col-md-2">Actuacions amb proposta d'actuacions aprovades</div>
-								<div class="col-md-2">Actuacions amb proposta tècnica aprovades</div>
-								<div class="col-md-2">Actuacions tancades</div>
-							</div>
-						</div>
+							
+						</div>						
 					</form>
-				</div> --%>
+				</div>	       		
 				<div class="row">
-					<div class="col-lg-offset-9 col-lg-3">
-				    	<a href='llistats?viewType=full'>Veure a pantalla completa</a>
+					<div class="col-md-offset-9 col-md-3">
+				    	<a href='llistats?viewType=full&filtrar=filtrar&estat=${estatFilter}&tipus=${tipusFilter}${filterWithOutDate ? "&filterWithOutDate=on" : ""}&dataInici=${dataInici}&dataFi=${dataFi}${filterWithOutDateExec ? "&filterWithOutDateExec=on" : ""}&dataIniciExec=${dataIniciExec}&dataFiExec=${dataFiExec}'>Veure a pantalla completa</a>
 					</div>
 				</div>
 				<div class="row"  style="height:500px">
-					<div class="col-lg-9" style="height:100%">
+					<div class="col-md-12" style="height:100%">
 			       		<div class="informacioCentres hidden">
 			       			<c:forEach items="${centresList}" var="centre" >
 			       				<c:if test="${centre.lat > 0 && centre.lng > 0}">
@@ -126,19 +117,14 @@
 			       			</c:forEach>
 			       		</div>         
 						<div id="map" style="width:100%; height:100%"></div>
-					</div>
-					<div class="col-lg-3">
-						<h4>Informació centre</h4>
-						<div class="infoActuacions">
-						</div>
-					</div>
+					</div>					
 				</div>
 			</div>
         </div>
         <!-- /#page-wrapper -->
     </div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/llistats/llistat.js"></script>   
+    <script src="js/llistats/llistat.js?<%=application.getInitParameter("datakey")%>"></script>   
     <!-- /#wrapper -->
 </body>
 </html>

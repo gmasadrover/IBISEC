@@ -19,15 +19,16 @@ $(document).ready(function() {
 	        }
         ],
 		"aoColumns": [
+			null,
     		null,
     		null,
     		null,    		
     		null,
     		null, 
     		null, 
-    		{"iDataSort": 7},
+    		{"iDataSort": 8},
     		{"bVisible": false}, 
-    		{"iDataSort": 9},
+    		{"iDataSort": 10},
     		{"bVisible": false}, 
     		null
 		]

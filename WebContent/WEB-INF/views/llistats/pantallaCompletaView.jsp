@@ -12,7 +12,15 @@
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDjjjVKq3Fyvi6XiH-Mu8veFBD49iEQJLY"></script>
 </head>	
 <body class="fullbody" style="height:100%">	 				
-	<div class="col-lg-10" style="height:100%">
+	<div class="col-md-12" style="height:100%">
+			<input type="hidden" id="filterWithOutDate" value="${filterWithOutDate}">
+			<input type="hidden" id="dataInici" value="${dataInici}">
+			<input type="hidden" id="dataFi" value="${dataFi}">
+			<input type="hidden" id="filterWithOutDateExec" value="${filterWithOutDateExec}">
+			<input type="hidden" id="dataIniciExec" value="${dataIniciExec}">
+			<input type="hidden" id="dataFiExec" value="${dataFiExec}">
+			<input type="hidden" id="estatList" value="${estatFilter}">
+			<input type="hidden" id="tipusList" value="${tipusFilter}">
       		<div class="informacioCentres hidden">
       			<c:forEach items="${centresList}" var="centre" >
       				<c:if test="${centre.lat > 0 && centre.lng > 0}">
@@ -22,14 +30,8 @@
       		</div>         
 		<div id="map" style="width:100%; height:100%"></div>
 	</div>
-	<div class="col-lg-2">
-		<a href='llistats'>Tornar a vista normal</a>
-		<h4>Informació centre</h4>
-		<div class="infoActuacions">
-		</div>
-	</div>
      <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/llistats/llistatComplet.js"></script>   
+    <script src="js/llistats/llistatComplet.js?<%=application.getInitParameter("datakey")%>"></script>   
     <!-- /#wrapper -->
 </body>
 </html>

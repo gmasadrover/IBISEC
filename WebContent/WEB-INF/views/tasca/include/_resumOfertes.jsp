@@ -38,24 +38,42 @@
 		<label>Tècnic:</label> ${ofertaSeleccionada.usuariCreacio.getNomComplet()}
 	</p>
 	<p>
-		<label>Proposta tècnica:</label> ${ofertaSeleccionada.comentari}
+		<label>Proposta tècnica: ${estatActuacio}</label> ${ofertaSeleccionada.comentari} 
 	</p>
-	<c:if test="${esCap}">
-	<form class="form-horizontal margin_top30" method="POST" action="DoAddPresuposts">
-		<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
-		<input type="hidden" name="idTasca" value="${tasca.idTasca}">
-		<input type="hidden" name="idInformePrevi" value="${tasca.idinforme}">
-		<div class="form-group">  	
-			<div class="col-lg-6">
-		 		<div class="row">
-		     		<div class="col-lg-12">
-		           		<input class="btn btn-success" type="submit" name="enviar" value="Vistiplau">
+	<c:if test="${estatActuacio == 7 && esCap}">
+		<div class="separator"></div>												        	
+		<div class="panel-body">
+	     	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddPA">
+		     	<input type="hidden" name="document" value="vitiplauPropostaTecnica">
+				<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
+				<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">
+				<input type="hidden" name="idTasca" value="${tasca.idTasca}">
+				<input type="hidden" name="idInforme" value="${informePrevi.idInf}">																	
+		       	<c:if test="${hasPropostaTecnica}">
+					<div class="col-md-12">	
+		               	<p>Proposta Tècnica signada:</p>													                  	
+		           		<a target="_blanck" href="downloadFichero?ruta=${propostaTecnicaFirmada.ruta}">
+							${propostaTecnicaFirmada.nom}
+						</a>																			
 					</div>
-		  		</div>
-			</div>											    
-		</div>
-	</form>	
-	</c:if> 
+				</c:if>																	
+				<div class="col-md-8">
+					<div class="row margin_top10">
+		    			<div class="col-md-12">
+		           			Pujar vistiplau proposta tècnica signada: <input type="file" class="btn" name="informe" /><br/>																 		
+		    			</div>
+		    		</div>																													        			
+	      		</div>	
+	      		<div class="col-md-4">												        		
+	    		<div class="row">
+	        		<div class="col-md-12">															        																						 				
+				 		<input class="btn btn-success margin_top30" type="submit" name="guardar" value="Enviar vistiplau proposta tècnica signada">
+				 	</div>
+	     		</div>
+	    		</div>
+	  		</form>	
+	  	</div>	
+	</c:if>
 	<c:if test="${!esCap}">
 	<p>
 		<label>Vistiplau:</label> ${ofertaSeleccionada.usuariCapValidacio.getNomComplet()} - ${ofertaSeleccionada.getDataCapValidacioString()}

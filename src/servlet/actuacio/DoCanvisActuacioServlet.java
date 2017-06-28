@@ -39,7 +39,7 @@ public class DoCanvisActuacioServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 Connection conn = MyUtils.getStoredConnection(request);
 		
-		//Registrar actuació
+		//Registrar actuaci�
 	    String idActuacio = request.getParameter("idActuacio");
 	    String idIncidencia = request.getParameter("idIncidencia");
 	    String idInforme = request.getParameter("idInforme");
@@ -47,45 +47,33 @@ Connection conn = MyUtils.getStoredConnection(request);
 	    String tancar = request.getParameter("tancar");	   
 	    User Usuari = MyUtils.getLoginedUser(request.getSession());	   
 	    	   	
-   		
-	    if (aprovarPA != null) { 
-   			try {
-   				//aprovam actuació
-   				ActuacioCore.aprovarPA(conn, idActuacio, Usuari.getIdUsuari());
-   				//aprovam informe
-   				InformeCore.aprovacioInforme(conn, idInforme, Usuari.getIdUsuari());
-   				//Mirem l'import per començar licitació o contracte d'obra menor
-   				InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme);		
-			   	String tipus = "";
-			   	int usuariTasca = -1;
-			   	
-   				if (("obr".equals(informe.getTipusObra()) && informe.getVec() > 50000) || (!"obr".equals(informe.getTipusObra()) && informe.getVec() > 18000)) { //Contracte d'obres major   					
-   					usuariTasca = UsuariCore.findUsuarisByRol(conn, "JUR").get(0).getIdUsuari();
-   					tipus = "liciMajor";
-   				}else{ //Contracte d'obres menor
-   					usuariTasca = informe.getUsuari().getIdUsuari();   					
-					tipus = "liciMenor";
-   				}
-   				//Registrar incidència nova
-   				ActuacioCore.actualitzarActuacio(conn, idActuacio, "Sol·licitud proposta tècnica");
-   				TascaCore.novaTasca(conn, tipus, usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "", "",informe.getIdInf());
-   				
-			} catch (SQLException e) {
+   		try {
+		    if (aprovarPA != null) { 
+		    	//aprovam actuaci�
+				ActuacioCore.aprovarPA(conn, idActuacio, Usuari.getIdUsuari());				
+				//aprovam informe
+				InformeCore.aprovacioInforme(conn, idInforme, Usuari.getIdUsuari());   		
+	   		}else if (tancar != null) { // tancam actuaci�
+	   			try {
+	   				ActuacioCore.actualitzarActuacio(conn, idActuacio, "Tancar actuaci�");
+	   				ActuacioCore.tancar(conn, idActuacio, Usuari.getIdUsuari());
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}   			
+	   		}else {
+	   			
+	   		} 
+	    } catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-   		}else if (tancar != null) { // tancam actuació
-   			try {
-   				ActuacioCore.actualitzarActuacio(conn, idActuacio, "Tancar actuació");
-   				ActuacioCore.tancar(conn, idActuacio, Usuari.getIdUsuari());
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}   			
-   		}else {
-   			
-   		} 
-   		response.sendRedirect(request.getContextPath() + "/actuacionsDetalls?ref=" + idActuacio);
+	    if (aprovarPA != null) { 
+	    	response.sendRedirect(request.getContextPath() + "/CrearDocument?tipus=AutoritzacioPAObres&idIncidencia=" + idIncidencia + "&idActuacio=" + idActuacio + "&idInforme=" + idInforme); 
+	    }else{
+	    	response.sendRedirect(request.getContextPath() + "/actuacionsDetalls?ref=" + idActuacio);
+	    }
+   		
 	}
 
 	/**

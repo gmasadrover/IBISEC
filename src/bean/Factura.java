@@ -7,7 +7,9 @@ import java.util.Date;
 public class Factura {
 	private String idFactura;
 	private String idInforme;
+	private InformeActuacio informe;
 	private String idActuacio;
+	private Actuacio actuacio;
 	private String idProveidor;
 	private Date dataFactura;
 	private String concepte;
@@ -39,12 +41,12 @@ public class Factura {
 		this.idInforme = idInforme;
 	}
 
-	public String getIdActuacio() {
-		return idActuacio;
+	public Actuacio getActuacio() {
+		return actuacio;
 	}
 
-	public void setIdActuacio(String idActuacio) {
-		this.idActuacio = idActuacio;
+	public void setActuacio(Actuacio actuacio) {
+		this.actuacio = actuacio;
 	}
 
 	public String getIdProveidor() {
@@ -147,6 +149,21 @@ public class Factura {
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}
-	
+
+	public String getIdActuacio() {
+		return idActuacio;
+	}
+
+	public void setIdActuacio(String idActuacio) {
+		this.idActuacio = idActuacio;
+	}
+
+	public InformeActuacio getInforme() {
+		return informe;
+	}
+
+	public void setInforme(InformeActuacio informe) {
+		this.informe = informe;
+	}
 	
 }

@@ -9,7 +9,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import bean.Actuacio;
 import bean.Factura;
+import bean.InformeActuacio;
+import bean.User;
 
 public class FacturaCore {
 	static final String SQL_CAMPS = "idfactura, idinforme, idactuacio, nifproveidor, datafactura, concepte, import, tipusfactura,"
@@ -18,8 +21,10 @@ public class FacturaCore {
 	private static Factura initFactura(Connection conn, ResultSet rs) throws SQLException{	
 		Factura factura = new Factura();
 		factura.setIdFactura(rs.getString("idfactura"));
-		factura.setIdInforme(rs.getString("idinforme"));
+		factura.setIdInforme(rs.getString("idinforme"));	
+		//factura.setInforme(InformeCore.getInformePreviInfo(conn, rs.getString("idinforme")));
 		factura.setIdActuacio(rs.getString("idactuacio"));
+		//factura.setActuacio(ActuacioCore.findActuacio(conn,rs.getString("idactuacio")));
 		factura.setIdProveidor(rs.getString("nifproveidor"));
 		factura.setDataFactura(rs.getTimestamp("datafactura"));
 		factura.setConcepte(rs.getString("concepte"));
@@ -66,6 +71,179 @@ public class FacturaCore {
 			factura = initFactura(conn, rs);
 		}
 		return factura;
+	}
+	
+	public static List<Factura> advancedSearchFactures(Connection conn, Date dataInici, Date dataFi, Date dataIniciIdPD, Date dataFiIdPD, String concepte, String descAct, String nombreFact, String tipoContracte, String tipoPD) throws SQLException{
+		List<Factura> factures = new ArrayList<Factura>();
+		String CAMPS_FACTURA = "f.idfactura AS idfactura, f.idinforme AS idinforme, f.idactuacio AS idactuacio, f.nifproveidor AS proveidorfactura, f.datafactura AS datafactura, f.concepte AS concepte, f.import AS import, f.nombrefactura AS nombrefactura, f.dataentrada AS dataentrada, f.usuconformador AS usuconformador,  f.dataconformador AS dataconformador, f.notes AS notesfactura";
+		String CAMPS_INFORME = "i.usucre AS usuariinforme, i.datacre AS datacreacioinforme, i.usuaprovacio AS usuaprovacioinforme, i.dataaprovacio AS dataaprovacioinforme, i.notes AS notesinforme, i.tipo AS tipocontracte, i.expcontratacio AS expcontratacio, i.datapd AS datapd, i.tipopd AS tipopd";
+		String CAMPS_ACTUACIO = "a.descripcio AS descactuacio, a.usucre AS usucreactuacio, a.datacre AS datacreactuacio, a.dataaprovacio AS dataaprovacioactuacio, a.idcentre AS idcentre, a.notes AS notesactuacio";
+		String sql = "SELECT " + CAMPS_FACTURA + ", " + CAMPS_INFORME + ", " + CAMPS_ACTUACIO 
+		 		+ " FROM public.tbl_factures f LEFT JOIN public.tbl_informeactuacio i ON f.idinforme = i.idinf"
+		 		+ " LEFT JOIN public.tbl_actuacio a ON i.idactuacio = a.id";
+		System.out.println("aaa: " + descAct);
+		boolean primeraCondicio = true;
+		if (dataInici != null) {
+			if (primeraCondicio) {
+				primeraCondicio = false;
+				sql += " WHERE datafactura >= ?";
+			}			
+		}
+		if (dataFi != null) {
+			if (primeraCondicio) {
+				primeraCondicio = false;
+				sql += " WHERE datafactura <= ?";
+			} else {
+				sql += " and datafactura <= ?";
+			}			
+		}
+		if (dataIniciIdPD != null) {
+			if (primeraCondicio) {
+				primeraCondicio = false;
+				sql += " WHERE datapd >= ?";
+			} else {
+				sql += " and datapd >= ?";
+			}			
+		}
+		if (dataFiIdPD != null) {
+			if (primeraCondicio) {
+				primeraCondicio = false;
+				sql += " WHERE datapd <= ?";
+			} else {
+				sql += " and datapd <= ?";
+			}			
+		}
+		if (concepte != null && !concepte.isEmpty()) {
+			if (primeraCondicio) {
+				primeraCondicio = false;
+				sql += " WHERE concepte like ?";
+			} else {
+				sql += " and concepte like ?";
+			}			
+		}
+		if (descAct != null && !descAct.isEmpty()) {
+			if (primeraCondicio) {
+				primeraCondicio = false;
+				sql += " WHERE a.descripcio like ?";
+			} else {
+				sql += " and a.descripcio like ?";
+			}			
+		}
+		if (nombreFact != null && !nombreFact.isEmpty()) {
+			if (primeraCondicio) {
+				primeraCondicio = false;
+				sql += " WHERE nombrefactura like ?";
+			} else {
+				sql += " and nombrefactura like ?";
+			}			
+		}
+		if (tipoContracte != null && ! tipoContracte.equals("-1")) {
+			if (primeraCondicio) {
+				primeraCondicio = false;
+				sql += " WHERE i.tipo like ?";
+			} else {
+				sql += " and i.tipo like ?";
+			}			
+		}
+		if (tipoPD != null && ! tipoPD.equals("-1")) {
+			if (primeraCondicio) {
+				primeraCondicio = false;
+				sql += " WHERE tipopd like ?";
+			} else {
+				sql += " and tipopd like ?";
+			}			
+		}
+		
+		
+		PreparedStatement pstm = conn.prepareStatement(sql);	
+		int contVars = 1;
+		if (dataInici != null) {
+			pstm.setDate(contVars, new java.sql.Date(dataInici.getTime()));
+			contVars += 1;
+		}
+		if (dataFi != null) {
+			pstm.setDate(contVars, new java.sql.Date(dataFi.getTime()));
+			contVars += 1;
+		}
+		if (dataIniciIdPD != null) {
+			pstm.setDate(contVars, new java.sql.Date(dataIniciIdPD.getTime()));
+			contVars += 1;
+		}
+		if (dataFiIdPD != null) {
+			pstm.setDate(contVars, new java.sql.Date(dataFiIdPD.getTime()));
+			contVars += 1;
+		}
+		if (concepte != null && !concepte.isEmpty()) {
+			pstm.setString(contVars, "%" + concepte + "%");
+			contVars += 1;
+		}
+		if (descAct != null && !descAct.isEmpty()) {
+			pstm.setString(contVars, "%" + descAct + "%");
+			contVars += 1;
+		}
+		if (nombreFact != null && !nombreFact.isEmpty()) {
+			pstm.setString(contVars, "%" + nombreFact + "%");
+			contVars += 1;
+		}
+		if (tipoContracte != null && ! tipoContracte.equals("-1")) {
+			pstm.setString(contVars, "%" + tipoContracte + "%");
+			contVars += 1;
+		}
+		if (tipoPD != null && ! tipoPD.equals("-1")) {
+			pstm.setString(contVars, "%" + tipoPD + "%");
+			contVars += 1;
+		}
+		System.out.println(pstm.toString());
+		ResultSet rs = pstm.executeQuery();	
+		Factura factura = new Factura();
+		InformeActuacio informe = new InformeActuacio();
+		Actuacio actuacio = new Actuacio();
+		while (rs.next()) {
+			factura = new Factura();
+			factura.setIdFactura(rs.getString("idfactura"));
+			factura.setIdInforme(rs.getString("idinforme"));	
+			factura.setIdActuacio(rs.getString("idactuacio"));
+			factura.setIdProveidor(rs.getString("proveidorfactura"));
+			factura.setDataFactura(rs.getTimestamp("datafactura"));
+			factura.setConcepte(rs.getString("concepte"));
+			factura.setValor(rs.getDouble("import"));			
+			factura.setNombreFactura(rs.getString("nombrefactura"));
+			factura.setDataEntrada(rs.getTimestamp("dataentrada"));
+			factura.setUsuariConformador(UsuariCore.findUsuariByID(conn, rs.getInt("usuconformador")));
+			factura.setDataConformacio(rs.getTimestamp("dataconformador"));
+			factura.setNotes(rs.getString("notesfactura"));
+			
+			informe = new InformeActuacio();
+			informe.setIdInf(rs.getString("idinforme"));	
+			User usuari = UsuariCore.findUsuariByID(conn, rs.getInt("usuariinforme"));
+			informe.setUsuari(usuari);
+			informe.setDataCreacio(rs.getTimestamp("datacreacioinforme"));
+			informe.setPropostaInformeSeleccionada(InformeCore.getPropostaSeleccionada(conn, rs.getString("idinforme")));
+			informe.setPartida(CreditCore.getPartidaInforme(conn, rs.getString("idinforme")));	
+			informe.setUsuariAprovacio(UsuariCore.findUsuariByID(conn, rs.getInt("usuaprovacioinforme")));
+			informe.setDataAprovacio(rs.getTimestamp("dataaprovacioinforme"));
+			informe.setNotes(rs.getString("notesinforme"));			
+			informe.setOfertaSeleccionada(OfertaCore.findOfertaSeleccionada(conn, rs.getString("idinforme")));			
+			informe.setTipo(rs.getString("tipocontracte"));
+			informe.setExpcontratacio(rs.getString("expcontratacio"));
+			informe.setDataPD(rs.getTimestamp("datapd"));
+			informe.setTipoPD(rs.getString("tipopd"));
+			factura.setInforme(informe);
+			
+			actuacio = new Actuacio();			
+			actuacio.setReferencia(rs.getString("idactuacio"));
+			actuacio.setDescripcio(rs.getString("descactuacio"));		
+			actuacio.setDataCreacio(rs.getTimestamp("datacreactuacio"));
+			actuacio.setIdUsuariCreacio(rs.getInt("usucreactuacio"));		
+			actuacio.setIdCentre(rs.getString("idcentre"));
+			actuacio.setNomCentre(CentreCore.nomCentreComplet(conn, rs.getString("idcentre")));				
+			actuacio.setDataAprovacio(rs.getTimestamp("dataaprovacioactuacio"));		
+			actuacio.setNotes(rs.getString("notesactuacio"));
+			factura.setActuacio(actuacio);
+			
+			factures.add(factura);
+		}
+		return factures;
 	}
 	
 	public static List<Factura> searchFactures(Connection conn, Date dataInici, Date dataFi) throws SQLException{

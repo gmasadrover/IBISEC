@@ -19,7 +19,7 @@
 
                 <!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Empreses <small>Llistat</small>
                         </h1>
@@ -37,7 +37,7 @@
 
 
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h2>Empreses</h2>
                         <div class="table-responsive">
                         
@@ -71,7 +71,7 @@
                             </table>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-md-6">
                     </div>
                 </div>
 
@@ -83,7 +83,7 @@
 
     </div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/empresa/llistat.js"></script>
+    <script src="js/empresa/llistat.js?<%=application.getInitParameter("datakey")%>"></script>
     <!-- /#wrapper -->
 </body>
 </html>

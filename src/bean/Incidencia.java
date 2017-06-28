@@ -65,7 +65,7 @@ public class Incidencia {
 	}
 	
 	public boolean isActiva() {
-		return activa;
+		return dataTancament==null;
 	}
 
 	public void setActiva(boolean activa) {

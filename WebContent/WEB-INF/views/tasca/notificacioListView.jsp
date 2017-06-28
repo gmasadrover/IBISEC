@@ -19,7 +19,7 @@
 
                 <!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Notificacions
                         </h1>
@@ -35,7 +35,7 @@
                 </div>
                 <!-- /.row -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h2>Notificacions</h2>
                         <div class="table-responsive">                        
                             <table class="table table-striped table-bordered filerTable">
@@ -43,7 +43,6 @@
                                     <tr>                                        
                                         <th>Tasca</th>
                                         <th>id Actuació</th>
-                                        <th>id Incidència</th>
                                         <th>Centre</th>                                        
                                         <th>Data creació</th>
                                         <th>Data creació</th>
@@ -53,9 +52,8 @@
                                 <tbody>
                                 	<c:forEach items="${notificacionsList}" var="notificacio" >
 							          	<tr class="${notificacio.activa ? notificacio.llegida ? "success" : "warning" : "danger"}">							          	
-							           		<td><a href="tasca?id=${notificacio.idTasca}">${notificacio.idTasca} - ${notificacio.descripcio}</a></td>
+							           		<td>${notificacio.descripcio}</td>
 							            	<td><a href="actuacionsDetalls?ref=${notificacio.actuacio.referencia}">${notificacio.actuacio.referencia}</a></td>
-							            	<td><a href="incidenciaDetalls?ref=${notificacio.incidencia.idIncidencia}">${notificacio.incidencia.idIncidencia}</a></td>
 							            	<td>${notificacio.actuacio.nomCentre}</td>							            	
 							            	<td>${notificacio.getDataCreacioString()}</td>
 							            	<td>${notificacio.dataCreacio}</td>	
@@ -75,7 +73,7 @@
         <!-- /#page-wrapper -->
     </div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/tasca/llistat.js"></script>
+    <script src="js/tasca/llistat.js?<%=application.getInitParameter("datakey")%>"></script>
     <!-- /#wrapper -->
 </body>
 </html>

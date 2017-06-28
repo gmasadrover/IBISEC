@@ -18,7 +18,7 @@
             <div class="container-fluid">
             	<!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Partida <small>Detalls</small>
                         </h1>
@@ -35,7 +35,7 @@
                 <!-- /.row -->
                 
                 <div class="row">
-                	<div class="col-lg-12">
+                	<div class="col-md-12">
                			<p style="color: red;">${errorString}</p>
                		</div>
                	 </div>
@@ -43,7 +43,7 @@
                 <c:if test="${not empty partida}">                	                		
                		<h2 class="margin_bottom30">Informació bàsica</h2>
 		    		<div class="row">			    				    				    		
-	                    <div class="col-xs-offset-1 col-lg-5">
+	                    <div class="col-xs-offset-1 col-md-5">
 	    					<p>
 								<label>Codi:</label> ${partida.codi}
 							</p>
@@ -58,7 +58,7 @@
 	                        	<label>Assignat / previst: </label> ${partida.getPrevistPartidaFormat()}
                             </p>                            
 	                  	</div>
-		             	<div class="col-xs-offset-1 col-lg-5">
+		             	<div class="col-xs-offset-1 col-md-5">
 		             		<p> 
 	                        	<label>Nom: </label> ${partida.nom}
                             </p> 
@@ -75,7 +75,7 @@
                 	</div>    
                 	<h2 class="margin_bottom30">Assignacions</h2>
                 	<div class="row">
-	                	<div class="table-responsive col-xs-offset-1 col-lg-10">							                        
+	                	<div class="table-responsive col-xs-offset-1 col-md-10">							                        
 		                    <table class="table table-striped table-bordered filerTable" id="assignacionsTable">
 		                        <thead>
 		                            <tr>
@@ -104,6 +104,6 @@
 		<!-- /#page-wrapper -->
 	</div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/credit/partida.js"></script>
+    <script src="js/credit/partida.js?<%=application.getInitParameter("datakey")%>"></script>
 </body>
 </html>

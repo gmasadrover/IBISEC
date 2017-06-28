@@ -1,4 +1,16 @@
 $(document).ready(function() {
+	if ($('#tipusSelected').val() != '') {		  		
+  		$('#tipusList option[value="' + $('#tipusSelected').val() + '"]').attr('selected', 'selected');
+	}
+	if ($('#tipusList').size() > 0) {
+		  $('#tipusList').selectpicker('refresh');
+	}
+	if ($('#estatSelected').val() != '') {		  		
+			$('#estatList option[value="' + $('#estatSelected').val() + '"]').attr('selected', 'selected');
+	}
+	if ($('#estatList').size() > 0) {
+		$('#estatList').selectpicker('refresh');
+	}
 	initMap();
 });	
 var map;
@@ -22,10 +34,10 @@ function initMap() {
 	 	});
 
 	  	google.maps.event.addListener(marker, 'click', (function(marker, info) {
-	  		return function() {
-	        	infowindow.setContent(info.val());
+	  		return function() { 
+	        	infowindow.setContent(loadInfoCentre(info));
 	        	infowindow.open(map, marker);
-	        	loadInfoCentre(info);	        	
+	        	      	
 	        }
 	  	})(marker, $(info)));
 	  	
@@ -37,20 +49,21 @@ function initMap() {
 }
 
 function loadInfoCentre(info){
+	var text = "";
 	$.ajax({
         type: "POST",
         url: "LlistatActuacions",
+        async: false,
         dataType: "json",
-        data: {"idCentre": info.data('idcentre')},
+        data: {"idCentre": info.data('idcentre'), "filterWithOutDate" : $('#filterWithOutDate').is(':checked'), "dataPeticioIni": $('#dataInici').val(), "dataPeticioFi": $('#dataFi').val(), "filterWithOutDateExec": $('#filterWithOutDateExec').is(':checked'), "dataExecucioIni": $('#dataIniciExec').val(), "dataExecucioFi": $('#dataFiExec').val(), "estat":$('#estatList').val(), "tipus":$('#tipusList').val()},
         //if received a response from the server
         success: function( data, textStatus, jqXHR) {
             //our country code was correct so we have some information to display
              if(data.success){
-            	 var text = '<h4>' + info.val() + '</h4>';            	
+            	 text = '<h4>' + info.val() + '</h4>';            	
             	 $.each(data.llistatActuacions, function( key, actuacio ) {
-            		 text += '<a href="actuacionsDetalls?ref=' + actuacio.referencia + '">' + actuacio.referencia + ' ' + actuacio.descripcio + '</a></br></br>';
+            		 text += '<a href="actuacionsDetalls?ref=' + actuacio.referencia + '">EXP: ' + actuacio.informePrevi.expcontratacio + ' ' + actuacio.referencia + ' ' + actuacio.descripcio + '</a></br></br>';
             	 });
-            	 $('.infoActuacions').html(text);
              }             
         },        
         //If there was no resonse from the server
@@ -58,4 +71,5 @@ function loadInfoCentre(info){
              console.log("Something really bad happened " + jqXHR.responseText);
         }  
     });
+	return text;
 }

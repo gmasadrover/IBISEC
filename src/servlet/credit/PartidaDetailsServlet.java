@@ -54,7 +54,7 @@ public class PartidaDetailsServlet extends HttpServlet {
 			List<AssignacioCredit> llistaAssignacions = new ArrayList<AssignacioCredit>();
 	       	try {
 	       		partida = CreditCore.getPartida(conn,codi);	  
-	       		llistaAssignacions = CreditCore.findAssignacions(conn, codi);
+	       		llistaAssignacions = CreditCore.findAssignacionsPartida(conn, codi);
 	       	} catch (SQLException e) {
 	       		e.printStackTrace();
 	       		errorString = e.getMessage();

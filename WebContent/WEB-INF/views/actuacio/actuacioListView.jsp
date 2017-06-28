@@ -19,7 +19,7 @@
 
                 <!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Actuacions <small>Actuacions</small>
                         </h1>
@@ -40,8 +40,8 @@
 						<div class="form-group">						
 							<input type="hidden" id="idCentreSelected" value="${idCentre}" />
 							<input type="hidden" id="estatSelected" value="${estatFilter}" />
-							<div class="col-lg-offset-1  col-lg-3">
-							    <div class="col-lg-12">
+							<div class="col-md-offset-1  col-md-3">
+							    <div class="col-md-12">
 							      <label>Filtrar per centre</label>
 							      <div>
 		                                <select class="form-control selectpicker" name="idCentre" data-live-search="true" id="centresList">
@@ -50,8 +50,8 @@
 		                             </div>
 							    </div>						    
 						  	</div>	
-						  	<div class="col-lg-4">
-						  		<div class="col-lg-12">
+						  	<div class="col-md-4">
+						  		<div class="col-md-12">
 							  		<label>Filtrar per data petició</label>
 								  	<div class="input-group input-daterange datepicker">
 									    <input type="text" class="form-control" name="dataInici" value="${dataInici}">
@@ -61,8 +61,8 @@
 									<input type="checkbox" name="filterWithOutDate" ${filterWithOutDate ? "checked" : ""}> Filtrar fora dates
 								</div>                                
 						  	</div>	
-						  	<div class="col-lg-2">
-							    <div class="col-lg-12">
+						  	<div class="col-md-2">
+							    <div class="col-md-12">
 							      <label>Filtrar per estat</label>
 							      <div>
 							      	<select class="selectpicker" id="estatList" name="estat">
@@ -77,28 +77,28 @@
 						  	</div>
 						</div>	
 						<div class="form-group">
-							<div class="col-lg-offset-10 col-lg-2">
+							<div class="col-md-offset-10 col-md-2">
 						    	<input type="submit" class="btn btn-primary" name="filtrar" value="Aplicar Filtres">
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="row">
-								<div class="col-lg-offset-1 col-lg-2">
+								<div class="col-md-offset-1 col-md-2">
 									<div class="container">
 								 		<div class="circunferencia yellow">${actuacionsPendents}</div>		
 								 	</div>
 								</div>
-								<div class="col-lg-2">
+								<div class="col-md-2">
 									<div class="container">						
 										<div class="circunferencia blue">${actuacionsAprovadesPA}</div>
 									</div>
 								</div>
-								<div class="col-lg-2">
+								<div class="col-md-2">
 									<div class="container">
 										<div class="circunferencia green">${actuacionsAprovadesPT}</div>
 									</div>
 								</div>
-								<div class="col-lg-2">
+								<div class="col-md-2">
 									<div class="container">
 										<div class="circunferencia red">${actuacionsTancades}</div>
 									</div>
@@ -115,7 +115,7 @@
 				</div>
 				
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h2>Actuacions</h2>
                         <div class="table-responsive">
                         
@@ -171,7 +171,7 @@
 
     </div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/actuacio/llistat.js"></script>
+    <script src="js/actuacio/llistat.js?<%=application.getInitParameter("datakey")%>"></script>
     <!-- /#wrapper -->
 </body>
 </html>

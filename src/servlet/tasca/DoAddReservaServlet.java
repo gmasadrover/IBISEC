@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import bean.User;
 import core.CreditCore;
+import core.InformeCore;
 import core.TascaCore;
 import utils.MyUtils;
 
@@ -38,9 +39,9 @@ public class DoAddReservaServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		Connection conn = MyUtils.getStoredConnection(request);		
 		
-	    int idTasca = Integer.parseInt(request.getParameter("idTasca"));
 	    String idInforme = request.getParameter("idInformePrevi");
 	    String idActuacio = request.getParameter("idActuacio");
+	    String idIncidencia = request.getParameter("idIncidencia");
 	    String idPartida = request.getParameter("llistaPartides");
 	    double valor = Double.parseDouble(request.getParameter("importReserva"));
 	    String reservar = request.getParameter("reservar");
@@ -50,16 +51,13 @@ public class DoAddReservaServlet extends HttpServlet {
 	    String errorString = null;
 	   	//Registrar comentari;	   
 	   	try {
-	   		String comentariHistoral = "S'ha reservat l'import de " + valor + "€ de la partida " + idPartida;
 	   		if (reservar != null) {
-		   		//Reservem el crèdit
+		   		//Reservem el cr�dit
 		   		CreditCore.reservar(conn, idPartida, idActuacio, idInforme, valor, comentari, Usuari.getIdUsuari());
 		   	}else if(rebutjar != null) {
-		   		comentariHistoral = "S'ha rebutjat l'import de " + valor + "€ de la partida " + idPartida;
-		   	}
-	   		TascaCore.nouHistoric(conn, idTasca, comentariHistoral, Usuari.getIdUsuari());
-	   		TascaCore.reasignar(conn, 901, idTasca);
-	   		TascaCore.tancar(conn, idTasca);
+		   		InformeCore.rebutjarPartida(conn, idInforme, comentari, Usuari.getIdUsuari());
+		   		
+		   	}	   	
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -76,7 +74,7 @@ public class DoAddReservaServlet extends HttpServlet {
 	   		dispatcher.forward(request, response);
 	   	}// If everything nice. Redirect to the product listing page.            
 	   	else {
-	   		response.sendRedirect(request.getContextPath() + "/tasca?id=" + idTasca);	   		
+	   		response.sendRedirect(request.getContextPath() + "/CrearDocument?tipus=financeraPAObres&idIncidencia=" + idIncidencia + "&idActuacio=" + idActuacio + "&idInforme=" + idInforme);  		
 	   	}
 	}
 

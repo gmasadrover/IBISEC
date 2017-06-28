@@ -18,7 +18,7 @@
             <div class="container-fluid">
             	<!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">
                             Empresa <small>Afegir empresa</small>
                         </h1>
@@ -35,14 +35,14 @@
                 <!-- /.row -->
                 
                 <div class="row">
-                	<div class="col-lg-12">
+                	<div class="col-md-12">
                			<p style="color: red;">${errorString}</p>
                		</div>
                	 </div>
                 <!-- /.row -->
                 
     			<div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                     	
 		    			<form class="form-horizontal" method="POST" action="doCreateEmpresa">
 		    				<div class="form-group">
@@ -54,7 +54,7 @@
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">Nom</label>
                                 <div class="col-xs-3">
-                                	<input class="form-control" name="name" placeholder="nom">
+                                	<input class="form-control" name="name" placeholder="nom" required>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -118,6 +118,6 @@
 		<!-- /#page-wrapper -->
 	</div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/zones/zones.js"></script>
+    <script src="js/zones/zones.js?<%=application.getInitParameter("datakey")%>"></script>
 </body>
 </html>

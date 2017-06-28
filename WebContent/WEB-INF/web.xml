@@ -21,4 +21,12 @@
     <error-code>500</error-code>
     <location>/Uuuuups</location>
   </error-page>
+  <context-param>
+    <param-name>datakey</param-name>
+    <param-value>170626</param-value>
+  </context-param>
+  <context-param>
+    <param-name>idUsuariRecercaPresuposts</param-name>
+    <param-value>12</param-value>
+  </context-param>
 </web-app>

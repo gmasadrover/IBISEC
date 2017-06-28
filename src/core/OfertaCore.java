@@ -1,5 +1,6 @@
 package core;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,6 +10,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import bean.Oferta;
+import utils.Fitxers;
+import utils.Fitxers.Fitxer;
 
 public class OfertaCore {
 	private static Oferta initOferta(Connection conn, ResultSet rs, boolean complet) throws SQLException{
@@ -34,16 +37,17 @@ public class OfertaCore {
    		if (complet) {
    			oferta.setActuacio(ActuacioCore.findActuacio(conn, rs.getString("idactuacio")));
    		}
+   		oferta.setPresupost(getPresupost(ActuacioCore.findActuacio(conn, rs.getString("idactuacio")).getIdIncidencia(), rs.getString("idactuacio"), rs.getString("idinforme"),rs.getString("cifempresa")));
    		return oferta;
 	}
 	
-	public static void novaOferta(Connection conn, Oferta oferta, int idUsuari) throws SQLException {
+	public static String novaOferta(Connection conn, Oferta oferta, int idUsuari) throws SQLException {
 		String sql = "INSERT INTO public.tbl_empresaoferta(idoferta, idactuacio, cifempresa, vec, iva, plic, termini, seleccionada, descalificada, comentari, usucre, datacre, idinforme)"
 					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, localtimestamp, ?);";
 	 
 		PreparedStatement pstm = conn.prepareStatement(sql);
-	 
-		pstm.setString(1, getNewCode(conn));		
+		String newCode =  getNewCode(conn);
+		pstm.setString(1, newCode);		
 		pstm.setString(2, oferta.getIdActuacio());
 		pstm.setString(3, oferta.getCifEmpresa());
 		pstm.setDouble(4, oferta.getVec());
@@ -56,13 +60,56 @@ public class OfertaCore {
 		pstm.setInt(11, idUsuari);
 		pstm.setString(12, oferta.getIdInforme());
 		pstm.executeUpdate();
+		return newCode;
+	}
+	
+	public static Oferta findOfertaById(Connection conn, String idOferta) throws SQLException {
+		Oferta ofertaSeleccionada = new Oferta();
+		String sql = "SELECT idoferta, idactuacio, cifempresa, vec, iva, plic, termini, seleccionada, descalificada, comentari, usucre, datacre, usuaprovacio, dataaprovacio, idinforme, usucapvalidacio, datacapvalidacio"
+				+ " FROM public.tbl_empresaoferta"
+				+ " WHERE idOferta = ? ;";	
+		PreparedStatement pstm = conn.prepareStatement(sql);	 
+		pstm.setString(1, idOferta);		
+		ResultSet rs = pstm.executeQuery();	
+		if (rs.next()) ofertaSeleccionada = initOferta(conn, rs, true);
+		return ofertaSeleccionada;
+	}
+	
+	public static void deleteOferta(Connection conn, String idOferta) throws SQLException {
+		Oferta ofertaSeleccionada = findOfertaById(conn, idOferta);
+		String sql = "DELETE FROM public.tbl_empresaoferta"
+					+ " WHERE idoferta = ?";
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setString(1, idOferta);
+		pstm.executeUpdate();	
+		if (ofertaSeleccionada.getPresupost().getRuta() != null && !ofertaSeleccionada.getPresupost().getRuta().isEmpty()) Fitxers.eliminarFitxer(ofertaSeleccionada.getPresupost().getRuta());
+	}
+	
+	public static void seleccionarOferta(Connection conn, String idInforme, String idOferta, String termini, String comentari) throws SQLException {
+		String sql = "UPDATE public.tbl_empresaoferta"
+				+ " SET termini='', seleccionada=false, comentari=''"
+				+ " WHERE idinforme = ?";
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setString(1, idInforme);
+		pstm.executeUpdate();	
+		
+		sql = "UPDATE public.tbl_empresaoferta"
+					+ " SET termini=?, seleccionada=?, comentari=?"
+					+ " WHERE idoferta = ?";
+		pstm = conn.prepareStatement(sql);
+		pstm.setString(1, termini);
+		pstm.setBoolean(2, true);
+		pstm.setString(3, comentari);
+		pstm.setString(4, idOferta);
+		pstm.executeUpdate();	
 	}
 	
 	public static List<Oferta> findOfertes(Connection conn, String idInforme) throws SQLException {
 		List<Oferta> ofertes = new ArrayList<Oferta>();
 		String sql = "SELECT idoferta, idactuacio, cifempresa, vec, iva, plic, termini, seleccionada, descalificada, comentari, usucre, datacre, usuaprovacio, dataaprovacio, idinforme, usucapvalidacio, datacapvalidacio"
 					+ " FROM public.tbl_empresaoferta"
-					+ " WHERE idinforme = ? ;";
+					+ " WHERE idinforme = ? "
+					+ " ORDER BY plic ";
 		
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		pstm.setString(1, idInforme);		
@@ -150,5 +197,65 @@ public class OfertaCore {
 			newCode = yearInString + "-" + prefix + "-" + numFormatted;
 		}
 		return newCode;		
+	}
+	
+	private static Fitxers.Fitxer getPresupost(String idIncidencia, String idActuacio, String idProposta, String cifEmpresa){
+		Fitxer arxiu = new Fitxer();
+		String rutaBase = utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/Propostes/" + idProposta + "/" + cifEmpresa + "/";
+		File dir = new File(rutaBase);
+		File[] ficheros = dir.listFiles();
+		if (ficheros == null || ficheros.length == 0) {			
+		} else {				
+			Fitxer fitxer = new Fitxer();
+			fitxer.setNom(ficheros[0].getName());
+			fitxer.setRuta(rutaBase + "/" + ficheros[0].getName());
+			fitxer.setSeccio("Presupost");
+			arxiu = fitxer;		
+		}	
+		return arxiu;		
+	}
+	
+	public static void guardarFitxer(List<Fitxer> fitxers, String idIncidencia, String idActuacio, String idProposta, String cifEmpresa){		
+		if (!fitxers.isEmpty()) {
+			String fileName = "";
+			// Crear directoris si no existeixen
+			File tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/"  + idIncidencia);
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio");
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/Propostes");
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" +idActuacio + "/Propostes/" + idProposta);
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}	
+			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" +idActuacio + "/Propostes/" + idProposta + "/" + cifEmpresa);
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}	
+			fileName = utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/Propostes/" + idProposta + "/" + cifEmpresa + "/";
+			
+	        for(int i=0;i<fitxers.size();i++){
+	            Fitxer fitxer = (Fitxer) fitxers.get(i);
+	            if (fitxer.getFitxer().getName() != "") {
+	            	File archivo_server = new File(fileName + fitxer.getFitxer().getName());
+	               	try {
+	               		fitxer.getFitxer().write(archivo_server);
+	           		} catch (Exception e) {
+	           			e.printStackTrace();
+	           		}
+	            } 
+	        }
+		}
 	}
 }

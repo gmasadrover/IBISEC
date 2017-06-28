@@ -5,6 +5,8 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import utils.Fitxers;
+
 public class Oferta {
 	private String idOferta;
 	private String idActuacio;
@@ -25,6 +27,7 @@ public class Oferta {
 	private User usuariCapValidacio;
 	private Date dataCapValidacio;
 	private String idInforme;
+	private Fitxers.Fitxer presupost;
 	
 	public Oferta(){
 		
@@ -60,7 +63,7 @@ public class Oferta {
 
 	public String getVecFormat(){
 		DecimalFormat num = new DecimalFormat("#,##0.00");
-	    return num.format(this.vec) + 'â‚¬';
+	    return num.format(this.vec) + '€';
 	}
 	
 	public void setVec(double vec) {
@@ -73,7 +76,7 @@ public class Oferta {
 
 	public String getIvaFormat(){
 		DecimalFormat num = new DecimalFormat("#,##0.00");
-	    return num.format(this.iva) + 'â‚¬';
+	    return num.format(this.iva) + '€';
 	}
 	
 	public void setIva(double iva) {
@@ -90,7 +93,7 @@ public class Oferta {
 	
 	public String getPlicFormat(){
 		DecimalFormat num = new DecimalFormat("#,##0.00");
-	    return num.format(this.plic) + 'â‚¬';
+	    return num.format(this.plic) + '€';
 	}
 
 	public String getTermini() {
@@ -209,5 +212,13 @@ public class Oferta {
 
 	public void setActuacio(Actuacio actuacio) {
 		this.actuacio = actuacio;
+	}
+
+	public Fitxers.Fitxer getPresupost() {
+		return presupost;
+	}
+
+	public void setPresupost(Fitxers.Fitxer presupost) {
+		this.presupost = presupost;
 	}
 }

@@ -3,6 +3,7 @@ package bean;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class Tasca {
 	private int idTasca;
@@ -16,6 +17,8 @@ public class Tasca {
 	private String idinforme;
 	private boolean llegida;
 	private String primerComentari;
+	private String departament;
+	private boolean seguiment;
 	
 	public Tasca() {
 
@@ -35,14 +38,6 @@ public class Tasca {
 
 	public void setActuacio(Actuacio actuacio) {
 		this.actuacio = actuacio;
-	}
-
-	public User getUsuari() {
-		return usuari;
-	}
-
-	public void setUsuari(User usuari) {
-		this.usuari = usuari;
 	}
 
 	public boolean isActiva() {
@@ -112,5 +107,33 @@ public class Tasca {
 
 	public void setPrimerComentari(String primerComentari) {
 		this.primerComentari = primerComentari;
+	}
+
+	public String getDepartament() {
+		return departament;
+	}
+
+	public void setDepartament(String departament) {
+		this.departament = departament;
+	}
+
+	public User getUsuari() {
+		return usuari;
+	}
+
+	public void setUsuari(User usuari) {
+		this.usuari = usuari;
+	}
+
+	public boolean isSeguiment() {
+		return seguiment;
+	}
+
+	public void setSeguiment(boolean seguiment) {
+		this.seguiment = seguiment;
+	}
+	
+	public void setSeguimentActuacio(boolean seguiment) {
+		this.actuacio.setSeguiment(seguiment);
 	}
 }

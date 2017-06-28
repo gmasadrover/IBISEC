@@ -23,6 +23,7 @@ import bean.ControlPage.SectionPage;
 import bean.Factura;
 import core.ControlPageCore;
 import core.FacturaCore;
+import core.InformeCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
@@ -55,6 +56,12 @@ public class FacturaListServlet extends HttpServlet {
 			List<Factura> list = new ArrayList<Factura>();
 			String errorString = null;
 			String filtrar = request.getParameter("filtrar");
+			String concepte = request.getParameter("concepte");
+			String descAct = request.getParameter("descActuacio");
+			String nombreFact = request.getParameter("nombreFact");
+			String tipoContracte = request.getParameter("tipoContracte");
+			String tipoPD = request.getParameter("tipoPD");
+			List<String> llistaTipoPD = new ArrayList<String>();
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			Calendar cal = Calendar.getInstance(); 
 			Date dataFi = cal.getTime();
@@ -62,16 +69,31 @@ public class FacturaListServlet extends HttpServlet {
 			cal.add(Calendar.MONTH, -2);
 			Date dataInici = cal.getTime();
 			String dataIniciString = df.format(dataInici);	
+			Date dataFiIdPD = cal.getTime();
+			String dataFiIdPDString = df.format(dataFiIdPD);	 
+			cal.add(Calendar.YEAR, -2);
+			Date dataIniciIdPD = cal.getTime();
+			String dataIniciIdPDString = df.format(dataIniciIdPD);	
 			try {
-				if (filtrar != null) {					
-					dataInici = df.parse(request.getParameter("dataInici"));
-	    			dataIniciString = request.getParameter("dataInici");
-	    			dataFi = df.parse(request.getParameter("dataFi"));
+				llistaTipoPD = InformeCore.getTiposPD(conn);
+				if (filtrar != null) {	
+					dataInici = null;
+					dataFi = null;
+					if (!request.getParameter("dataInici").isEmpty()) dataInici = df.parse(request.getParameter("dataInici"));
+					dataIniciString = request.getParameter("dataInici");
+	    			if (!request.getParameter("dataFi").isEmpty()) dataFi = df.parse(request.getParameter("dataFi"));	    			
 	    			dataFiString = request.getParameter("dataFi");
-					list = FacturaCore.searchFactures(conn, dataInici, dataFi);
-
+	    			
+	    			dataIniciIdPD = null;
+					dataFiIdPD = null;
+					if (!request.getParameter("dataIniciIdPD").isEmpty()) dataIniciIdPD = df.parse(request.getParameter("dataIniciIdPD"));
+					dataIniciIdPDString = request.getParameter("dataIniciIdPD");
+	    			if (!request.getParameter("dataFiIdPD").isEmpty()) dataFiIdPD = df.parse(request.getParameter("dataFiIdPD"));	    			
+	    			dataFiIdPDString = request.getParameter("dataFiIdPD");
+					
+	    			list = FacturaCore.advancedSearchFactures(conn, dataInici, dataFi, dataIniciIdPD, dataFiIdPD, concepte, descAct, nombreFact, tipoContracte, tipoPD);
 				} else {
-					list = FacturaCore.searchFactures(conn, dataInici, dataFi);
+					list = FacturaCore.advancedSearchFactures(conn, dataInici, dataFi, dataIniciIdPD, dataFiIdPD, concepte, descAct, nombreFact, tipoContracte, tipoPD);
 				}
 				
 			} catch (SQLException | ParseException e) {
@@ -84,6 +106,13 @@ public class FacturaListServlet extends HttpServlet {
 			request.setAttribute("facturesList", list);
 			request.setAttribute("dataInici", dataIniciString);
 		    request.setAttribute("dataFi", dataFiString);
+		    request.setAttribute("dataIniciIdPD", dataIniciIdPDString);
+		    request.setAttribute("dataFiIdPD", dataFiIdPDString);
+		    request.setAttribute("concepte", concepte);
+		    request.setAttribute("nombreFact", nombreFact);
+		    request.setAttribute("tipoPD", tipoPD);
+		    request.setAttribute("llistaTipoPD", llistaTipoPD);
+		    request.setAttribute("tipoContracte", tipoContracte);
 			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Factures"));
 			// Forward to /WEB-INF/views/homeView.jsp
 			// (Users can not access directly into JSP pages placed in WEB-INF)

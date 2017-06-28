@@ -17,7 +17,7 @@
             <div class="container-fluid">
                 <!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h1 class="page-header">Usuari <small>Perfil</small></h1>
                         <ol class="breadcrumb">
                             <li class="active"><i class="fa fa-dashboard"></i> Usuari</li>
@@ -27,45 +27,45 @@
                 </div>
                 <!-- /.row -->
                 <div class="row">
-                	<div class="col-lg-12">
+                	<div class="col-md-12">
                			<p style="color: red;">${errorString}</p>
                		</div>
                	 </div>
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-md-12">
                         <h2>Perfil</h2>   
                         <div class="panel-body">                        	
 							<form class="form-horizontal" method="POST" action="DoCanviarDades">
 								<input type="hidden" name="idUsuari" value="${usuari.idUsuari}">								
 								<div class="form-group">
-							     	<div class="col-lg-4">
+							     	<div class="col-md-4">
 							     	 	<label class="col-xs-6">Usuari:</label>
 							     	 	<input value="${usuari.usuari}" disabled>
 							        </div>	
 							   	</div>
 							   	<div class="form-group">
 							       	<div class="visibleObres">					                             	
-							        	<div class="col-lg-4">
+							        	<div class="col-md-4">
 								      	 	<label class="col-xs-6">Nom:</label>
 								      	 	<input name="nom" value="${usuari.name}" ${potModificar ? "" : "disabled"}>
 								        </div>	
-							            <div class="col-lg-4">
+							            <div class="col-md-4">
 								      	 	<label class="col-xs-6">Cognoms:</label>
 								      	 	<input name="cognoms" value="${usuari.llinatges}" ${potModificar ? "" : "disabled"}>							                
 							           	</div>							           	
 									</div>				                       																
 								</div>
 								<div class="form-group">
-							     	<div class="col-lg-4">
+							     	<div class="col-md-4">
 							     	 	<label class="col-xs-6">Càrreg:</label>
 							     	 	<input name="carreg" value="${usuari.carreg}" ${potModificar ? "" : "disabled"}>
 							        </div>	
 							   	</div>
 							   	<c:if test="${potModificar}">
 									<div class="form-group">
-										<div class="col-lg-6">
+										<div class="col-md-6">
 								    		<div class="row">
-								        		<div class="col-lg-12">
+								        		<div class="col-md-12">
 								              		<input class="btn btn-primary" type="submit" name="guardar" value="Modificar dades">
 												</div>
 								     		</div>
@@ -79,27 +79,27 @@
 								<form class="form-horizontal" method="POST" action="DoCanviarPassword">
 									<input type="hidden" name="idUsuari" value="${usuari.idUsuari}">								
 									<div class="form-group">
-								     	<div class="col-lg-3">
+								     	<div class="col-md-3">
 								     	 	<label>Introduir password actual:</label>
 								     	 	<input name="passActual" type="password">
 								        </div>	
 								   </div>
 								   <div class="form-group">
 								       	<div class="visibleObres">					                             	
-								        	<div class="col-lg-3">
+								        	<div class="col-md-3">
 									      	 	<label>Introduir nou password:</label>
 									      	 	<input type="password" name="nouPassword">
 									        </div>	
-								            <div class="col-lg-3">
+								            <div class="col-md-3">
 									      	 	<label>Repetir nou password:</label>
 									      	 	<input type="password" name="repetirNouPassword">							                
 								           	</div>							           	
 										</div>				                       																
 									</div>	
 									<div class="form-group">
-										<div class="col-lg-6">
+										<div class="col-md-6">
 								    		<div class="row">
-								        		<div class="col-lg-12">
+								        		<div class="col-md-12">
 								              		<input class="btn btn-primary" type="submit" name="guardar" value="Canviar password">
 												</div>
 								     		</div>

@@ -104,6 +104,7 @@ public class IncidenciaCore {
 			}
 		}
 		ResultSet rs = pstm.executeQuery();
+		System.out.println(pstm.toString());
 		List<Incidencia> list = new ArrayList<Incidencia>();
 		while (rs.next()) {
 			Incidencia incidencia = initIncidencia(conn, rs);			

@@ -18,7 +18,7 @@ public class EmpresaCore {
 	
 	static final String SQL_CAMPS = "cif, nom, direccio, cp, ciutat, provincia, telefon, fax, email, usumod, datamod, objectesocial,"
 								+ " acreditacio1, dataexpacreditacio1, acreditacio2, dataexpacreditacio2, acreditacio3, dataexpacreditacio3,"
-								+ " classificacio, dataconstitucio, informacioadicional, exercicieconomic,  dataregistremercantil,  ratioap";
+								+ " classificacio, dataconstitucio, informacioadicional, exercicieconomic, dataregistremercantil, ratioap, datavigenciaclassificacio";
 	
 	
 	private static Empresa initEmpresa(Connection conn, ResultSet rs) throws SQLException{		
@@ -50,6 +50,7 @@ public class EmpresaCore {
 		empresa.setExerciciEconomic(rs.getTimestamp("exercicieconomic"));
 		empresa.setRegistreMercantilData(rs.getTimestamp("dataregistremercantil"));
 		empresa.setRatioAP(rs.getDouble("ratioap"));
+		empresa.setDataVigenciaClassificacio(rs.getTimestamp("datavigenciaclassificacio"));
 		return empresa;
 	}
 	
@@ -105,60 +106,66 @@ public class EmpresaCore {
 		
 	}
 	
-	public static void updateEmpresa(Connection conn, Empresa empresa, List<Empresa.Administrador> administradorsList, int idUsuari) throws SQLException {
+	public static void updateEmpresa(Connection conn, Empresa empresa, String cifActual, List<Empresa.Administrador> administradorsList, int idUsuari) throws SQLException {
 		 String sql = "UPDATE public.tbl_empreses"
-				 	+ " SET nom=?, direccio=?, cp=?, ciutat=?, provincia=?, telefon=?, fax=?, email=?, usumod=?, datamod=localtimestamp, objectesocial=?," 
+				 	+ " SET cif=?, nom=?, direccio=?, cp=?, ciutat=?, provincia=?, telefon=?, fax=?, email=?, usumod=?, datamod=localtimestamp, objectesocial=?," 
 				 		+ " acreditacio1=?, dataexpacreditacio1=?, acreditacio2=?, dataexpacreditacio2=?, acreditacio3=?, dataexpacreditacio3=?," 
-				 		+ " classificacio=?, dataconstitucio=?, informacioadicional=?, exercicieconomic=?,  dataregistremercantil=?,  ratioap=?"
+				 		+ " classificacio=?, dataconstitucio=?, informacioadicional=?, exercicieconomic=?,  dataregistremercantil=?,  ratioap=?, datavigenciaclassificacio=?"
 				 	+ " WHERE cif = ?";	 
-		 PreparedStatement pstm = conn.prepareStatement(sql);	 		 
-		 pstm.setString(1, empresa.getName());
-		 pstm.setString(2, empresa.getDireccio());
-		 pstm.setString(3, empresa.getCP());
-		 pstm.setString(4, empresa.getCiutat());
-		 pstm.setString(5, empresa.getProvincia());
-		 pstm.setString(6, empresa.getTelefon());
-		 pstm.setString(7, empresa.getFax());
-		 pstm.setString(8, empresa.getEmail());
-		 pstm.setInt(9, idUsuari);
-		 pstm.setString(10, empresa.getObjecteSocial());
-		 pstm.setBoolean(11, empresa.isAcreditacio1());		
+		 PreparedStatement pstm = conn.prepareStatement(sql);	
+		 pstm.setString(1, empresa.getCif());
+		 pstm.setString(2, empresa.getName());
+		 pstm.setString(3, empresa.getDireccio());
+		 pstm.setString(4, empresa.getCP());
+		 pstm.setString(5, empresa.getCiutat());
+		 pstm.setString(6, empresa.getProvincia());
+		 pstm.setString(7, empresa.getTelefon());
+		 pstm.setString(8, empresa.getFax());
+		 pstm.setString(9, empresa.getEmail());
+		 pstm.setInt(10, idUsuari);
+		 pstm.setString(11, empresa.getObjecteSocial());
+		 pstm.setBoolean(12, empresa.isAcreditacio1());		
 		 if (empresa.getDateExpAcreditacio1() != null) {
-			 pstm.setDate(12, new java.sql.Date(empresa.getDateExpAcreditacio1().getTime()));
+			 pstm.setDate(13, new java.sql.Date(empresa.getDateExpAcreditacio1().getTime()));
 		 } else {
-			 pstm.setDate(12, null);
+			 pstm.setDate(13, null);
 		 }		 
-		 pstm.setBoolean(13, empresa.isAcreditacio2());
+		 pstm.setBoolean(14, empresa.isAcreditacio2());
 		 if (empresa.getDateExpAcreditacio2() != null) {
-			 pstm.setDate(14, new java.sql.Date(empresa.getDateExpAcreditacio2().getTime()));
+			 pstm.setDate(15, new java.sql.Date(empresa.getDateExpAcreditacio2().getTime()));
 		 } else {
-			 pstm.setDate(14, null);
+			 pstm.setDate(15, null);
 		 }				
-		 pstm.setBoolean(15, empresa.isAcreditacio3());
+		 pstm.setBoolean(16, empresa.isAcreditacio3());
 		 if (empresa.getDateExpAcreditacio3() != null) {
-			 pstm.setDate(16, new java.sql.Date(empresa.getDateExpAcreditacio3().getTime()));
+			 pstm.setDate(17, new java.sql.Date(empresa.getDateExpAcreditacio3().getTime()));
 		 } else {
-			 pstm.setDate(16, null);
+			 pstm.setDate(17, null);
 		 }	
-		 pstm.setString(17, empresa.getClassificacioString());		
+		 pstm.setString(18, empresa.getClassificacioString());		
 		 if (empresa.getDataConstitucio() != null) {
-			 pstm.setDate(18, new java.sql.Date(empresa.getDataConstitucio().getTime()));
+			 pstm.setDate(19, new java.sql.Date(empresa.getDataConstitucio().getTime()));
 		 } else {
-			 pstm.setDate(18, null);
+			 pstm.setDate(19, null);
 		 }	
-		 pstm.setString(19, empresa.getInformacioAdicional());		 
+		 pstm.setString(20, empresa.getInformacioAdicional());		 
 		 if (empresa.getExerciciEconomic() != null) {
-			 pstm.setDate(20, new java.sql.Date(empresa.getExerciciEconomic().getTime()));
-		 } else {
-			 pstm.setDate(20, null);
-		 }	
-		 if (empresa.getRegistreMercantilData() != null) {
-			 pstm.setDate(21, new java.sql.Date(empresa.getRegistreMercantilData().getTime()));
+			 pstm.setDate(21, new java.sql.Date(empresa.getExerciciEconomic().getTime()));
 		 } else {
 			 pstm.setDate(21, null);
 		 }	
-		 pstm.setDouble(22, empresa.getRatioAP());
-		 pstm.setString(23, empresa.getCif());
+		 if (empresa.getRegistreMercantilData() != null) {
+			 pstm.setDate(22, new java.sql.Date(empresa.getRegistreMercantilData().getTime()));
+		 } else {
+			 pstm.setDate(22, null);
+		 }	
+		 pstm.setDouble(23, empresa.getRatioAP());
+		 if (empresa.getDataVigenciaClassificacio() != null) {
+			 pstm.setDate(24, new java.sql.Date(empresa.getDataVigenciaClassificacio().getTime()));
+		 } else {
+			 pstm.setDate(24, null);
+		 }	
+		 pstm.setString(25, cifActual);
 		 pstm.executeUpdate();
 		
 		 addAdministradors(conn, empresa.getCif(), administradorsList, idUsuari);
