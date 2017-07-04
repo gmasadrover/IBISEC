@@ -55,7 +55,7 @@ public class CreateTascaServlet extends HttpServlet {
 	        	request.setAttribute("tipus", tipus);
 				request.setAttribute("nouCodi", TascaCore.idNovaTasca(conn));
 				if ("infPrev".equals(tipus)) {
-					llistaUsuaris = UsuariCore.findUsuarisByDepartament(conn, usuari.getDepartament());
+					llistaUsuaris = UsuariCore.findUsuarisByRol(conn, "CAP");
 				} else {
 					llistaUsuaris = UsuariCore.findUsuarisByRol(conn, "");
 				}

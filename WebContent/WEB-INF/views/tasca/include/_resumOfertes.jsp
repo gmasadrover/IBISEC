@@ -40,7 +40,7 @@
 	<p>
 		<label>Proposta tècnica: ${estatActuacio}</label> ${ofertaSeleccionada.comentari} 
 	</p>
-	<c:if test="${estatActuacio == 7 && esCap}">
+	<c:if test="${informePrevi.propostaTecnica.ruta != null && esCap}">
 		<div class="separator"></div>												        	
 		<div class="panel-body">
 	     	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddPA">
@@ -49,11 +49,11 @@
 				<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">
 				<input type="hidden" name="idTasca" value="${tasca.idTasca}">
 				<input type="hidden" name="idInforme" value="${informePrevi.idInf}">																	
-		       	<c:if test="${hasPropostaTecnica}">
+		       	<c:if test="${informePrevi.propostaTecnica.ruta != null}">
 					<div class="col-md-12">	
 		               	<p>Proposta Tècnica signada:</p>													                  	
-		           		<a target="_blanck" href="downloadFichero?ruta=${propostaTecnicaFirmada.ruta}">
-							${propostaTecnicaFirmada.nom}
+		           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.propostaTecnica.ruta}">
+							${informePrevi.propostaTecnica.nom}
 						</a>																			
 					</div>
 				</c:if>																	

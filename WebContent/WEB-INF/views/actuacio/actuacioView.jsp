@@ -149,7 +149,7 @@
 										    </div>
 										    <div id="informe${informePrevi.idInf}" class="panel-collapse collapse ${(informePrevi.dataAprovacio == null && view == 'dadesT') || (informePrevi.dataAprovacio != null && view == 'dadesAprov') ? 'in' : ''}">
 										    	<div class="panel-body">										    		
-										    		<div class="panel-body">
+										    		<div class="col-md-12">
 														<h4>Informe inicial</h4>	
 														<br />
 														<p>
@@ -163,9 +163,9 @@
 													    		<c:set var="informePrevi" value="${informePrevi}" scope="request"/>
 													    		<c:set var="propostaActuacio" value="${propostaActuacio}" scope="request"/> 	
 														    	<jsp:include page="../tasca/include/_resumInformePrevi.jsp"></jsp:include>
-														    	<c:set var="numPA" value="${numPA + 1}" scope="request"/>
+														    	<c:set var="numPA" value="${numPA + 1}" scope="request"/>														    		
 														    </c:forEach>
-														</div>
+														</div>														
 														<p>
 															<label>Arxius ajunts:</label>
 														</p>	
@@ -175,15 +175,68 @@
 																<br>
 															</c:forEach>					            		
 														</div>
-														<p>
-															<label>Comentari Cap:</label> ${informePrevi.comentariCap}
-														</p>
-														<p>
-															<label>Vistiplau:</label> ${informePrevi.usuariCapValidacio.getNomComplet()} - ${informePrevi.getDataCapValidacioString()}
-														</p>
 														<p>			                     				
 															<label>Notes:</label> ${informePrevi.notes}
 														</p>
+														<c:if test="${informePrevi.propostaActuacio.ruta != null}">															
+											               	<p>
+											               		<div class="document">
+												               		<label>Proposta d'actuació signada:	</label>											                  	
+													           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.propostaActuacio.ruta}">
+																		${informePrevi.propostaActuacio.nom}
+																	</a>	
+																	<c:if test="${informePrevi.propostaActuacio.signat}">
+																			<span class="glyphicon glyphicon-pencil signedFile"></span>
+																	</c:if>
+<%-- 																	<span data-ruta="${informePrevi.propostaActuacio.ruta}" class="glyphicon glyphicon-remove deleteFile"></span> --%>
+																	<br>
+																	<div class="infoSign hidden">
+																		<c:forEach items="${informePrevi.propostaActuacio.firmesList}" var="firma" >
+																			<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+																			<br>
+																		</c:forEach>
+																	</div>
+																</div>																				
+															</p>	
+														</c:if>	
+													</div>
+												</div>
+												<c:if test="${informePrevi.propostaActuacio.ruta != null || informePrevi.vistiplauPropostaActuacio.ruta != null}">		
+													<div class="panel-body">										    		
+											    		<div class="col-md-12">
+															<p>
+																<label>Comentari Cap:</label> ${informePrevi.comentariCap}
+															</p>
+															<p>
+																<label>Vistiplau:</label> ${informePrevi.usuariCapValidacio.getNomComplet()} - ${informePrevi.getDataCapValidacioString()}
+															</p>															
+															<c:if test="${informePrevi.vistiplauPropostaActuacio.ruta != null}">
+																<p>
+																	<div class="document">
+													               		<label>Vistiplau proposta d'actuació signada:</label>													               
+																		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.vistiplauPropostaActuacio.ruta}">
+																			${informePrevi.vistiplauPropostaActuacio.nom}
+																		</a>
+																		<c:if test="${informePrevi.vistiplauPropostaActuacio.signat}">
+																			<span class="glyphicon glyphicon-pencil signedFile"></span>
+																		</c:if>
+	<%-- 																	<span data-ruta="${informePrevi.vistiplauPropostaActuacio.ruta}" class="glyphicon glyphicon-remove deleteFile"></span> --%>
+																		<br>
+																		<div class="infoSign hidden">
+																			<c:forEach items="${informePrevi.vistiplauPropostaActuacio.firmesList}" var="firma" >
+																				<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+																				<br>
+																			</c:forEach>
+																		</div>
+																	</div>																	
+																</p>
+															</c:if>	
+														</div>
+													</div>
+												</c:if>
+												<c:if test="${informePrevi.vistiplauPropostaActuacio.ruta != null || informePrevi.conformeAreaEconomivaPropostaActuacio.ruta != null}">
+												<div class="panel-body">										    		
+										    		<div class="col-md-12">
 														<p>
 															<label>Partida:</label>
 															<c:choose>
@@ -195,87 +248,183 @@
 																</c:otherwise>
 															</c:choose> 
 														</p>
+														<c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.ruta != null}">
+															<p>
+																<div class="document">
+																	<label>Autorització àrea econòmica signada:</label>										                  	
+													           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.conformeAreaEconomivaPropostaActuacio.ruta}">
+																		${informePrevi.conformeAreaEconomivaPropostaActuacio.nom}
+																	</a>	
+																	<c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.signat}">
+																			<span class="glyphicon glyphicon-pencil signedFile"></span>
+																	</c:if>
+<%-- 																	<span data-ruta="${informePrevi.conformeAreaEconomivaPropostaActuacio.ruta}" class="glyphicon glyphicon-remove deleteFile"></span> --%>
+																	<br>
+																	<div class="infoSign hidden">
+																		<c:forEach items="${informePrevi.conformeAreaEconomivaPropostaActuacio.firmesList}" var="firma" >
+																			<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+																			<br>
+																		</c:forEach>
+																	</div>	
+																</div>																	
+															</p>	
+														</c:if>	
 													</div>
 											    </div>
-											    <div class="separator"></div>	
-											    	<c:if test="${canModificarActuacio}">  
-											    		<c:if test="${informePrevi.getDataAprovacio() == null and actuacio.isActiva()}">
-											            	<div class="panel-body">
-											            		<div class="col-md-8"></div>
-										                    	<div class="col-md-2">		                    	
-											                    	<form class="form-horizontal" target="_blank" method="POST" action="DoCanvisActuacio" onsubmit="setTimeout(function () { window.location.reload(); }, 10)">
-											                    		<input class="hidden" name="idActuacio" value=${actuacio.referencia}>
-											                    		<input class="hidden" name="idIncidencia" value=${incidencia.idIncidencia}>
-											                    		<input class="hidden" name="idInforme" value=${informePrevi.idInf}>
-											                    		<div class="form-group">
-										                    				<div class="col-md-6">
-										                    					<input class="btn btn-success" type="submit" name="aprovarPA" value="Generar aprovació proposta d'actuació">
-										                    				</div>																	               			 
-											                    		</div>	                    		                       	
-											                       	</form>		                       	
-											                   	</div>
-											            	</div>										            	
-											            </c:if>											            
-										            </c:if>	
-										            <c:if test="${estatActuacio == 5 || estatActuacio == 6}">									        	
-														<div class="panel-body">
-													     	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddPA">
-														     	<input type="hidden" name="document" value="autoritzacioPA">
-																<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
-																<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">															
-																<input type="hidden" name="idInforme" value="${informePrevi.idInf}">																	
-														       	<c:if test="${hasAutoritzacioPA}">
-																	<div class="col-md-12">	
-														               	<p>Autorització proposta d'actuació signada:</p>													                  	
-														           		<a target="_blanck" href="downloadFichero?ruta=${vistiplauPropostaActuacioFirmada.ruta}">
-																			${vistiplauPropostaActuacioFirmada.nom}
-																		</a>																			
-																	</div>
-																</c:if>		
-																<c:if test="${estatActuacio == 5}">															
+											    </c:if>
+											    <c:if test="${informePrevi.vistiplauPropostaActuacio.ruta != null || informePrevi.autoritzacioPropostaAutoritzacio.ruta != null}">			        	
+													<div class="panel-body">
+														<div class="col-md-12">
+															<div class="row">
+																<c:if test="${canModificarActuacio}">  
+														    		<c:if test="${informePrevi.getDataAprovacio() == null and actuacio.isActiva()}">
+														            	<div class="col-md-12">		                    	
+													                    	<form class="form-horizontal" target="_blank" enctype="multipart/form-data" method="POST" action="DoCanvisActuacio" onsubmit="setTimeout(function () { window.location.reload(); }, 10)">
+													                    		<input class="hidden" name="idActuacio" value=${actuacio.referencia}>
+													                    		<input class="hidden" name="idIncidencia" value=${incidencia.idIncidencia}>
+													                    		<input class="hidden" name="idInforme" value=${informePrevi.idInf}>
+													                    		<div class="form-group">
+												                    				<div class="col-md-6">
+												                    					<input class="btn btn-primary" type="submit" name="aprovarPA" value="Generar aprovació proposta d'actuació">
+												                    				</div>																	               			 
+													                    		</div>	                    		                       	
+													                       	</form>		                       	
+													                   	</div>									            	
+														            </c:if>											            
+													            </c:if>	
+												            </div>
+															<c:if test="${informePrevi.autoritzacioPropostaAutoritzacio.ruta != null}">													
+												               	<p>
+												               		<div class="document">
+													               		<label>Autorització proposta d'actuació signada:</label>											                  	
+														           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.autoritzacioPropostaAutoritzacio.ruta}">
+																			${informePrevi.autoritzacioPropostaAutoritzacio.nom}
+																		</a>	
+																		<c:if test="${informePrevi.autoritzacioPropostaAutoritzacio.signat}">
+																				<span class="glyphicon glyphicon-pencil signedFile"></span>
+																		</c:if>
+	<%-- 																	<span data-ruta="${informePrevi.autoritzacioPropostaAutoritzacio.ruta}" class="glyphicon glyphicon-remove deleteFile"></span> --%>
+																		<br>
+																		<div class="infoSign hidden">
+																			<c:forEach items="${informePrevi.autoritzacioPropostaAutoritzacio.firmesList}" var="firma" >
+																				<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+																				<br>
+																			</c:forEach>
+																		</div>
+																	</div>																				
+																</p>
+															</c:if>	
+															<c:if test="${informePrevi.autoritzacioPropostaAutoritzacio.ruta == null}">			
+														     	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddPA">
+															     	<input type="hidden" name="document" value="autoritzacioPA">
+																	<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
+																	<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">															
+																	<input type="hidden" name="idInforme" value="${informePrevi.idInf}">																		
 																	<div class="col-md-8">
 																		<div class="row margin_top10">
 															    			<div class="col-md-12">
-															           			Pujar autorització proposta d'actuació signada: <input type="file" class="btn" name="informe" /><br/>																 		
+															           			Pujar autorització proposta d'actuació signada: <input type="file" class="btn uploadImage" name="informe" /><br/>																 		
 															    			</div>
 															    		</div>																													        			
 														      		</div>	
 														      		<div class="col-md-4">												        		
 															    		<div class="row">
 															        		<div class="col-md-12">															        																						 				
-																		 		<input class="btn btn-success margin_top30" type="submit" name="guardar" value="Enviar vistiplau signat">
+																		 		<input class="btn btn-success margin_top30 upload" type="submit" name="guardar" value="Enviar vistiplau signat">
 																		 	</div>
 															     		</div>
-														     		</div>
-														     	</c:if>													    		
-													  		</form>	
-													  	</div>	
-												  	</c:if>
-										      	<div class="panel-body">
-								    				<c:if test="${informePrevi.llistaOfertes.size()>0}">
-								    					<c:set var="ofertes" scope="request" value="${informePrevi.llistaOfertes}"></c:set>
-								    					<c:set var="ofertaSeleccionada" scope="request" value="${informePrevi.ofertaSeleccionada}"></c:set>								    					
-										    			<jsp:include page="../tasca/include/_resumOfertes.jsp"></jsp:include>
-										    			<c:if test="${informePrevi.ofertaSeleccionada.dataAprovacio != null && informePrevi.ofertaSeleccionada.dataAprovacio > '2017-04-01'}">
-										            	<p>
-										            		<label class="">Autorització generada amb data ${informePrevi.ofertaSeleccionada.getDataAprovacioString()}: </label>	
-										            		<a target="_blanck" href="downloadFichero?ruta=${rutaActuacio}/${actuacio.referencia}/autoritzacio_informe_${informePrevi.idInf}.pdf">
-																autoritzacio_informe_${informePrevi.idInf}.pdf	
-															</a>																
-										            	</p>
-										            	</c:if>
-										            	<c:if test="${informePrevi.dataAprovacio != null}">
-											            	<c:if test="${actuacio.activa && canModificarActuacio}">				      			
-													      		<div class="row margin_bottom10">
+														     		</div>															     											    		
+														  		</form>	
+													  		</c:if>		
+													  	</div>
+												  	</div>	
+												</c:if>
+												<c:if test="${informePrevi.autoritzacioPropostaAutoritzacio.ruta != null || informePrevi.propostaTecnica.ruta != null}">
+											      	<div class="panel-body">
+									    				<c:if test="${informePrevi.llistaOfertes.size()>0}">
+									    					<c:set var="ofertes" scope="request" value="${informePrevi.llistaOfertes}"></c:set>
+									    					<c:set var="ofertaSeleccionada" scope="request" value="${informePrevi.ofertaSeleccionada}"></c:set>								    					
+											    			<jsp:include page="../tasca/include/_resumOfertes.jsp"></jsp:include>
+											    			<div class="col-md-12">
+												    			<c:if test="${informePrevi.propostaTecnica.ruta != null}">													
+													               	<p>
+													               		<div class="document">
+														               		<label>Proposta tècnica signada:</label>											                  	
+															           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.propostaTecnica.ruta}">
+																				${informePrevi.propostaTecnica.nom}
+																			</a>	
+																			<c:if test="${informePrevi.propostaTecnica.signat}">
+																					<span class="glyphicon glyphicon-pencil signedFile"></span>
+																			</c:if>
+		<%-- 																	<span data-ruta="${informePrevi.propostaTecnica.ruta}" class="glyphicon glyphicon-remove deleteFile"></span> --%>
+																			<br>
+																			<div class="infoSign hidden">
+																				<c:forEach items="${informePrevi.propostaTecnica.firmesList}" var="firma" >
+																					<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+																					<br>
+																				</c:forEach>
+																			</div>
+																		</div>																				
+																	</p>
+																</c:if>	
+															</div>
+											    		</c:if>
+													</div>
+												</c:if>
+												<c:if test="${informePrevi.propostaTecnica.ruta != null || informePrevi.autoritzacioPropostaDespesa.ruta != null}">
+													<div class="panel-body">										    		
+											    		<div class="col-md-12">
+											    			<c:if test="${informePrevi.autoritzacioPropostaDespesa.ruta != null}">													
+												               	<p>
+												               		<div class="document">
+													               		<label>Autorització proposta despesa:</label>											                  	
+														           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.autoritzacioPropostaDespesa.ruta}">
+																			${informePrevi.autoritzacioPropostaDespesa.nom}
+																		</a>	
+																		<c:if test="${informePrevi.autoritzacioPropostaDespesa.signat}">
+																				<span class="glyphicon glyphicon-pencil signedFile"></span>
+																		</c:if>
+	<%-- 																	<span data-ruta="${informePrevi.autoritzacioPropostaDespesa.ruta}" class="glyphicon glyphicon-remove deleteFile"></span> --%>
+																		<br>
+																		<div class="infoSign hidden">
+																			<c:forEach items="${informePrevi.autoritzacioPropostaDespesa.firmesList}" var="firma" >
+																				<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+																				<br>
+																			</c:forEach>
+																		</div>
+																	</div>																				
+																</p>
+															</c:if>
+											            	<c:if test="${informePrevi.autoritzacioPropostaDespesa.ruta == null && actuacio.activa && canModificarActuacio}">		
+												            	<div class="row margin_bottom10">
 														    		<div class="col-md-12 panel">
-																		<a target="_blanck" href="CrearDocument?tipus=autMen&idIncidencia=${incidencia.idIncidencia}&idActuacio=${actuacio.referencia}&idInforme=${informePrevi.idInf}" class="btn btn-success right" role="button">Aprovar i generar autorització actuació</a>
+																		<a target="_blanck" href="CrearDocument?tipus=autMen&idIncidencia=${incidencia.idIncidencia}&idActuacio=${actuacio.referencia}&idInforme=${informePrevi.idInf}" class="btn btn-success right" role="button">Generar autorització despesa actuació</a>
 																	</div>
-													    		</div>
-											    			</c:if>	
-										    			</c:if>
-										    		</c:if>	
-										    	</div>
-										    	<c:if test="${informePrevi.ofertaSeleccionada.dataAprovacio != null}">
+													    		</div>		
+															    <form class="form-horizontal" target="_blank" method="POST" enctype="multipart/form-data" action="DoCanvisActuacio" onsubmit="setTimeout(function () { window.location.reload(); }, 10)"> 	
+															     	<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
+																	<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">															
+																	<input type="hidden" name="idInforme" value="${informePrevi.idInf}">																		
+																	<div class="col-md-8">
+																		<div class="row margin_top10">
+															    			<div class="col-md-12">
+															           			Pujar autorització proposta despesa signada: <input type="file" class="btn uploadImage" name="informe" /><br/>																 		
+															    			</div>
+															    		</div>																													        			
+														      		</div>	
+														      		<div class="col-md-4">												        		
+															    		<div class="row">
+															        		<div class="col-md-12">															        																						 				
+																		 		<input class="btn btn-success margin_top30 upload" type="submit" name="aprovarPD" value="Autorització proposta despesa signat">
+																		 	</div>
+															     		</div>
+														     		</div>															     											    		
+														  		</form>	
+											    			</c:if>
+											    		</div>
+											    	</div>
+											    </c:if>
+										    	<c:if test="${informePrevi.llistaFactures.size() > 0}">
 											    	<div class="panel-body">
 									    				<div class="row panel-body">
 									    					<h4>Factures</h4>
@@ -312,15 +461,17 @@
 																       	</c:forEach>
 									                                </tbody>
 									                            </table>
-									                        </div>
-									                        <c:if test="${canCreateFactura}">
-										                        <div class="">	
-										                    		<a href="registrarFactura?idInforme=${informePrevi.idInf}" class="btn btn-primary" role="button">Registrar factura</a>							                    				                       	
-											                   	</div>
-										                   	</c:if>																	
+									                        </div>															
 														</div>
 											    	</div>
 											    </c:if>
+											    <c:if test="${informePrevi.autoritzacioPropostaDespesa.ruta != null && canCreateFactura}">
+							                        <div class="panel-body">
+									    				<div class="row panel-body">	
+							                    			<a href="registrarFactura?idInforme=${informePrevi.idInf}" class="btn btn-primary" role="button">Registrar factura</a>							                    				                       	
+								                   		</div>
+								                   	</div>
+							                   	</c:if>	
 								    		</div>
 					      				</div>
 					      			</c:forEach>
@@ -465,90 +616,91 @@
 							</div>
 					    </div>
 					  </div> --%>
-					  <div class="panel panel-default">
-					    <div class="panel-heading">
-					      <h4 class="panel-title">
-					        <a data-toggle="collapse" data-parent="#accordion" href="#entradesRegistre">Registre entrades</a>
-					      </h4>
-					    </div>
-					    <div id="entradesRegistre" class="panel-collapse collapse">
-					      	<div class="panel-body">
-					      		<c:if test="${canCreateRegistre}">
-						      		<div class="row margin_bottom10">
-							    		<div class="col-md-12 panel">
-											<a href="novaEntrada?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary" role="button">Nova entrada</a>
+					  
+						  <div class="panel panel-default">
+						    <div class="panel-heading">
+						      <h4 class="panel-title">
+						        <a data-toggle="collapse" data-parent="#accordion" href="#entradesRegistre">Registre entrades</a>
+						      </h4>
+						    </div>
+						    <div id="entradesRegistre" class="panel-collapse collapse">
+						      	<div class="panel-body">
+						      		<c:if test="${canCreateRegistre}">
+							      		<div class="row margin_bottom10">
+								    		<div class="col-md-12 panel">
+												<a href="novaEntrada?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary" role="button">Nova entrada</a>
+											</div>
+							    		</div>
+							    	</c:if>
+						    		<div class="row panel-body">					    		
+										<div class="table-responsive">                        
+					                            <table class="table table-striped table-bordered">
+					                                <thead>
+					                                    <tr>
+					                                        <th>Referència</th>
+					                                        <th>Data registre</th>
+					                                        <th>Remitent</th>
+					                                        <th>Contingut</th>
+					                                    </tr>
+					                                </thead>
+					                                <tbody>
+					                                	<c:forEach items="${entrades}" var="entrada" >
+												          	<tr>							          	
+												           		<td><a href="registre?tipus=E&referencia=${entrada.id}">${entrada.id}</a></td>
+												            	<td>${entrada.getDataString()}</td>
+												            	<td>${entrada.remDes}</td>
+												            	<td>${entrada.contingut}</td>						            	
+												          	</tr>
+												       	</c:forEach>
+					                                </tbody>
+					                            </table>
+					                        </div>
 										</div>
-						    		</div>
-						    	</c:if>
-					    		<div class="row panel-body">					    		
-									<div class="table-responsive">                        
-				                            <table class="table table-striped table-bordered">
-				                                <thead>
-				                                    <tr>
-				                                        <th>Referència</th>
-				                                        <th>Data registre</th>
-				                                        <th>Remitent</th>
-				                                        <th>Contingut</th>
-				                                    </tr>
-				                                </thead>
-				                                <tbody>
-				                                	<c:forEach items="${entrades}" var="entrada" >
-											          	<tr>							          	
-											           		<td><a href="registre?tipus=E&referencia=${entrada.id}">${entrada.id}</a></td>
-											            	<td>${entrada.getDataString()}</td>
-											            	<td>${entrada.remDes}</td>
-											            	<td>${entrada.contingut}</td>						            	
-											          	</tr>
-											       	</c:forEach>
-				                                </tbody>
-				                            </table>
-				                        </div>
 									</div>
-								</div>
-					    	</div>
-					  </div>
-					  <div class="panel panel-default">
-					    <div class="panel-heading">
-					      <h4 class="panel-title">
-					        <a data-toggle="collapse" data-parent="#accordion" href="#sortidesRegistre">Registre sortides</a>
-					      </h4>
-					    </div>
-					    <div id="sortidesRegistre" class="panel-collapse collapse">
-					      	<div class="panel-body">
-					      		<c:if test="${canCreateRegistre}">
-						      		<div class="row margin_bottom10">
-							    		<div class="col-md-12 panel">
-											<a href="novaSortida?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary" role="button">Nova sortida</a>
+						    	</div>
+						  </div>
+						  <div class="panel panel-default">
+						    <div class="panel-heading">
+						      <h4 class="panel-title">
+						        <a data-toggle="collapse" data-parent="#accordion" href="#sortidesRegistre">Registre sortides</a>
+						      </h4>
+						    </div>
+						    <div id="sortidesRegistre" class="panel-collapse collapse">
+						      	<div class="panel-body">
+						      		<c:if test="${canCreateRegistre}">
+							      		<div class="row margin_bottom10">
+								    		<div class="col-md-12 panel">
+												<a href="novaSortida?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary" role="button">Nova sortida</a>
+											</div>
+							    		</div>
+							    	</c:if>
+						    		<div class="row panel-body">	
+										<div class="table-responsive">                        
+					                            <table class="table table-striped table-bordered">
+					                                <thead>
+					                                    <tr>
+					                                        <th>Referència</th>
+					                                        <th>Data registre</th>
+					                                        <th>Destinatari</th>
+					                                        <th>Contingut</th>
+					                                    </tr>
+					                                </thead>
+					                                <tbody>
+					                                	<c:forEach items="${sortides}" var="sortida" >
+												          	<tr>							          	
+												           		<td><a href="registre?tipus=S&referencia=${sortida.id}">${sortida.id}</a></td>
+												            	<td>${sortida.getDataString()}</td>
+												            	<td>${sortida.remDes}</td>
+												            	<td>${sortida.contingut}</td>						            	
+												          	</tr>
+												       	</c:forEach>
+					                                </tbody>
+					                            </table>
+					                        </div>
 										</div>
-						    		</div>
-						    	</c:if>
-					    		<div class="row panel-body">	
-									<div class="table-responsive">                        
-				                            <table class="table table-striped table-bordered">
-				                                <thead>
-				                                    <tr>
-				                                        <th>Referència</th>
-				                                        <th>Data registre</th>
-				                                        <th>Destinatari</th>
-				                                        <th>Contingut</th>
-				                                    </tr>
-				                                </thead>
-				                                <tbody>
-				                                	<c:forEach items="${sortides}" var="sortida" >
-											          	<tr>							          	
-											           		<td><a href="registre?tipus=S&referencia=${sortida.id}">${sortida.id}</a></td>
-											            	<td>${sortida.getDataString()}</td>
-											            	<td>${sortida.remDes}</td>
-											            	<td>${sortida.contingut}</td>						            	
-											          	</tr>
-											       	</c:forEach>
-				                                </tbody>
-				                            </table>
-				                        </div>
 									</div>
-								</div>
-					    	</div>
-					  </div>		
+						    	</div>
+						  </div>
 					  <div class="panel panel-default">
 					    <div class="panel-heading">
 					      <h4 class="panel-title">
@@ -561,12 +713,12 @@
 									<c:forEach items="${actuacio.arxiusAdjunts}" var="arxiu" >
 										<div class="document">
 											<a target="_blanck" href="downloadFichero?ruta=${arxiu.ruta}">
-												${arxiu.seccio} - ${arxiu.nom} - ${arxiu.signat}
+												${arxiu.nom}
 											</a>
 											<c:if test="${arxiu.signat}">
 												<span class="glyphicon glyphicon-pencil signedFile"></span>
 											</c:if>
-											<span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+<%-- 											<span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span> --%>
 											<br>
 											<div class="infoSign hidden">
 												<c:forEach items="${arxiu.firmesList}" var="firma" >
@@ -597,53 +749,55 @@
 							</div>
 					    </div>
 					  </div>
-					  <div class="panel panel-default">
-					    <div class="panel-heading">
-					      <h4 class="panel-title">
-					        <a data-toggle="collapse" data-parent="#accordion" href="#factures">Factures</a>
-					      </h4>
-					    </div>
-					    <div id="factures" class="panel-collapse collapse">
-					      	<div class="panel-body">					      		
-					    		<div class="row panel-body">
-					    			<div class="table-responsive">                        
-			                            <table class="table table-striped table-bordered filerTable factures">
-			                            	<thead>
-			                                    <tr>                                        
-			                                    	<th>Factura</th>
-			                                        <th>Actuació</th>
-			                                        <th>Data entrada</th>
-			                                        <th>Data entrada</th>
-			                                        <th>Data factura</th>
-			                                        <th>Data factura</th>
-			                                        <th>Import</th>
-			                                        <th>Tipus</th>
-			                                        <th>Proveïdor</th>
-			                                        <th>notes</th>  
-			                                    </tr>
-			                                </thead>
-			                                <tbody>
-			                                	<c:forEach items="${factures}" var="factura" >
-										          	<tr class="">							          	
-										           		<td><a href="facturaDetalls?ref=${factura.idFactura}">${factura.idFactura}</a></td>
-										            	<td>${factura.idActuacio}</td>
-										            	<td>${factura.getDataEntradaString()}</td>
-										            	<td>${factura.dataEntrada}</td>
-										            	<td>${factura.getDataFacturaString()}</td>
-										            	<td>${factura.dataFactura}</td>
-										            	<td>${factura.valor}</td>
-										            	<td>${factura.tipusFactura}</td>
-										            	<td>${factura.idProveidor}</td>
-										            	<td>${factura.notes}</td>	 				            	
-										          	</tr>
-										       	</c:forEach>
-			                                </tbody>
-			                            </table>
-			                        </div>																	
+					  <c:if test="${factures.size() > 0}">
+						  <div class="panel panel-default">
+						    <div class="panel-heading">
+						      <h4 class="panel-title">
+						        <a data-toggle="collapse" data-parent="#accordion" href="#factures">Factures</a>
+						      </h4>
+						    </div>
+						    <div id="factures" class="panel-collapse collapse">
+						      	<div class="panel-body">					      		
+						    		<div class="row panel-body">
+						    			<div class="table-responsive">                        
+				                            <table class="table table-striped table-bordered filerTable factures">
+				                            	<thead>
+				                                    <tr>                                        
+				                                    	<th>Factura</th>
+				                                        <th>Actuació</th>
+				                                        <th>Data entrada</th>
+				                                        <th>Data entrada</th>
+				                                        <th>Data factura</th>
+				                                        <th>Data factura</th>
+				                                        <th>Import</th>
+				                                        <th>Tipus</th>
+				                                        <th>Proveïdor</th>
+				                                        <th>notes</th>  
+				                                    </tr>
+				                                </thead>
+				                                <tbody>
+				                                	<c:forEach items="${factures}" var="factura" >
+											          	<tr class="">							          	
+											           		<td><a href="facturaDetalls?ref=${factura.idFactura}">${factura.idFactura}</a></td>
+											            	<td>${factura.idActuacio}</td>
+											            	<td>${factura.getDataEntradaString()}</td>
+											            	<td>${factura.dataEntrada}</td>
+											            	<td>${factura.getDataFacturaString()}</td>
+											            	<td>${factura.dataFactura}</td>
+											            	<td>${factura.valor}</td>
+											            	<td>${factura.tipusFactura}</td>
+											            	<td>${factura.idProveidor}</td>
+											            	<td>${factura.notes}</td>	 				            	
+											          	</tr>
+											       	</c:forEach>
+				                                </tbody>
+				                            </table>
+				                        </div>																	
+									</div>
 								</div>
-							</div>
-					    </div>
-					  </div>
+						    </div>
+					  	</div>
+					  </c:if>
 					</div>
             	</div>       
 				</c:if>

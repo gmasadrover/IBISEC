@@ -94,17 +94,6 @@ public class DoCrearDocument extends HttpServlet {
     	String filePath = "";
     	File downloadFile = null;
     	if (tipus.equals("autMen")) {	
-			try {
-				ActuacioCore.aprovar(conn, idActuacio, Usuari.getIdUsuari());
-				ActuacioCore.actualitzarActuacio(conn, idActuacio, "Autorització generada");
-				oferta = OfertaCore.findOfertaSeleccionada(conn, idInforme);
-				OfertaCore.aprovarOferta(conn, idInforme, Usuari.getIdUsuari());
-	   			CreditCore.assignar(conn, idInforme, OfertaCore.findOfertaSeleccionada(conn, idInforme).getPlic());
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
 			// Crear directoris si no existeixen
 			File tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia);
 			if (!tmpFile.exists()) {
@@ -189,8 +178,7 @@ public class DoCrearDocument extends HttpServlet {
     	        if (informe.getLlistaPropostes().get(0).isContracte()) contracte = "Si";
     	        fields.setField("contracte", contracte);
     	        stamper.close();
-    	        reader.close();
-    		                
+    	        reader.close();    		                
     		} catch (DocumentException e1) {
     			// TODO Auto-generated catch block
     			e1.printStackTrace();

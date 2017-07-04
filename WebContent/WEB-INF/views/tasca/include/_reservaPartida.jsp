@@ -123,7 +123,7 @@
 		    </div>
 		</div>	                       	
 	</form>
-	<c:if test="${estatActuacio == 4}">
+	
 		<div class="separator"></div>												        	
 		<div class="panel-body">
 	     	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddPA">
@@ -132,29 +132,28 @@
 				<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">
 				<input type="hidden" name="idTasca" value="${tasca.idTasca}">
 				<input type="hidden" name="idInforme" value="${informePrevi.idInf}">																	
-		       	<c:if test="${hasVistiplauPA}">
+		       	<c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.ruta}">
 					<div class="col-md-12">	
 		               	<p>Vistiplau proposta d'actuació signada:</p>													                  	
-		           		<a target="_blanck" href="downloadFichero?ruta=${vistiplauPropostaActuacioFirmada.ruta}">
-							${vistiplauPropostaActuacioFirmada.nom}
+		           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.conformeAreaEconomivaPropostaActuacio.ruta}">
+							${informePrevi.conformeAreaEconomivaPropostaActuacio.nom}
 						</a>																			
 					</div>
 				</c:if>																	
 				<div class="col-md-8">
 					<div class="row margin_top10">
 		    			<div class="col-md-12">
-		           			Pujar Vistiplau proposta d'actuació signada: <input type="file" class="btn" name="informe" /><br/>																 		
+		           			Pujar Autorització àrea econòmica signada: <input type="file" class="btn uploadImage" name="informe" /><br/>																 		
 		    			</div>
 		    		</div>																													        			
 	      		</div>	
 	      		<div class="col-md-4">												        		
 	    		<div class="row">
 	        		<div class="col-md-12">															        																						 				
-				 		<input class="btn btn-success margin_top30" type="submit" name="guardar" value="Enviar vistiplau signat">
+				 		<input class="btn btn-success margin_top30 upload" type="submit" name="guardar" value="Enviar Autorització àrea econòmica signat">
 				 	</div>
 	     		</div>
 	    		</div>
 	  		</form>	
-	  	</div>	
-	</c:if>
+	  	</div>
 </div>

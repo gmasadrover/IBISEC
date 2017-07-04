@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import utils.Fitxers;
+import utils.Fitxers.Fitxer;
 
 public class InformeActuacio {
 	
@@ -176,6 +177,12 @@ public class InformeActuacio {
 	private String expcontratacio;
 	private Date dataPD;
 	private String tipoPD;
+	private Fitxer propostaActuacio;
+	private Fitxer vistiplauPropostaActuacio;
+	private Fitxer conformeAreaEconomivaPropostaActuacio;
+	private Fitxer autoritzacioPropostaAutoritzacio;
+	private Fitxer propostaTecnica;
+	private Fitxer autoritzacioPropostaDespesa;
 	
 	public InformeActuacio() {	
 		this.llistaPropostes = new ArrayList<PropostaInforme>();
@@ -432,5 +439,53 @@ public class InformeActuacio {
 
 	public void setComentariPartida(String comentariPartida) {
 		this.comentariPartida = comentariPartida;
+	}
+
+	public Fitxer getPropostaActuacio() {
+		return propostaActuacio;
+	}
+
+	public void setPropostaActuacio(Fitxer propostaActuacio) {
+		this.propostaActuacio = propostaActuacio;
+	}
+
+	public Fitxer getVistiplauPropostaActuacio() {
+		return vistiplauPropostaActuacio;
+	}
+
+	public void setVistiplauPropostaActuacio(Fitxer vistiplauPropostaActuacio) {
+		this.vistiplauPropostaActuacio = vistiplauPropostaActuacio;
+	}
+
+	public Fitxer getConformeAreaEconomivaPropostaActuacio() {
+		return conformeAreaEconomivaPropostaActuacio;
+	}
+
+	public void setConformeAreaEconomivaPropostaActuacio(Fitxer conformeAreaEconomivaPropostaActuacio) {
+		this.conformeAreaEconomivaPropostaActuacio = conformeAreaEconomivaPropostaActuacio;
+	}
+
+	public Fitxer getAutoritzacioPropostaAutoritzacio() {
+		return autoritzacioPropostaAutoritzacio;
+	}
+
+	public void setAutoritzacioPropostaAutoritzacio(Fitxer autoritzacioPropostaAutoritzacio) {
+		this.autoritzacioPropostaAutoritzacio = autoritzacioPropostaAutoritzacio;
+	}
+
+	public Fitxer getPropostaTecnica() {
+		return propostaTecnica;
+	}
+
+	public void setPropostaTecnica(Fitxer propostaTecnica) {
+		this.propostaTecnica = propostaTecnica;
+	}
+
+	public Fitxer getAutoritzacioPropostaDespesa() {
+		return autoritzacioPropostaDespesa;
+	}
+
+	public void setAutoritzacioPropostaDespesa(Fitxer autoritzacioPropostaDespesa) {
+		this.autoritzacioPropostaDespesa = autoritzacioPropostaDespesa;
 	}
 }

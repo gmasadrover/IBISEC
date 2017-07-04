@@ -107,12 +107,14 @@
 	                                	<c:forEach items="${llistaUsuaris}" var="usuari" >
 	                                		<option value='${usuari.idUsuari}'>${usuari.getNomCompletReal()}</option>	                                		
 	                                	</c:forEach>
-	                                	<option data-divider="true"></option>
-                                		<option value='gerencia'>Gerència</option>
-                                		<option value='juridica'>Assessoria Jurídica</option>
-                                		<option value='obres'>Obres , Projectes i Supervisió</option>
-                                		<option value='comptabilitat'>Administració i comptabilitat</option>
-                                		<option value='instalacions'>Instal·lacions i Manteniment</option>              	                                
+	                                	<c:if test="${tipus!='infPrev'}">
+		                                	<option data-divider="true"></option>
+	                                		<option value='gerencia'>Gerència</option>
+	                                		<option value='juridica'>Assessoria Jurídica</option>
+	                                		<option value='obres'>Obres , Projectes i Supervisió</option>
+	                                		<option value='comptabilitat'>Administració i comptabilitat</option>
+	                                		<option value='instalacions'>Instal·lacions i Manteniment</option>    
+	                                	</c:if>          	                                
 	                                </select>
 	                             </div>
                             </div>                     	

@@ -62,7 +62,7 @@ public class DoCreateTascaServlet extends HttpServlet {
 				idActuacio = request.getParameter("idActuacio"); 
 				String modificacio = "Crear nova tasca";
 				if ("infPrev".equals(tipus)) {
-					modificacio = "Sollicitar proposta d'actuació";
+					modificacio = "Sol·licitar proposta d'actuació";
 				} else if ("notificacio".equals(tipus)) {
 					modificacio = "Enviar nova notificació";
 				}

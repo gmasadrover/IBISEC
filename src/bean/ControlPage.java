@@ -13,7 +13,8 @@ public class ControlPage {
 		usuari_detalls,
 		obres_list,
 		factures_list, factures_crear,
-		llistats_list
+		llistats_list,
+		manuals
 	}
 	public ControlPage(){
 		

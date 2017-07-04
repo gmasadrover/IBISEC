@@ -251,6 +251,15 @@ public class ControlPageCore {
 			active = "";
 			collapse = "";
 		}	
+		//Documents
+		if (UsuariCore.hasPermision(conn, usuari, SectionPage.manuals)) {			
+			if (seccio.equals("Manuals")) active = "active"; 
+			menu.append("<li class='" + active + "'>");
+			menu.append("	<a href='manuals'><i class='fa fa-fw fa-edit'></i> Manuals</a>");
+			menu.append("</li>");
+			active = "";
+			collapse = "";
+		}	
 		return menu.toString();
 	}
 	

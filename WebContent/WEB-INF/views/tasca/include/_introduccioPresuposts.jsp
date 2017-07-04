@@ -211,38 +211,36 @@
     		</div> 
 		</c:if>	     	                     	
 	</form>
-	<c:if test="${estatActuacio == 6 || estatActuacio == 7}">
-		<div class="separator"></div>												        	
-		<div class="panel-body">
-	     	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddPA">
-		     	<input type="hidden" name="document" value="propostaTecnica">
-				<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
-				<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">
-				<input type="hidden" name="idTasca" value="${tasca.idTasca}">
-				<input type="hidden" name="idInforme" value="${informePrevi.idInf}">																	
-		       	<c:if test="${hasPropostaTecnica}">
-					<div class="col-md-12">	
-		               	<p>Proposta Tècnica signada:</p>													                  	
-		           		<a target="_blanck" href="downloadFichero?ruta=${propostaTecnicaFirmada.ruta}">
-							${propostaTecnicaFirmada.nom}
-						</a>																			
-					</div>
-				</c:if>																	
-				<div class="col-md-8">
-					<div class="row margin_top10">
-		    			<div class="col-md-12">
-		           			Pujar proposta tècnica signada: <input type="file" class="btn" name="informe" /><br/>																 		
-		    			</div>
-		    		</div>																													        			
-	      		</div>	
-	      		<div class="col-md-4">												        		
-	    		<div class="row">
-	        		<div class="col-md-12">															        																						 				
-				 		<input class="btn btn-success margin_top30" type="submit" name="guardar" value="Enviar proposta tècnica signada">
-				 	</div>
-	     		</div>
-	    		</div>
-	  		</form>	
-	  	</div>	
-	</c:if>
+	<div class="separator"></div>												        	
+	<div class="panel-body">
+     	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddPA">
+	     	<input type="hidden" name="document" value="propostaTecnica">
+			<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
+			<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">
+			<input type="hidden" name="idTasca" value="${tasca.idTasca}">
+			<input type="hidden" name="idInforme" value="${informePrevi.idInf}">																	
+	       	<c:if test="${informePrevi.propostaTecnica.ruta != null}">
+				<div class="col-md-12">	
+	               	<p>Proposta Tècnica signada:</p>													                  	
+	           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.propostaTecnica.ruta}">
+						${informePrevi.propostaTecnica.nom}
+					</a>																			
+				</div>
+			</c:if>																	
+			<div class="col-md-8">
+				<div class="row margin_top10">
+	    			<div class="col-md-12">
+	           			Pujar proposta tècnica signada: <input type="file" class="btn" name="informe" /><br/>																 		
+	    			</div>
+	    		</div>																													        			
+      		</div>	
+      		<div class="col-md-4">												        		
+    		<div class="row">
+        		<div class="col-md-12">															        																						 				
+			 		<input class="btn btn-success margin_top30" type="submit" name="guardar" value="Enviar proposta tècnica signada">
+			 	</div>
+     		</div>
+    		</div>
+  		</form>	
+  	</div>
 </div>

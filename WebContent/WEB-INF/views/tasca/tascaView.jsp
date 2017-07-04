@@ -166,7 +166,7 @@
 													    <c:when test="${tasca.tipus=='infPrev'}">
 													    	<c:set var="numPA" value="1" scope="request" />
 													    	<div class="panel-body">
-																<form class="form-horizontal" target="_blank" method="POST" enctype="multipart/form-data" action="DoAddInforme" onsubmit="setTimeout(function () { window.location.reload(); }, 10)">
+																<form class="form-horizontal" target="_blank" method="POST" enctype="multipart/form-data" action="DoAddInforme" onsubmit="setTimeout(function () { window.location.reload(); }, 30)">
 																	<input type="hidden" id="infPrev" name=infPrev value="${propostesInformeList.size()}">
 																	<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
 																	<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">
@@ -193,14 +193,37 @@
 																	    		</div>
 																	    	</div>
 																		</div>
-																	<div class="col-md-12 panel-group" id="accordion">
+																	<div class="col-md-12 panel-group" id="accordion">																		
 																    	<c:forEach items="${propostesInformeList}" var="propostaActuacio" >  
 																    		<c:set var="propostaActuacio" value="${propostaActuacio}" scope="request"/> 	
 																	    	<jsp:include page="include/_crearInformePrevi.jsp"></jsp:include>
 																	    	<c:set var="numPA" value="${numPA + 1}" scope="request"/>
 																	    </c:forEach>
-																	</div>		
-																	<c:if test="${estatActuacio == 2}">	
+																	</div>	
+																	<c:if test="${informePrevi.propostaActuacio.ruta != null}">
+																		<div class="col-md-12">	
+																			<p>
+																				<div class="document">
+																               		<label>Vistiplau proposta d'actuació signada:</label>													               
+																					<a target="_blanck" href="downloadFichero?ruta=${informePrevi.propostaActuacio.ruta}">
+																						${informePrevi.propostaActuacio.nom}
+																					</a>
+																					<c:if test="${informePrevi.propostaActuacio.signat}">
+																						<span class="glyphicon glyphicon-pencil signedFile"></span>
+																					</c:if>
+				<%-- 																	<span data-ruta="${informePrevi.propostaActuacio.ruta}" class="glyphicon glyphicon-remove deleteFile"></span> --%>
+																					<br>
+																					<div class="infoSign hidden">
+																						<c:forEach items="${informePrevi.propostaActuacio.firmesList}" var="firma" >
+																							<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+																							<br>
+																						</c:forEach>
+																					</div>
+																				</div>																	
+																			</p>																
+																		</div>
+																	</c:if>		
+																	<c:if test="${informePrevi.propostaActuacio.ruta != null}">	
 																	<div class="form-group">
 																		<div class="col-md-12">	
 																			<div class="row">	 
@@ -214,7 +237,7 @@
 																	<div class="form-group">
 																		<div class="col-md-12">
 																			<div class="col-md-9">	
-																				<c:if test="${estatActuacio <= 1}">																					
+																				<c:if test="${informePrevi.propostaActuacio.ruta == null}">																					
 																		    		<div class="row">
 																		        		<div class="col-md-12">
 																		              		<input class="btn btn-primary" id="novaProposta" value="Nova proposta">
@@ -223,7 +246,7 @@
 																	     		</c:if>
 																	 		</div>	
 																	 		<c:choose>
-																	 			<c:when test="${estatActuacio <= 1}">
+																	 			<c:when test="${informePrevi.propostaActuacio.ruta == null}">
 																	 				<div class="col-md-3">
 																			    		<div class="row">
 																			        		<div class="col-md-12">
@@ -232,7 +255,7 @@
 																			     		</div>																	     		
 																			 		</div>
 																	 			</c:when> 
-																	 			<c:when test="${estatActuacio == 2}">
+																	 			<c:when test="${informePrevi.propostaActuacio.ruta != null}">
 																	 				<div class="col-md-3">
 																			    		<div class="row">
 																			        		<div class="col-md-12">
@@ -246,7 +269,7 @@
 																	</div>																	
 																</form>
 															</div>
-															<c:if test="${estatActuacio == 1 || estatActuacio == 2}">
+															<c:if test="${propostesInformeList.size() > 0 && informePrevi.propostaActuacio.ruta == null}">
 																<div class="separator"></div>
 																<div class="panel-body">
 																	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddPA">
@@ -254,36 +277,26 @@
 																		<input type="hidden" name="idInforme" value="${informePrevi.idInf}">
 																		<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
 																		<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">
-																		<input type="hidden" name="idTasca" value="${tasca.idTasca}">
-																		<c:if test="${hasPA}">
-																			<div class="col-md-12">	
-															                	<p>Proposta d'actuació signada:</p>													                  	
-															            		<a target="_blanck" href="downloadFichero?ruta=${propostaActuacioFirmada.ruta}">
-																					${propostaActuacioFirmada.nom}
-																				</a>																			
-																			</div>
-																		</c:if>	
-																		<c:if test="${!hasPA}">																	
-																			<div class="col-md-8">
-																				<div class="row margin_top10">
-																	    			<div class="col-md-12">
-																	           			Pujar proposta d'actuació signada: <input type="file" class="btn" name="informe" /><br/>																 		
-																	    			</div>
-																	    		</div>																													        			
-															        		</div>	
-															        		<div class="col-md-4">												        		
-																	    		<div class="row">
-																	        		<div class="col-md-12">															        																						 				
-																				 		<input class="btn btn-success margin_top30" type="submit" name="guardar" value="Enviar proposta actuació signada">
-																				 	</div>
-																	     		</div>
+																		<input type="hidden" name="idTasca" value="${tasca.idTasca}">	
+																		<div class="col-md-8">
+																			<div class="row margin_top10">
+																    			<div class="col-md-12">
+																           			Pujar proposta d'actuació signada: <input type="file" class="btn uploadImage" name="informe" /><br/>																 		
+																    			</div>
+																    		</div>																													        			
+														        		</div>	
+														        		<div class="col-md-4">												        		
+																    		<div class="row">
+																        		<div class="col-md-12">															        																						 				
+																			 		<input class="btn btn-success margin_top30 upload" type="submit" name="guardar" value="Enviar proposta actuació signada">
+																			 	</div>
 																     		</div>
-															     		</c:if>
+															     		</div>
 													        		</form>
 													        	</div>
 												        	</c:if>
 												        	<div class="separator"></div>												        	
-												        	<c:if test="${estatActuacio == 2 && esCap}">
+												        	<c:if test="${informePrevi.propostaActuacio.ruta != null && esCap}">
 												        	<div class="panel-body">
 												        		<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddPA">
 												        			<input type="hidden" name="document" value="autoritzacioCap">
@@ -291,25 +304,25 @@
 																	<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">
 																	<input type="hidden" name="idTasca" value="${tasca.idTasca}">
 																	<input type="hidden" name="idInforme" value="${informePrevi.idInf}">																	
-														        	<c:if test="${hasVistiplauPA}">
+														        	<c:if test="${informePrevi.vistiplauPropostaActuacio.ruta != null}">
 																		<div class="col-md-12">	
 														                	<p>Vistiplau proposta d'actuació signada:</p>													                  	
-														            		<a target="_blanck" href="downloadFichero?ruta=${vistiplauPropostaActuacioFirmada.ruta}">
-																				${vistiplauPropostaActuacioFirmada.nom}
+														            		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.vistiplauPropostaActuacio.ruta}">
+																				${informePrevi.vistiplauPropostaActuacio.nom}
 																			</a>																			
 																		</div>
 																	</c:if>																	
 																	<div class="col-md-8">
 																		<div class="row margin_top10">
 															    			<div class="col-md-12">
-															           			Pujar Vistiplau proposta d'actuació signada: <input type="file" class="btn" name="informe" /><br/>																 		
+															           			Pujar Vistiplau proposta d'actuació signada: <input type="file" class="btn uploadImage" name="informe" /><br/>																 		
 															    			</div>
 															    		</div>																													        			
 													        		</div>	
 													        		<div class="col-md-4">												        		
 															    		<div class="row">
 															        		<div class="col-md-12">															        																						 				
-																		 		<input class="btn btn-success margin_top30" type="submit" name="guardar" value="Enviar vistiplau signat">
+																		 		<input class="btn btn-success margin_top30 upload" type="submit" name="guardar" value="Enviar vistiplau signat">
 																		 	</div>
 															     		</div>
 														     		</div>

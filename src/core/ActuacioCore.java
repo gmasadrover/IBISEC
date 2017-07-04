@@ -152,7 +152,7 @@ public class ActuacioCore {
 			}			
 		}
 		sql += " ORDER BY datacre DESC, id DESC";
-		System.out.println(sql.toString());
+		
 		pstm = conn.prepareStatement(sql);
 		
 		int contVars = 1;
@@ -168,7 +168,7 @@ public class ActuacioCore {
 			pstm.setString(contVars, idCentre);
 			contVars += 1;
 		}				
-		
+		System.out.println(pstm.toString());
 		ResultSet rs = pstm.executeQuery();
 		Resultat result = new Resultat();
 		List<Actuacio> list = new ArrayList<Actuacio>();

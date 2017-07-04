@@ -254,6 +254,10 @@ public class UsuariCore {
 				break;
 			case llistats_list:
 				permision = rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("GER");
+				break;
+			case manuals:
+				permision = true;
+				break;
 			default:
 				break;
 		}

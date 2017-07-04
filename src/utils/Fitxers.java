@@ -120,9 +120,29 @@ public class Fitxers {
 		}	
 	}
 	
-	//public static final String RUTA_BASE = "//sibisec1/usuaris/INTERCANVI D'OBRES/IBISEC/NOVA INTRANET";
-	public static final String RUTA_BASE = "//sibisec1/usuaris/PERSONAL/MAS GUILLEM/NOVA INTRANET";
+	public static final String RUTA_BASE = "//sibisec1/usuaris/INTERCANVI D'OBRES/IBISEC/NOVA INTRANET";
+	//public static final String RUTA_BASE = "//sibisec1/usuaris/PERSONAL/MAS GUILLEM/NOVA INTRANET";
 	
+	public static List<Fitxer> ObtenirManuals() {
+		List<Fitxer> arxius = new ArrayList<Fitxer>();	
+		String ruta = RUTA_BASE + "/Manuals/";
+		File dir = new File(ruta);
+		File[] ficheros = dir.listFiles();
+		LoggerFactory.getInstance().setLogger(new SysoLogger());
+		BouncyCastleProvider provider = new BouncyCastleProvider();
+		Security.addProvider(provider);
+		if (ficheros == null) {			
+		} else {
+			for (int x=0;x<ficheros.length;x++) {
+					Fitxer fitxer = new Fitxer();
+	            	fitxer.setNom(ficheros[x].getName());
+					fitxer.setRuta(ruta + "/" + ficheros[x].getName());
+					fitxer.setSeccio("Manuals");
+					arxius.add(fitxer);			
+			}			
+		}
+		return arxius;	
+	}
 	
 	public static List<Fitxer> ObtenirFitxers(String idIncidencia, String idActuacio, String tipus, String idTipus, String idSubTipus) {
 		List<Fitxer> arxius = new ArrayList<Fitxer>();
@@ -130,7 +150,6 @@ public class Fitxers {
 		if (!idActuacio.isEmpty()) rutaBase += "/Actuacio/" + idActuacio;				
 		rutaBase += "/" + tipus + "/" + idTipus;
 		if (!idSubTipus.isEmpty()) rutaBase += "/Comentari/" + idSubTipus;
-		System.out.println(rutaBase);
 		arxius = ObtenirTotsFitxers(rutaBase, tipus);		
 		return arxius;		
 	}
@@ -143,38 +162,28 @@ public class Fitxers {
 	}
 	
 	public static Fitxer ObtenirFitxer(String ruta) {
-		System.out.println(ruta);
 		Fitxer arxiu = new Fitxer();
 		File dir = new File(ruta);
 		File[] ficheros = dir.listFiles();
 		LoggerFactory.getInstance().setLogger(new SysoLogger());
 		BouncyCastleProvider provider = new BouncyCastleProvider();
 		Security.addProvider(provider);
-		if (ficheros == null) {			
+		if (ficheros == null || ficheros.length == 0) {			
 		} else {
 			try {Fitxer fitxer = new Fitxer();	
 				PdfReader reader;						
 				reader = new PdfReader(ruta + "/" + ficheros[0].getName());		
-				System.out.println(ficheros[0].getName());
             	AcroFields acroFields = reader.getAcroFields();
             	List<String> signatureNames = acroFields.getSignatureNames();
-            	String infoSign = "" ;
             	SignaturePermissions perms = null;
             	for (String name: signatureNames) {
             		fitxer.setSignat(true);
-            		//verifySignature(acroFields, name);
             		perms = inspectSignature(acroFields, name, perms, fitxer);
-            		/*System.out.println("Signature name: " + name);
-          		   	System.out.println("Signature covers whole document: "
-                                          + acroFields.signatureCoversWholeDocument(name));
-            		   // Affichage sur les revision - version
-          		   	System.out.println("Document revision: " + acroFields.getRevision(name) + " of "
-                                          + acroFields.getTotalRevisions());*/
     			}
             	
-            	fitxer.setNom(ficheros[0].getName() + infoSign);
+            	fitxer.setNom(ficheros[0].getName());
 				fitxer.setRuta(ruta + "/" + ficheros[0].getName());
-				fitxer.setSeccio("Proposta Actuació");
+				fitxer.setSeccio("");
 				arxiu = fitxer;	
 				
 			} catch (IOException | GeneralSecurityException e) {
@@ -198,7 +207,6 @@ public class Fitxers {
 				for (int x=0;x<ficheros.length;x++) {
 					
 					if (ficheros[x].isDirectory()) {
-						System.out.println("ENTRA");
 						arxius.addAll(ObtenirTotsFitxers(ruta + "/" + ficheros[x].getName(), seccio + "/" + ficheros[x].getName()));
 					} else {
 						Fitxer fitxer = new Fitxer();	
@@ -356,18 +364,7 @@ public class Fitxers {
 	            if (fitxer.getFitxer().getName() != "") {
 	            	File archivo_server = new File(fileName + fitxer.getFitxer().getName());	 
 	               	try {
-	               		fitxer.getFitxer().write(archivo_server);
-	               		PdfReader reader = new PdfReader(fileName + fitxer.getFitxer().getName());
-		            	AcroFields acroFields = reader.getAcroFields();
-		            	List<String> signatureNames = acroFields.getSignatureNames();
-		            	for (String name: signatureNames) {
-		            		System.out.println("Signature name: " + name);
-		          		   	System.out.println("Signature covers whole document: "
-		                                          + acroFields.signatureCoversWholeDocument(name));
-		            		   // Affichage sur les revision - version
-		          		   	System.out.println("Document revision: " + acroFields.getRevision(name) + " of "
-		                                          + acroFields.getTotalRevisions());
-		    			}
+	               		fitxer.getFitxer().write(archivo_server);	               	
 	           		} catch (Exception e) {
 	           			e.printStackTrace();
 	           		}
@@ -413,10 +410,12 @@ public class Fitxers {
             if (item.isFormField()) {
                 ret.put(item.getFieldName(), item.getString("UTF-8"));
             } else {
-            	Fitxer fitxer = new Fitxer();
-            	fitxer.setNom(item.getFieldName());
-            	fitxer.setFitxer(item);
-            	fitxers.add(fitxer);
+            	if (item.getSize() != 0) {
+            		Fitxer fitxer = new Fitxer();
+                	fitxer.setNom(item.getFieldName());
+                	fitxer.setFitxer(item);
+                	fitxers.add(fitxer);
+            	}
             }
         }        
         form.setParametres(ret);

@@ -52,8 +52,7 @@ public class ActuacioDetailsServlet extends HttpServlet {
    		response.sendRedirect(request.getContextPath() + "/");	 	
 	   }else{		   
 		   String referencia = request.getParameter("ref");
-		   String view = request.getParameter("view");
-		   int estatActuacio = 1;
+		   String view = request.getParameter("view");		   
 	       String errorString = null;
 	       Actuacio actuacio = new Actuacio();	
 	       Incidencia incidencia = new Incidencia();
@@ -71,7 +70,7 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       boolean canCreateFactura = false;
 	       boolean canCreateRegistre = false;
 	       boolean hasAutoritzacioPA = false;
-	       Fitxer vistiplauPropostaActuacioFirmada = new Fitxer();
+	       Fitxer autoritzacioPropostaActuacioFirmada = new Fitxer();
 	       try {
 	    	   actuacio = ActuacioCore.findActuacio(conn, referencia);
 	    	   actuacio.setSeguiment(ActuacioCore.isSeguimentActuacio(conn, referencia, usuari.getIdUsuari()));
@@ -89,12 +88,7 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	    	   canCreateInformePrevi = UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_crear) || "gerencia".equals(usuari.getDepartament());
 	    	   canCreateTasca = UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_crear) || "gerencia".equals(usuari.getDepartament());
 	    	   canCreateFactura = UsuariCore.hasPermision(conn, usuari, SectionPage.factures_crear);
-	    	   canCreateRegistre = UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_crear);
-	    	   if (actuacio.isPaAprovada()) {
-	    		   estatActuacio = 5;
-	    		   hasAutoritzacioPA = true;
-	    		   //if ()
-	    	   }
+	    	   canCreateRegistre = UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_crear);	    	  
 	       } catch (SQLException e) {
 	           e.printStackTrace();
 	           errorString = e.getMessage();
@@ -117,8 +111,6 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       request.setAttribute("canModificarActuacio", canModificarActuacio);
 	       request.setAttribute("canCreateFactura", canCreateFactura);
 	       request.setAttribute("canCreateRegistre", canCreateRegistre);
-	       request.setAttribute("estatActuacio", estatActuacio);
-	       request.setAttribute("hasAutoritzacioPA", hasAutoritzacioPA);
 	       request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "Actuacions"));
 	       request.setAttribute("idUsuariLogg", usuari.getIdUsuari());
 	       // Forward to /WEB-INF/views/homeView.jsp

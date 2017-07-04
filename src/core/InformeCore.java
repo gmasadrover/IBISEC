@@ -47,6 +47,12 @@ public class InformeCore {
 		informe.setExpcontratacio(rs.getString("expcontratacio"));
 		informe.setDataPD(rs.getTimestamp("datapd"));
 		informe.setTipoPD(rs.getString("tipopd"));
+		informe.setPropostaActuacio(getPropostaActuacio(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+		informe.setVistiplauPropostaActuacio(getVisiplauPropostaActuacio(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+		informe.setConformeAreaEconomivaPropostaActuacio(getConformeAreaEconomivaPropostaActuacio(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+		informe.setAutoritzacioPropostaAutoritzacio(getAutoritzacioPropostaActuacio(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+		informe.setPropostaTecnica(getPropostaTecnica(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+		informe.setAutoritzacioPropostaDespesa(getAutoritzacioPropostaDespesa(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
 		return informe;
 	}
 	
@@ -194,26 +200,41 @@ public class InformeCore {
 		return informe;
 	}
 	
-	public static Fitxer getPropostaActuacioFirmada(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException {
+	public static Fitxer getPropostaActuacio(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException {
 		Fitxer PA = new Fitxer();
 		PA =  utils.Fitxers.ObtenirFitxer(Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Proposta actuació/");
 		return PA;
 	}
 	
-	public static Fitxer getVisiplauPropostaActuacioFirmada(Connection conn, String idIncidencia, String idActuacio, int idTasca) throws SQLException {
+	public static Fitxer getVisiplauPropostaActuacio(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException {
 		Fitxer VistiplauPA = new Fitxer();
-		if ( utils.Fitxers.ObtenirFitxers(idIncidencia, idActuacio, "Vistiplau proposta actuació", String.valueOf(idTasca),"").size() > 0) {
-			VistiplauPA =  utils.Fitxers.ObtenirFitxers(idIncidencia, idActuacio, "Vistiplau proposta actuació", String.valueOf(idTasca),"").get(0);
-		}
+		VistiplauPA = utils.Fitxers.ObtenirFitxer(Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Vistiplau Cap/");
 		return VistiplauPA;
 	}
 	
-	public static Fitxer getPropostaTecnicaFirmada(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException {
+	public static Fitxer getConformeAreaEconomivaPropostaActuacio(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException {
+		Fitxer VistiplauPA = new Fitxer();
+		VistiplauPA = utils.Fitxers.ObtenirFitxer(Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Conforme àrea financera/");
+		return VistiplauPA;
+	}
+	
+	public static Fitxer getAutoritzacioPropostaActuacio(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException {
+		Fitxer AutoritzacioPA = new Fitxer();
+		AutoritzacioPA =  utils.Fitxers.ObtenirFitxer(Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Autorització Proposta d'actuació/");
+		return AutoritzacioPA;
+	}	
+	
+	public static Fitxer getPropostaTecnica(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException {
 		Fitxer PT = new Fitxer();
 		PT =  utils.Fitxers.ObtenirFitxer(Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Proposta tècnica/");
 		return PT;
 	}
 	
+	public static Fitxer getAutoritzacioPropostaDespesa(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException {
+		Fitxer PT = new Fitxer();
+		PT =  utils.Fitxers.ObtenirFitxer(Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Autorització  Proposta despesa/");
+		return PT;
+	}
 	
 	public static List<InformeActuacio> getInformesActuacio(Connection conn, String idActuacio) throws SQLException {
 		 List<InformeActuacio> informes = new ArrayList<InformeActuacio>();

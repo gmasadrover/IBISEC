@@ -4,6 +4,17 @@ $(document).ready(function() {
 	});
 	loadCentres();
 	
+	$('.upload').on("click",function() { 
+        var imgVal = $(this).parents('.form-horizontal').find('.uploadImage').val(); 
+        if(imgVal=='') { 
+            alert("S'ha d'adjuntar algun document"); 
+            return false; 
+
+        } else {
+        	 return true; 
+        }    
+    }); 
+	
 	$('.deleteFile').on('click', function(){
 		if(confirm("Segur que voleu eliminar aquest document?")) {
 			$.ajax({
