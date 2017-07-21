@@ -12,11 +12,9 @@ import java.util.Date;
 import java.util.List;
 
 import bean.Actuacio;
-import bean.Centre;
 import bean.InformeActuacio;
 import bean.Actuacio.Feina;
 import bean.Resultat;
-import bean.Tasca;
 import bean.Resultat.Estadistiques;
 public class ActuacioCore {
 	
@@ -343,6 +341,17 @@ public class ActuacioCore {
 		pstm.executeUpdate();
 	}
 	
+	public static void modificarActuacio(Connection conn, String idActuacio, String descripcio) throws SQLException {
+		String sql = "UPDATE public.tbl_actuacio"
+				+ " SET descripcio=?"
+				+ " WHERE id=?;";
+		PreparedStatement pstm = conn.prepareStatement(sql);	 
+		pstm = conn.prepareStatement(sql);
+		pstm.setString(1, descripcio);
+		pstm.setString(2, idActuacio);
+		pstm.executeUpdate();
+	}
+	
 	public static void aprovarPA(Connection conn, String referencia, int idUsuari) throws SQLException {
 		String sql = "UPDATE public.tbl_actuacio"
 					+ " SET dataaprovarpa=localtimestamp, usuaprovarpa=?, darreramodificacio='aprovar proposta', datamodificacio=localtimestamp"
@@ -373,38 +382,6 @@ public class ActuacioCore {
 		pstm.setInt(1, idUsuari);
 		pstm.setString(2, referencia);
 		pstm.executeUpdate();
-		
-		sql = "UPDATE public.tbl_tasques"
-				+ " SET activa=false"
-				+ " WHERE idactuacio=?;";
-		pstm = conn.prepareStatement(sql);	 		
-		pstm.setString(1, referencia);
-		pstm.executeUpdate();
-	}
-	
-	private static List<Feina> getFeinesActuacio(Connection conn, String idActuacio) throws SQLException {
-		List<Feina> feinesList = new ArrayList<Feina>();
-		String sql = "SELECT idfeina, nomremitent, nomdestinatari, contingut, data, notes, informe"
-					+ " FROM public.tbl_feines"
-					+ " WHERE idactuacio = ?"
-					+ " ORDER BY idfeina";
-		PreparedStatement pstm;
-		pstm = conn.prepareStatement(sql);
-		pstm.setString(1, idActuacio);	
-		ResultSet rs = pstm.executeQuery();
-		Feina feina = null;
-		while (rs.next()) {
-			feina = new Actuacio().new Feina();
-			feina.setIdFeina(rs.getString("idfeina"));
-			feina.setNomRemitent(rs.getString("nomremitent"));
-			feina.setNomDestinatari(rs.getString("nomdestinatari"));
-			feina.setContingut(rs.getString("contingut"));
-			feina.setData(rs.getTimestamp("data"));
-			feina.setNotes(rs.getString("notes"));
-			feina.setInforme(rs.getString("informe"));
-			feinesList.add(feina);
-		}
-		return feinesList;
 	}
 	
 	public static void seguirActuacio(Connection conn, String idActuacio, int idUsuari) throws SQLException {
@@ -430,7 +407,7 @@ public class ActuacioCore {
 	public static List<Actuacio> llistaActuacionsSeguiment(Connection conn, int idUsuari) throws SQLException {
 		String sql = "SELECT *"
 					+ " FROM public.tbl_seguiments s LEFT JOIN public.tbl_actuacio a ON s.idactuacio = a.id"
-					+ " WHERE s.idusuari = ?";
+					+ " WHERE idactuacio IS NOT NULL AND s.idusuari = ?";
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		pstm.setInt(1, idUsuari);		
 		ResultSet rs = pstm.executeQuery();
@@ -453,5 +430,96 @@ public class ActuacioCore {
 		ResultSet rs = pstm.executeQuery();
 		if (rs.next()) seguint = true;
 		return seguint;
+	}
+	
+	private static List<Feina> getFeinesActuacio(Connection conn, String idActuacio) throws SQLException {
+		List<Feina> feinesList = new ArrayList<Feina>();
+		String sql = "SELECT idfeina, nomremitent, nomdestinatari, contingut, data, notes"
+					+ " FROM public.tbl_feines"
+					+ " WHERE idactuacio = ?"
+					+ " ORDER BY idfeina";
+		PreparedStatement pstm;
+		pstm = conn.prepareStatement(sql);
+		pstm.setString(1, idActuacio);	
+		ResultSet rs = pstm.executeQuery();
+		Feina feina = null;
+		while (rs.next()) {
+			feina = new Actuacio().new Feina();
+			feina.setIdFeina(rs.getString("idfeina"));
+			feina.setNomRemitent(rs.getString("nomremitent"));
+			feina.setNomDestinatari(rs.getString("nomdestinatari"));
+			feina.setContingut(rs.getString("contingut"));
+			feina.setData(rs.getTimestamp("data"));
+			feina.setNotes(rs.getString("notes"));		
+			feinesList.add(feina);
+		}
+		return feinesList;
+	}
+	
+	public static void afegirFeina(Connection conn, String idActuacio, Feina feina) throws SQLException {
+		String sql = "INSERT INTO public.tbl_feines(idfeina, idactuacio, nomremitent, nomdestinatari, contingut, data, notes)"
+					+ " VALUES (?, ?, ?, ?, ?, localtimestamp, ?);";		 
+		PreparedStatement pstm = conn.prepareStatement(sql);	
+		pstm.setString(1, getCodiNovaFeina(conn));
+		pstm.setString(2, idActuacio);
+		pstm.setString(3, feina.getNomRemitent());
+		pstm.setString(4, feina.getNomDestinatari());
+		pstm.setString(5, feina.getContingut());
+		pstm.setString(6, feina.getNotes());
+		pstm.executeUpdate();
+	}
+	
+	public static void eliminarFeina(Connection conn, String idFeina) throws SQLException {
+		String sql = "DELETE FROM public.tbl_feines"
+				+ " WHERE idfeina = ?";		 
+		PreparedStatement pstm = conn.prepareStatement(sql);	
+		pstm.setString(1, idFeina);
+		pstm.executeUpdate();
+	}
+	
+	public static void modificarFeina(Connection conn, Feina feina) throws SQLException {
+		String sql = "UPDATE public.tbl_feines"
+					+ " SET nomremitent = ?, nomdestinatari = ?, contingut = ?, notes = ?"
+					+ " WHERE idfeina = ?";		 
+		PreparedStatement pstm = conn.prepareStatement(sql);	
+		pstm.setString(1, feina.getNomRemitent());
+		pstm.setString(2, feina.getNomDestinatari());
+		pstm.setString(3, feina.getContingut());
+		pstm.setString(4, feina.getNotes());
+		pstm.setString(5, feina.getIdFeina());
+		pstm.executeUpdate();
+	}
+	
+	public static Feina findFeina(Connection conn, String idFeina) throws SQLException {
+		Feina feina = new Actuacio().new Feina();
+		String sql = "SELECT idfeina, idactuacio, nomremitent, nomdestinatari, contingut, data, notes"
+				+ " FROM public.tbl_feines"
+				+ " WHERE idfeina = ?";		 
+		PreparedStatement pstm = conn.prepareStatement(sql);	
+		pstm.setString(1, idFeina);
+		ResultSet rs = pstm.executeQuery();
+		if (rs.next()) { //Codis nous
+			feina.setIdFeina(rs.getString("idfeina"));
+			feina.setNomRemitent(rs.getString("nomremitent"));
+			feina.setNomDestinatari(rs.getString("nomdestinatari"));
+			feina.setContingut(rs.getString("contingut"));
+			feina.setNotes(rs.getString("notes"));
+		}
+		return feina;
+	}
+	
+	public static String getCodiNovaFeina(Connection conn) throws SQLException {
+		String codi = "1";
+		String sql = "SELECT idfeina"
+				+ " FROM public.tbl_feines"
+				+ " ORDER BY idfeina::INT DESC LIMIT 1;";	 
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		ResultSet rs = pstm.executeQuery();
+		if (rs.next()) { //Codis nous
+			String actualCode = rs.getString("idfeina");			
+			int num = Integer.valueOf(actualCode) + 1;	
+			codi = String.valueOf(num);
+		}
+		return codi;
 	}
 }

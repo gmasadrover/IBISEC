@@ -64,55 +64,7 @@ $(document).ready(function() {
 				$('#oferta').val('');
 			}
 		});
-		$('#afegirOferta').on('click', function(){
-			if ($('#oferta').val() != '') {
-				var oferta = "<input name='ofertes' value='" + $('#llistaEmpreses').val() + "#" + $('#oferta').val().replace(',','.') + "'>";
-				$('#llistatOfertes').append(oferta);
-	        	var table = $('.filerTable').DataTable();        	
-	        	table.row.add( [
-	        		 "<a target='_blanck' href='empresa?cif=" + $('#llistaEmpreses').val() + "'>" + $("#llistaEmpreses option[value='" + $('#llistaEmpreses').val() + "']").text() + ' (' + $('#llistaEmpreses').val() + ")</a>",
-	        		 $("#llistaEmpreses option[value='" + $('#llistaEmpreses').val() + "']").text() + ' (' + $('#llistaEmpreses').val() + ")",
-	        		 $('#llistaEmpreses').val(),
-	        		 $('#oferta').val().replace(',','.') + "€",
-	        		 $('#oferta').val().replace(',','.'),
-	        		 "<input class='btn btn-primary btn-sm ofertaSeleccionada' type='button' value='Seleccionar'><input class='btn btn-danger btn-sm eliminarSeleccionada margin_left10' type='button' value='Eliminar'>"
-	            ] ).draw( false );
-	        	$('.ofertaSeleccionada').on('click', function(){
-	        		var table = $('.filerTable').DataTable();      
-	        		$(this).parents('tr').addClass('selected');
-	        		$('#ofertaSeleccionada').text(table.row('.selected').data()[2]);  
-	        		$('#idOfertaSeleccionada').val(table.row('.selected').data()[0]);  
-	        		$(this).parents('tr').removeClass('selected');
-	        	});
-	        	$('.deleteOferta').on('click', function(){
-	        		var table = $('.filerTable').DataTable();
-	        		$(this).parents('tr').addClass('selected');
-	        		if (table.row('.selected').data() != undefined && $('#llistatOfertes input[value="' + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[4] + '"]').size() > 0) {
-	        			$('#llistatOfertes input[value="' + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[4] + '"]').remove();
-	        			if ($('#ofertaSeleccionadaNIF').val() == table.row('.selected').data()[2]) {
-	        				$('#ofertaSeleccionada').text('');  
-	                		$('#ofertaSeleccionadaNIF').val('');  
-	        			}
-	        		}
-	        		table.row('.selected').remove().draw( false );
-	        		$.ajax({
-	        	        type: "POST",
-	        	        url: "DoDeleteOferta",
-	        	        dataType: "json",
-	        	        data: {"idOferta": $(this).data('idoferta')},
-	        	        //if received a response from the server
-	        	        success: function( data, textStatus, jqXHR) {
-	        	            //our country code was correct so we have some information to display
-	        	        	location.reload();      
-	        	        },        
-	        	        //If there was no resonse from the server
-	        	        error: function(jqXHR, textStatus, errorThrown){
-	        	             console.log("Something really bad happened " + jqXHR.responseText);
-	        	        }  
-	        	    });
-	        	});
-			}
-		});
+		
 		$('.ofertaSeleccionada').on('click', function(){
     		var table = $('.filerTable').DataTable();      
     		$(this).parents('tr').addClass('selected');

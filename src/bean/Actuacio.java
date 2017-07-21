@@ -16,7 +16,6 @@ public class Actuacio {
 		 private Date data;
 		 private String contingut;
 		 private String notes;
-		 private String informe;
 		 
 		 public Feina() {
 			 
@@ -49,6 +48,13 @@ public class Actuacio {
 		public Date getData() {
 			return data;
 		}
+		
+		public String getDataString() {
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+			String dataString = "";
+			if (this.data != null) dataString = df.format(this.data);
+			return dataString;
+		}
 
 		public void setData(Date data) {
 			this.data = data;
@@ -68,14 +74,6 @@ public class Actuacio {
 
 		public void setNotes(String notes) {
 			this.notes = notes;
-		}
-
-		public String getInforme() {
-			return informe;
-		}
-
-		public void setInforme(String informe) {
-			this.informe = informe;
 		}
 	 }
 	

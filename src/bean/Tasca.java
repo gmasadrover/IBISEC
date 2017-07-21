@@ -17,6 +17,7 @@ public class Tasca {
 	private String idinforme;
 	private boolean llegida;
 	private String primerComentari;
+	private Date darreraModificacio;
 	private String departament;
 	private boolean seguiment;
 	
@@ -135,5 +136,18 @@ public class Tasca {
 	
 	public void setSeguimentActuacio(boolean seguiment) {
 		this.actuacio.setSeguiment(seguiment);
+	}
+
+	public Date getDarreraModificacio() {
+		return darreraModificacio;
+	}
+
+	public String getDarreraModificacioString(){
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		return df.format(this.darreraModificacio);
+	}
+	
+	public void setDarreraModificacio(Date darreraModificacio) {
+		this.darreraModificacio = darreraModificacio;
 	}
 }

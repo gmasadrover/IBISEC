@@ -167,9 +167,14 @@ public class Empresa {
    private String fax;
    private String email;
    private Date dataConstitucio;
-   private String objecteSocial;
+   private Fitxers.Fitxer documentEscritura;
    private String classificacioString;
-   private Date dataVigenciaClassificacio;
+   private Fitxers.Fitxer classificacioFileROLECE;
+   private Fitxers.Fitxer classificacioFileJCCaib;
+   private Fitxers.Fitxer classificacioFileJCA;
+   private Date dataVigenciaClassificacioROLECE;
+   private Date dataVigenciaClassificacioJCCaib;
+   private Date dataVigenciaClassificacioJCA;
    private String administradorsString;
    private List<Administrador> administradors;   
    private boolean acreditacio1;
@@ -185,6 +190,7 @@ public class Empresa {
    private double ratioAP;
    private String informacioAdicional;
    private UTE ute;
+   private boolean isPime;
    
    
    public Empresa() {
@@ -276,14 +282,6 @@ public class Empresa {
 	
 	public void setDataConstitucio(Date dataConstitucio) {
 		this.dataConstitucio = dataConstitucio;
-	}
-	
-	public String getObjecteSocial() {
-		return objecteSocial;
-	}
-	
-	public void setObjecteSocial(String objecteSocial) {
-		this.objecteSocial = objecteSocial;
 	}
 	
 	public List<Classificacio> getClassificacio() {
@@ -500,20 +498,90 @@ public class Empresa {
 	public boolean isUte() {
 		return this.ute != null;
 	}
-
-	public Date getDataVigenciaClassificacio() {
-		return dataVigenciaClassificacio;
-	}
 	
-	public String getDataVigenciaClassificacioString() {
+	public boolean isPime() {
+		return isPime;
+	}
+
+	public void setPime(boolean isPime) {
+		this.isPime = isPime;
+	}
+
+	public Fitxers.Fitxer getDocumentEscritura() {
+		return documentEscritura;
+	}
+
+	public void setDocumentEscritura(Fitxers.Fitxer documentEscritura) {
+		this.documentEscritura = documentEscritura;
+	}
+
+	public Fitxers.Fitxer getClassificacioFileROLECE() {
+		return classificacioFileROLECE;
+	}
+
+	public void setClassificacioFileROLECE(Fitxers.Fitxer classificacioFileROLECE) {
+		this.classificacioFileROLECE = classificacioFileROLECE;
+	}
+
+	public Fitxers.Fitxer getClassificacioFileJCCaib() {
+		return classificacioFileJCCaib;
+	}
+
+	public void setClassificacioFileJCCaib(Fitxers.Fitxer classificacioFileJCCaib) {
+		this.classificacioFileJCCaib = classificacioFileJCCaib;
+	}
+
+	public Fitxers.Fitxer getClassificacioFileJCA() {
+		return classificacioFileJCA;
+	}
+
+	public void setClassificacioFileJCA(Fitxers.Fitxer classificacioFileJCA) {
+		this.classificacioFileJCA = classificacioFileJCA;
+	}
+
+	public Date getDataVigenciaClassificacioROLECE() {
+		return dataVigenciaClassificacioROLECE;
+	}
+
+	public String getDataVigenciaClassificacioROLECEString() {
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
 		String dataString = "";
-		if (this.dataVigenciaClassificacio != null) dataString = df.format(this.dataVigenciaClassificacio);
+		if (this.dataVigenciaClassificacioROLECE != null) dataString = df.format(this.dataVigenciaClassificacioROLECE);
+		return dataString;
+	}
+	
+	public void setDataVigenciaClassificacioROLECE(Date dataVigenciaClassificacioROLECE) {
+		this.dataVigenciaClassificacioROLECE = dataVigenciaClassificacioROLECE;
+	}
+
+	public Date getDataVigenciaClassificacioJCCaib() {
+		return dataVigenciaClassificacioJCCaib;
+	}
+	
+	public String getDataVigenciaClassificacioJCCaibString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+		String dataString = "";
+		if (this.dataVigenciaClassificacioJCCaib != null) dataString = df.format(this.dataVigenciaClassificacioJCCaib);
 		return dataString;
 	}
 
-	public void setDataVigenciaClassificacio(Date dataVigenciaClassificacio) {
-		this.dataVigenciaClassificacio = dataVigenciaClassificacio;
+	public void setDataVigenciaClassificacioJCCaib(Date dataVigenciaClassificacioJCCaib) {
+		this.dataVigenciaClassificacioJCCaib = dataVigenciaClassificacioJCCaib;
+	}
+
+	public Date getDataVigenciaClassificacioJCA() {
+		return dataVigenciaClassificacioJCA;
+	}
+	
+	public String getDataVigenciaClassificacioJCAString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+		String dataString = "";
+		if (this.dataVigenciaClassificacioJCA != null) dataString = df.format(this.dataVigenciaClassificacioJCA);
+		return dataString;
+	}
+
+	public void setDataVigenciaClassificacioJCA(Date dataVigenciaClassificacioJCA) {
+		this.dataVigenciaClassificacioJCA = dataVigenciaClassificacioJCA;
 	}
 
 }

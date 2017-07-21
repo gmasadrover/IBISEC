@@ -65,7 +65,7 @@ public class Incidencia {
 	}
 	
 	public boolean isActiva() {
-		return dataTancament==null;
+		return this.llistaActuacions.getLlistaActuacions().size() >= 0;
 	}
 
 	public void setActiva(boolean activa) {

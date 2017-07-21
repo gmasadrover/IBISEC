@@ -130,14 +130,14 @@ public class DoCreateEntradaServlet extends HttpServlet {
 			   				if (idIncidencia == null) idIncidencia = "-1";
 			   				int idNovaTasca = TascaCore.idNovaTasca(conn);
 			   				String assumpte = "<a href='registre?from=notificacio&idTasca=" + idNovaTasca + "&tipus=E&referencia=" + registre.getId() + "'>Nova entrada registre: " + registre.getId() + "</a>";
-			   				TascaCore.novaTasca(conn, "notificacio", 1, idUsuari, "", idIncidencia, "", assumpte, "");
+			   				TascaCore.novaTasca(conn, "notificacio", 1, idUsuari, "", idIncidencia, "", assumpte, "", null);
 			   				referenciesIncidencies += idIncidencia + "#";
 			   			}	
 	   				} else {
 	   					String idIncidencia = "-1";
 		   				int idNovaTasca = TascaCore.idNovaTasca(conn);
 		   				String assumpte = "<a href='registre?from=notificacio&idTasca=" + idNovaTasca + "&tipus=E&referencia=" + registre.getId() + "'>Nova entrada registre: " + registre.getId() + "</a>";
-		   				TascaCore.novaTasca(conn, "notificacio", 1, idUsuari, "", idIncidencia, "", assumpte, "");
+		   				TascaCore.novaTasca(conn, "notificacio", 1, idUsuari, "", idIncidencia, "", assumpte, "", null);
 		   				referenciesIncidencies += idIncidencia + "#";
 	   				}
 	   			}	 

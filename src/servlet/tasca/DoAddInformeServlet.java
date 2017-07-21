@@ -21,7 +21,6 @@ import bean.User;
 import core.ActuacioCore;
 import core.InformeCore;
 import core.TascaCore;
-import core.UsuariCore;
 import utils.Fitxers;
 import utils.MyUtils;
 
@@ -37,7 +36,6 @@ public class DoAddInformeServlet extends HttpServlet {
      */
     public DoAddInformeServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
@@ -50,7 +48,6 @@ public class DoAddInformeServlet extends HttpServlet {
 		try {
 			multipartParams = Fitxers.getParamsFromMultipartForm(request);
 		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
@@ -131,7 +128,6 @@ public class DoAddInformeServlet extends HttpServlet {
 		   		TascaCore.nouHistoric(conn, String.valueOf(idTasca), msg, Usuari.getIdUsuari());	
 		   		if (idActuacio != "") idIncidencia = String.valueOf(ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia());
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				errorString = e.getMessage();
 			}		   
@@ -144,7 +140,6 @@ public class DoAddInformeServlet extends HttpServlet {
 				if (informe.getLlistaPropostes().size() == 1) InformeCore.seleccionarProposta(conn, informe.getLlistaPropostes().get(0).getIdProposta(), idInformePrevi);
 				if (idActuacio != "") idIncidencia = String.valueOf(ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia());
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}		   			
 	    }			
@@ -170,7 +165,6 @@ public class DoAddInformeServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 

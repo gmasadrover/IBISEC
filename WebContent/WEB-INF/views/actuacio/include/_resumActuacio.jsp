@@ -20,7 +20,7 @@
         <p>${actuacio.descripcio}</p>
         <p>Documents adjunts:</p>
         <c:forEach items="${actuacio.arxiusAdjunts}" var="arxiu" >
-          	<a target="_blanck" href="downloadFichero?ruta=${arxiu.ruta}">
+          	<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
 				${arxiu.seccio} - ${arxiu.nom}
 			</a>
 			<br>

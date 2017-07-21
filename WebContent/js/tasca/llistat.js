@@ -1,12 +1,33 @@
 $(document).ready(function() {
-	$('.filerTable').DataTable({
-		"order": [[ 3, "desc" ]],
+	$('.filerTable.tasques').DataTable({
+		"order": [[ 5, "desc" ]],
 		"aoColumns": [
     		null,
     		null,
     		null,
     		{"iDataSort": 4},
     		{"bVisible": false},
+    		{"iDataSort": 6},
+    		{"bVisible": false},
+    		null
+		]
+	});
+	$('.filerTable.seguiment').DataTable({
+		"order": [[ 3, "desc" ]],
+		"aoColumns": [
+    		null,
+    		null,
+    		null,
+    		{"iDataSort": 4},
+    		{"bVisible": false},    		
+    		null
+		]
+	});
+	$('.filerTable.actuacioSeguiment').DataTable({
+		"aoColumns": [
+    		null,
+    		null,
+    		null,    		
     		null
 		]
 	});

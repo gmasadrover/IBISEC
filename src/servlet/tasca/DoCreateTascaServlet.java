@@ -11,11 +11,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.lang.math.NumberUtils;
 
 import core.ActuacioCore;
 import core.TascaCore;
 import core.UsuariCore;
+import utils.Fitxers;
 import utils.MyUtils;
 
 /**
@@ -41,25 +43,27 @@ public class DoCreateTascaServlet extends HttpServlet {
 		Connection conn = MyUtils.getStoredConnection(request);
 		String idIncidencia = "";		
 		String idActuacio = "";
+		
+		Fitxers.formParameters multipartParams = new Fitxers.formParameters();
+		try {
+			multipartParams = Fitxers.getParamsFromMultipartForm(request);
+		} catch (FileUploadException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 			
 	    int idUsuari = MyUtils.getLoginedUser(request.getSession()).getIdUsuari();
-	    String tipus = request.getParameter("tipus");
-	    String assumpte = request.getParameter("assumpte");
-	   	String comentari = request.getParameter("comentari");
-	   	String[] usuarisValues = request.getParameterValues("idUsuari");
-	   	String idUsuaris = "#";
+	    String tipus = multipartParams.getParametres().get("tipus");
+	    String assumpte = multipartParams.getParametres().get("assumpte");
+	   	String comentari =multipartParams.getParametres().get("comentari");
+	   	String usuari = multipartParams.getParametres().get("idUsuari");
+	   
 	   	String errorString = null;	   		   	
-	   	try {
-	   		for(int i=0; i<usuarisValues.length; i++) { 
-	   			if (NumberUtils.isNumber(usuarisValues[i])) {
-	   				idUsuaris += usuarisValues[i] + "#";
-	   			}else{
-	   				idUsuaris += UsuariCore.finCap(conn, usuarisValues[i]).getIdUsuari() + "#";
-	   			}	   			
-	   		}
-	   		idIncidencia = request.getParameter("idIncidencia"); 
-	   		if (request.getParameter("idActuacio") != "") {
-				idActuacio = request.getParameter("idActuacio"); 
+	   	try {	   		
+   			
+	   		idIncidencia = multipartParams.getParametres().get("idIncidencia"); 
+	   		if (multipartParams.getParametres().get("idActuacio") != "") {
+				idActuacio = multipartParams.getParametres().get("idActuacio"); 
 				String modificacio = "Crear nova tasca";
 				if ("infPrev".equals(tipus)) {
 					modificacio = "Sol·licitar proposta d'actuació";
@@ -69,19 +73,15 @@ public class DoCreateTascaServlet extends HttpServlet {
 				ActuacioCore.actualitzarActuacio(conn, idActuacio, modificacio);
 				idIncidencia = ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia();
 			}	
-	   		if (usuarisValues.length == 1) {
-	   			int idUsuariTasca = -1;
-	   			if (NumberUtils.isNumber(usuarisValues[0])) {
-	   				idUsuariTasca = Integer.parseInt(usuarisValues[0]);
-	   			}else{
-	   				idUsuariTasca = UsuariCore.finCap(conn, usuarisValues[0]).getIdUsuari();
-	   			}	
-	   			TascaCore.novaTasca(conn, tipus, idUsuariTasca, idUsuari, idActuacio, idIncidencia, comentari, assumpte, "");
-	   		} else {
-	   			TascaCore.novaTasca(conn, tipus, idUsuaris, idUsuari, idActuacio, idIncidencia, comentari, assumpte, "");
-	   		}			
-						
-		} catch (SQLException e) {
+	   		
+   			int idUsuariTasca = -1;
+   			if (NumberUtils.isNumber(usuari)) {
+   				idUsuariTasca = Integer.parseInt(usuari);
+   			}else{
+   				idUsuariTasca = UsuariCore.finCap(conn, usuari).getIdUsuari();
+   			}	
+   			TascaCore.novaTasca(conn, tipus, idUsuariTasca, idUsuari, idActuacio, idIncidencia, comentari, assumpte, "", multipartParams.getFitxers());
+   		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			errorString = e.getMessage();

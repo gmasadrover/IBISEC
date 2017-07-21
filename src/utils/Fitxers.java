@@ -1,6 +1,8 @@
 package utils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
@@ -8,9 +10,9 @@ import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,7 +22,6 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.tsp.TimeStampToken;
 
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.log.LoggerFactory;
@@ -78,6 +79,17 @@ public class Fitxers {
 		}
 		public String getRuta() {
 			return ruta;
+		}
+		public String getEncodedRuta() {
+			String encoded = "";
+			if (this.ruta != null && !this.ruta.isEmpty()) {
+				try {
+					encoded = java.net.URLEncoder.encode(this.ruta, "UTF-8");
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
+			}
+			return encoded;
 		}
 		public void setRuta(String ruta) {
 			this.ruta = ruta;
@@ -187,7 +199,6 @@ public class Fitxers {
 				arxiu = fitxer;	
 				
 			} catch (IOException | GeneralSecurityException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -210,25 +221,26 @@ public class Fitxers {
 						arxius.addAll(ObtenirTotsFitxers(ruta + "/" + ficheros[x].getName(), seccio + "/" + ficheros[x].getName()));
 					} else {
 						Fitxer fitxer = new Fitxer();	
-						PdfReader reader;						
-						reader = new PdfReader(ruta + "/" + ficheros[x].getName());						
-		            	AcroFields acroFields = reader.getAcroFields();
-		            	List<String> signatureNames = acroFields.getSignatureNames();
-		            	String infoSign = "" ;
-		            	SignaturePermissions perms = null;
-		            	for (String name: signatureNames) {
-		            		fitxer.setSignat(true);
-		            		//verifySignature(acroFields, name);
-		            		perms = inspectSignature(acroFields, name, perms, fitxer);
-		            		/*System.out.println("Signature name: " + name);
-		          		   	System.out.println("Signature covers whole document: "
-		                                          + acroFields.signatureCoversWholeDocument(name));
-		            		   // Affichage sur les revision - version
-		          		   	System.out.println("Document revision: " + acroFields.getRevision(name) + " of "
-		                                          + acroFields.getTotalRevisions());*/
-		    			}
+						if (isPDF(ficheros[x])) {
+							PdfReader reader;						
+							reader = new PdfReader(ruta + "/" + ficheros[x].getName());						
+			            	AcroFields acroFields = reader.getAcroFields();
+			            	List<String> signatureNames = acroFields.getSignatureNames();		            	
+			            	SignaturePermissions perms = null;
+			            	for (String name: signatureNames) {
+			            		fitxer.setSignat(true);
+			            		//verifySignature(acroFields, name);
+			            		perms = inspectSignature(acroFields, name, perms, fitxer);
+			            		/*System.out.println("Signature name: " + name);
+			          		   	System.out.println("Signature covers whole document: "
+			                                          + acroFields.signatureCoversWholeDocument(name));
+			            		   // Affichage sur les revision - version
+			          		   	System.out.println("Document revision: " + acroFields.getRevision(name) + " of "
+			                                          + acroFields.getTotalRevisions());*/
+			    			}
+						}
 		            	
-		            	fitxer.setNom(ficheros[x].getName() + infoSign);
+		            	fitxer.setNom(ficheros[x].getName());
 						fitxer.setRuta(ruta + "/" + ficheros[x].getName());
 						fitxer.setSeccio(seccio);
 						arxius.add(fitxer);
@@ -236,13 +248,23 @@ public class Fitxers {
 					}				
 				}
 			} catch (IOException | GeneralSecurityException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		return arxius;	
 	}
 	
+	public static boolean isPDF(File file) throws FileNotFoundException{	    
+	    Scanner inputFile = new Scanner(new FileReader(file));
+	    while (inputFile.hasNextLine()) {
+	        final String checkline = inputFile.nextLine();
+	        if(checkline.contains("%PDF-")) { 
+	            // a match!
+	            return true;
+	        }  
+	    }
+	    return false;
+	}
 	
 	public static PdfPKCS7 verifySignature(AcroFields fields, String name) throws GeneralSecurityException, IOException {
 		//System.out.println("Signature covers whole document: " + fields.signatureCoversWholeDocument(name));
@@ -304,7 +326,7 @@ public class Fitxers {
 	}
 	
 	public static void guardarFitxer(List<Fitxer> fitxers, String idIncidencia, String idActuacio, String tipus, String idTipus, String idSubTipus, String idInforme, String docInforme) throws IOException{		
-		if (!fitxers.isEmpty()) {
+		if (fitxers != null && !fitxers.isEmpty()) {
 			String fileName = "";
 			// Crear directoris si no existeixen
 			File tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/"  + idIncidencia);

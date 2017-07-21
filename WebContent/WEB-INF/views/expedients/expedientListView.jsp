@@ -33,6 +33,65 @@
                         </ol>
                     </div>
                 </div>
+                <div class="row">
+					<form class="form-horizontal" method="POST" action="expedients">						
+						<div class="form-group">				
+							<input type="hidden" id="tipusSelected" value="${tipusFilter}" />
+							<input type="hidden" id="contracteSelected" value="${contracteFilter}" />
+							<input type="hidden" id="estatSelected" value="${estatFilter}" />
+							<div class="col-md-offset-1  col-md-3">
+							    <div class="col-md-12">
+							      <label>Tipus expedient</label>
+							      <div>
+		                                <select class="form-control selectpicker" name="tipus" data-live-search="true" id="tipusList">
+		                                	<option value="-1">Qualsevol</option>
+		                                	<option value="obra">Obra</option>
+		                                	<option value="servei">Servei</option>
+		                                	<option value="subministrament">Subministrament</option>
+		                                	<option value="mixte">Mixte</option>
+		                                </select>
+		                             </div>
+							    </div>						    
+						  	</div>	
+						  	<div class="col-md-3">
+							    <div class="col-md-12">
+							      <label>Tipus contracte</label>
+							      <div>
+		                                <select class="form-control selectpicker" name="contracte" data-live-search="true" id="contracteList">
+		                                	<option value="-1">Qualsevol</option>
+		                                	<option value="major">Major</option>
+		                                	<option value="menor">Menor</option>
+		                                </select>
+		                             </div>
+							    </div>						    
+						  	</div>	
+						  	<div class="col-md-2">
+							    <div class="col-md-12">
+							      <label>Estat</label>
+							      <div>
+							      	<select class="selectpicker" id="estatList" name="estat">
+									  	<option value="-1">Qualsevol</option>
+									  	<option value="redaccio">En redacció</option>
+									  	<option value="iniciExpedient">Inici expedient</option>
+									  	<option value="publicat">Publicats</option>
+									  	<option value="licitacio">Licitació</option>
+									  	<option value="adjudicacio">Adjudicació</option>
+									  	<option value="firmat">Contracte Firmat</option>
+									  	<option value="execucio">Execució obra</option>
+									  	<option value="garantia">Garantia</option>
+									  	<option value="acabat">Acabat</option>
+									</select>							      	
+							      </div>
+							    </div>
+						  	</div>
+						</div>	
+						<div class="form-group">	
+						  	<div class="col-md-offset-5 col-md-2">
+						    	<input type="submit" class="btn btn-primary" name="filtrar" value="Aplicar Filtres">
+							</div>
+						</div>					
+					</form>
+				</div>	       		
                 <!-- /.row -->
                 <div class="row">
                     <div class="col-md-12">
@@ -42,12 +101,13 @@
                                 <thead>
                                     <tr>
                                         <th>Expedient</th>
+                                        <th>Data Creacio</th>
                                         <th>Centre</th>
                                         <th>Descripció</th>
                                         <th>Publicat BOIB</th>
                                         <th>Publicat BOIB</th>
-                                        <th>Adjuducació</th>
-                                        <th>Adjuducació</th>
+                                        <th>Adjudicació</th>
+                                        <th>Adjudicació</th>
                                         <th>Firma</th>
                                         <th>Firma</th>
                                         <th>Inici d'obra</th>
@@ -62,8 +122,9 @@
                                 	<c:forEach items="${expedientsList}" var="expedient" >
 							          	<tr>							          	
 							           		<td><a href="expedient?ref=${expedient.expContratacio}">${expedient.expContratacio}</a></td>
+							           		<td>${expedient.dataCreacio}</td>
 							            	<td>${expedient.actuacio.nomCentre}</td>
-							            	<td>${expedient.actuacio.descripcio}</td>
+							            	<td>${expedient.descripcio}</td>
 							            	<td>${expedient.getDataPublicacioBOIBString()}</td>
 							            	<td>${expedient.dataPublicacioBOIB}</td>
 							            	<td>${expedient.getDataAdjudicacioString()}</td>

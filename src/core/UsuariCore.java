@@ -204,6 +204,9 @@ public class UsuariCore {
 			case expedient_detalls:
 				permision = true;
 				break;
+			case expedient_modificar:
+				permision = (rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("JUR"));
+				break;
 			case centres_list:
 				permision = true;
 				break;

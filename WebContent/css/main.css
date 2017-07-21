@@ -131,3 +131,16 @@ body{
 #wrapper{
 	display:block;
 }
+.bloqued {	
+	background: #A9A9A9;	
+}
+.weekend {
+	width: 10%;
+	cursor:not-allowed;
+}
+.today {
+	background: #e0ebe0;
+}
+.reserved {
+	background: #f8b9c6;
+}

@@ -54,7 +54,7 @@ public class DoLoginServlet extends HttpServlet {
 	            		if (user.getPassword().isEmpty()) {
 	            			hasError = true;
 	            			newUser = true;
-	            			errorString = "Ã‰s el teu primer accÃ©s? Introdueix la contrasenya que desitgis";            			
+	            			errorString = "És el teu primer accès? Introdueix la contrasenya que desitgis";            			
 	            		} else if (! UsuariCore.coincideixPassword(conn, user.getIdUsuari(), password)) {
 		                    hasError = true;
 		                    errorString = "Password invalid";

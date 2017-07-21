@@ -38,7 +38,7 @@
 					<div class="col-md-12">
 						<c:forEach items="${manuals}" var="manual" >
 							<div class="document">
-								<a target="_blanck" href="downloadFichero?ruta=${manual.ruta}">
+								<a target="_blanck" href="downloadFichero?ruta=${manual.getEncodedRuta()}">
 									${manual.nom}
 								</a>
 							</div>					            		

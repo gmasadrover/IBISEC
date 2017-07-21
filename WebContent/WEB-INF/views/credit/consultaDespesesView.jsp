@@ -78,7 +78,7 @@
                                     <tr>
                                         <th>Referència</th>
                                         <th>Descripció</th>
-                                        <th>Centre</th>
+                                        <th>Actuacio</th>
                                         <th>Valor PA</th>
                                         <th>Valor PA</th>
                                         <th>Valor PD</th>
@@ -89,14 +89,14 @@
                                 <tbody>
                                 	<c:forEach items="${despesesList}" var="despesa" >
 							          	<tr>							          	
-							           		<td>${despesa.assignacio}</td>
+							           		<td>${despesa.idAssignacio}</td>
 							            	<td>${despesa.comentari}</td>
-							            	<td>${despesa.idActuacio}</td>
+							            	<td><a href="actuacionsDetalls?ref=${despesa.idActuacio}">${despesa.idActuacio}</a></td>
 							            	<td>${despesa.getValorPAFormat()}</td>
 							            	<td>${despesa.valorPA}</td>
 							            	<td>${despesa.getValorPDFormat()}</td>
 							            	<td>${despesa.valorPD}</td>
-							            	<td>${despesa.idPartida}</td>					            	
+							            	<td><a href="partidaDetalls?codi=${despesa.idPartida}">${despesa.idPartida}</a></td>								            				            	
 							          	</tr>
 							       	</c:forEach>                                	
                                 </tbody>

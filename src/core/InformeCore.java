@@ -301,6 +301,16 @@ public class InformeCore {
 		pstm.executeUpdate();
 	}
 	
+	public static void assignarExpedient(Connection conn, String idInforme, String nouCodi) throws SQLException {
+		String sql = "UPDATE public.tbl_informeactuacio"
+				+ " SET expcontratacio=?"
+				+ " WHERE idinf=?";
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setString(1, nouCodi);	
+		pstm.setString(2, idInforme);
+		pstm.executeUpdate();
+	}
+	
 	private static String idNouInforme(Connection conn) throws SQLException{
 		String newCode = "1";
 		

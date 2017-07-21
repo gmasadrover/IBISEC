@@ -77,7 +77,7 @@
 			                        	<div class="row panel-body">
 			                        		<p>Arxius adjunts:</p>
 			                        		<c:forEach items="${arxius}" var="arxiu" >
-							            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.ruta}">
+							            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
 													${arxiu.nom}
 												</a>
 												<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>

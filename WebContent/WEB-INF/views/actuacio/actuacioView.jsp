@@ -79,6 +79,13 @@
 	                </div>
             	</div> 
             	<div class="row">
+            		<div class="col-md-offset-10 col-md-2">	
+            			<c:if test="${actuacio.isActiva() && canCreateInformePrevi}">
+            				<a href="editActuacio?idActuacio=${actuacio.referencia}" class="btn btn-primary" role="button">Modificar actuació</a>		        			
+		        		</c:if>
+		        	</div>
+            	</div>
+            	<div class="row">
 	                <div class="col-md-offset-10 col-md-2">	
 	                	<div class="checkbox">
 	                        <label>
@@ -88,7 +95,7 @@
 	                </div>
 	            </div>
             	<div class="row">
-            		<form class="form-horizontal" method="POST" action="DoCanvisActuacio">
+            		<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoCanvisActuacio">
                 		<input class="hidden" name="idActuacio" value=${actuacio.referencia}>
                 		<input class="hidden" name="idIncidencia" value=${incidencia.idIncidencia}>
                 		<input class="hidden" name="idInforme" value="-1">
@@ -144,7 +151,7 @@
 					      				<div class="panel panel-default">
 						      				<div class="panel-heading">
 										      <h4 class="panel-title">
-										        <a data-toggle="collapse" data-parent="#accordionInformes" href="#informe${informePrevi.idInf}">Informe ${informePrevi.idInf} - ${informePrevi.getDataCreacioString()} ${informePrevi.partida == "" ? "Pendent de reserva de partida" : "Partida reservada" }</a>
+										        <a data-toggle="collapse" data-parent="#accordionInformes" href="#informe${informePrevi.idInf}">Informe ${informePrevi.idInf} - ${informePrevi.getDataCreacioString()} ${informePrevi.partida == "" ? "Pendent de reserva de partida" : "Partida reservada" }</a><a class="right" href="expedient?ref=${informePrevi.expcontratacio}">Expedient: ${informePrevi.expcontratacio}</a>
 										      </h4>
 										    </div>
 										    <div id="informe${informePrevi.idInf}" class="panel-collapse collapse ${(informePrevi.dataAprovacio == null && view == 'dadesT') || (informePrevi.dataAprovacio != null && view == 'dadesAprov') ? 'in' : ''}">
@@ -171,7 +178,7 @@
 														</p>	
 														<div class="row col-md-12">
 															<c:forEach items="${informePrevi.adjunts}" var="arxiu" >
-																<a target="_blanck" href="downloadFichero?ruta=${arxiu.ruta}">${arxiu.nom}</a>
+																<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.nom}</a>
 																<br>
 															</c:forEach>					            		
 														</div>
@@ -182,7 +189,7 @@
 											               	<p>
 											               		<div class="document">
 												               		<label>Proposta d'actuació signada:	</label>											                  	
-													           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.propostaActuacio.ruta}">
+													           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.propostaActuacio.getEncodedRuta()}">
 																		${informePrevi.propostaActuacio.nom}
 																	</a>	
 																	<c:if test="${informePrevi.propostaActuacio.signat}">
@@ -214,7 +221,7 @@
 																<p>
 																	<div class="document">
 													               		<label>Vistiplau proposta d'actuació signada:</label>													               
-																		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.vistiplauPropostaActuacio.ruta}">
+																		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.vistiplauPropostaActuacio.getEncodedRuta()}">
 																			${informePrevi.vistiplauPropostaActuacio.nom}
 																		</a>
 																		<c:if test="${informePrevi.vistiplauPropostaActuacio.signat}">
@@ -252,7 +259,7 @@
 															<p>
 																<div class="document">
 																	<label>Autorització àrea econòmica signada:</label>										                  	
-													           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.conformeAreaEconomivaPropostaActuacio.ruta}">
+													           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.conformeAreaEconomivaPropostaActuacio.getEncodedRuta()}">
 																		${informePrevi.conformeAreaEconomivaPropostaActuacio.nom}
 																	</a>	
 																	<c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.signat}">
@@ -297,7 +304,7 @@
 												               	<p>
 												               		<div class="document">
 													               		<label>Autorització proposta d'actuació signada:</label>											                  	
-														           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.autoritzacioPropostaAutoritzacio.ruta}">
+														           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.autoritzacioPropostaAutoritzacio.getEncodedRuta()}">
 																			${informePrevi.autoritzacioPropostaAutoritzacio.nom}
 																		</a>	
 																		<c:if test="${informePrevi.autoritzacioPropostaAutoritzacio.signat}">
@@ -339,7 +346,7 @@
 													  	</div>
 												  	</div>	
 												</c:if>
-												<c:if test="${informePrevi.autoritzacioPropostaAutoritzacio.ruta != null || informePrevi.propostaTecnica.ruta != null}">
+												<c:if test="${informePrevi.autoritzacioPropostaAutoritzacio.ruta != null || informePrevi.llistaOfertes.size()>0}">
 											      	<div class="panel-body">
 									    				<c:if test="${informePrevi.llistaOfertes.size()>0}">
 									    					<c:set var="ofertes" scope="request" value="${informePrevi.llistaOfertes}"></c:set>
@@ -350,7 +357,7 @@
 													               	<p>
 													               		<div class="document">
 														               		<label>Proposta tècnica signada:</label>											                  	
-															           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.propostaTecnica.ruta}">
+															           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.propostaTecnica.getEncodedRuta()}">
 																				${informePrevi.propostaTecnica.nom}
 																			</a>	
 																			<c:if test="${informePrevi.propostaTecnica.signat}">
@@ -378,7 +385,7 @@
 												               	<p>
 												               		<div class="document">
 													               		<label>Autorització proposta despesa:</label>											                  	
-														           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.autoritzacioPropostaDespesa.ruta}">
+														           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.autoritzacioPropostaDespesa.getEncodedRuta()}">
 																			${informePrevi.autoritzacioPropostaDespesa.nom}
 																		</a>	
 																		<c:if test="${informePrevi.autoritzacioPropostaDespesa.signat}">
@@ -394,6 +401,13 @@
 																		</div>
 																	</div>																				
 																</p>
+																<c:if test="${empty informePrevi.expcontratacio && canCreateExpedient}">
+														      		<div class="row margin_bottom10">
+															    		<div class="col-md-12 panel">
+																			<a href="createExpedient?idInforme=${informePrevi.idInf}" class="btn btn-primary" role="button">Crear expedient</a>
+																		</div>
+														    		</div>
+														    	</c:if>
 															</c:if>
 											            	<c:if test="${informePrevi.autoritzacioPropostaDespesa.ruta == null && actuacio.activa && canModificarActuacio}">		
 												            	<div class="row margin_bottom10">
@@ -478,50 +492,60 @@
 					      		</div>					      		  					          	
 				    		</div>
 				    	</div>
-            		  </div>
-            		  <c:if test="${actuacio.getFeines() != null && actuacio.getFeines().size()>0}">
-						  <div class="panel panel-default">
-						    <div class="panel-heading">
-						      <h4 class="panel-title">
-						        <a data-toggle="collapse" data-parent="#accordion" href="#feines">Feines</a>
-						      </h4>
-						    </div>					    
-						    <div id="feines" class="panel-collapse collapse">	
-						      	<div class="panel-body">
-						      		<div class="row panel-body">
-										<div class="table-responsive">                        
-				                            <table class="table table-striped table-bordered">
-				                            	<thead>
-				                                    <tr>                                        
-				                                        <th>Feina</th>
-				                                        <th>Remitent</th>
-				                                        <th>Destinatari</th>
-				                                        <th>Contingut</th>
-				                                        <th>Data</th>                                        
-				                                        <th>Notes</th>
-				                                        <th>Informe</th>
-				                                    </tr>
-				                                </thead>
-				                                <tbody>
-				                                	<c:forEach items="${actuacio.getFeines()}" var="feina" >
-											          	<tr>							          	
-											           		<td>${feina.idFeina}</td>
-											            	<td>${feina.nomRemitent}</td>	
-											            	<td>${feina.nomDestinatari}</td>										            	
-											            	<td>${feina.contingut}</td>	
-											            	<td>${feina.data}</td>						            	
-											            	<td>${feina.notes}</td>
-											            	<td>${feina.informe}</td>				            	
-											          	</tr>
-											       	</c:forEach>
-				                                </tbody>
-				                            </table>
-				                        </div>
-				                	</div>
-								</div>
-						    </div>
-						  </div>	
-					  </c:if>			  
+            		  </div>            		  
+					  <div class="panel panel-default">
+					    <div class="panel-heading">
+					      <h4 class="panel-title">
+					        <a data-toggle="collapse" data-parent="#accordion" href="#feines">Feines</a>
+					      </h4>
+					    </div>					    
+					    <div id="feines" class="panel-collapse collapse">	
+					      	<div class="panel-body">
+					      		<c:if test="${canCreateFeina}">
+						      		<div class="row margin_bottom10">
+							    		<div class="col-md-12 panel">
+											<a href="createFeina?idActuacio=${actuacio.referencia}" class="btn btn-primary" role="button">Nova feina</a>
+										</div>
+						    		</div>
+						    	</c:if>
+					      		<div class="row panel-body">
+									<div class="table-responsive">                        
+			                            <table class="table table-striped table-bordered filerTable taulaFeines">
+			                            	<thead>
+			                                    <tr>                                        
+			                                        <th>Feina</th>
+			                                        <th>Remitent</th>
+			                                        <th>Destinatari</th>
+			                                        <th>Contingut</th>
+			                                        <th>Data</th>
+			                                        <th>Data</th>                                        
+			                                        <th>Notes</th>
+			                                        <th>Control</th>
+			                                    </tr>
+			                                </thead>
+			                                <tbody>
+			                                	<c:forEach items="${actuacio.getFeines()}" var="feina" >
+										          	<tr>							          	
+										           		<td>${feina.idFeina}</td>
+										            	<td>${feina.nomRemitent}</td>	
+										            	<td>${feina.nomDestinatari}</td>										            	
+										            	<td>${feina.contingut}</td>	
+										            	<td>${feina.getDataString()}</td>	
+										            	<td>${feina.data}</td>											            						            	
+										            	<td>${feina.notes}</td>		
+										            	<td>
+						                        			<input class="btn btn-danger btn-sm deleteFeina" data-idfeina="${feina.idFeina}" type="button" value="Eliminar">
+						                        			<a href="modificarFeina?idFeina=${feina.idFeina}&idActuacio=${actuacio.referencia}" class="btn btn-primary btn-sm" role="button">Modificar</a>						                        			                       			
+						                        		</td>	            	
+										          	</tr>
+										       	</c:forEach>
+			                                </tbody>
+			                            </table>
+			                        </div>
+			                	</div>
+							</div>
+					    </div>
+					  </div>		  
 					  <div class="panel panel-default">
 					    <div class="panel-heading">
 					      <h4 class="panel-title">
@@ -712,7 +736,7 @@
 					    		<div class="row panel-body">
 									<c:forEach items="${actuacio.arxiusAdjunts}" var="arxiu" >
 										<div class="document">
-											<a target="_blanck" href="downloadFichero?ruta=${arxiu.ruta}">
+											<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
 												${arxiu.nom}
 											</a>
 											<c:if test="${arxiu.signat}">

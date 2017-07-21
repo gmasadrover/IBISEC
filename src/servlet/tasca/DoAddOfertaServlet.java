@@ -57,7 +57,7 @@ public class DoAddOfertaServlet extends HttpServlet {
 	    String errorString = null;
 	    //Agafam totes les ofertes
 	    String cifEmpresa = multipartParams.getParametres().get("llistaEmpreses");	    	    
-	    double plic = Double.parseDouble(multipartParams.getParametres().get("oferta"));
+	    double plic = Double.parseDouble(multipartParams.getParametres().get("oferta").replace(",", "."));
     	
     	Oferta oferta = new Oferta();
     	oferta.setIdInforme(idInforme);

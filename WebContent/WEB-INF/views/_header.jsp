@@ -22,7 +22,7 @@
 <link href="//cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css" rel="stylesheet">           
 <link href="css/bootstrap-select.min.css" rel="stylesheet">
 <link href="css/bootstrap-datepicker3.standalone.min.css" rel="stylesheet">
-<link href="css/main.css" rel="stylesheet">
+<link href="css/main.css?<%=application.getInitParameter("datakey")%>" rel="stylesheet">
 <link rel="shortcut icon" href="favicon.png" type="image/png">
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->

@@ -11,6 +11,9 @@
 	<h2>Informe inicial</h2>	
 	<br />
 	<p>
+		<label>Informe:</label> ${informePrevi.idInf}
+	</p>
+	<p>
 		<label>Tècnic:</label> ${informePrevi.usuari.getNomComplet()}
 	</p>
 	<p>
@@ -61,7 +64,7 @@
 	</p>	
 	<div class="row col-md-12">
 		<c:forEach items="${informePrevi.adjunts}" var="arxiu" >
-			<a target="_blanck" href="downloadFichero?ruta=${arxiu.ruta}">${arxiu.nom}</a>
+			<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.nom}</a>
 			<br>
 		</c:forEach>					            		
 	</div>
@@ -99,7 +102,7 @@
         	</div>
          	<div class="col-md-4">
            		<label>Oferta</label>
-            	<input name="oferta" id="oferta" placeholder="0000,00">
+            	<input name="oferta" id="oferta" placeholder="0000.00">
             	<label class="">€</label>
            	</div>	
            	<div class="col-md-4">												        
@@ -147,7 +150,7 @@
                         		<td>${oferta.cifEmpresa}</td>
                         		<td>${oferta.plic} €</td>
                         		<td>${oferta.plic}</td>
-                        		<td><a target="_blanck" href="downloadFichero?ruta=${oferta.presupost.ruta}">${oferta.presupost.nom}</a></td>
+                        		<td><a target="_blanck" href="downloadFichero?ruta=${oferta.presupost.getEncodedRuta()}">${oferta.presupost.nom}</a></td>
                         		<td>
                         			<input class="btn btn-danger btn-sm deleteOferta" data-idoferta="${oferta.idOferta}" type="button" value="Eliminar">
                         			<c:if test="${canRealitzarPropostaTecnica}">
@@ -222,7 +225,7 @@
 	       	<c:if test="${informePrevi.propostaTecnica.ruta != null}">
 				<div class="col-md-12">	
 	               	<p>Proposta Tècnica signada:</p>													                  	
-	           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.propostaTecnica.ruta}">
+	           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.propostaTecnica.getEncodedRuta()}">
 						${informePrevi.propostaTecnica.nom}
 					</a>																			
 				</div>

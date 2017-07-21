@@ -62,7 +62,7 @@ public class DespesesListServlet extends HttpServlet {
 			Calendar cal = Calendar.getInstance(); 
 			Date dataFi = cal.getTime();
 			String dataFiString = df.format(dataFi);	 
-			cal.add(Calendar.MONTH, -2);
+			cal.set(2017, 0, 1);
 			Date dataInici = cal.getTime();
 			String dataIniciString = df.format(dataInici);	
 			List<AssignacioCredit> list = new ArrayList<AssignacioCredit>();
@@ -82,8 +82,7 @@ public class DespesesListServlet extends HttpServlet {
 					}				
 					list = CreditCore.findAssignacions(conn, idPartida, dataInici, dataFi);
 				} else {
-					filterWithOutDate = "on";
-					list = CreditCore.findAssignacions(conn, "", null, null);
+					list = CreditCore.findAssignacions(conn, "", dataInici, dataFi);
 				}				
 				llistaPartides = CreditCore.getPartides(conn, true);
 			} catch (SQLException | ParseException e) {
@@ -95,9 +94,9 @@ public class DespesesListServlet extends HttpServlet {
 	       request.setAttribute("despesesList", list);
 	       request.setAttribute("llistaPartides", llistaPartides);
 	       request.setAttribute("filterWithOutDate", "on".equals(filterWithOutDate));
-			request.setAttribute("dataInici", dataIniciString);
-		    request.setAttribute("dataFi", dataFiString);
-			request.setAttribute("idPartida", idPartida);
+	       request.setAttribute("dataInici", dataIniciString);
+		   request.setAttribute("dataFi", dataFiString);
+		   request.setAttribute("idPartida", idPartida);
 	       request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Partides"));
 	       // Forward to /WEB-INF/views/homeView.jsp
 	       // (Users can not access directly into JSP pages placed in WEB-INF)

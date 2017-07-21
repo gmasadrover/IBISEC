@@ -77,7 +77,7 @@
                     <div class="col-md-12">
                         <h2>Tasques</h2>
                         <div class="table-responsive">                        
-                            <table class="table table-striped table-bordered filerTable">
+                            <table class="table table-striped table-bordered filerTable tasques">
                                 <thead>
                                     <tr>                                        
                                         <th>Tasca</th>
@@ -85,6 +85,8 @@
                                         <th>Centre</th>                                        
                                         <th>Data creació</th>
                                         <th>Data creació</th>
+                                        <th>Data modificació</th>
+                                        <th>Data modificació</th>
                                         <th>Responsable</th>
                                     </tr>
                                 </thead>
@@ -96,6 +98,8 @@
 							            	<td>${tasca.actuacio.nomCentre}</td>							            	
 							            	<td>${tasca.getDataCreacioString()}</td>
 							            	<td>${tasca.dataCreacio}</td>	
+							            	<td>${tasca.getDarreraModificacioString()}</td>
+							            	<td>${tasca.darreraModificacio}</td>
 							            	<td>${tasca.usuari.getNomComplet()}</td>					            	
 							          	</tr>
 							       	</c:forEach>
@@ -109,7 +113,7 @@
 	                    <div class="col-md-12">
 	                        <h2>Tasques en seguiment</h2>
 	                        <div class="table-responsive">                        
-	                            <table class="table table-striped table-bordered filerTable">
+	                            <table class="table table-striped table-bordered filerTable seguiment">
 	                                <thead>
 	                                    <tr>                                        
 	                                        <th>Tasca</th>
@@ -142,7 +146,7 @@
 	                    <div class="col-md-12">
 	                        <h2>Actuacions en seguiment</h2>
 	                        <div class="table-responsive">                        
-	                            <table class="table table-striped table-bordered filerTable">
+	                            <table class="table table-striped table-bordered filerTable actuacioSeguiment">
 	                                <thead>
 	                                    <tr>
 	                                        <th>id Actuació</th>

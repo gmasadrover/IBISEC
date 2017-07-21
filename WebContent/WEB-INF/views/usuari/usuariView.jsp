@@ -57,7 +57,7 @@
 								</div>
 								<div class="form-group">
 							     	<div class="col-md-4">
-							     	 	<label class="col-xs-6">Càrreg:</label>
+							     	 	<label class="col-xs-6">Càrrec:</label>
 							     	 	<input name="carreg" value="${usuari.carreg}" ${potModificar ? "" : "disabled"}>
 							        </div>	
 							   	</div>

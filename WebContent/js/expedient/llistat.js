@@ -1,4 +1,22 @@
 $(document).ready(function() {
+	if ($('#tipusSelected').val() != '') {		  		
+  		$('#tipusList option[value="' + $('#tipusSelected').val() + '"]').attr('selected', 'selected');
+	}
+	if ($('#tipusList').size() > 0) {
+		  $('#tipusList').selectpicker('refresh');
+	}
+	if ($('#contracteSelected').val() != '') {		  		
+  		$('#contracteList option[value="' + $('#contracteSelected').val() + '"]').attr('selected', 'selected');
+	}
+	if ($('#contracteList').size() > 0) {
+		  $('#contracteList').selectpicker('refresh');
+	}
+	if ($('#estatSelected').val() != '') {		  		
+			$('#estatList option[value="' + $('#estatSelected').val() + '"]').attr('selected', 'selected');
+	}
+	if ($('#estatList').size() > 0) {
+		$('#estatList').selectpicker('refresh');
+	}
 	$('.filerTable').DataTable({
 		dom: 'Bfrtip',
         buttons: [ {
@@ -18,22 +36,23 @@ $(document).ready(function() {
 	            visibility: true
 	        }
         ],
-        "order": [[ 4, "desc" ]],
+        "order": [[ 0, "desc" ]],
 		"aoColumns": [
-    		null,
+			{"iDataSort": 1},
+    		{"bVisible": false},
     		null,
     		null,    		
-    		{"iDataSort": 4},
+    		{"iDataSort": 5},
     		{"bVisible": false},
-    		{"iDataSort": 6},
+    		{"iDataSort": 7},
     		{"bVisible": false},
-    		{"iDataSort": 8},
+    		{"iDataSort": 9},
     		{"bVisible": false},
-    		{"iDataSort": 10},
+    		{"iDataSort": 11},
     		{"bVisible": false},
-    		{"iDataSort": 12},
+    		{"iDataSort": 13},
     		{"bVisible": false},
-    		{"iDataSort": 14},
+    		{"iDataSort": 15},
     		{"bVisible": false}
 		]
 	});

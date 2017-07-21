@@ -81,6 +81,14 @@
 		                                	<input class="form-control" type="email" name="email" placeholder="test@test.es" value="${empresa.email}">
 		                                </div>
 		                            </div>
+		                            <div class="form-group">
+		                				<label class="col-xs-4 control-label">PIME</label>
+		                				<div class="col-xs-6">
+			                				<div class="checkbox">
+						                        <input name="pime" type="checkbox" ${empresa.isPime() ? 'checked' : ''}>
+						                	</div>
+						                </div>
+		                			</div>
 		                    	</c:if>                     
 		                    </div>
 		                    <div class="col-md-6">
@@ -119,19 +127,26 @@
 		                            </div>
 		                    	</c:if>			                                                	
 		                    </div>		            	
-	                	</div>
-	                	<c:if test="${! empresa.isUte()}"> 
-		                	<div class="row">
-		                		<div class="col-md-12">
-			                		<div class="form-group">
-		                                <label class="col-xs-2  control-label">Objecte social</label>
-		                                <div class="col-xs-8">
-		                                	<textarea class="form-control" name="objSocial" placeholder="Objecte Social" rows="3">${empresa.objecteSocial}</textarea>
-		                                </div>
-		                            </div>
+	                	</div>	                	
+	                	<div class="row">
+	                		<div class="col-md-12">
+		                		<div class="form-group">
+			                		<c:if test="${empresa.documentEscritura.ruta != null}">
+					                	<div class="row">
+					                		<label class="col-xs-2 control-label">Document:</label>
+					                		<a  target="_blanck" href="downloadFichero?ruta=${empresa.documentEscritura.getEncodedRuta()}">${empresa.documentEscritura.nom}</a>
+					                		<span data-ruta="${empresa.documentEscritura.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+					                	</div>	                	
+			                		</c:if>
+				                	<div class="row">
+				                		<label class="col-xs-2 control-label">Adjuntar escritura:</label>	                	
+				                        <div class="col-xs-5">   
+				                            <input type="file" class="btn" name="fileEscritura" /><br/>
+										</div>
+									</div> 	                                
 	                            </div>
-		                	</div>
-		                </c:if>
+                            </div>
+	                	</div>
 		                <c:choose>
 		                 	<c:when test="${empresa.isUte()}"> 
 	                			<h2 class="margin_bottom30">Gerents</h2>
@@ -248,10 +263,11 @@
 		                <c:if test="${! empresa.isUte()}"> 
 		                	<h2 class="margin_bottom30">Solvència</h2>
 		                	<h4 class="margin_bottom30">Solvència econòmica</h4>
-		                	<c:if test="${empresa.solEconomica != null}">
+		                	<c:if test="${empresa.solEconomica.ruta != null}">
 			                	<div class="row">
 			                		<label class="col-xs-2 control-label">Document:</label>
-			                		<a  target="_blanck" href="downloadFichero?ruta=${empresa.solEconomica.ruta}">${empresa.solEconomica.nom}</a>
+			                		<a  target="_blanck" href="downloadFichero?ruta=${empresa.solEconomica.getEncodedRuta()}">${empresa.solEconomica.nom}</a>
+			                		<span data-ruta="${empresa.solEconomica.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
 			                	</div>	                	
 		                	</c:if>
 		                	<div class="row">
@@ -281,10 +297,11 @@
 	                            </div>
 	                        </div>
 		                	<h4 class="margin_bottom30">Solvència Tècnica</h4>
-		                	<c:if test="${empresa.solTecnica != null}">
+		                	<c:if test="${empresa.solTecnica.ruta != null}">
 			                	<div class="row">
 			                		<label class="col-xs-2 control-label">Document:</label>
-			                		<a target="_blanck" href="downloadFichero?ruta=${empresa.solTecnica.ruta}">${empresa.solTecnica.nom}</a>
+			                		<a target="_blanck" href="downloadFichero?ruta=${empresa.solTecnica.getEncodedRuta()}">${empresa.solTecnica.nom}</a>
+			                		<span data-ruta="${empresa.solTecnica.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
 			                	</div>
 			                </c:if>
 		                	<div class="row">
@@ -293,14 +310,73 @@
 		                            <input type="file" class="btn" name="FileTecnica" /><br/>
 								</div>
 							</div> 
-		                	<h4 class="margin_bottom30">Classificació</h4>
+		                	<h2 class="margin_bottom30">Classificacio</h2>
+		                	<c:if test="${empresa.classificacioFileROLECE.ruta != null}">
+			                	<div class="row">
+			                		<label class="col-xs-2 control-label">Document ROLECE:</label>
+			                		<div class="col-xs-5">
+			                			<a target="_blanck" href="downloadFichero?ruta=${empresa.classificacioFileROLECE.getEncodedRuta()}">${empresa.classificacioFileROLECE.nom}</a>
+			                			<span data-ruta="${empresa.classificacioFileROLECE.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+			                		</div>
+			                	</div>	                	
+		                	</c:if>
 		                	<div class="row">
-		                		<label class="col-xs-2 control-label">Darrera data vigència</label>
+		                		<label class="col-xs-2 control-label">Adjuntar classificació ROLECE:</label>	                	
+		                        <div class="col-xs-5">   
+		                            <input type="file" class="btn" name="classificacioROLECE" /><br/>
+								</div>
+							</div> 
+		                	<div class="row">
+		                		<label class="col-xs-2 control-label">Darrera data vigència ROLECE</label>
 	                            <div class="input-group date col-xs-2 datepicker">
-								  	<input type="text" class="form-control" name="dataVigenciaClassificacio" id="dataVigenciaClassificacio" value="${empresa.getDataVigenciaClassificacioString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+								  	<input type="text" class="form-control" name="dataVigenciaClassificacioROLECE" id="dataVigenciaClassificacio" value="${empresa.getDataVigenciaClassificacioROLECEString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>	                		
 		                	</div>
+		                	</br>
+		                	<c:if test="${empresa.classificacioFileJCCaib.ruta != null}">
+			                	<div class="row">
+			                		<label class="col-xs-2 control-label">Document JCCaib:</label>
+			                		<div class="col-xs-5">
+			                			<a target="_blanck" href="downloadFichero?ruta=${empresa.classificacioFileJCCaib.getEncodedRuta()}">${empresa.classificacioFileJCCaib.nom}</a>
+			                			<span data-ruta="${empresa.classificacioFileJCCaib.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+			                		</div>
+			                	</div>	                	
+		                	</c:if>
 		                	<div class="row">
+		                		<label class="col-xs-2 control-label">Adjuntar classificació JCCaib:</label>	                	
+		                        <div class="col-xs-5">   
+		                            <input type="file" class="btn" name="classificacioJCCaib" /><br/>
+								</div>
+							</div> 
+		                	<div class="row">
+		                		<label class="col-xs-2 control-label">Darrera data vigència JCCaib</label>
+	                            <div class="input-group date col-xs-2 datepicker">
+								  	<input type="text" class="form-control" name="dataVigenciaClassificacioJCCaib" id="dataVigenciaClassificacio" value="${empresa.getDataVigenciaClassificacioJCCaibString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+								</div>	                		
+		                	</div>
+		                	</br>
+		                	<c:if test="${empresa.classificacioFileJCA.ruta != null}">
+			                	<div class="row">
+			                		<label class="col-xs-2 control-label">Document JCA:</label>
+			                		<div class="col-xs-5">
+			                			<a target="_blanck" href="downloadFichero?ruta=${empresa.classificacioFileJCA.getEncodedRuta()}">${empresa.classificacioFileJCA.nom}</a>
+			                			<span data-ruta="${empresa.classificacioFileJCA.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+			                		</div>
+			                	</div>	                	
+		                	</c:if>
+		                	<div class="row">
+		                		<label class="col-xs-2 control-label">Adjuntar classificació JCA:</label>	                	
+		                        <div class="col-xs-5">   
+		                            <input type="file" class="btn" name="classificacioJCA" /><br/>
+								</div>
+							</div> 
+		                	<div class="row">
+		                		<label class="col-xs-2 control-label">Darrera data vigència JCA</label>
+	                            <div class="input-group date col-xs-2 datepicker">
+								  	<input type="text" class="form-control" name="dataVigenciaClassificacioJCA" id="dataVigenciaClassificacio" value="${empresa.getDataVigenciaClassificacioJCAString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+								</div>	                		
+		                	</div>
+		                	<%-- <div class="row">
 		                		<div class="col-md-3">
 			                		<div class="form-group">
 		                                <label class="col-xs-8 control-label">Grup</label>
@@ -388,7 +464,7 @@
 					                    </table>
 					                </div>
 					           	</div>									
-		                	</div> 
+		                	</div>  --%>
 		                	<h2 class="margin_bottom30">Acreditació d'obligacions fiscals i de seguretat social</h2>
 		                	<div class="row">
 		                		<div class="col-md-12">

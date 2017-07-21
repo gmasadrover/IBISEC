@@ -1,5 +1,6 @@
 package core;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,6 +13,8 @@ import java.util.List;
 import bean.Historic;
 import bean.InformeActuacio;
 import bean.Tasca;
+import utils.Fitxers;
+import utils.Fitxers.Fitxer;
 
 public class TascaCore {
 	
@@ -29,6 +32,7 @@ public class TascaCore {
 		tasca.setIdinforme(rs.getString("idinforme"));
 		tasca.setLlegida(rs.getBoolean("llegida"));		
 		tasca.setPrimerComentari(findHistorial(conn, rs.getInt("idtasca"), rs.getString("idincidencia"), rs.getString("idactuacio")).get(0).getComentari());
+		tasca.setDarreraModificacio(findDarreraModificacioHistorial(conn, rs.getInt("idtasca"), rs.getString("idincidencia"), rs.getString("idactuacio")));
 		return tasca;		
 	}
 	
@@ -247,7 +251,20 @@ public class TascaCore {
 	    return list;
 	}
 	
-	public static void novaTasca(Connection conn, String tipus, int idUsuari, int idUsuariComentari, String idActuacio, String idIncidencia, String comentari, String assumpte, String idInformePrevi) throws SQLException {
+	public static Date findDarreraModificacioHistorial(Connection conn, int idTasca, String idIncidencia, String idActuacio) throws SQLException {
+		String sql = "SELECT data"
+					+ " FROM public.tbl_historial"
+					+ " WHERE idtasca = ?"
+					+ " ORDER BY idhistoric DESC LIMIT 1";	 
+		PreparedStatement pstm = conn.prepareStatement(sql);	 
+		pstm.setString(1, String.valueOf(idTasca));		
+		ResultSet rs = pstm.executeQuery();
+		Date data = new Date();
+		if (rs.next())  data = rs.getTimestamp("data");			
+	    return data;
+	}
+	
+	public static int novaTasca(Connection conn, String tipus, int idUsuari, int idUsuariComentari, String idActuacio, String idIncidencia, String comentari, String assumpte, String idInformePrevi, List<Fitxer> adjunts) throws SQLException {
 		String sql = "INSERT INTO public.tbl_tasques(idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament)"
 					+" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
@@ -277,7 +294,14 @@ public class TascaCore {
 		pstm.setString(10, UsuariCore.findUsuariByID(conn, idUsuari).getDepartament());			
 		pstm.executeUpdate();		
 		//Registrar comentari 1
-		nouHistoric(conn, Integer.toString(idNovaTasca), comentari, idUsuariComentari);
+		String idComentari = nouHistoric(conn, Integer.toString(idNovaTasca), comentari, idUsuariComentari);
+		try {
+			Fitxers.guardarFitxer(adjunts, idIncidencia, idActuacio, "Tasca", Integer.toString(idNovaTasca), idComentari, "", "");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		return idNovaTasca;
 	}
 	
 	public static void novaTasca(Connection conn, String tipus, String idUsuaris, int idUsuariComentari, String idActuacio, String idIncidencia, String comentari, String assumpte, String idInformePrevi) throws SQLException {

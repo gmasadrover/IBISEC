@@ -30,7 +30,6 @@ import core.RegistreCore;
 import core.TascaCore;
 import core.UsuariCore;
 import utils.Fitxers;
-import utils.Fitxers.Fitxer;
 import utils.MyUtils;
 
 @WebServlet(urlPatterns = { "/actuacionsDetalls"})
@@ -69,16 +68,15 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       boolean canCreateTasca = false;
 	       boolean canCreateFactura = false;
 	       boolean canCreateRegistre = false;
-	       boolean hasAutoritzacioPA = false;
-	       Fitxer autoritzacioPropostaActuacioFirmada = new Fitxer();
+	       boolean canCreateExpedient = false;
+	       boolean canCreateFeina = false;
 	       try {
 	    	   actuacio = ActuacioCore.findActuacio(conn, referencia);
 	    	   actuacio.setSeguiment(ActuacioCore.isSeguimentActuacio(conn, referencia, usuari.getIdUsuari()));
 	    	   incidencia = IncidenciaCore.findIncidencia(conn, actuacio.getIdIncidencia());
 	    	   actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia()));
 	    	   tasques = TascaCore.findTasquesActuacio(conn, referencia);	    
-	    	   notificacions = TascaCore.findNotificacionsActuacio(conn, referencia);
-	    	   actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia()));
+	    	   notificacions = TascaCore.findNotificacionsActuacio(conn, referencia);	    	 
 	    	   informes = InformeCore.getInformesActuacio(conn, referencia);
 	    	   factures = FacturaCore.getFacturesActuacio(conn, referencia);  
 	    	   entrades = RegistreCore.searchEntradesIncidencia(conn, incidencia.getIdIncidencia());
@@ -88,7 +86,9 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	    	   canCreateInformePrevi = UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_crear) || "gerencia".equals(usuari.getDepartament());
 	    	   canCreateTasca = UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_crear) || "gerencia".equals(usuari.getDepartament());
 	    	   canCreateFactura = UsuariCore.hasPermision(conn, usuari, SectionPage.factures_crear);
-	    	   canCreateRegistre = UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_crear);	    	  
+	    	   canCreateRegistre = UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_crear);	
+	    	   canCreateExpedient = UsuariCore.hasPermision(conn, usuari, SectionPage.expedient_modificar);
+	    	   canCreateFeina = UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_crear);	
 	       } catch (SQLException e) {
 	           e.printStackTrace();
 	           errorString = e.getMessage();
@@ -111,6 +111,8 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       request.setAttribute("canModificarActuacio", canModificarActuacio);
 	       request.setAttribute("canCreateFactura", canCreateFactura);
 	       request.setAttribute("canCreateRegistre", canCreateRegistre);
+	       request.setAttribute("canCreateFeina", canCreateFeina);	       
+	       request.setAttribute("canCreateExpedient", canCreateExpedient);
 	       request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "Actuacions"));
 	       request.setAttribute("idUsuariLogg", usuari.getIdUsuari());
 	       // Forward to /WEB-INF/views/homeView.jsp

@@ -56,14 +56,30 @@ public class ExpedientListServlet extends HttpServlet {
 		} else {
 			String errorString = "";
 			List<Expedient> expedientsList = new ArrayList<Expedient>();
+			String filtrar = request.getParameter("filtrar");
+			String estat = "";
+			String tipus = "";
+			String contracte ="";
+			Calendar now = Calendar.getInstance();
+			int year = now.get(Calendar.YEAR);
+			String yearInString = String.valueOf(year);
+			double importObraMajor = Double.parseDouble(getServletContext().getInitParameter("importObraMajor"));
 			try {
-				expedientsList = ExpedientCore.getExpedients(conn);
+				if (filtrar != null) {	
+					estat = request.getParameter("estat");		
+					tipus = request.getParameter("tipus");		
+					contracte = request.getParameter("contracte");
+				} 
+				expedientsList = ExpedientCore.getExpedients(conn, estat, tipus, contracte, importObraMajor);								
 			} catch (SQLException e) {
 				e.printStackTrace();
 				errorString = e.getMessage();
 			}
 
 			// Store info in request attribute, before forward to views
+			request.setAttribute("estatFilter", estat);
+			request.setAttribute("tipusFilter", tipus);
+			request.setAttribute("contracteFilter", contracte);
 			request.setAttribute("errorString", errorString);
 			request.setAttribute("expedientsList", expedientsList);
 			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"expedients"));

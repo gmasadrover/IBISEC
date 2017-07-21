@@ -17,9 +17,7 @@ import org.apache.commons.fileupload.FileUploadException;
 
 import bean.InformeActuacio;
 import bean.User;
-import bean.InformeActuacio.PropostaInforme;
 import core.ActuacioCore;
-import core.CreditCore;
 import core.InformeCore;
 import core.OfertaCore;
 import core.TascaCore;
@@ -84,10 +82,10 @@ public class DoAddPAServlet extends HttpServlet {
 					TascaCore.reasignar(conn, 900, idTasca);
 					TascaCore.tancar(conn, idTasca);
 					int idUsuari = UsuariCore.findUsuarisByRol(conn, "CAP,CONTA").get(0).getIdUsuari();
-					TascaCore.novaTasca(conn, "resPartida", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, "", String.valueOf(idTasca), idInforme);
+					TascaCore.novaTasca(conn, "resPartida", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, "", String.valueOf(idTasca), idInforme, null);
 					idUsuari = UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari();
 					String comentari = "S'ha realitzat la proposta d'actuació: <a href='actuacionsDetalls?ref=" + idActuacio + "&view=dadesT'>" + idActuacio + "</a>";
-					TascaCore.novaTasca(conn, "generic", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, comentari, "Proposta actuació " + idInforme + " realitzada", "");
+					TascaCore.novaTasca(conn, "generic", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, comentari, "Proposta actuació " + idInforme + " realitzada", "", null);
 			    } else if ("autoritzacioAreaFinancera".equals(document)) {
 			    	Fitxers.guardarFitxer(fitxers, idIncidencia, idActuacio, "", "", "", idInforme, "Conforme àrea financera");
 				    InformeActuacio informe = new InformeActuacio();
@@ -119,7 +117,7 @@ public class DoAddPAServlet extends HttpServlet {
 	   				}
 	   				//Registrar incidència nova
 	   				ActuacioCore.actualitzarActuacio(conn, idActuacio, "Sol·licitud proposta tècnica");
-	   				TascaCore.novaTasca(conn, tipus, usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "", "",informe.getIdInf());
+	   				TascaCore.novaTasca(conn, tipus, usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "", "",informe.getIdInf(),null);
 			    } else if ("propostaTecnica".equals(document)) {
 			    	Fitxers.guardarFitxer(fitxers, idIncidencia, idActuacio, "", "", "", idInforme, "Proposta tècnica");
 			    	//Registrar comentari;	 
@@ -141,7 +139,7 @@ public class DoAddPAServlet extends HttpServlet {
 					int idUsuari = UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari();
 					String comentari = "S'ha realitzat la proposta tècnica: " + idInforme;
 					comentari = "S'ha realitzat la proposta tècnica: <a href='actuacionsDetalls?ref=" + idActuacio + "&view=dadesAprov'>" + idActuacio + "</a>";
-					TascaCore.novaTasca(conn, "generic", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, comentari, "Proposta tècnica " + idInforme + " realitzada", "");
+					TascaCore.novaTasca(conn, "generic", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, comentari, "Proposta tècnica " + idInforme + " realitzada", "", null);
 			    }
 			} catch (SQLException e) {
 				errorString = e.toString();

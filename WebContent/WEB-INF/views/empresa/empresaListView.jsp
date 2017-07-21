@@ -52,6 +52,7 @@
                                         <th>Provincia</th>
                                         <th>Telèfon</th>
                                         <th>Email</th>
+                                        <th>Pime</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -64,7 +65,8 @@
 							            	<td>${empresa.ciutat}</td>
 							            	<td>${empresa.provincia}</td>
 							            	<td>${empresa.telefon}</td>
-							            	<td>${empresa.email}</td>							            	
+							            	<td>${empresa.email}</td>	
+							            	<td>${empresa.isPime() ? "Si" : "No"}</td>							            	
 							          	</tr>
 							       	</c:forEach>
                                 </tbody>

@@ -32,7 +32,6 @@ import core.OfertaCore;
 import core.TascaCore;
 import core.UsuariCore;
 import utils.Fitxers;
-import utils.Fitxers.Fitxer;
 import utils.MyUtils;
 
 /**
@@ -47,7 +46,6 @@ public class TascaDetailsServlet extends HttpServlet {
      */
     public TascaDetailsServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     @Override
@@ -73,7 +71,6 @@ public class TascaDetailsServlet extends HttpServlet {
  	       List<Empresa> empresesList = new ArrayList<Empresa>();
  	       List<User> llistaUsuaris = new ArrayList<User>();
  	       boolean canRealitzarTasca = false;
- 	       boolean canRealitzarPropostaTecnica = false;
  	       List<Oferta> ofertes = new ArrayList<Oferta>();
 	       Oferta ofertaSeleccionada = new Oferta();
  	       try {
@@ -92,7 +89,7 @@ public class TascaDetailsServlet extends HttpServlet {
  	    		  historial = TascaCore.findHistorial(conn, idTasca, incidencia.getIdIncidencia(), "");
  	    	   } 	    	  
  	    	   String tipusTasca = tasca.getTipus();
- 	    	   if ((tasca.getDepartament().equals(usuari.getDepartament()) && usuari.getRol().contains("CAP")) || true) esCap = true;
+ 	    	   if ((tasca.getDepartament().equals(usuari.getDepartament()) && usuari.getRol().contains("CAP"))) esCap = true;
  	    	   if ("infPrev".equals(tipusTasca)) { 	    		  
  	    		  informeActuacioPrevi = InformeCore.getInformeTasca(conn, idTasca);
  	    		  if (informeActuacioPrevi.getIdInf() != null) {
@@ -117,7 +114,6 @@ public class TascaDetailsServlet extends HttpServlet {
 	 	    		  llistaUsuaris.add(informeActuacioPrevi.getUsuari());
 		    		  llistaUsuaris.add(UsuariCore.finCap(conn, tasca.getDepartament()));
  	    		  }
- 	    		 canRealitzarPropostaTecnica = usuari.getIdUsuari() == informeActuacioPrevi.getUsuari().getIdUsuari();
  	    	   }else if ("notificacio".equals(tipusTasca)) {
  	    		   TascaCore.llegirNotificacio(conn, tasca.getIdTasca());
  	    	   }

@@ -211,10 +211,10 @@
 					      	<div class="panel-body">
 					    		<div class="row panel-body">					    		
 									<c:forEach items="${arxius}" var="arxiu" >
-					            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.ruta}">
+					            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
 											${arxiu.seccio} - ${arxiu.nom}
 										</a>
-										<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
+<%-- 										<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a> --%>
 										<br>
 									</c:forEach>	
 								</div>

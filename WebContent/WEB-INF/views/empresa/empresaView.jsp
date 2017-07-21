@@ -69,6 +69,9 @@
 						                        <p> 
 						                        	<label>email: </label> ${empresa.email}
 					                            </p>
+					                            <p>
+					                            	<label>Pime: </label> ${empresa.isPime() ? "Si" : "No"}
+					                            </p>
 					                    	</c:if> 	                    		                            
 					                  	</div>
 						             	<div class="col-xs-offset-1 col-md-5">
@@ -90,16 +93,12 @@
 					                            </p>
 					                    	</c:if> 		                                                	
 					                    </div>		            	
-				                	</div>
-				                	<c:if test="${! empresa.isUte()}"> 
+				                	</div>				                	
+				                	<c:if test="${empresa.documentEscritura != null}">
 					                	<div class="row">
-					                		<div class="col-xs-offset-1 col-md-10 longText">
-					                			<p> 
-						                        	<label>Objecte social: </label> 
-						                        	${empresa.objecteSocial}
-					                            </p>	                		
-					                        </div>
-					                	</div> 
+					                		<label class="col-xs-offset-1 col-xs-2 control-label">Escritura:</label>
+					                		<a target="_blanck" href="downloadFichero?ruta=${empresa.documentEscritura.getEncodedRuta()}">${empresa.documentEscritura.nom}</a>
+					                	</div>
 					                </c:if> 
 		                		</div>
 		                	</div>
@@ -167,7 +166,7 @@
 					                	<c:if test="${empresa.solEconomica != null}">
 						                	<div class="row">
 						                		<label class="col-xs-2 control-label">Document:</label>
-						                		<a target="_blanck" href="downloadFichero?ruta=${empresa.solEconomica.ruta}">${empresa.solEconomica.nom}</a>
+						                		<a target="_blanck" href="downloadFichero?ruta=${empresa.solEconomica.getEncodedRuta()}">${empresa.solEconomica.nom}</a>
 						                	</div>
 						                	<div class="row">
 						                		<div class="col-md-10">
@@ -195,7 +194,7 @@
 					                	<c:if test="${empresa.solTecnica != null}">
 						                	<div class="row">
 						                		<label class="col-xs-2 control-label">Document:</label>
-						                		<a target="_blanck" href="downloadFichero?ruta=${empresa.solTecnica.ruta}">${empresa.solTecnica.nom}</a>
+						                		<a target="_blanck" href="downloadFichero?ruta=${empresa.solTecnica.getEncodedRuta()}">${empresa.solTecnica.nom}</a>
 						                	</div>
 						                </c:if>
 						            </div>
@@ -212,12 +211,39 @@
 						      			<div class="row">
 					                		<div class="col-md-10">
 					                			<p>
-						                        	<label>Darrera data vigència:</label> ${empresa.getDataVigenciaClassificacioString()}
+						                        	<label>Darrera data vigència ROLECE:</label> ${empresa.getDataVigenciaClassificacioROLECEString()}
 						                        </p> 	                		
 				                        	</div>
-					                	</div>    	                
-						                <div class="row">	                		
-					                        <div class="col-xs-offset-2 col-md-7">	
+					                	</div>
+					                	<div class="row">
+					                		<label class="col-xs-2 control-label">Document:</label>
+					                		<a target="_blanck" href="downloadFichero?ruta=${empresa.classificacioFileROLECE.getEncodedRuta()}">${empresa.classificacioFileROLECE.nom}</a>
+					                	</div> 
+					                	</br>
+					                	<div class="row">
+					                		<div class="col-md-10">
+					                			<p>
+						                        	<label>Darrera data vigència JCCaib:</label> ${empresa.getDataVigenciaClassificacioJCCaibString()}
+						                        </p> 	                		
+				                        	</div>
+					                	</div>
+					                	<div class="row">
+					                		<label class="col-xs-2 control-label">Document:</label>
+					                		<a target="_blanck" href="downloadFichero?ruta=${empresa.classificacioFileJCCaib.getEncodedRuta()}">${empresa.classificacioFileJCCaib.nom}</a>
+					                	</div> 
+					                	</br>
+					                	<div class="row">
+					                		<div class="col-md-10">
+					                			<p>
+						                        	<label>Darrera data vigència JCA:</label> ${empresa.getDataVigenciaClassificacioJCAString()}
+						                        </p> 	                		
+				                        	</div>
+					                	</div>
+					                	<div class="row">
+					                		<label class="col-xs-2 control-label">Document:</label>
+					                		<a target="_blanck" href="downloadFichero?ruta=${empresa.classificacioFileJCA.getEncodedRuta()}">${empresa.classificacioFileJCA.nom}</a>
+					                	</div>           		
+					                      <%--   <div class="col-xs-offset-2 col-md-7">	
 												<label>Classificació</label>							                        
 								                <div class="table-responsive">							                        
 								                    <table class="table table-striped table-bordered filerTable" id="classificacioTable">
@@ -239,8 +265,7 @@
 								                        </tbody>
 								                    </table>
 								                </div>
-								           	</div>									
-					                	</div>
+								           	</div>	 --%>		
 					                </div>
 					            </div>
 					        </div>

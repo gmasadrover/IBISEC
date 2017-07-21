@@ -75,7 +75,7 @@
                 
     			<div class="row">
                     <div class="col-md-12">                    	
-		    			<form class="form-horizontal" method="POST" action="DoCreateTasca">
+		    			<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoCreateTasca">
 		    				<div class="form-group">
 		    					<input type="hidden" name="idActuacio" value="${idActuacio}">
 		    					<input type="hidden" name="idIncidencia" value="${idIncidencia}">
@@ -100,6 +100,12 @@
                                 	<textarea class="form-control" name="comentari" placeholder="comentari inter" rows="3">Revisar</textarea>
                                 </div>
                             </div>
+                            <div class="form-group">
+                            	<label class="col-xs-3 control-label">Adjuntar arxius:</label>
+	                            <div class="col-xs-5">   
+	                                <input type="file" class="btn" name="file" /><br/>
+								</div> 	
+							</div>
                             <div class="form-group">
                                 <label class="col-xs-3  control-label">Asignar</label>
                                 <div class="col-xs-3">

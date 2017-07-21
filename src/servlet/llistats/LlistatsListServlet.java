@@ -116,7 +116,6 @@ public class LlistatsListServlet extends HttpServlet {
 		    request.setAttribute("dataFiExec", dataFiExecString);
 			request.setAttribute("estatFilter", estat);
 			request.setAttribute("tipusFilter", tipus);
-			System.out.println(estat + " " + tipus);
 			
 			request.setAttribute("errorString", errorString);
 			request.setAttribute("centresList", centres);

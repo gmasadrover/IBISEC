@@ -12,13 +12,15 @@ import java.util.Iterator;
 import java.util.List;
 
 import bean.Empresa;
+import utils.Fitxers;
 import utils.Fitxers.Fitxer;
 
 public class EmpresaCore {
 	
-	static final String SQL_CAMPS = "cif, nom, direccio, cp, ciutat, provincia, telefon, fax, email, usumod, datamod, objectesocial,"
+	static final String SQL_CAMPS = "cif, nom, direccio, cp, ciutat, provincia, telefon, fax, email, usumod, datamod,"
 								+ " acreditacio1, dataexpacreditacio1, acreditacio2, dataexpacreditacio2, acreditacio3, dataexpacreditacio3,"
-								+ " classificacio, dataconstitucio, informacioadicional, exercicieconomic, dataregistremercantil, ratioap, datavigenciaclassificacio";
+								+ " classificacio, dataconstitucio, informacioadicional, exercicieconomic, dataregistremercantil, ratioap,"
+								+ " datavigenciaclassificaciorolece, datavigenciaclassificaciojccaib, datavigenciaclassificaciojca, pime";
 	
 	
 	private static Empresa initEmpresa(Connection conn, ResultSet rs) throws SQLException{		
@@ -32,8 +34,8 @@ public class EmpresaCore {
 		empresa.setTelefon(rs.getString("telefon"));
 		empresa.setFax(rs.getString("fax"));
 		empresa.setEmail(rs.getString("email"));
-		empresa.setDataConstitucio(rs.getTimestamp("dataconstitucio"));
-		empresa.setObjecteSocial(rs.getString("objectesocial"));		
+		empresa.setDataConstitucio(rs.getTimestamp("dataconstitucio"));	
+		empresa.setDocumentEscritura(getEscritra(empresa.getCif()));
 		empresa.setAcreditacio1(rs.getBoolean("acreditacio1"));
 		empresa.setDateExpAcreditacio1(rs.getTimestamp("dataexpacreditacio1"));
 		empresa.setAcreditacio2(rs.getBoolean("acreditacio2"));
@@ -50,7 +52,13 @@ public class EmpresaCore {
 		empresa.setExerciciEconomic(rs.getTimestamp("exercicieconomic"));
 		empresa.setRegistreMercantilData(rs.getTimestamp("dataregistremercantil"));
 		empresa.setRatioAP(rs.getDouble("ratioap"));
-		empresa.setDataVigenciaClassificacio(rs.getTimestamp("datavigenciaclassificacio"));
+		empresa.setClassificacioFileROLECE(getClassificacioROLECE(empresa.getCif()));
+		empresa.setClassificacioFileJCCaib(getClassificacioJCCaib(empresa.getCif()));
+		empresa.setClassificacioFileJCA(getClassificacioJCA(empresa.getCif()));		
+		empresa.setDataVigenciaClassificacioROLECE(rs.getTimestamp("datavigenciaclassificaciorolece"));
+		empresa.setDataVigenciaClassificacioJCCaib(rs.getTimestamp("datavigenciaclassificaciojccaib"));
+		empresa.setDataVigenciaClassificacioJCA(rs.getTimestamp("datavigenciaclassificaciojca"));
+		empresa.setPime(rs.getBoolean("pime"));
 		return empresa;
 	}
 	
@@ -108,9 +116,10 @@ public class EmpresaCore {
 	
 	public static void updateEmpresa(Connection conn, Empresa empresa, String cifActual, List<Empresa.Administrador> administradorsList, int idUsuari) throws SQLException {
 		 String sql = "UPDATE public.tbl_empreses"
-				 	+ " SET cif=?, nom=?, direccio=?, cp=?, ciutat=?, provincia=?, telefon=?, fax=?, email=?, usumod=?, datamod=localtimestamp, objectesocial=?," 
+				 	+ " SET cif=?, nom=?, direccio=?, cp=?, ciutat=?, provincia=?, telefon=?, fax=?, email=?, usumod=?, datamod=localtimestamp," 
 				 		+ " acreditacio1=?, dataexpacreditacio1=?, acreditacio2=?, dataexpacreditacio2=?, acreditacio3=?, dataexpacreditacio3=?," 
-				 		+ " classificacio=?, dataconstitucio=?, informacioadicional=?, exercicieconomic=?,  dataregistremercantil=?,  ratioap=?, datavigenciaclassificacio=?"
+				 		+ " classificacio=?, dataconstitucio=?, informacioadicional=?, exercicieconomic=?,  dataregistremercantil=?,  ratioap=?,"
+				 		+ " datavigenciaclassificaciorolece=?, datavigenciaclassificaciojccaib=?, datavigenciaclassificaciojca=?, pime=?"
 				 	+ " WHERE cif = ?";	 
 		 PreparedStatement pstm = conn.prepareStatement(sql);	
 		 pstm.setString(1, empresa.getCif());
@@ -123,49 +132,59 @@ public class EmpresaCore {
 		 pstm.setString(8, empresa.getFax());
 		 pstm.setString(9, empresa.getEmail());
 		 pstm.setInt(10, idUsuari);
-		 pstm.setString(11, empresa.getObjecteSocial());
-		 pstm.setBoolean(12, empresa.isAcreditacio1());		
+		 pstm.setBoolean(11, empresa.isAcreditacio1());		
 		 if (empresa.getDateExpAcreditacio1() != null) {
-			 pstm.setDate(13, new java.sql.Date(empresa.getDateExpAcreditacio1().getTime()));
+			 pstm.setDate(12, new java.sql.Date(empresa.getDateExpAcreditacio1().getTime()));
 		 } else {
-			 pstm.setDate(13, null);
+			 pstm.setDate(12, null);
 		 }		 
-		 pstm.setBoolean(14, empresa.isAcreditacio2());
+		 pstm.setBoolean(13, empresa.isAcreditacio2());
 		 if (empresa.getDateExpAcreditacio2() != null) {
-			 pstm.setDate(15, new java.sql.Date(empresa.getDateExpAcreditacio2().getTime()));
+			 pstm.setDate(14, new java.sql.Date(empresa.getDateExpAcreditacio2().getTime()));
 		 } else {
-			 pstm.setDate(15, null);
+			 pstm.setDate(14, null);
 		 }				
-		 pstm.setBoolean(16, empresa.isAcreditacio3());
+		 pstm.setBoolean(15, empresa.isAcreditacio3());
 		 if (empresa.getDateExpAcreditacio3() != null) {
-			 pstm.setDate(17, new java.sql.Date(empresa.getDateExpAcreditacio3().getTime()));
+			 pstm.setDate(16, new java.sql.Date(empresa.getDateExpAcreditacio3().getTime()));
 		 } else {
-			 pstm.setDate(17, null);
+			 pstm.setDate(16, null);
 		 }	
-		 pstm.setString(18, empresa.getClassificacioString());		
+		 pstm.setString(17, empresa.getClassificacioString());		
 		 if (empresa.getDataConstitucio() != null) {
-			 pstm.setDate(19, new java.sql.Date(empresa.getDataConstitucio().getTime()));
+			 pstm.setDate(18, new java.sql.Date(empresa.getDataConstitucio().getTime()));
 		 } else {
-			 pstm.setDate(19, null);
+			 pstm.setDate(18, null);
 		 }	
-		 pstm.setString(20, empresa.getInformacioAdicional());		 
+		 pstm.setString(19, empresa.getInformacioAdicional());		 
 		 if (empresa.getExerciciEconomic() != null) {
-			 pstm.setDate(21, new java.sql.Date(empresa.getExerciciEconomic().getTime()));
+			 pstm.setDate(20, new java.sql.Date(empresa.getExerciciEconomic().getTime()));
+		 } else {
+			 pstm.setDate(20, null);
+		 }	
+		 if (empresa.getRegistreMercantilData() != null) {
+			 pstm.setDate(21, new java.sql.Date(empresa.getRegistreMercantilData().getTime()));
 		 } else {
 			 pstm.setDate(21, null);
 		 }	
-		 if (empresa.getRegistreMercantilData() != null) {
-			 pstm.setDate(22, new java.sql.Date(empresa.getRegistreMercantilData().getTime()));
+		 pstm.setDouble(22, empresa.getRatioAP());
+		 if (empresa.getDataVigenciaClassificacioROLECE() != null) {
+			 pstm.setDate(23, new java.sql.Date(empresa.getDataVigenciaClassificacioROLECE().getTime()));
 		 } else {
-			 pstm.setDate(22, null);
+			 pstm.setDate(23, null);
 		 }	
-		 pstm.setDouble(23, empresa.getRatioAP());
-		 if (empresa.getDataVigenciaClassificacio() != null) {
-			 pstm.setDate(24, new java.sql.Date(empresa.getDataVigenciaClassificacio().getTime()));
+		 if (empresa.getDataVigenciaClassificacioJCCaib() != null) {
+			 pstm.setDate(24, new java.sql.Date(empresa.getDataVigenciaClassificacioJCCaib().getTime()));
 		 } else {
 			 pstm.setDate(24, null);
 		 }	
-		 pstm.setString(25, cifActual);
+		 if (empresa.getDataVigenciaClassificacioJCA() != null) {
+			 pstm.setDate(25, new java.sql.Date(empresa.getDataVigenciaClassificacioJCA().getTime()));
+		 } else {
+			 pstm.setDate(25, null);
+		 }	
+		 pstm.setBoolean(26, empresa.isPime());
+		 pstm.setString(27, cifActual);
 		 pstm.executeUpdate();
 		
 		 addAdministradors(conn, empresa.getCif(), administradorsList, idUsuari);
@@ -213,6 +232,7 @@ public class EmpresaCore {
 			 empresa.setTelefon(rs.getString("telefon"));
 			 empresa.setFax(rs.getString("fax"));
 			 empresa.setEmail(rs.getString("email"));
+			 empresa.setPime(rs.getBoolean("pime"));
 			 list.add(empresa);
 		 }
 	     return list;
@@ -391,6 +411,70 @@ public class EmpresaCore {
 		 }
 		 return administradorsList;
 	 }
+	
+	 public static Fitxer getEscritra(String cif) {
+		 Fitxer fitxer = new Fitxer();
+		 File dir = new File(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Escritura");
+		 File[] fichers = dir.listFiles();
+		 if (fichers == null) {
+			
+		 } else { 
+			 for (int x=0;x<fichers.length;x++) {
+				 fitxer = new Fitxer();
+				 fitxer.setNom(fichers[x].getName());
+				 fitxer.setRuta(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Escritura/" + fichers[x].getName());
+			 }
+		 }
+		 return fitxer;
+	 }
+	 
+	 public static Fitxer getClassificacioROLECE(String cif) {
+		 Fitxer fitxer = new Fitxer();
+		 File dir = new File(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Classificacio/ROLECE");
+		 File[] fichers = dir.listFiles();
+		 if (fichers == null) {
+			
+		 } else { 
+			 for (int x=0;x<fichers.length;x++) {
+				 fitxer = new Fitxer();
+				 fitxer.setNom(fichers[x].getName());
+				 fitxer.setRuta(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Classificacio/ROLECE/" + fichers[x].getName());
+			 }
+		 }
+		 return fitxer;
+	 } 
+	 
+	 public static Fitxer getClassificacioJCCaib(String cif) {
+		 Fitxer fitxer = new Fitxer();
+		 File dir = new File(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Classificacio/JCCaib");
+		 File[] fichers = dir.listFiles();
+		 if (fichers == null) {
+			
+		 } else { 
+			 for (int x=0;x<fichers.length;x++) {
+				 fitxer = new Fitxer();
+				 fitxer.setNom(fichers[x].getName());
+				 fitxer.setRuta(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Classificacio/JCCaib/" + fichers[x].getName());
+			 }
+		 }
+		 return fitxer;
+	 } 
+	 
+	 public static Fitxer getClassificacioJCA(String cif) {
+		 Fitxer fitxer = new Fitxer();
+		 File dir = new File(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Classificacio/JCA");
+		 File[] fichers = dir.listFiles();
+		 if (fichers == null) {
+			
+		 } else { 
+			 for (int x=0;x<fichers.length;x++) {
+				 fitxer = new Fitxer();
+				 fitxer.setNom(fichers[x].getName());
+				 fitxer.setRuta(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Classificacio/JCA/" + fichers[x].getName());
+			 }
+		 }
+		 return fitxer;
+	 } 
 	 
 	 public static Fitxer getSolEconomica(String cif) {
 		 Fitxer fitxer = new Fitxer();
@@ -438,6 +522,39 @@ public class EmpresaCore {
 				}
 		        for(int i=0;i<fitxers.size();i++){
 		            Fitxer fitxer = (Fitxer) fitxers.get(i);
+		            if ("classificacioROLECE".equals(fitxer.getNom())) {
+						tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Classificacio");
+						if (!tmpFile.exists()) {
+							tmpFile.mkdir();
+						}
+						tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Classificacio/ROLECE");
+						if (!tmpFile.exists()) {
+							tmpFile.mkdir();
+						}
+						fileName = utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Classificacio/ROLECE/";
+					}
+		            if ("classificacioJCCaib".equals(fitxer.getNom())) {
+						tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Classificacio");
+						if (!tmpFile.exists()) {
+							tmpFile.mkdir();
+						}
+						tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Classificacio/JCCaib");
+						if (!tmpFile.exists()) {
+							tmpFile.mkdir();
+						}
+						fileName = utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Classificacio/JCCaib/";
+					}
+		            if ("classificacioJCA".equals(fitxer.getNom())) {
+						tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Classificacio");
+						if (!tmpFile.exists()) {
+							tmpFile.mkdir();
+						}
+						tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Classificacio/JCA");
+						if (!tmpFile.exists()) {
+							tmpFile.mkdir();
+						}
+						fileName = utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Classificacio/JCA/";
+					}
 		            if ("fileEconomica".equals(fitxer.getNom())) {
 						tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Sol Economica");
 						if (!tmpFile.exists()) {
@@ -452,7 +569,14 @@ public class EmpresaCore {
 						}
 						fileName = utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Sol Tecnica/";
 					}
-		            if (fitxer.getFitxer().getName() != "") {		          
+					if (("fileEscritura").equals(fitxer.getNom())) {
+						tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Escritura");
+						if (!tmpFile.exists()) {
+							tmpFile.mkdir();
+						}
+						fileName = utils.Fitxers.RUTA_BASE + "/documents/Empreses/" + cif + "/Escritura/";
+					}
+		            if (fitxer.getFitxer().getName() != "") {	
 		            	File archivo_server = new File(fileName + fitxer.getFitxer().getName());
 		               	try {
 		               		fitxer.getFitxer().write(archivo_server);
