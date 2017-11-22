@@ -37,51 +37,7 @@
 				
 				<div class="row">
 					<div class="col-md-12">
-						<form class="form-horizontal" method="POST" action="factures">						
-							<div class="form-group">
-								<div class="col-md-offset-1  col-md-3">								    
-								      <label>Concepte</label>
-								      <input type="text"  class="form-control" name="concepte" value="${concepte}">				    
-							  	</div>
-							  	<div class="col-md-3">								    
-								      <label>Nombre factura</label>
-								      <input type="text"  class="form-control" name="nombreFact" value="${nombreFact}">				    
-							  	</div>
-							  	<div class="col-md-3">								    
-								      <label>Descripció Actuació</label>
-								      <input type="text"  class="form-control" name="descActuacio" value="${descAct}">				    
-							  	</div>
-							</div>
-							<div class="form-group">
-								<div class="col-md-offset-1  col-md-4">								    
-									<div class="col-md-12">
-										<input type="hidden" id="tipoContracteSelected" value="${tipoContracte}" />
-										<label>Tipo Contracte</label>
-										<div>
-			                                <select class="form-control selectpicker" name="tipoContracte" data-size="10" id="tipoContracteList" data-live-search="true" >
-			                                	<option value="-1">No filtrar</option>
-			                                	<option value="obraMenor">Obra Menor</option>
-			                                	<option value="obraMajor">Obra Major</option>
-			                                	<option value="altres">Altres</option>
-			                                </select>
-			                             </div>
-									</div>				    
-							  	</div>
-							  	<div class="col-md-4">								    
-									<div class="col-md-12">
-										<input type="hidden" id="tipoPDSelected" value="${tipoPD}" />
-										<label>Tipo PD</label>
-										<div>
-			                           		<select class="form-control selectpicker" name="tipoPD" data-size="10" id="tipoPDList" data-live-search="true" >
-			                                	<option value="-1">No filtrar</option>
-			                                	<c:forEach items="${llistaTipoPD}" var="tipoPD" >		                                		
-			                                		<option value="${tipoPD}">${tipoPD}</option>
-			                                	</c:forEach>
-			                                </select>
-			                          	</div>
-									</div>			    
-							  	</div>
-							</div>		
+						<form class="form-horizontal" method="POST" action="factures">
 							<div class="form-group">					
 							  	<div class="col-md-offset-1 col-md-4">
 							  		<label>Data factura</label>
@@ -90,17 +46,24 @@
 									    <div class="input-group-addon">fins</div>
 									    <input type="text" class="form-control" name="dataFi" value="${dataFi}">
 									</div>                                
-							  	</div>		
-							  	<div class="col-md-4">
-							  		<label>Data PD</label>
-								  	<div class="input-group input-daterange datepicker">
-									    <input type="text" class="form-control" name="dataIniciIdPD" value="${dataIniciIdPD}">
-									    <div class="input-group-addon">fins</div>
-									    <input type="text" class="form-control" name="dataFiIdPD" value="${dataFiIdPD}">
-									</div>                                
-							  	</div>							  				  				 
+							  	</div>	
+							  	<div class="col-md-offset-1  col-md-4">								    
+									<div class="col-md-12">
+										<input type="hidden" id="estatFacturaSelected" value="${estatFactura}" />
+										<label>Estat factura</label>
+										<div>
+			                                <select class="form-control selectpicker" name="estatFactura" id="estatFacturaList">
+			                                	<option value="-1">Tots</option>
+			                                	<option value="envConf">Enviada a conformar</option>
+			                                	<option value="confor">Conformada</option>
+			                                	<option value="envComt">Enviada a comptabilitat</option>
+			                                	<option value="comta">Penent arxivar</option>
+			                                </select>
+			                             </div>
+									</div>				    
+							  	</div>		  				  				 
 							  	<div class="col-md-2">
-							    	<input type="submit" class="btn btn-primary margin_top30" name="filtrar" value="Aplicar Filtres">
+							    	<input type="submit" class="btn btn-primary margin_top30 loadingButton"  data-msg="Aplicant filtres..." name="filtrar" value="Aplicar Filtres">
 								</div>
 							</div>	
 						</form>
@@ -126,6 +89,7 @@
                                         <th>Usuari Conformador</th>
                                         <th>Data Conformació No Format</th>
                                         <th>Data Conformació</th>
+                                        <th>Partida</th>
                                         <th>notes</th>   
                                         <th>Centre</th> 
                                         <th>Data creació actuació No Format</th>
@@ -136,14 +100,15 @@
                                         <th>data PD</th>
                                         <th>data aut No Format</th>
                                         <th>data aut</th>
-                                        <th>despesa prevista</th>                               
+                                        <th>despesa prevista</th>   
+                                        <th>Factura</th>                            
                                     </tr>
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${facturesList}" var="factura" >
 							          	<tr class="success">							          	
-							           		<td><a href="facturaDetalls?ref=${factura.idFactura}">${factura.idFactura}</a></td>
-							            	<td><a href="actuacionsDetalls?ref=${factura.idActuacio}">${factura.idActuacio} - ${factura.actuacio.descripcio}</a></td>
+							           		<td><a href="facturaDetalls?ref=${factura.idFactura}" class="loadingButton"  data-msg="obrint factura...">${factura.idFactura}</a></td>
+							            	<td><a href="actuacionsDetalls?ref=${factura.idActuacio}" class="loadingButton"  data-msg="obrint actuació...">${factura.idActuacio} - ${factura.actuacio.descripcio}</a></td>
 							            	<td>${factura.getDataFacturaString()}</td>
 							            	<td>${factura.dataFactura}</td>
 							            	<td>${factura.concepte}</td>
@@ -154,8 +119,9 @@
 							            	<td>${factura.usuariConformador.getNomCompletReal()}</td>
 							            	<td>${factura.dataConformacio}</td>
 							            	<td>${factura.getDataConformacioString()}</td>
+							            	<td>${factura.informe.codiPartida}</td>
 							            	<td>${factura.notes}</td>	 
-							            	<td>${factura.actuacio.nomCentre}</td>    
+							            	<td>${factura.actuacio.centre.getNomComplet()}</td>    
 							            	<td>${factura.actuacio.dataCreacio}</td> 
 							            	<td>${factura.actuacio.getDataCreacioString()}</td> 
 							            	<td>${factura.informe.tipoPD}</td>      
@@ -164,7 +130,8 @@
 							            	<td>${factura.informe.getDataPDString()}</td>      
 							            	<td>${factura.informe.dataAprovacio}</td> 
 							            	<td>${factura.informe.getDataAprovacioString()}</td>      
-							            	<td>${factura.informe.ofertaSeleccionada.getPlicFormat()}</td>       	
+							            	<td>${factura.informe.ofertaSeleccionada.getPlicFormat()}</td> 
+							            	<td><a target="_blanck" href="downloadFichero?ruta=${factura.arxiu.getEncodedRuta()}">${factura.arxiu.nom}</a></td>      	
 							          	</tr>
 							       	</c:forEach>                                	
                                 </tbody>

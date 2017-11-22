@@ -54,9 +54,12 @@
 	                        <p> 
 	                        	<label>Total: </label> ${partida.getTotalPartidaFormat()}
                             </p>
-	                        <p> 
-	                        	<label>Assignat / previst: </label> ${partida.getPrevistPartidaFormat()}
-                            </p>                            
+                            <p> 
+	                        	<label>Reservat (RF): </label> ${partida.getReservaPartidaFormat()}
+                            </p>
+                            <p> 
+	                        	<label>Pagat: </label> ${partida.getPartidaPagatFormat()} 
+                            </p>                       
 	                  	</div>
 		             	<div class="col-xs-offset-1 col-md-5">
 		             		<p> 
@@ -65,12 +68,12 @@
 		                    <p> 
 	                        	<label>Tipus: </label> ${partida.tipus}
                             </p> 	
-	                        <p> 
-	                        	<label>Reservat: </label> ${partida.getReservaPartidaFormat()}
+                            <p>
+                            	<label>Disponible: </label> ${partida.getPartidaPerAsignarFormat()}
                             </p>
-                            <p> 
-	                        	<label>Pagat: </label> ${partida.getPartidaPagatFormat()} 
-                            </p>                                                	
+	                        <p> 
+	                        	<label>Assignat / previst (Contractat): </label> ${partida.getPrevistPartidaFormat()}
+                            </p>                                       	
 	                    </div>		            	
                 	</div>    
                 	<h2 class="margin_bottom30">Assignacions</h2>
@@ -79,17 +82,37 @@
 		                    <table class="table table-striped table-bordered filerTable" id="assignacionsTable">
 		                        <thead>
 		                            <tr>
+		                           		<th>Referència</th>
 		                                <th>Actuacio</th>
+		                                <th>Data aprovació</th>
+		                                <th>Data aprovació</th>
+		                                <th>Centre</th>
+		                                <th>Objecte</th>
+		                                <th>Expedient</th>
 		                                <th>valor PA</th>
-		                                <th>valor PD</th>				                                        							                                       
+		                                <th>valor PA</th>
+		                                <th>valor PD</th>	
+		                                <th>valor PD</th>	
+		                                <th>Pagat</th>
+		                                <th>Pagat</th>			                                        							                                       
 		                            </tr>
 		                        </thead>
 		                        <tbody>
 								<c:forEach items="${llistaAssignacions}" var="assignacio" >
-						          	<tr>							          	
-						            	<td><a href="actuacionsDetalls?ref=${assignacio.idActuacio}">${assignacio.idActuacio}</a></td>
+						          	<tr>		
+						          		<td>${assignacio.idAssignacio}</td>					          	
+						            	<td><a href="actuacionsDetalls?ref=${assignacio.informe.actuacio.referencia}" class="loadingButton"  data-msg="obrint actuació...">${assignacio.informe.actuacio.referencia}</a></td>
+						            	<td>${assignacio.informe.getDataAprovacioString()}</td>
+						            	<td>${assignacio.informe.dataAprovacio}</td>
+						            	<td>${assignacio.informe.actuacio.centre.getNomComplet()}</td>
+						            	<td>${assignacio.informe.actuacio.descripcio}</td>
+						            	<td>${assignacio.informe.expcontratacio.expContratacio}</td>
+						            	<td>${assignacio.getValorPAFormat()}</td>
 						            	<td>${assignacio.valorPA}</td>
+						            	<td>${assignacio.getValorPDFormat()}</td>
 						            	<td>${assignacio.valorPD}</td>
+						            	<td>${assignacio.informe.getTotalFacturatFormat()}</td>
+						            	<td>${assignacio.informe.getTotalFacturat()}</td>
 						            </tr>
 					       		</c:forEach>						                                	                              	
 		                        </tbody>

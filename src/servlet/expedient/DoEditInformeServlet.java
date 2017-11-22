@@ -1,0 +1,173 @@
+package servlet.expedient;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+
+import javax.naming.NamingException;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.fileupload.FileUploadException;
+
+import bean.Expedient;
+import bean.InformeActuacio;
+import bean.User;
+import bean.InformeActuacio.PropostaInforme;
+import core.ActuacioCore;
+import core.ExpedientCore;
+import core.InformeCore;
+import utils.Fitxers;
+import utils.MyUtils;
+
+/**
+ * Servlet implementation class DoEditInformeServlet
+ */
+@WebServlet("/doEditInforme")
+public class DoEditInformeServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public DoEditInformeServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Connection conn = MyUtils.getStoredConnection(request);
+       	Fitxers.formParameters multipartParams = new Fitxers.formParameters();
+		try {
+			multipartParams = Fitxers.getParamsFromMultipartForm(request);
+		} catch (FileUploadException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		User Usuari = MyUtils.getLoginedUser(request.getSession());	
+       	String refExp = multipartParams.getParametres().get("expedient");
+       	String refExpNou = multipartParams.getParametres().get("expedientNou");
+       	String idInforme = multipartParams.getParametres().get("informe");
+       	Expedient expedient = new Expedient();
+       	String errorString = null;       	
+     	SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+     	InformeActuacio informe = new InformeActuacio();
+       	try {       		
+       		informe =  InformeCore.getInformePrevi(conn, idInforme, false);   
+       		InformeCore.modificarTecnic(conn, informe, Integer.parseInt(multipartParams.getParametres().get("llistaUsuaris"))); 
+       		if (multipartParams.getParametres().get("dataCreacio") != null && ! multipartParams.getParametres().get("dataCreacio").isEmpty()) {
+				InformeCore.modificarDataCreacio(conn, informe, formatter.parse(multipartParams.getParametres().get("dataCreacio")));
+			}
+       		
+    	    //Proposta    	    
+    	    PropostaInforme proposta = informe.getPropostaInformeSeleccionada();
+    	    proposta.setObjecte(multipartParams.getParametres().get("descripcio"));
+		    proposta.setTipusObra(multipartParams.getParametres().get("tipusContracte"));
+		    proposta.setLlicencia(multipartParams.getParametres().get("reqLlicencia").equals("si"));
+		    proposta.setTipusLlicencia(multipartParams.getParametres().get("tipusLlicencia"));
+		    proposta.setContracte(multipartParams.getParametres().get("formContracte").equals("si"));
+		    proposta.setPbase(Double.parseDouble(multipartParams.getParametres().get("pbase").replace(',','.')));
+		    proposta.setIva(Double.parseDouble(multipartParams.getParametres().get("iva").replace(',','.')));
+		    proposta.setPlic(Double.parseDouble(multipartParams.getParametres().get("plic").replace(',','.')));
+		    proposta.setTermini(multipartParams.getParametres().get("termini"));
+		    proposta.setComentari(multipartParams.getParametres().get("comentariTecnic"));
+		    if (proposta.getIdProposta() == null) {
+		    	String idProposta = InformeCore.novaProposta(conn, proposta, idInforme);
+		    	InformeCore.seleccionarProposta(conn, idProposta, idInforme);
+		    } else {
+		    	InformeCore.modificarProposta(conn, proposta);
+		    }
+		    if (multipartParams.getFitxersByName().get("informe") != null) Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("informe")), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "Informe Previ", "", "", idInforme, "");
+		    if (multipartParams.getFitxersByName().get("propostaActuacio") != null) Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("propostaActuacio")), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Proposta actuació");
+		    
+		    //Vistiplau cap
+		    Date dataVistiPlau = null;
+		    if (multipartParams.getParametres().get("dataVistiplau") != null && ! multipartParams.getParametres().get("dataVistiplau").isEmpty()) dataVistiPlau = formatter.parse(multipartParams.getParametres().get("dataVistiplau"));
+		    if (!multipartParams.getParametres().get("llistaCaps").equals("-1")) {
+		    	InformeCore.validacioCapInforme(conn, idInforme, Integer.parseInt(multipartParams.getParametres().get("llistaCaps")), multipartParams.getParametres().get("comentariCap"), dataVistiPlau);				
+		    } else if (informe.getUsuariCapValidacio() != null) {
+		    	InformeCore.eliminarValidacioCapInforme(conn, idInforme);
+		    }
+		    if (multipartParams.getFitxersByName().get("vistiplauProposta") != null) Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("vistiplauProposta")), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Vistiplau cap");
+		    
+		    //Informe supervisió
+			if (multipartParams.getFitxersByName().get("informeSupervisio") != null) Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("informeSupervisio")), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Informe Supervisió");
+		    
+		    //Partida
+		    informe.setComentariPartida(multipartParams.getParametres().get("comentariFinancer"));
+    	    InformeCore.modificarPartida(conn, informe, multipartParams.getParametres().get("llistaPartides"), Usuari.getIdUsuari());
+    	    if (multipartParams.getFitxersByName().get("conformeAreaEconomica") != null) Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("conformeAreaEconomica")), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Conforme àrea financera");
+    	  
+    	    //Autorització
+    	    boolean aprovar = false;
+    	    if (multipartParams.getParametres().get("dataAprovacio") != null && ! multipartParams.getParametres().get("dataAprovacio").isEmpty()) {
+    	    	InformeCore.aprovacioInforme(conn, idInforme, Usuari.getIdUsuari(), formatter.parse(multipartParams.getParametres().get("dataAprovacio")));  
+    	    	aprovar = true;
+    	    }
+			if (multipartParams.getFitxersByName().get("autoritzacioActuacio") != null) {
+				Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("autoritzacioActuacio")), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Autorització Proposta d'actuació");
+				aprovar = true;
+			}
+			if (aprovar) {
+				ActuacioCore.aprovarPA(conn, informe.getActuacio().getReferencia(), Usuari.getIdUsuari());	
+			} else if(InformeCore.getAutoritzacioPropostaActuacio(conn, informe.getIdIncidencia(), informe.getActuacio().getReferencia(), idInforme).getRuta() == null) {
+				ActuacioCore.eliminarAprovacioPA(conn, informe.getActuacio().getReferencia());	
+				InformeCore.eliminarAprovacioInforme(conn, idInforme);  
+			}
+			
+			//Autorització Consell de Govern
+			 if (multipartParams.getFitxersByName().get("autoritzacioConsellDeGovern") != null) Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("autoritzacioConsellDeGovern")), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Autorització Consell De Govern");
+			//Autorització Conseller
+			 if (multipartParams.getFitxersByName().get("autoritzacioConseller") != null) Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("autoritzacioConseller")), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Autorització Conseller");
+			 
+    	   
+    	    if (!refExp.equals(refExpNou)) {
+    	    	ExpedientCore.actualitzarCodiExpedient(conn, refExp, refExpNou, idInforme);
+    	    }
+    	    expedient = ExpedientCore.findExpedient(conn, refExp);
+		} catch (SQLException | NamingException | ParseException e) {
+			errorString = e.toString();
+		}
+		// Store infomation to request attribute, before forward to views.
+		request.setAttribute("errorString", errorString);
+		request.setAttribute("expedient", expedient);
+ 
+ 
+		// If error, forward to Edit page.
+		if (errorString != null) {
+           RequestDispatcher dispatcher = request.getServletContext()
+                   .getRequestDispatcher("/WEB-INF/views/expedients/editInformeView.jsp");
+           dispatcher.forward(request, response);
+		}
+        
+		// If everything nice.
+		// Redirect to the product listing page.            
+		else {
+			if (multipartParams.getParametres().get("redireccio").equals("actuacions")) {
+				response.sendRedirect(request.getContextPath() + "/actuacionsDetalls?ref=" + informe.getActuacio().getReferencia());
+			}else{
+				response.sendRedirect(request.getContextPath() + "/expedient?ref=" + refExpNou);
+			}
+		}
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+
+}

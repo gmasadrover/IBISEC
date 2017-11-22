@@ -13,7 +13,9 @@ public class Oferta {
 	private Actuacio actuacio;
 	private String cifEmpresa;
 	private String nomEmpresa;
-	private double vec;
+	private String capDobra;
+	private Fitxers.Fitxer personalInscrit;
+	private double pbase;
 	private double iva;
 	private double plic;
 	private String termini;
@@ -57,19 +59,11 @@ public class Oferta {
 		this.cifEmpresa = cifEmpresa;
 	}
 
-	public double getVec() {
-		return vec;
-	}
-
-	public String getVecFormat(){
+	public String getPbaseFormat(){
 		DecimalFormat num = new DecimalFormat("#,##0.00");
-	    return num.format(this.vec) + '€';
+	    return num.format(this.pbase) + '€';
 	}
 	
-	public void setVec(double vec) {
-		this.vec = vec;
-	}
-
 	public double getIva() {
 		return iva;
 	}
@@ -220,5 +214,29 @@ public class Oferta {
 
 	public void setPresupost(Fitxers.Fitxer presupost) {
 		this.presupost = presupost;
+	}
+
+	public String getCapDobra() {
+		return capDobra;
+	}
+
+	public void setCapDobra(String capDobra) {
+		this.capDobra = capDobra;
+	}
+
+	public Fitxers.Fitxer getPersonalInscrit() {
+		return personalInscrit;
+	}
+
+	public void setPersonalInscrit(Fitxers.Fitxer personalInscrit) {
+		this.personalInscrit = personalInscrit;
+	}
+
+	public double getPbase() {
+		return pbase;
+	}
+
+	public void setPbase(double pbase) {
+		this.pbase = pbase;
 	}
 }

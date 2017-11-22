@@ -33,7 +33,7 @@ public class DoLoginServlet extends HttpServlet {
         String password = request.getParameter("password");
         String repeatPassword = request.getParameter("repeatPassword");
         boolean newUser = false;
-        LoggerCore.addLog(userName , userName);
+       
         User user = null;
         boolean hasError = false;
         String errorString = null;
@@ -79,8 +79,7 @@ public class DoLoginServlet extends HttpServlet {
         if (hasError) {        	
             user = new User();
             user.setName(userName);
-            user.setPassword(password);
-            LoggerCore.addLog("error " + errorString , user.getUsuari());
+            user.setPassword(password);           
         
             // Store information in request attribute, before forward.
             request.setAttribute("newUser", newUser);

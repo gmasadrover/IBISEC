@@ -1,10 +1,7 @@
 $(document).ready(function() {
-	if ($('#tipoContracteSelected').val() != '') {		  		
-  		$('#tipoContracteList option[value="' + $('#tipoContracteSelected').val() + '"]').attr('selected', 'selected');
-	}
-	if ($('#tipoPDSelected').val() != '') {		  		
-  		$('#tipoPDList option[value="' + $('#tipoPDSelected').val() + '"]').attr('selected', 'selected');
-	}
+	if ($('#estatFacturaSelected').val() != '') {		  		
+  		$('#estatFacturaList option[value="' + $('#estatFacturaSelected').val() + '"]').attr('selected', 'selected');
+	}	
 	if ($('.selectpicker').size() > 0) {
 		$('.selectpicker').selectpicker('refresh');
 	}
@@ -27,14 +24,14 @@ $(document).ready(function() {
 	            visibility: true
 	        }
         ],
-		"order": [[ 0, "desc" ]],
+		"order": [[ 2, "desc" ]],
 		"aoColumns": [
     		null,
     		null,    		
     		{"iDataSort": 3},
     		{"bVisible": false},
     		null,
-    		{"bVisible": false},
+    		null,
     		null,
     		{"bVisible": false},
     		null,
@@ -42,6 +39,7 @@ $(document).ready(function() {
     		{"bVisible": false},
     		{"iDataSort": 10},
     		null,
+    		{"bVisible": false},
     		null,
     		{"iDataSort": 15, "bVisible": false},
     		{"bVisible": false},
@@ -51,7 +49,8 @@ $(document).ready(function() {
     		{"iDataSort": 18, "bVisible": false},
     		{"bVisible": false},
     		{"iDataSort": 20, "bVisible": false},
-    		{"bVisible": false}
+    		{"bVisible": false},
+    		null
 		]
 	});	
 });	

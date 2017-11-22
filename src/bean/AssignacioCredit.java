@@ -5,8 +5,7 @@ import java.util.Date;
 
 public class AssignacioCredit {
 	private String idAssignacio;	
-	private String idActuacio;
-	private String idInf;
+	private InformeActuacio informe;
 	private boolean reserva;
 	private User usuReserva;
 	private Date datareserva;
@@ -30,22 +29,6 @@ public class AssignacioCredit {
 
 	public void setIdAssignacio(String idAssignacio) {
 		this.idAssignacio = idAssignacio;
-	}
-
-	public String getIdActuacio() {
-		return idActuacio;
-	}
-
-	public void setIdActuacio(String idActuacio) {
-		this.idActuacio = idActuacio;
-	}
-
-	public String getIdInf() {
-		return idInf;
-	}
-
-	public void setIdInf(String idInf) {
-		this.idInf = idInf;
 	}
 
 	public boolean isReserva() {
@@ -152,5 +135,13 @@ public class AssignacioCredit {
 
 	public void setValorPD(double valorPD) {
 		this.valorPD = valorPD;
+	}
+
+	public InformeActuacio getInforme() {
+		return informe;
+	}
+
+	public void setInforme(InformeActuacio informe) {
+		this.informe = informe;
 	}
 }

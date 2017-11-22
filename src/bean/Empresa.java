@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import utils.Fitxers;
+import utils.Fitxers.Fitxer;
 
 public class Empresa {
  
@@ -45,8 +46,7 @@ public class Empresa {
 	   private Date dataValidacio;
 	   private String entitatValidacio;
 	   private String tipus;
-	   private boolean eliminar;
-	   
+	   private Fitxer documentAdministrador;
 		public String getNom() {
 			return nom;
 		}
@@ -124,17 +124,17 @@ public class Empresa {
 			if (this.dataValidacio != null) dataString = df.format(this.dataValidacio);
 			return dataString;
 		}
-		public boolean isEliminar() {
-			return eliminar;
-		}
-		public void setEliminar(boolean eliminar) {
-			this.eliminar = eliminar;
-		}
 		public String getEntitatValidacio() {
 			return entitatValidacio;
 		}
 		public void setEntitatValidacio(String entitatValidacio) {
 			this.entitatValidacio = entitatValidacio;
+		}
+		public Fitxer getDocumentAdministrador() {
+			return documentAdministrador;
+		}
+		public void setDocumentAdministrador(Fitxer documentAdministrador) {
+			this.documentAdministrador = documentAdministrador;
 		}
    }
 
@@ -167,7 +167,7 @@ public class Empresa {
    private String fax;
    private String email;
    private Date dataConstitucio;
-   private Fitxers.Fitxer documentEscritura;
+   private List<Fitxers.Fitxer> documentsEscrituraList;
    private String classificacioString;
    private Fitxers.Fitxer classificacioFileROLECE;
    private Fitxers.Fitxer classificacioFileJCCaib;
@@ -177,11 +177,8 @@ public class Empresa {
    private Date dataVigenciaClassificacioJCA;
    private String administradorsString;
    private List<Administrador> administradors;   
-   private boolean acreditacio1;
    private Date dateExpAcreditacio1;
-   private boolean acreditacio2;
    private Date dateExpAcreditacio2;
-   private boolean acreditacio3;
    private Date dateExpAcreditacio3;
    private Fitxers.Fitxer solEconomica;
    private Date exerciciEconomic;
@@ -191,7 +188,11 @@ public class Empresa {
    private String informacioAdicional;
    private UTE ute;
    private boolean isPime;
-   
+   private boolean activa;
+   private Empresa succesora;
+   private Fitxers.Fitxer succesoraFile;
+   private String motiuExtincio;
+   private Fitxers.Fitxer extincioFile;
    
    public Empresa() {
  
@@ -308,14 +309,6 @@ public class Empresa {
 		this.administradors = administradors;
 	}
 	
-	public boolean isAcreditacio1() {
-		return acreditacio1;
-	}
-	
-	public void setAcreditacio1(boolean acreditacio1) {
-		this.acreditacio1 = acreditacio1;
-	}
-	
 	public Date getDateExpAcreditacio1() {
 		return dateExpAcreditacio1;
 	}
@@ -341,15 +334,7 @@ public class Empresa {
 		}
 		return caducat;
 	}
-	
-	public boolean isAcreditacio2() {
-		return acreditacio2;
-	}
-	
-	public void setAcreditacio2(boolean acreditacio2) {
-		this.acreditacio2 = acreditacio2;
-	}
-	
+		
 	public Date getDateExpAcreditacio2() {
 		return dateExpAcreditacio2;
 	}
@@ -374,14 +359,6 @@ public class Empresa {
 			if (cad.before(Calendar.getInstance())) caducat = true;
 		}
 		return caducat;
-	}
-	
-	public boolean isAcreditacio3() {
-		return acreditacio3;
-	}
-	
-	public void setAcreditacio3(boolean acreditacio3) {
-		this.acreditacio3 = acreditacio3;
 	}
 	
 	public Date getDateExpAcreditacio3() {
@@ -507,14 +484,6 @@ public class Empresa {
 		this.isPime = isPime;
 	}
 
-	public Fitxers.Fitxer getDocumentEscritura() {
-		return documentEscritura;
-	}
-
-	public void setDocumentEscritura(Fitxers.Fitxer documentEscritura) {
-		this.documentEscritura = documentEscritura;
-	}
-
 	public Fitxers.Fitxer getClassificacioFileROLECE() {
 		return classificacioFileROLECE;
 	}
@@ -582,6 +551,54 @@ public class Empresa {
 
 	public void setDataVigenciaClassificacioJCA(Date dataVigenciaClassificacioJCA) {
 		this.dataVigenciaClassificacioJCA = dataVigenciaClassificacioJCA;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsEscrituraList() {
+		return documentsEscrituraList;
+	}
+
+	public void setDocumentsEscrituraList(List<Fitxers.Fitxer> documentsEscrituraList) {
+		this.documentsEscrituraList = documentsEscrituraList;
+	}
+
+	public boolean isActiva() {
+		return activa;
+	}
+
+	public void setActiva(boolean activa) {
+		this.activa = activa;
+	}
+
+	public Empresa getSuccesora() {
+		return succesora;
+	}
+
+	public void setSuccesora(Empresa succesora) {
+		this.succesora = succesora;
+	}
+
+	public String getMotiuExtincio() {
+		return motiuExtincio;
+	}
+
+	public void setMotiuExtincio(String motiuExtincio) {
+		this.motiuExtincio = motiuExtincio;
+	}
+
+	public Fitxers.Fitxer getSuccesoraFile() {
+		return succesoraFile;
+	}
+
+	public void setSuccesoraFile(Fitxers.Fitxer succesoraFile) {
+		this.succesoraFile = succesoraFile;
+	}
+
+	public Fitxers.Fitxer getExtincioFile() {
+		return extincioFile;
+	}
+
+	public void setExtincioFile(Fitxers.Fitxer extincioFile) {
+		this.extincioFile = extincioFile;
 	}
 
 }

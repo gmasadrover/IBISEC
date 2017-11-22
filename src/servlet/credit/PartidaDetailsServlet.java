@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -55,7 +56,7 @@ public class PartidaDetailsServlet extends HttpServlet {
 	       	try {
 	       		partida = CreditCore.getPartida(conn,codi);	  
 	       		llistaAssignacions = CreditCore.findAssignacionsPartida(conn, codi);
-	       	} catch (SQLException e) {
+	       	} catch (SQLException | NamingException e) {
 	       		e.printStackTrace();
 	       		errorString = e.getMessage();
 	       	}

@@ -66,6 +66,9 @@ public class IncidenciaListServlet extends HttpServlet {
 			String dataIniciString = df.format(dataInici);				
 			String errorString = null;
 			List<Incidencia> list = new ArrayList<Incidencia>();
+			List<Incidencia> listActuacio = new ArrayList<Incidencia>();
+			List<Incidencia> listPendent = new ArrayList<Incidencia>();
+			List<Incidencia> listIgnorades = new ArrayList<Incidencia>();
 			try {
 				if (filtrar != null) {
 					onlyActives = request.getParameter("nomesActives") != null;
@@ -75,7 +78,7 @@ public class IncidenciaListServlet extends HttpServlet {
 					}				
 					dataInici = null;
 					dataFi = null;
-					if (filterWithOutDate == null){
+					if ("null".equals(filterWithOutDate)){
 						dataInici = df.parse(request.getParameter("dataInici"));
 		    			dataIniciString = request.getParameter("dataInici");
 		    			dataFi = df.parse(request.getParameter("dataFi"));
@@ -83,8 +86,11 @@ public class IncidenciaListServlet extends HttpServlet {
 					}		
 				} else {
 					filterWithOutDate = "on";
-				}				
-				list = IncidenciaCore.searchIncidencies(conn, idCentre, false, dataInici, dataFi);
+				}	
+				list = IncidenciaCore.searchIncidencies(conn, idCentre, false, true, dataInici, dataFi);
+				listActuacio = IncidenciaCore.searchIncidenciesWithActuacio(conn, idCentre, true, dataInici, dataFi, true);
+				listPendent = IncidenciaCore.searchIncidenciesWithActuacio(conn, idCentre, true, dataInici, dataFi, false);
+				listIgnorades = IncidenciaCore.searchIncidenciesIgnorades(conn, idCentreSelector, dataInici, dataFi);
 			} catch (SQLException | ParseException e) {
 				e.printStackTrace();
 				errorString = e.getMessage();
@@ -95,6 +101,9 @@ public class IncidenciaListServlet extends HttpServlet {
 			request.setAttribute("dataInici", dataIniciString);
 		    request.setAttribute("dataFi", dataFiString);
 			request.setAttribute("incidenciesList", list);
+			request.setAttribute("incidenciesPendentsList", listPendent);
+			request.setAttribute("incidenciesAmbActuacioList", listActuacio);
+			request.setAttribute("incidenciesIgnorades", listIgnorades);
 			request.setAttribute("nomesActives", onlyActives);
 			request.setAttribute("idCentre", idCentreSelector);
 			request.setAttribute("filterWithOutDate", "on".equals(filterWithOutDate));

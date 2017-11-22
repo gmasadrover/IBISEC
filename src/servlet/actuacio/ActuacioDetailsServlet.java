@@ -6,6 +6,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -62,16 +65,26 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       List<Factura> factures = new ArrayList<Factura>();	      
 	       List<Registre> entrades = new ArrayList<Registre>();
 	       List<Registre> sortides = new ArrayList<Registre>();
-	       String rutaActuacio = Fitxers.RUTA_BASE +  "/documents/";
+	       Context env;
+	       String ruta = "";
+			try {
+				env = (Context)new InitialContext().lookup("java:comp/env");
+				ruta = (String)env.lookup("ruta_base");
+			} catch (NamingException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+	       String rutaActuacio = ruta +  "/documents/";
 	       boolean canModificarActuacio = false;
 	       boolean canCreateInformePrevi = false;
 	       boolean canCreateTasca = false;
 	       boolean canCreateFactura = false;
 	       boolean canCreateRegistre = false;
-	       boolean canCreateExpedient = false;
+	       boolean canModificarExpedient = false;
 	       boolean canCreateFeina = false;
 	       try {
 	    	   actuacio = ActuacioCore.findActuacio(conn, referencia);
+	    	   if (actuacio.getCentre() != null && actuacio.getCentre().getIdCentre() != null && actuacio.getCentre().getIdCentre().equals("9999PERSO") && !UsuariCore.hasPermision(conn, usuari, SectionPage.personal)) response.sendRedirect(request.getContextPath() + "/");
 	    	   actuacio.setSeguiment(ActuacioCore.isSeguimentActuacio(conn, referencia, usuari.getIdUsuari()));
 	    	   incidencia = IncidenciaCore.findIncidencia(conn, actuacio.getIdIncidencia());
 	    	   actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia()));
@@ -82,14 +95,14 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	    	   entrades = RegistreCore.searchEntradesIncidencia(conn, incidencia.getIdIncidencia());
 	    	   sortides = RegistreCore.searchSortidesIncidencia(conn, incidencia.getIdIncidencia());
 	    	   rutaActuacio += incidencia.getIdIncidencia() + "/Actuacio";
-	    	   canModificarActuacio = "gerencia".equals(usuari.getDepartament()) || usuari.getRol().contains("ADMIN");
+	    	   canModificarActuacio = UsuariCore.hasPermision(conn, usuari, SectionPage.actuacio_modificar);	
 	    	   canCreateInformePrevi = UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_crear) || "gerencia".equals(usuari.getDepartament());
 	    	   canCreateTasca = UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_crear) || "gerencia".equals(usuari.getDepartament());
 	    	   canCreateFactura = UsuariCore.hasPermision(conn, usuari, SectionPage.factures_crear);
 	    	   canCreateRegistre = UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_crear);	
-	    	   canCreateExpedient = UsuariCore.hasPermision(conn, usuari, SectionPage.expedient_modificar);
+	    	   canModificarExpedient = UsuariCore.hasPermision(conn, usuari, SectionPage.expedient_modificar);
 	    	   canCreateFeina = UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_crear);	
-	       } catch (SQLException e) {
+	       } catch (SQLException | NamingException e) {
 	           e.printStackTrace();
 	           errorString = e.getMessage();
 	       }
@@ -112,7 +125,8 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       request.setAttribute("canCreateFactura", canCreateFactura);
 	       request.setAttribute("canCreateRegistre", canCreateRegistre);
 	       request.setAttribute("canCreateFeina", canCreateFeina);	       
-	       request.setAttribute("canCreateExpedient", canCreateExpedient);
+	       request.setAttribute("canModificarExpedient", canModificarExpedient);
+	       request.setAttribute("redireccio", "actuacions");
 	       request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "Actuacions"));
 	       request.setAttribute("idUsuariLogg", usuari.getIdUsuari());
 	       // Forward to /WEB-INF/views/homeView.jsp

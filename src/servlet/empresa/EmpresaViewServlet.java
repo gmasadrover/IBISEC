@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -58,7 +59,7 @@ public class EmpresaViewServlet extends HttpServlet {
 	        try {
 	            empresa = EmpresaCore.findEmpresa(conn, cif);	   
 	            empresaOfertes = OfertaCore.findOfertesEmpresa(conn, cif);
-	        } catch (SQLException e) {
+	        } catch (SQLException | NamingException e) {
 	            e.printStackTrace();
 	            errorString = e.getMessage();
 	        }

@@ -43,7 +43,7 @@
                 
     			<div class="row">
                     <div class="col-md-12">
-						<form class="form-horizontal" method="POST" action="doCreateFactura">
+						<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="doCreateFactura">
 		    				<div class="form-group">
                                 <label class="col-xs-3 control-label">id factura</label>
                                 <div class="col-xs-3">
@@ -67,13 +67,13 @@
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">Import</label>
                                 <div class="col-xs-3">
-                                	<input class="form-control" name="import" id="import" placeholder="0000,00">
+                                	<input class="form-control" name="import" id="import" placeholder="0000.00" value="${valorOferta}">
                                 </div>
                             </div>	     
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">Concepte</label>
                                 <div class="col-xs-3">
-                                	<input class="form-control" name="concepte" placeholder="concepte">
+                                	<input class="form-control" name="concepte" placeholder="concepte" value="${concepte}">
                                 </div>
                             </div>	
                             <div class="form-group">
@@ -103,25 +103,32 @@
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">Usuari conformador</label>
                                 <div class="col-xs-3">
+                                	<input class="hidden" name="idUsuariInforme" id=idUsuariInforme value="${idUsuariInforme}"> 
                                 	<select class="form-control selectpicker" data-live-search="true" data-size="10" name="idConformador" id="usuarisList">
 		                                <c:forEach items="${llistaUsuaris}" var="usuari" >
 	                                		<option value='${usuari.idUsuari}'>${usuari.getNomComplet()}</option>
 	                                	</c:forEach>
                                 	</select>
                                 </div>
-                            </div>		
+                            </div>	
                             <div class="form-group">
-                                <label class="col-xs-3 control-label">Data conformació</label>
+                                <label class="col-xs-3 control-label">Data pasada a conformar</label>
                                 <div class="input-group date col-xs-3 datepicker">
-								  	<input type="text" class="form-control" name="dataConformacio" value="${data}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+								  	<input type="text" class="form-control" name="dataPasadaConformar" value="${data}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>
-                            </div>
+                            </div>	
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">Notes</label>
                                 <div class="col-xs-3">
                                 	<textarea class="form-control" name="notes" placeholder="anotacions" rows="3"></textarea>
                                 </div>
                             </div>	
+                            <div class="form-group">
+                            	<label class="col-xs-3 control-label">Adjuntar factura:</label>
+	                            <div class="col-xs-5">   
+	                                <input type="file" class="btn" name="file" /><br/>
+								</div> 	
+							</div>
 		    				<br>
 						    <div class="form-group">
 						        <div class="col-xs-offset-3 col-xs-9">

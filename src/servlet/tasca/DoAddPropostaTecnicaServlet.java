@@ -52,26 +52,27 @@ public class DoAddPropostaTecnicaServlet extends HttpServlet {
 	    //Agafam totes les ofertes
 	    String guardar = request.getParameter("guardar");
 	    if (guardar != null) {
-		  	try {	   	
-		  		OfertaCore.seleccionarOferta(conn, idInforme, seleccionada, termini, comentari);	
-		   		/*;*/
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				errorString = e.getMessage();
-			} 
+	    	if (seleccionada != null && !seleccionada.isEmpty()){
+			  	try {	   	
+			  		OfertaCore.seleccionarOferta(conn, idInforme, seleccionada, termini, comentari);	
+			   		/*;*/
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					errorString = e.getMessage();
+				} 
+	    	}else{
+	    		errorString = "S'ha de seleccionar l'empresa adjudicatària";
+	    	}
 	    } else {	    	
 	   		
 	    }
 	   	// Store infomation to request attribute, before forward to views.
 	   	request.setAttribute("errorString", errorString);
 	  	// If error, forward to Edit page.
-	   	if (errorString != null) {
-	   		RequestDispatcher dispatcher = request.getServletContext()
-	   				.getRequestDispatcher("/WEB-INF/views/actuacio/tascaView.jsp");
-	   		dispatcher.forward(request, response);
-	   	}// If everything nice. Redirect to the product listing page.            
-	   	else {
+	   	if (errorString != null && !errorString.isEmpty()) {	
+	   		response.sendRedirect(request.getContextPath() + "/tasca?id=" + idTasca + "&error=ofertaSeleccionada");	  
+	   	} else {
 	   		if (guardar != null) {
 	   			response.sendRedirect(request.getContextPath() + "/CrearDocument?tipus=PTObres&idIncidencia=" + idIncidencia + "&idActuacio=" + idActuacio + "&idInforme=" + idInforme); 
 	   		} else {

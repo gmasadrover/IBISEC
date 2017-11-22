@@ -7,6 +7,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -41,20 +44,29 @@ public class openFile extends HttpServlet {
 		// TODO Auto-generated method stub
 		String idIncidencia = request.getParameter("idincidencia");
 		String idActuacio = request.getParameter("idactuacio");
-		File tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia);
+		Context env;
+    	String ruta = "";
+		try {
+			env = (Context)new InitialContext().lookup("java:comp/env");
+			ruta = (String)env.lookup("ruta_base");
+		} catch (NamingException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		File tmpFile = new File(ruta + "/documents/" + idIncidencia);
 		if (!tmpFile.exists()) {
 			tmpFile.mkdir();
 		}
-		tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio");
+		tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio");
 		if (!tmpFile.exists()) {
 			tmpFile.mkdir();
 		}
-		tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
+		tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
 		if (!tmpFile.exists()) {
 			tmpFile.mkdir();
 		}
 		//Desktop.getDesktop().browse(getFileURI("W:/1-GESTIÓ ADMINISTRATIVA"));
-		Desktop.getDesktop().open(new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio));
+		Desktop.getDesktop().open(new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio));
 	}
 
 	
@@ -79,7 +91,6 @@ public class openFile extends HttpServlet {
 	        File file = new File(filePath);
 	        uri = file.toURI();
 	    }
-	    LoggerCore.addLog(uri.toString(), "");
 	    return uri;
 	}
 	

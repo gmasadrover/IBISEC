@@ -57,8 +57,8 @@
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${empresesList}" var="empresa" >
-							          	<tr>							          	
-							           		<td><a href="empresa?cif=${empresa.cif}">${empresa.cif}</a></td>
+							          	<tr class="${!empresa.activa? 'danger' : ''}">							          	
+							           		<td><a href="empresa?cif=${empresa.cif}" class="loadingButton"  data-msg="obrint empresa...">${empresa.cif}</a></td>
 							            	<td>${empresa.name}</td>
 							            	<td>${empresa.direccio}</td>
 							            	<td>${empresa.getCP()}</td>

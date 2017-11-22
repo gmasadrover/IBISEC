@@ -61,7 +61,7 @@
 						  	</div>
 						  	<div class="col-md-4">
 							  	<div class="col-md-2">
-							    	<input type="submit" class="btn btn-primary" name="filtrar" value="Aplicar Filtres">
+							    	<input type="submit" class="btn btn-primary loadingButton"  data-msg="Aplicant filtres..." name="filtrar" value="Aplicar Filtres">
 								</div>
 							</div>
 						</div>
@@ -75,73 +75,9 @@
 					</form>
 				</div>
                 <div class="row">
-                    <div class="col-md-12">
-                        <h2>Entrades</h2>
-                        <div class="table-responsive">
-                        
-                            <table class="table table-striped table-bordered filerTable ${canViewIncidencies ? 'withIncidencies' : 'withOutIncidencies'}">
-                                <thead>
-                                    <tr>
-                                        <th>Referència</th>
-                                        <th>Data registre</th>
-                                        <th>Remitent</th>
-                                        <th>Contingut</th>
-                                        <th>Centre</th>
-                                        <c:if test="${canViewIncidencies}">
-                                        	<th>Incidència relacionada</th>
-                                        </c:if>
-                                        <th>Actuació relacionada</th>
-                                        <th>Data</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                	<c:forEach items="${entrades}" var="entrada" >
-							          	<tr>
-							          		<td><a href="registre?tipus=E&referencia=${entrada.id}">${entrada.id}</a></td>
-							            	<td>${entrada.getDataString()}</td>
-							            	<td>${entrada.remDes}</td>
-							            	<c:choose>
-											    <c:when test="${entrada.tipus == 'Sol·licitud Personal'}">												        
-											    	<td>Sol·licitud personal</td>	
-											   </c:when>    
-											    <c:otherwise>
-											    	<td>${entrada.contingut}</td>									        
-							            	    </c:otherwise>
-											</c:choose>								            		
-							            	<td>${entrada.getNomCentresString()}</td>	
-							            	<c:if test="${canViewIncidencies}">
-								            	<td>
-								            	<c:forEach items="${entrada.getIdIncidenciesList()}" var="idIncidencia" >
-									             	<c:choose>
-													    <c:when test="${idIncidencia == '-1'}">												        
-													    </c:when>    
-													    <c:otherwise>
-													    	<a href="incidenciaDetalls?ref=${idIncidencia}">${idIncidencia}</a></br>										        
-									            	    </c:otherwise>
-													</c:choose>	
-												</c:forEach> 
-												</td>	
-											</c:if>
-											<td>
-							            	<c:forEach items="${entrada.getIdActuacionsList()}" var="idActuacio" >
-								             	<c:choose>
-												    <c:when test="${idActuacio == '-1'}">												        
-												    </c:when>    
-												    <c:otherwise>
-												    	<a href="actuacionsDetalls?ref=${idActuacio}">${idActuacio}</a></br>										        
-								            	    </c:otherwise>
-												</c:choose>	
-											</c:forEach> 
-											</td>	
-											<td>${entrada.data}</td>					           								            	
-							          	</tr>
-							       	</c:forEach>                                	
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                    </div>
+                	<c:set var="registres" value="${entrades}" scope="request"/>
+                	<c:set var="tipus" value="entrada" scope="request"/>
+                    <jsp:include page="include/_registresList.jsp"></jsp:include>
                 </div>
 
             </div>

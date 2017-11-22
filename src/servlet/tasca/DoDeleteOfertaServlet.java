@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -58,7 +59,7 @@ public class DoDeleteOfertaServlet extends HttpServlet {
 		String idOferta = request.getParameter("idOferta");
 		try {
 			OfertaCore.deleteOferta(conn, idOferta);
-		} catch (SQLException e) {
+		} catch (SQLException | NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

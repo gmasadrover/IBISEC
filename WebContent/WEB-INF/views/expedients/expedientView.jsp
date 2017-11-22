@@ -34,119 +34,54 @@
                     </div>
                 </div>
                 <!-- /.row -->
-				<c:if test="${not empty actuacio}">
-				<div class="row">
-	                <div class="col-md-12">
-	                    <div class="panel panel-${actuacio.isActiva() ? actuacio.isPaAprovada() ? actuacio.isAprovada() ? "success" : "info" : "warning" : "danger"}">
-	                        <div class="panel-heading">
-	                           	<div class="row">
-	                        		<div class="col-md-6">
-	                        			 ${actuacio.referencia} - ${actuacio.nomCentre}
-	                        		</div>
-	                        		<div class="col-md-6">
-	                        			Darrera modificació: ${actuacio.modificacio} - ${actuacio.getDarreraModificacioString()}
-	                        		</div>
-	                        	</div>
-	                        </div>
-	                        <div class="panel-body">
-	                            <p>${actuacio.descripcio}</p>
-	                            <br />
-	                            <p>Notes: ${actuacio.notes}</p>
-	                        </div>
-	                        <div class="panel-footer">
-	                        	<div class="row">
-	                        		<div class="col-md-3">
-	                        			Creació: ${actuacio.getDataCreacioString()}
-	                        		</div>
-	                        		<div class="col-md-3">
-	                        			<c:if test="${actuacio.isPaAprovada()}">
-	                        				Aprovació PA: ${actuacio.getDataAprovarPaString()}
-	                        			</c:if>
-	                        		</div>
-	                        		<div class="col-md-3">
-	                        			<c:if test="${actuacio.isAprovada()}">
-	                        				Aprovació: ${actuacio.getDataAprovacioString()}
-	                        			</c:if>
-	                        		</div>
-	                        		<div class="col-md-3">
-	                        			<c:if test="${!actuacio.isActiva()}">
-	                        				Tancament: ${actuacio.getDataTancamentString()}
-	                        			</c:if>
-	                        		</div>
-	                        	</div>
-	                        </div>
-	                    </div>
-	                </div>
-            	</div> 
-            	<div class="row">
-	                <div class="col-md-offset-10 col-md-2">	
-	                	<div class="checkbox">
-	                        <label>
-	                          	<input id="seguimentActuacio" data-idactuacio="${actuacio.referencia}" data-idusuari="${idUsuariLogg}" data-seguir="${!actuacio.seguiment}" type="checkbox" ${actuacio.seguiment ? 'checked' : ''}> Seguir Actuació
-	                        </label>
-	                	</div> 
-	                </div>
-	            </div>
-            	<div class="row">
-            		<div class="col-md-12">
-            			<p> 
-                        	<label>Expedient: </label> ${expedient.expContratacio}
-                        </p>
-                        <p> 
-                        	<label>Descripció: </label> ${expedient.descripcio}
-                        </p>
-                        <p> 
-                        	<label>Import licitació: </label> ${expedient.informe.propostaInformeSeleccionada.getPlicFormat()}
-                        </p>
-                        <p> 
-                        	<label>Data publicació BOIB: </label> ${expedient.getDataPublicacioBOIBString()}
-                        </p>
-                        <p> 
-                        	<label>Data límit presentació ofertes: </label> ${expedient.getDataLimitPresentacioString()}
-                        </p> 
-                        <p> 
-                        	<label>Data adjudicació: </label> ${expedient.getDataAdjudicacioString()}
-                        </p> 
-                        <p> 
-                        	<label>Adjudicatari: </label> <a href="empresa?cif=${expedient.informe.ofertaSeleccionada.cifEmpresa}">${expedient.informe.ofertaSeleccionada.nomEmpresa} (${expedient.informe.ofertaSeleccionada.cifEmpresa})</a> 
-                        </p>
-                        <p> 
-                        	<label>Import adjudicació: </label> ${expedient.informe.ofertaSeleccionada.getPlicFormat()}
-                        </p>
-                        <p> 
-                        	<label>Termini d'execució: </label> ${expedient.informe.ofertaSeleccionada.getTermini()}
-                        </p>
-                        <p> 
-                        	<label>Data Firma contracte: </label> ${expedient.getDataFirmaString()}
-                        </p> 
-                        <p> 
-                        	<label>Data Inici obra: </label> ${expedient.getDataIniciObratring()}
-                        </p>
-                         <p> 
-                        	<label>Data Recepció obra: </label> ${expedient.getDataRecepcioString()}
-                        </p>
-                        <p> 
-                        	<label>Duració de la garantia: </label> ${expedient.garantia}
-                        </p> 
-                        <p> 
-                        	<label>Data retorn garantia: </label> ${expedient.getDataRetornGarantiaString()}
-                        </p> 
-                        <p> 
-                        	<label>Data liquidació obra: </label> ${expedient.getDataLiquidacioString()}
-                        </p> 
-            		</div>            		 
-            	</div>
-            	<div class="row">
-            		<div class="col-md-12">
-            			<div class="row">
-	               			<c:if test="${canModificar}">
-								<div class="col-md-offset-9 col-md-2 margin_top30">
-									<a href="editExpedient?ref=${expedient.expContratacio}" class="btn btn-primary" role="button">Actualitzar</a>
-								</div>
-							</c:if>
-	                	</div>       
-            		</div>
-            	</div>
+				<c:if test="${not empty actuacio}">					
+					<div class="panel panel-${actuacio.activa ? actuacio.aprovada ? "success" : "warning" : "danger"}">
+					    <div class="panel-heading">
+					        <div class="row">
+					    		<div class="col-md-6">
+					    			id actuació: <a href="actuacionsDetalls?ref=${actuacio.referencia}" class="loadingButton"  data-msg="obrint actuació...">${actuacio.referencia}</a>
+					    		</div>
+					    		<div class="col-md-6">
+					    			Centre: ${actuacio.centre.getNomComplet()}
+					   			</div>
+					    	</div>
+					    </div>
+					</div>
+					<div class="row">
+		                <div class="col-md-12">  
+	                        <c:set var="ofertes" scope="request" value="${informePrevi.llistaOfertes}"></c:set>
+	    					<c:set var="ofertaSeleccionada" scope="request" value="${informePrevi.ofertaSeleccionada}"></c:set>
+			    			<div class="tabbable">
+		                    	<ul class="nav nav-tabs">
+								   	<li class='active'><a data-toggle="tab" href="#informe">Informe</a></li>
+								   	<li><a data-toggle="tab" href="#licitacio">Licitació</a></li>							   											    
+								    <li><a data-toggle="tab" href="#execucio">Execució</a></li>	
+								    <li><a data-toggle="tab" href="#garantia">Garantia</a></li>						   
+							 	</ul>
+							 	<div class="tab-content">
+									<div id="informe" class="tab-pane fade in active">	
+										<div class="col-md-12 bordertab">
+											<jsp:include page="../expedients/include/_resumInforme.jsp"></jsp:include>
+										</div>
+									</div>
+									<div id="licitacio" class="tab-pane fade">
+										<div class="col-md-12 bordertab">
+											<jsp:include page="../expedients/include/_resumLicitacio.jsp"></jsp:include>
+										</div>
+									</div>
+									<div id="execucio" class="tab-pane fade">
+										<div class="col-md-12 bordertab">
+											<jsp:include page="../expedients/include/_resumExecucio.jsp"></jsp:include>       
+										</div>
+									</div>
+									<div id="garantia" class="tab-pane fade">
+										<div class="col-md-12 bordertab">
+										</div>
+									</div>
+								</div>							
+							</div>	
+		                </div>
+	            	</div>            	
 				</c:if>
             </div>
             <!-- /.container-fluid -->

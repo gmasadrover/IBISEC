@@ -55,7 +55,7 @@
 							          	<tr>
 							          	
 							           		<td>${actuacio.referencia}</td>
-							            	<td>${actuacio.nomCentre}</td>
+							            	<td>${actuacio.centre.getNomComplet()}</td>
 							            	<td>${actuacio.descripcio}</td>
 							            	<td>${actuacio.peticioString}</td>							            	
 							          	</tr>

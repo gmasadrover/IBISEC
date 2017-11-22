@@ -80,7 +80,8 @@
 		    					<input type="hidden" name="idActuacio" value="${idActuacio}">
 		    					<input type="hidden" name="idIncidencia" value="${idIncidencia}">
 		    					<input type="hidden" name="tipus" value="${tipus}">
-		    					<input type="hidden" name="referencia" value="${nouCodi}">                       
+		    					<input type="hidden" name="referencia" value="${nouCodi}">    
+		    					<input type="hidden" id="idCentreSelected" value="-1">                   
                             </div>                            
                             <c:choose>
 							    <c:when test="${tipus=='infPrev'}">	
@@ -94,6 +95,16 @@
 		                            </div>		                            
 							    </c:otherwise>
 							</c:choose> 
+							<c:if test="${tipus=='manual'}">	
+								<div class="form-group">
+	                                <label class="col-xs-3  control-label">Centre</label>
+	                                <div class="col-xs-3">
+		                                <select class="form-control selectpicker centresList" name="idCentre" data-live-search="true" data-size="5" id="centresList">
+			                            	<option value="-1">No hi ha relació</option>
+			                            </select>
+		                             </div>
+	                            </div> 
+	                        </c:if>
 						    <div class="form-group">
                                 <label class="col-xs-3 control-label">Comentari</label>
                                 <div class="col-xs-3">
@@ -103,7 +114,7 @@
                             <div class="form-group">
                             	<label class="col-xs-3 control-label">Adjuntar arxius:</label>
 	                            <div class="col-xs-5">   
-	                                <input type="file" class="btn" name="file" /><br/>
+	                                <input type="file" class="btn" name="file" multiple/><br/>
 								</div> 	
 							</div>
                             <div class="form-group">

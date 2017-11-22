@@ -38,10 +38,17 @@
                 	<div class="col-md-12">
                			<p style="color: red;">${errorString}</p>
                		</div>
-               	 </div>
+               	 </div>               	 
                 <!-- /.row -->
                 <c:if test="${not empty factura}">                	                		
                		<h2 class="margin_bottom30">Informació bàsica</h2>
+               		<c:if test="${factura.anulada}">       
+	               		<div class="row">
+		                	<div class="col-md-12">
+		               			<p style="color: red;">Factura Anul·lada</p>
+		               		</div>
+		               	</div>
+	               	</c:if>
 		    		<div class="row">			    				    				    		
 	                    <div class="col-xs-offset-1 col-md-5">
 	    					<p>
@@ -49,7 +56,7 @@
 							</p>
                             <input type="hidden" name="codi" value="${factura.idFactura}">
 	                        <p>
-	                        	<label>Actuacio:</label> ${factura.idActuacio}
+	                        	<label>Actuacio:</label> <a href="actuacionsDetalls?ref=${factura.idActuacio}" target="_blank">${factura.idActuacio}</a>
 	                        </p>    
 	                        <p> 
 	                        	<label>Data factura: </label> ${factura.getDataFacturaString()}
@@ -62,6 +69,9 @@
                             </p> 
                             <p> 
 	                        	<label>Conformador: </label> ${factura.usuariConformador.getNomComplet()}
+                            </p> 
+                            <p> 
+	                        	<label>Data conformada: </label> ${factura.getDataConformacioString()}
                             </p>    	                            
 	                  	</div>
 		             	<div class="col-xs-offset-1 col-md-5">
@@ -69,7 +79,7 @@
 	                        	<label>Informe: </label> ${factura.idInforme}
                             </p> 
 		                    <p> 
-	                        	<label>Proveïdor: </label> ${factura.idProveidor}
+	                        	<label>Proveïdor: </label> ${factura.nomProveidor} (${factura.idProveidor})
                             </p> 	
 	                        <p> 
 	                        	<label>Concepte: </label> ${factura.concepte}
@@ -80,11 +90,38 @@
 	                        <p> 
 	                        	<label>Data entrada: </label> ${factura.getDataEntradaString()}
                             </p> 
-                             <p> 
-	                        	<label>Data conformada: </label> ${factura.getDataConformacioString()}
+                            <p> 
+	                        	<label>Data enviada a conformar: </label> ${factura.getDataEnviatConformadorString()}
+                            </p>                             
+                            <p> 
+	                        	<label>Data enviada a comptabilitat: </label> ${factura.getDataEnviatComptabilitatString()}
                             </p> 		                                                	
 	                    </div>		            	
                 	</div>
+                	<div class="row">
+                		<div class="col-xs-offset-1 col-md-10">
+		                	<c:if test="${factura.arxiu.ruta != null}">															
+								<p>
+							    	<div class="document">
+							        	<label>Factura:	</label>											                  	
+						          		<a target="_blanck" href="downloadFichero?ruta=${factura.arxiu.getEncodedRuta()}">
+											${factura.arxiu.nom}
+										</a>	
+										<c:if test="${factura.arxiu.signat}">
+											<span class="glyphicon glyphicon-pencil signedFile"></span>
+										</c:if>
+										<br>
+										<div class="infoSign hidden">
+											<c:forEach items="${factura.arxiu.firmesList}" var="firma" >
+												<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+												<br>
+											</c:forEach>
+										</div>
+									</div>																				
+								</p>	
+							</c:if>
+						</div>
+					</div>
                 	<div class="row">
                 		<div class="col-xs-offset-1 col-md-10 longText">
                 			<p> 
@@ -92,7 +129,24 @@
 	                        	${factura.notes}
                             </p>	                		
                         </div>
-                	</div>      	
+                	</div>                   	
+                	<div class="row">
+                		<div class="col-md-4">
+	               			<c:if test="${canModificar}">
+								<a href="editFactura?ref=${factura.idFactura}" class="btn btn-primary" role="button">Modificar</a>									
+							</c:if>
+						</div>	
+						<div class="col-md-4">
+	               			<c:if test="${canModificar && factura.dataEnviatConformador == null}">
+								<a href="enviarAConformar?ref=${factura.idFactura}" class="btn btn-success" role="button">Enviar a conformar</a>									
+							</c:if>
+						</div>		
+						<div class="col-md-4">
+	               			<c:if test="${canModificar}">
+								<a id="anularFactura" data-idfactura="${factura.idFactura}" class="btn btn-danger" role="button">Anul·lar</a>									
+							</c:if>
+						</div>						
+                	</div>         	
                 </c:if>
                 <!-- /.row -->     
            	</div>
@@ -101,5 +155,6 @@
 		<!-- /#page-wrapper -->
 	</div>
     <jsp:include page="../_footer.jsp"></jsp:include>
+    <script src="js/factura/view.js?<%=application.getInitParameter("datakey")%>"></script>
 </body>
 </html>

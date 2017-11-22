@@ -50,7 +50,7 @@ public class CentreDetailsServlet extends HttpServlet {
 		       boolean canViewIncidencies = false;
 		       Centre centre = new Centre();			      
 		       try {
-		    	  centre = CentreCore.findCentre(conn, codi);
+		    	  centre = CentreCore.findCentre(conn, codi, true);
 		    	  canViewIncidencies = UsuariCore.hasPermision(conn, usuari, SectionPage.incidencia_list);
 		       } catch (SQLException e) {
 		           e.printStackTrace();

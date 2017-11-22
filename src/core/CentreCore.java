@@ -29,7 +29,7 @@ public class CentreCore {
 		centre.setLng(rs.getDouble("lng"));
 		if (complet) {
 			centre.setActuacions(ActuacioCore.searchActuacions(conn, rs.getString("codi"), null,null,null));
-			centre.setIncidencies(IncidenciaCore.searchIncidencies(conn, rs.getString("codi"), false, null, null));
+			centre.setIncidencies(IncidenciaCore.searchIncidencies(conn, rs.getString("codi"), false, false, null, null));
 		}
 		return centre;
 	}
@@ -152,7 +152,6 @@ public class CentreCore {
 			pstm.setString(contVars, tipus);
 			contVars += 1;
 		}		
-		System.out.println(pstm.toString());
 		ResultSet rs = pstm.executeQuery();	 
 		while (rs.next()) {
 			Centre centre = initCentre(conn, rs, false);
@@ -162,7 +161,7 @@ public class CentreCore {
 	}
 	
 	
-	public static Centre findCentre(Connection conn, String codi) throws SQLException {		
+	public static Centre findCentre(Connection conn, String codi, boolean complet) throws SQLException {		
 		String sql = "SELECT codi, tipo, nom, illa, municipi, localitat, adreca, cp, lat, lng"
 					+ " FROM public.tbl_centres"
 					+ " WHERE codi = ?;";
@@ -171,7 +170,7 @@ public class CentreCore {
 		ResultSet rs = pstm.executeQuery();	 
 		Centre centre = new Centre();
 		if (rs.next()) {
-			centre = initCentre(conn, rs, true);			
+			centre = initCentre(conn, rs, complet);			
 		}
 		return centre;
 	}

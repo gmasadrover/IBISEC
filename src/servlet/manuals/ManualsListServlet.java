@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -36,8 +39,19 @@ public class ManualsListServlet extends HttpServlet {
 	   }else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.manuals)) {
    		response.sendRedirect(request.getContextPath() + "/");	 	
 	   }else{	
-		   List<Fitxers.Fitxer> manuals = Fitxers.ObtenirManuals();
-		   request.setAttribute("manuals", manuals);
+		   List<Fitxers.Fitxer> manuals;
+		try {
+			manuals = Fitxers.ObtenirManuals();
+			// Get the base naming context
+		    Context env = (Context)new InitialContext().lookup("java:comp/env");
+		    // Get a single value
+			String ruta =  (String)env.lookup("ruta_base") + "/Manuals/";
+			request.setAttribute("manuals", manuals);
+			request.setAttribute("ruta", ruta);
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	       request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "Manuals"));
 	       // Forward to /WEB-INF/views/homeView.jsp
 	       // (Users can not access directly into JSP pages placed in WEB-INF)

@@ -15,7 +15,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="tascaList"><img  class="logo" src="favicon.png" /><span class="tittleLogo">Intranet IBISEC</span></a>
+        <a class="navbar-brand" href="tascaList"><img  class="logo" src="favicon.png" /><span class="tittleLogo"><%=application.getInitParameter("pageName")%></span></a>
     </div>
     <!-- Top Menu Items -->
     <ul class="nav navbar-top-links navbar-right">        

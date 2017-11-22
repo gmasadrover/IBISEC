@@ -3,6 +3,8 @@ package bean;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -77,14 +79,37 @@ public class Actuacio {
 		}
 	 }
 	
+	 public class ArxiusAdjunts {
+		 private List<Fitxers.Fitxer> arxiusRegistre = new ArrayList<Fitxers.Fitxer>();
+		 private List<Fitxers.Fitxer> arxiusAltres = new ArrayList<Fitxers.Fitxer>();
+		 public ArxiusAdjunts() {
+			 
+		 }
+		public List<Fitxers.Fitxer> getArxiusRegistre() {
+			this.arxiusRegistre.sort((Fitxers.Fitxer f1, Fitxers.Fitxer f2) -> f1.getData().compareTo(f2.getData()));
+			return arxiusRegistre;
+		}
+		public void setArxiusRegistre(List<Fitxers.Fitxer> arxiusRegistre) {
+			this.arxiusRegistre = arxiusRegistre;
+		}
+		public List<Fitxers.Fitxer> getArxiusAltres() {
+			this.arxiusAltres.sort((Fitxers.Fitxer f1, Fitxers.Fitxer f2) -> f1.getData().compareTo(f2.getData()));
+			return arxiusAltres;
+		}
+		public void setArxiusAltres(List<Fitxers.Fitxer> arxiusAltres) {
+			this.arxiusAltres = arxiusAltres;
+		}
+		 
+	 }
+	 
 	 private String referencia;
 	 private String descripcio;
 	 private String notes;
 	 private Date dataCreacio;
 	 private int idUsuariCreacio;
-	 private String idCentre;	
-	 private String nomCentre;
+	 private Centre centre;
 	 private Date dataTancament;
+	 private String motiuTancament;
 	 private Date dataAprovacio;
 	 private InformeActuacio informePrevi;
 	 private String idIncidencia;
@@ -92,7 +117,7 @@ public class Actuacio {
 	 private String modificacio;
 	 private Date dataAprovarPa;
 	 private String refExt;
-	 private List<Fitxers.Fitxer> arxiusAdjunts = new ArrayList<Fitxers.Fitxer>();
+	 private ArxiusAdjunts arxiusAdjunts = new ArxiusAdjunts();
 	 private List<Feina> Feines = new ArrayList<Feina>();
 	 private boolean seguiment;
 	 
@@ -107,15 +132,7 @@ public class Actuacio {
 	 public void setReferencia(String referencia) {
 		 this.referencia = referencia;
 	 }
-	 
-	 public String getIdCentre() {
-		 return idCentre;
-	 }
-	 
-	 public void setIdCentre(String idCentre) {
-		 this.idCentre = idCentre;
-	 }
-	 	 
+	 	 	 
 	 public String getDescripcio() {
 		 return descripcio;
 	 }
@@ -224,14 +241,6 @@ public class Actuacio {
 		this.idUsuariCreacio = idUsuariCreacio;
 	}
 
-	public String getNomCentre() {
-		return nomCentre;
-	}
-
-	public void setNomCentre(String nomCentre) {
-		this.nomCentre = nomCentre;
-	}
-
 	public InformeActuacio getInformePrevi() {
 		return informePrevi;
 	}
@@ -259,14 +268,14 @@ public class Actuacio {
 		this.dataAprovarPa = dataAprovarPa;
 	}
 
-	public List<Fitxers.Fitxer> getArxiusAdjunts() {
+	public ArxiusAdjunts getArxiusAdjunts() {		
 		return arxiusAdjunts;
 	}
 
-	public void setArxiusAdjunts(List<Fitxers.Fitxer> arxiusAdjunts) {
+	public void setArxiusAdjunts(ArxiusAdjunts arxiusAdjunts) {
 		this.arxiusAdjunts = arxiusAdjunts;
 	}
-
+	
 	public String getNotes() {
 		return notes;
 	}
@@ -301,5 +310,21 @@ public class Actuacio {
 
 	public void setSeguiment(boolean seguiment) {
 		this.seguiment = seguiment;
+	}
+
+	public String getMotiuTancament() {
+		return motiuTancament;
+	}
+
+	public void setMotiuTancament(String motiuTancament) {
+		this.motiuTancament = motiuTancament;
+	}
+
+	public Centre getCentre() {
+		return centre;
+	}
+
+	public void setCentre(Centre centre) {
+		this.centre = centre;
 	}
 }

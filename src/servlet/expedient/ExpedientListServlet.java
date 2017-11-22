@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,9 +23,11 @@ import bean.Resultat;
 import bean.User;
 import bean.ControlPage.SectionPage;
 import bean.Expedient;
+import bean.InformeActuacio;
 import core.ActuacioCore;
 import core.ControlPageCore;
 import core.ExpedientCore;
+import core.InformeCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
@@ -55,23 +58,27 @@ public class ExpedientListServlet extends HttpServlet {
     		response.sendRedirect(request.getContextPath() + "/");	
 		} else {
 			String errorString = "";
-			List<Expedient> expedientsList = new ArrayList<Expedient>();
+			List<InformeActuacio> informesList = new ArrayList<InformeActuacio>();
+			List<String> anysList = new ArrayList<String>();
 			String filtrar = request.getParameter("filtrar");
 			String estat = "";
 			String tipus = "";
-			String contracte ="";
+			String contracte ="major";
 			Calendar now = Calendar.getInstance();
-			int year = now.get(Calendar.YEAR);
-			String yearInString = String.valueOf(year);
+			String yearInString = request.getParameter("any");
+			int year = now.get(Calendar.YEAR);			
 			double importObraMajor = Double.parseDouble(getServletContext().getInitParameter("importObraMajor"));
 			try {
 				if (filtrar != null) {	
 					estat = request.getParameter("estat");		
 					tipus = request.getParameter("tipus");		
 					contracte = request.getParameter("contracte");
-				} 
-				expedientsList = ExpedientCore.getExpedients(conn, estat, tipus, contracte, importObraMajor);								
-			} catch (SQLException e) {
+				} else {
+					 yearInString = String.valueOf(year);
+				}
+				anysList = ExpedientCore.getAnysExpedients(conn);
+				informesList = InformeCore.getInformesExpedients(conn, estat, tipus, contracte, importObraMajor, yearInString);								
+			} catch (SQLException | NamingException e) {
 				e.printStackTrace();
 				errorString = e.getMessage();
 			}
@@ -80,8 +87,10 @@ public class ExpedientListServlet extends HttpServlet {
 			request.setAttribute("estatFilter", estat);
 			request.setAttribute("tipusFilter", tipus);
 			request.setAttribute("contracteFilter", contracte);
+			request.setAttribute("anyFilter", yearInString);
 			request.setAttribute("errorString", errorString);
-			request.setAttribute("expedientsList", expedientsList);
+			request.setAttribute("anysList", anysList);
+			request.setAttribute("informesList", informesList);
 			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"expedients"));
 			// Forward to /WEB-INF/views/homeView.jsp
 			// (Users can not access directly into JSP pages placed in WEB-INF)

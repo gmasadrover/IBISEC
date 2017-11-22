@@ -3,6 +3,9 @@ package bean;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+
+import utils.Fitxers.Fitxer;
 
 public class Factura {
 	private String idFactura;
@@ -11,16 +14,23 @@ public class Factura {
 	private String idActuacio;
 	private Actuacio actuacio;
 	private String idProveidor;
+	private String nomProveidor;
 	private Date dataFactura;
 	private String concepte;
 	private double valor;
 	private String tipusFactura;
 	private String nombreFactura;
+	private User usuariCreador;
 	private Date dataEntrada;
 	private User usuariConformador;
 	private Date dataConformacio;
 	private String notes;
-
+	private Date dataEnviatConformador;
+	private Date dataEnviatComptabilitat;
+	private Date dataDescarregadaConformada;
+	private Fitxer arxiu;
+	private boolean anulada;
+	
 	public Factura() {
 	
 	}
@@ -164,6 +174,76 @@ public class Factura {
 
 	public void setInforme(InformeActuacio informe) {
 		this.informe = informe;
+	}
+
+	public Date getDataEnviatConformador() {
+		return dataEnviatConformador;
+	}
+	
+	public String getDataEnviatConformadorString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+		String dataString = "";
+		if (this.dataEnviatConformador != null) dataString = df.format(this.dataEnviatConformador);
+		return dataString;
+	}
+
+	public void setDataEnviatConformador(Date dataEnviatConformador) {
+		this.dataEnviatConformador = dataEnviatConformador;
+	}
+
+	public Date getDataEnviatComptabilitat() {
+		return dataEnviatComptabilitat;
+	}
+
+	public String getDataEnviatComptabilitatString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+		String dataString = "";
+		if (this.dataEnviatComptabilitat != null) dataString = df.format(this.dataEnviatComptabilitat);
+		return dataString;
+	}
+	
+	public void setDataEnviatComptabilitat(Date dataEnviatComptabilitat) {
+		this.dataEnviatComptabilitat = dataEnviatComptabilitat;
+	}
+
+	public User getUsuariCreador() {
+		return usuariCreador;
+	}
+
+	public void setUsuariCreador(User usuariCreador) {
+		this.usuariCreador = usuariCreador;
+	}
+
+	public String getNomProveidor() {
+		return nomProveidor;
+	}
+
+	public void setNomProveidor(String nomProveidor) {
+		this.nomProveidor = nomProveidor;
+	}
+
+	public Fitxer getArxiu() {
+		return arxiu;
+	}
+
+	public void setArxiu(Fitxer arxiu) {
+		this.arxiu = arxiu;
+	}
+
+	public Date getDataDescarregadaConformada() {
+		return dataDescarregadaConformada;
+	}
+
+	public void setDataDescarregadaConformada(Date dataDescarregadaConformada) {
+		this.dataDescarregadaConformada = dataDescarregadaConformada;
+	}
+
+	public boolean isAnulada() {
+		return anulada;
+	}
+
+	public void setAnulada(boolean anulada) {
+		this.anulada = anulada;
 	}
 	
 }

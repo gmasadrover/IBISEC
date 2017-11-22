@@ -11,7 +11,7 @@ public class Partida {
 	private String nom;
 	private double totalPartida;
 	private double reservaPartida;
-	private double previstPartida;
+	private double contractatPartida;
 	private double pagatPartida;
 	private String tipus;
 	private boolean estat;
@@ -25,7 +25,7 @@ public class Partida {
 		this.nom = nom;
 		this.totalPartida = totalPartida;
 		this.reservaPartida = 0;
-		this.previstPartida = 0;
+		this.contractatPartida = 0;
 		this.tipus = tipus;
 		this.estat = estat;
 	}
@@ -96,21 +96,21 @@ public class Partida {
 		this.reservaPartida = reservaPartida;
 	}
 	
-	public double getPrevistPartida(){
-		return previstPartida;
+	public double getContractatPartida(){
+		return contractatPartida;
 	}
 	
 	public String getPrevistPartidaFormat(){
 		DecimalFormat num = new DecimalFormat("#,##0.00");
-	    return num.format(previstPartida) + '€';
+	    return num.format(contractatPartida) + '€';
 	}
 	
 	public void setPrevistPartida(double previstPartida){
-		this.previstPartida = previstPartida;
+		this.contractatPartida = previstPartida;
 	}
 	
 	public double getPartidaPerAsignar(){
-		return this.totalPartida - this.getPrevistPartida() - this.getReservaPartida();
+		return this.totalPartida - this.getContractatPartida() - this.getReservaPartida() - this.getPagatPartida();
 	}
 	
 	public String getPartidaPerAsignarFormat(){

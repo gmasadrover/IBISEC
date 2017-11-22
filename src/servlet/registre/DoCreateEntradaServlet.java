@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -76,7 +77,7 @@ public class DoCreateEntradaServlet extends HttpServlet {
  		        	idCentresSeleccionats += idCentres[i] + "#";
  		        	try {
  		        		if (!"-1".equals(idCentres[i])) {
-	 		        		if (!"-1".equals(request.getParameter("incidenciesList" + idCentres[i]))) { 		        			
+	 		        		if (!"-1".equals(request.getParameter("incidenciesList" + idCentres[i])) && !"-2".equals(request.getParameter("incidenciesList" + idCentres[i]))) { 		        			
 								Actuacio actuacio = ActuacioCore.findActuacio(conn, request.getParameter("incidenciesList" + idCentres[i]));							
 								idIncidenciesList.add(actuacio.getIdIncidencia());
 			 		        	idIncidencies =  actuacio.getIdIncidencia() + "#";
@@ -125,7 +126,7 @@ public class DoCreateEntradaServlet extends HttpServlet {
 				   		    incidencia.setDescripcio(contingut);
 				   		    incidencia.setSolicitant(remitent);
 				   		    IncidenciaCore.novaIncidencia(conn, incidencia);			   			
-			   			} else { //Cream notificaci√≥ a ger√®ncia
+			   			} else { //Cream notificaciÛ a gerËncia
 			   				String idIncidencia = idIncidenciesList.get(i);
 			   				if (idIncidencia == null) idIncidencia = "-1";
 			   				int idNovaTasca = TascaCore.idNovaTasca(conn);
@@ -143,7 +144,7 @@ public class DoCreateEntradaServlet extends HttpServlet {
 	   			}	 
 	   			//Actualitzam refer√®ncies registres
 	   			RegistreCore.actualitzarIdIncidencia(conn, "E", referencia, referenciesIncidencies);
-	   		} catch (SQLException e) {
+	   		} catch (SQLException | NamingException e) {
 	  			e.printStackTrace();
 	  			errorString = e.getMessage();
 	   		}

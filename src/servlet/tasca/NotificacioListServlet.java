@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -55,7 +56,7 @@ public class NotificacioListServlet extends HttpServlet {
 	        String usuariSelected = String.valueOf(usuari.getIdUsuari());
 	        try {
 	        	list = TascaCore.llistaNotificacionsUsuari(conn, usuari.getIdUsuari());
-	        } catch (SQLException e) {
+	        } catch (SQLException | NamingException e) {
 	            e.printStackTrace();
 	            errorString = e.getMessage();
 	        }	        

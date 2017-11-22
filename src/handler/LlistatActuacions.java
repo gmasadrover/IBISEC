@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -77,14 +78,12 @@ public class LlistatActuacions extends HttpServlet {
 		try {
 			dataInici = null;
 			dataFi = null;
-			System.out.println(filterWithOutDate);
 			if ("false".equals(filterWithOutDate)){
 				dataInici = df.parse(request.getParameter("dataPeticioIni"));
 				dataFi = df.parse(request.getParameter("dataPeticioFi"));	
 			}
 			dataExecucioIni = null;
 			dataExecucioFi = null;
-			System.out.println(filterWithOutDateExec);
 			if ("false".equals(filterWithOutDateExec)){
 				dataExecucioIni = df.parse(request.getParameter("dataExecucioIni"));
 				dataExecucioFi = df.parse(request.getParameter("dataExecucioFi"));	
@@ -93,7 +92,7 @@ public class LlistatActuacions extends HttpServlet {
 			myObj.addProperty("success", true);
 			JsonElement llistatObj = gson.toJsonTree(llistatActuacions);
 			myObj.add("llistatActuacions", llistatObj);
-		} catch (SQLException | ParseException e) {
+		} catch (SQLException | ParseException | NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			myObj.addProperty("success", false);

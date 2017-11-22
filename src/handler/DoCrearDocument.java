@@ -14,6 +14,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,6 +24,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.itextpdf.text.BaseColor;
 //import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -41,11 +45,15 @@ import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 
 import bean.Actuacio;
+import bean.Empresa;
+import bean.Expedient;
 import bean.InformeActuacio;
 import bean.Oferta;
 import bean.User;
 import core.ActuacioCore;
 import core.CreditCore;
+import core.EmpresaCore;
+import core.ExpedientCore;
 import core.InformeCore;
 import core.LoggerCore;
 import core.OfertaCore;
@@ -81,7 +89,11 @@ public class DoCrearDocument extends HttpServlet {
     	Actuacio actuacio = new Actuacio();
     	Oferta oferta = new Oferta();
     	try {
-    		informe = InformeCore.getInformePrevi(conn, idInforme);
+    		if (idInforme.contains("-MOD-")) {
+    			informe = InformeCore.getMoficacioInforme(conn, idInforme);
+    		} else {
+    			informe = InformeCore.getInformePrevi(conn, idInforme, false);
+    		}    		
 			actuacio = ActuacioCore.findActuacio(conn, idActuacio);	
 		} catch (NumberFormatException e1) {
 			// TODO Auto-generated catch block
@@ -89,28 +101,39 @@ public class DoCrearDocument extends HttpServlet {
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-    	System.out.println("ENTRA AMB TIPUS: " + tipus);
     	String filePath = "";
     	File downloadFile = null;
+    	Context env;
+    	String ruta = "";
+		try {
+			env = (Context)new InitialContext().lookup("java:comp/env");
+			ruta = (String)env.lookup("ruta_base");
+		} catch (NamingException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
     	if (tipus.equals("autMen")) {	
 			// Crear directoris si no existeixen
-			File tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia);
+			File tmpFile = new File(ruta + "/documents/" + idIncidencia);
 			if (!tmpFile.exists()) {
 				tmpFile.mkdir();
 			}
-			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio");
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio");
 			if (!tmpFile.exists()) {
 				tmpFile.mkdir();
 			}
-			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
 			if (!tmpFile.exists()) {
 				tmpFile.mkdir();
 			}
     		
-    		filePath = utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio +"/autoritzacio_informe_"+ idInforme +".pdf";
+    		filePath = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio +"/autoritzacio_informe_"+ idInforme +".pdf";
             try {
-            	PdfReader reader = new PdfReader(utils.Fitxers.RUTA_BASE + "/base/MODELLICIMEN2v5.pdf"); // input PDF
+            	PdfReader reader = new PdfReader(ruta + "/base/MODELLICIMEN2v5.pdf"); // input PDF
     			PdfStamper stamper = new PdfStamper(reader,
     			  new FileOutputStream("/autoritzacio_informe_"+ idInforme +".pdf"));			
     			            
@@ -118,7 +141,7 @@ public class DoCrearDocument extends HttpServlet {
     	        fields.setField("tipusContracte",informe.getPropostaInformeSeleccionada().getTipusObraFormat());
     	        fields.setField("data",getData());
     	        fields.setField("adjudicatari","Adjudica l'execució d'aquesta actuació a " + informe.getOfertaSeleccionada().getNomEmpresa());
-    	        fields.setField("vec", informe.getOfertaSeleccionada().getVecFormat());
+    	        fields.setField("pbase", informe.getOfertaSeleccionada().getPbaseFormat());
     	        fields.setField("iva", informe.getOfertaSeleccionada().getIvaFormat());
     	        fields.setField("plic", informe.getOfertaSeleccionada().getPlicFormat());
     	        fields.setField("termini", informe.getOfertaSeleccionada().getTermini());
@@ -127,7 +150,7 @@ public class DoCrearDocument extends HttpServlet {
     	        fields.setField("numActuacio", String.valueOf(idActuacio));
     	        fields.setField("nomTecnic", informe.getUsuari().getNomComplet());
     	        fields.setField("objecte", informe.getPropostaInformeSeleccionada().getObjecte());
-    	        fields.setField("nomCentre", actuacio.getNomCentre());
+    	        fields.setField("nomCentre", actuacio.getCentre().getNomComplet());
     	        stamper.close();
     	        reader.close();
                 
@@ -138,32 +161,32 @@ public class DoCrearDocument extends HttpServlet {
             downloadFile = new File("/autoritzacio_informe_"+ idInforme +".pdf");
        } else if ("PAObres".equals(tipus)) {
     		// Crear directoris si no existeixen
-			File tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia);
+			File tmpFile = new File(ruta + "/documents/" + idIncidencia);
 			if (!tmpFile.exists()) {
 				tmpFile.mkdir();
 			}
-			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio");
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio");
 			if (!tmpFile.exists()) {
 				tmpFile.mkdir();
 			}
-			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
 			if (!tmpFile.exists()) {
 				tmpFile.mkdir();
 			}
     		
-    		filePath = utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio +"/proposta_actuacio_"+ idInforme +".pdf";
+    		filePath = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio +"/proposta_actuacio_"+ idInforme +".pdf";
             try {
             	
-	        	PdfReader reader = new PdfReader(utils.Fitxers.RUTA_BASE + "/base/PA tècnic.pdf"); // input PDF
+	        	PdfReader reader = new PdfReader(ruta + "/base/PA tècnic.pdf"); // input PDF
 				PdfStamper stamper = new PdfStamper(reader,
 				  new FileOutputStream("/proposta_actuacio_"+ idInforme +".pdf"));			
 				            
 	            AcroFields fields = stamper.getAcroFields();
 	            fields.setField("informe",informe.getIdInf());
     	        fields.setField("tipusContracte",informe.getLlistaPropostes().get(0).getTipusObraFormat());
-    	        fields.setField("nomCentre",actuacio.getNomCentre());
+    	        fields.setField("nomCentre",actuacio.getCentre().getNomComplet());
     	        fields.setField("objecte",informe.getLlistaPropostes().get(0).getObjecte());
-    	        fields.setField("vec", informe.getLlistaPropostes().get(0).getVecFormat());
+    	        fields.setField("pbase", informe.getLlistaPropostes().get(0).getPbaseFormat());
     	        fields.setField("iva", informe.getLlistaPropostes().get(0).getIvaFormat());
     	        fields.setField("plic", informe.getLlistaPropostes().get(0).getPlicFormat());
     	        fields.setField("termini", informe.getLlistaPropostes().get(0).getTermini());
@@ -186,22 +209,22 @@ public class DoCrearDocument extends HttpServlet {
             downloadFile = new File("/proposta_actuacio_"+ idInforme +".pdf");
        } else if ("VistiplauPAObres".equals(tipus)) {
    		// Crear directoris si no existeixen
-			File tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia);
+			File tmpFile = new File(ruta + "/documents/" + idIncidencia);
 			if (!tmpFile.exists()) {
 				tmpFile.mkdir();
 			}
-			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio");
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio");
 			if (!tmpFile.exists()) {
 				tmpFile.mkdir();
 			}
-			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
 			if (!tmpFile.exists()) {
 				tmpFile.mkdir();
 			}
    		
-			filePath = utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio +"/vistiplau_proposta_actuacio_"+ idInforme +".pdf";
+			filePath = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio +"/vistiplau_proposta_actuacio_"+ idInforme +".pdf";
 			try {
-	        	PdfReader reader = new PdfReader(utils.Fitxers.RUTA_BASE + "/base/PA cap de servei.pdf"); // input PDF
+	        	PdfReader reader = new PdfReader(ruta + "/base/PA cap de servei.pdf"); // input PDF
 				PdfStamper stamper = new PdfStamper(reader,
 				  new FileOutputStream("/vistiplau_proposta_actuacio_"+ idInforme +".pdf"));			
 				            
@@ -219,22 +242,22 @@ public class DoCrearDocument extends HttpServlet {
 			downloadFile = new File("/vistiplau_proposta_actuacio_"+ idInforme +".pdf");
        } else if ("financeraPAObres".equals(tipus)) {
       		// Crear directoris si no existeixen
-   			File tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia);
+   			File tmpFile = new File(ruta + "/documents/" + idIncidencia);
    			if (!tmpFile.exists()) {
    				tmpFile.mkdir();
    			}
-   			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio");
+   			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio");
    			if (!tmpFile.exists()) {
    				tmpFile.mkdir();
    			}
-   			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
+   			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
    			if (!tmpFile.exists()) {
    				tmpFile.mkdir();
    			}
       		
-   			filePath = utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio +"/financera_proposta_actuacio_"+ idInforme +".pdf";
+   			filePath = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio +"/financera_proposta_actuacio_"+ idInforme +".pdf";
    			try {
-   	        	PdfReader reader = new PdfReader(utils.Fitxers.RUTA_BASE + "/base/PA àrea econòmica.pdf"); // input PDF
+   	        	PdfReader reader = new PdfReader(ruta + "/base/PA àrea econòmica.pdf"); // input PDF
    				PdfStamper stamper = new PdfStamper(reader,
    				  new FileOutputStream("/financera_proposta_actuacio_"+ idInforme +".pdf"));			
    				            
@@ -257,24 +280,62 @@ public class DoCrearDocument extends HttpServlet {
    	   			e1.printStackTrace();
    	   		} // output PDF
    			downloadFile = new File("/financera_proposta_actuacio_"+ idInforme +".pdf");
-       } else if ("AutoritzacioPAObres".equals(tipus)) {
-     		// Crear directoris si no existeixen
-  			File tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia);
+       } else if ("financeraMajor".equals(tipus)) {
+    	   // Crear directoris si no existeixen
+  			File tmpFile = new File(ruta + "/documents/" + idIncidencia);
   			if (!tmpFile.exists()) {
   				tmpFile.mkdir();
   			}
-  			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio");
+  			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio");
   			if (!tmpFile.exists()) {
   				tmpFile.mkdir();
   			}
-  			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
+  			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
   			if (!tmpFile.exists()) {
   				tmpFile.mkdir();
   			}
      		
-  			filePath = utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio +"/autoritzacio_proposta_actuacio_"+ idInforme +".pdf";
+  			filePath = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio +"/certificat_existència_crèdit_"+ informe.getExpcontratacio().getExpContratacio().replace("/", "_") +".pdf";
   			try {
-  	        	PdfReader reader = new PdfReader(utils.Fitxers.RUTA_BASE + "/base/PA gerència.pdf"); // input PDF
+  				Expedient expedient = informe.getExpcontratacio();
+  	        	PdfReader reader = new PdfReader(ruta + "/base/certCredit.pdf"); // input PDF
+  				PdfStamper stamper = new PdfStamper(reader,
+  				  new FileOutputStream("/certificat_existència_crèdit_"+ informe.getExpcontratacio().getExpContratacio().replace("/", "_") +".pdf"));			
+  				            
+  	            AcroFields fields = stamper.getAcroFields();
+  	            fields.setField("expedient",expedient.getExpContratacio());
+  	        	fields.setField("tipus", expedient.getTipus());
+  	        	fields.setField("objecte", informe.getPropostaInformeSeleccionada().getObjecte());	   	       
+  	   	       	fields.setField("partida", informe.getCodiPartida());	
+  	   	       	fields.setField("PBase", informe.getPropostaInformeSeleccionada().getPbaseFormat());
+  	   	       	fields.setField("IVA", informe.getPropostaInformeSeleccionada().getIvaFormat());
+  	   	       	fields.setField("PLic", informe.getPropostaInformeSeleccionada().getPlicFormat());
+  	   	       	stamper.close();
+  	   	       	reader.close();
+     		                
+  	   		} catch (DocumentException e1) {
+  	   			// TODO Auto-generated catch block
+  	   			e1.printStackTrace();
+  	   		} // output PDF
+  			downloadFile = new File("/certificat_existència_crèdit_"+ informe.getExpcontratacio().getExpContratacio().replace("/", "_") +".pdf");
+       } else if ("AutoritzacioPAObres".equals(tipus)) {
+     		// Crear directoris si no existeixen
+  			File tmpFile = new File(ruta + "/documents/" + idIncidencia);
+  			if (!tmpFile.exists()) {
+  				tmpFile.mkdir();
+  			}
+  			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio");
+  			if (!tmpFile.exists()) {
+  				tmpFile.mkdir();
+  			}
+  			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
+  			if (!tmpFile.exists()) {
+  				tmpFile.mkdir();
+  			}
+     		
+  			filePath = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio +"/autoritzacio_proposta_actuacio_"+ idInforme +".pdf";
+  			try {
+  	        	PdfReader reader = new PdfReader(ruta + "/base/PA gerència.pdf"); // input PDF
   				PdfStamper stamper = new PdfStamper(reader,
   				  new FileOutputStream("/autoritzacio_proposta_actuacio_"+ idInforme +".pdf"));			
   				            
@@ -292,31 +353,31 @@ public class DoCrearDocument extends HttpServlet {
   			downloadFile = new File("/autoritzacio_proposta_actuacio_"+ idInforme +".pdf");
     	} else if ("PTObres".equals(tipus)) {
     		// Crear directoris si no existeixen
-			File tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia);
+			File tmpFile = new File(ruta + "/documents/" + idIncidencia);
 			if (!tmpFile.exists()) {
 				tmpFile.mkdir();
 			}
-			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio");
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio");
 			if (!tmpFile.exists()) {
 				tmpFile.mkdir();
 			}
-			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
 			if (!tmpFile.exists()) {
 				tmpFile.mkdir();
 			}
     		
-    		filePath = utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio +"/proposta_tecnica_"+ idInforme +".pdf";
+    		filePath = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio +"/proposta_tecnica_"+ idInforme +".pdf";
             try {
-	        	PdfReader reader = new PdfReader(utils.Fitxers.RUTA_BASE + "/base/MODPTOBRES.pdf"); // input PDF
+	        	PdfReader reader = new PdfReader(ruta + "/base/MODPTOBRES.pdf"); // input PDF
 	        	Rectangle pagesize = reader.getPageSize(1);
 				PdfStamper stamper = new PdfStamper(reader,
 				  new FileOutputStream("/proposta_tecnica_"+ idInforme +".pdf"));			
 				            
 	            AcroFields fields = stamper.getAcroFields();
     	        fields.setField("tipusContracte",informe.getLlistaPropostes().get(0).getTipusObraFormat());
-    	        fields.setField("nomCentre",actuacio.getNomCentre());
+    	        fields.setField("nomCentre",actuacio.getCentre().getNomComplet());
     	        fields.setField("objecte",informe.getLlistaPropostes().get(0).getObjecte());
-    	        fields.setField("vec", informe.getOfertaSeleccionada().getVecFormat());
+    	        fields.setField("pbase", informe.getOfertaSeleccionada().getPbaseFormat());
     	        fields.setField("iva", informe.getOfertaSeleccionada().getIvaFormat());
     	        fields.setField("plic", informe.getOfertaSeleccionada().getPlicFormat());
     	        fields.setField("terminiInicial", informe.getOfertaSeleccionada().getTermini());
@@ -332,13 +393,13 @@ public class DoCrearDocument extends HttpServlet {
     	       // table.setWidths(new int[]{1,3});
     	        List<Oferta> ofertesList = informe.getLlistaOfertes();
     	         
-    	        String FONT = utils.Fitxers.RUTA_BASE + "/fonts/NotoSans-Regular.ttf";
+    	        String FONT = ruta + "/fonts/NotoSans-Regular.ttf";
     	        FontFactory.register(FONT,"Noto-Sans");
-    	        Font f = FontFactory.getFont("Noto-Sans", "Cp1253", true);
+    	        Font f = FontFactory.getFont("Noto-Sans", "ISO-8859-1", true);
     	        f.setSize(11);   	    
-    	        String FONTBOLD = utils.Fitxers.RUTA_BASE + "/fonts/NotoSans-Bold.ttf";
+    	        String FONTBOLD = ruta + "/fonts/NotoSans-Bold.ttf";
     	        FontFactory.register(FONTBOLD,"Noto-Sans-Bold");
-    	        Font fb = FontFactory.getFont("Noto-Sans-Bold", "Cp1253", true);
+    	        Font fb = FontFactory.getFont("Noto-Sans-Bold", "ISO-8859-1", true);
     	        fb.setSize(11); 
     	            
     	        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -402,6 +463,224 @@ public class DoCrearDocument extends HttpServlet {
     			e1.printStackTrace();
     		} // output PDF
             downloadFile = new File("/proposta_tecnica_"+ idInforme +".pdf");
+    	} else if (tipus.equals("empresa")) {
+    		String cif = request.getParameter("cif");
+    		try {
+    			Empresa empresa = EmpresaCore.findEmpresa(conn, cif);
+ 	        	PdfReader reader = new PdfReader(ruta + "/base/empresa.pdf"); // input PDF
+ 	        	Rectangle pagesize = reader.getPageSize(1);
+ 				PdfStamper stamper = new PdfStamper(reader,
+ 				  new FileOutputStream("/empresa_"+ cif +".pdf"));		
+ 				
+ 				PdfPTable table = new PdfPTable(2);
+     	        PdfPCell cell = new PdfPCell();   
+     	        Paragraph text = new Paragraph();    	
+     	        
+     	        String FONT = ruta + "/fonts/NotoSans-Regular.ttf";
+     	        FontFactory.register(FONT,"Noto-Sans");
+     	        Font f = FontFactory.getFont("Noto-Sans", "ISO-8859-1", true);
+     	        f.setSize(11);   	    
+     	        String FONTBOLD = ruta + "/fonts/NotoSans-Bold.ttf";
+     	        FontFactory.register(FONTBOLD,"Noto-Sans-Bold");
+     	        Font fb = FontFactory.getFont("Noto-Sans-Bold", "ISO-8859-1", true);
+     	        fb.setSize(14); 
+     	        
+     	        //Dades bàsiques
+     	        
+     	        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+     	        cell.setPadding(5);
+     	        cell.setBorder(0);
+     	        text = new Paragraph("Informació bàsica", fb);    	            
+ 	        	cell.addElement(text);    	            
+     	        table.addCell(cell);
+     	        
+     	        cell = new PdfPCell();   
+     	        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+     	        cell.setPadding(5);
+     	        cell.setBorder(0);   	            
+     	        table.addCell(cell);    
+     	        
+     	        table.setHeaderRows(1);     	        	                    
+     	        
+     	            cell = new PdfPCell();
+     	        	cell.setPadding(5);
+     	            text = new Paragraph("CIF", f);    	            
+     	        	cell.addElement(text); 
+     	        	cell.setBorder(0);   	 
+     	            table.addCell(cell);
+     	            
+     	            cell = new PdfPCell();
+     	            cell.setPadding(5);
+     	            text = new Paragraph(empresa.getCif(), f);    	            
+     	        	cell.addElement(text);  
+     	        	cell.setBorder(0);   	 
+     	            table.addCell(cell);
+     	            
+     	            cell = new PdfPCell();
+    	        	cell.setPadding(5);
+    	            text = new Paragraph("Nom", f);    	            
+    	        	cell.addElement(text);    	
+    	        	cell.setBorder(0);   	 
+    	            table.addCell(cell);
+    	            
+    	            cell = new PdfPCell();
+    	            cell.setPadding(5);
+    	            text = new Paragraph(empresa.getName(), f);    	            
+    	        	cell.addElement(text);   
+    	        	cell.setBorder(0);   	 
+    	            table.addCell(cell);
+     	       	
+     	       		cell = new PdfPCell();
+	   	        	cell.setPadding(5);
+	   	            text = new Paragraph("Direcció", f);    	            
+	   	        	cell.addElement(text);    	
+	   	        	cell.setBorder(0);   	 
+	   	            table.addCell(cell);
+	   	            
+	   	            cell = new PdfPCell();
+	   	            cell.setPadding(5);
+	   	            text = new Paragraph(empresa.getDireccio(), f);    	            
+	   	        	cell.addElement(text);   
+	   	        	cell.setBorder(0);   	 
+	   	            table.addCell(cell);
+	   	            
+   	            cell = new PdfPCell();
+  	        	cell.setPadding(5);
+  	            text = new Paragraph("CP", f);    	            
+  	        	cell.addElement(text);    	
+  	        	cell.setBorder(0);   	 
+  	            table.addCell(cell);
+  	            
+  	            cell = new PdfPCell();
+  	            cell.setPadding(5);
+  	            text = new Paragraph(empresa.getCP(), f);    	            
+  	        	cell.addElement(text);   
+  	        	cell.setBorder(0);   	 
+  	            table.addCell(cell);     	      
+
+     	      	cell = new PdfPCell();
+   	        	cell.setPadding(5);
+   	            text = new Paragraph("Provincia", f);    	            
+   	        	cell.addElement(text);    	
+   	        	cell.setBorder(0);   	 
+   	            table.addCell(cell);
+   	            
+   	            cell = new PdfPCell();
+   	            cell.setPadding(5);
+   	            text = new Paragraph(empresa.getProvincia(), f);    	            
+   	        	cell.addElement(text);   
+   	        	cell.setBorder(0);   	 
+   	            table.addCell(cell);
+     	     
+     	        cell = new PdfPCell();
+  	        	cell.setPadding(5);
+  	            text = new Paragraph("Localitat", f);    	            
+  	        	cell.addElement(text);    	
+  	        	cell.setBorder(0);   	 
+  	            table.addCell(cell);
+  	            
+  	            cell = new PdfPCell();
+  	            cell.setPadding(5);
+  	            text = new Paragraph(empresa.getCiutat(), f);    	            
+  	        	cell.addElement(text);   
+  	        	cell.setBorder(0);   	 
+  	            table.addCell(cell);
+  	            
+  	            cell = new PdfPCell();
+ 	        	cell.setPadding(5);
+ 	            text = new Paragraph("Teléfon", f);    	            
+ 	        	cell.addElement(text);    	
+ 	        	cell.setBorder(0);   	 
+ 	            table.addCell(cell);
+ 	            
+ 	            cell = new PdfPCell();
+ 	            cell.setPadding(5);
+ 	            text = new Paragraph(empresa.getTelefon(), f);    	            
+ 	        	cell.addElement(text);   
+ 	        	cell.setBorder(0);   	 
+ 	            table.addCell(cell);
+     	    
+ 	            cell = new PdfPCell();
+	        	cell.setPadding(5);
+	            text = new Paragraph("Fax", f);    	            
+	        	cell.addElement(text);    	
+	        	cell.setBorder(0);   	 
+	            table.addCell(cell);
+	            
+	            cell = new PdfPCell();
+	            cell.setPadding(5);
+	            text = new Paragraph(empresa.getFax(), f);    	            
+	        	cell.addElement(text);   
+	        	cell.setBorder(0);   	 
+	            table.addCell(cell);
+	            
+	            cell = new PdfPCell();
+	        	cell.setPadding(5);
+	            text = new Paragraph("Email", f);    	            
+	        	cell.addElement(text);    	
+	        	cell.setBorder(0);   	 
+	            table.addCell(cell);
+	            
+	            cell = new PdfPCell();
+	            cell.setPadding(5);
+	            text = new Paragraph(empresa.getEmail(), f);    	            
+	        	cell.addElement(text);   
+	        	cell.setBorder(0);   	 
+	            table.addCell(cell);
+	            
+	           	cell = new PdfPCell();
+	        	cell.setPadding(5);
+	            text = new Paragraph("Data constituació", f);    	            
+	        	cell.addElement(text);    	
+	        	cell.setBorder(0);   	 
+	            table.addCell(cell);
+	            
+	            cell = new PdfPCell();
+	            cell.setPadding(5);
+	            text = new Paragraph(empresa.getDataConstitucioString(), f);    	            
+	        	cell.addElement(text);   
+	        	cell.setBorder(0);   	 
+	            table.addCell(cell);
+     	    
+	            cell = new PdfPCell();
+	        	cell.setPadding(5);
+	            text = new Paragraph("Pime", f);    	            
+	        	cell.addElement(text);    	
+	        	cell.setBorder(0);   	 
+	            table.addCell(cell);
+	            
+	            cell = new PdfPCell();
+	            cell.setPadding(5);
+	            text = new Paragraph(empresa.isPime() ? "Si" : "No", f);    	            
+	        	cell.addElement(text);   
+	        	cell.setBorder(0);   	 
+	            table.addCell(cell);
+	       	
+	            int pagecount = 1;
+     	        ColumnText column = new ColumnText(stamper.getOverContent(1));
+     	        Rectangle rectPage1 = new Rectangle(36, 36, 559, 650);
+     	        column.setSimpleColumn(rectPage1);
+     	        column.addElement(table);
+     	       
+     	        Rectangle rectPage2 = new Rectangle(36, 36, 559, 806);
+     	        int status = column.go();
+     	        while (ColumnText.hasMoreText(status)) {
+     	           status = triggerNewPage(stamper, pagesize, column, rectPage2, ++pagecount);
+     	       	}        
+     	        
+     	        //Representació
+ 				
+ 		        stamper.close();
+ 		        reader.close();
+    		} catch (DocumentException | SQLException e1) {
+    			// TODO Auto-generated catch block
+    			e1.printStackTrace();
+    		} // output PDF
+ catch (NamingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		 downloadFile = new File("/empresa_"+ cif +".pdf");
     	} else {
     		/*try {
     			Document doc = new Document();

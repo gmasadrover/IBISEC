@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileUploadException;
 
+import bean.Actuacio;
 import bean.InformeActuacio;
 import bean.InformeActuacio.PropostaInforme;
 import bean.User;
@@ -56,8 +59,7 @@ public class DoAddInformeServlet extends HttpServlet {
 	    String idIncidencia = multipartParams.getParametres().get("idIncidencia");
 	    String guardar = multipartParams.getParametres().get("guardar");	    
 	    String errorString = null;
-	    User Usuari = MyUtils.getLoginedUser(request.getSession());	
-	    int infPrev = Integer.parseInt(multipartParams.getParametres().get("infPrev"));	    
+	    User Usuari = MyUtils.getLoginedUser(request.getSession());	    
 	    String idInformePrevi = "";
 	    String idProposta = "";
 		String objecte = "";
@@ -65,39 +67,46 @@ public class DoAddInformeServlet extends HttpServlet {
 		boolean llicencia = false;
 		String tipusLlicencia = "";
 		boolean contracte = false;
-		double vec = 0;
+		double pbase = 0;
 		double iva = 0;
 		double plic = 0;
 		String termini = "";
 		String comentari = "";
 		List<PropostaInforme> llistaPropostes = new ArrayList<PropostaInforme>();
 		//Guardar adjunts
-		if (guardar != null) Fitxers.guardarFitxer(multipartParams.getFitxers(), idIncidencia, idActuacio, "Informe Previ", String.valueOf(idTasca), "", "", "");
+		if (guardar != null)
+			try {
+				Fitxers.guardarFitxer(multipartParams.getFitxers(), idIncidencia, idActuacio, "Informe Previ", String.valueOf(idTasca), "", "", "");
+			} catch (NamingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		 
 	    InformeActuacio informe = new InformeActuacio();
+	    Actuacio actuacio = new Actuacio();
+	    actuacio.setReferencia(idActuacio);
 	    PropostaInforme proposta = informe.new PropostaInforme();
 	    informe.setIdTasca(idTasca);
 	    informe.setIdIncidencia(idIncidencia);
-	    informe.setIdActuacio(idActuacio);
+	    informe.setActuacio(actuacio);
 	    idInformePrevi = multipartParams.getParametres().get("idInformePrevi");
-	    if (guardar != null) {	    	
-	    	for(int i=1; i<=infPrev; i++) {	
-	    		idProposta = multipartParams.getParametres().get("idProposta" + i);
-				objecte = multipartParams.getParametres().get("objecteActuacio" + i);
-				tipusObra = multipartParams.getParametres().get("tipusContracte" + i);		
+	    if (guardar != null) {	  
+	    		idProposta = multipartParams.getParametres().get("idProposta");
+				objecte = multipartParams.getParametres().get("objecteActuacio");
+				tipusObra = multipartParams.getParametres().get("tipusContracte");						
 				llicencia = false;
 				tipusLlicencia = "";
 				contracte = false;		 
 			    if (new String("obr").equals(tipusObra)) {
-			    	llicencia = new String("si").equals(multipartParams.getParametres().get("reqLlicencia" + i));	 	   
-					if (llicencia) tipusLlicencia = multipartParams.getParametres().get("tipusLlicencia" + i);					
-					contracte = new String("si").equals(multipartParams.getParametres().get("formContracte" + i));
+			    	llicencia = new String("si").equals(multipartParams.getParametres().get("reqLlicencia"));	 	   
+					if (llicencia) tipusLlicencia = multipartParams.getParametres().get("tipusLlicencia");					
+					contracte = new String("si").equals(multipartParams.getParametres().get("formContracte"));
 			    }			    
-			    vec = Double.parseDouble(multipartParams.getParametres().get("vec" + i).replace(',','.'));
-			    iva = Double.parseDouble(multipartParams.getParametres().get("iva" + i));
-			    plic = Double.parseDouble(multipartParams.getParametres().get("plic" + i).replace(',','.'));	
-			    termini = multipartParams.getParametres().get("termini" + i);
-			    comentari = multipartParams.getParametres().get("comentariTecnic" + i);			   
+			    pbase = Double.parseDouble(multipartParams.getParametres().get("pbase").replace(',','.'));
+			    iva = Double.parseDouble(multipartParams.getParametres().get("iva"));
+			    plic = Double.parseDouble(multipartParams.getParametres().get("plic").replace(',','.'));	
+			    termini = multipartParams.getParametres().get("termini");
+			    comentari = multipartParams.getParametres().get("comentariTecnic");			   
 			    	
 			    proposta = informe.new PropostaInforme();
 			    proposta.setIdProposta(idProposta);
@@ -106,13 +115,12 @@ public class DoAddInformeServlet extends HttpServlet {
 			    proposta.setLlicencia(llicencia);
 			    proposta.setTipusLlicencia(tipusLlicencia);
 			    proposta.setContracte(contracte);
-			    proposta.setVec(vec);
+			    proposta.setPbase(pbase);
 			    proposta.setIva(iva);
 			    proposta.setPlic(plic);
 			    proposta.setTermini(termini);
 			    proposta.setComentari(comentari);
 			    llistaPropostes.add(proposta);
-	    	}
 	    	
 	    	informe.setLlistaPropostes(llistaPropostes);
 	    	//Registrar informe + comentari;	   
@@ -135,11 +143,11 @@ public class DoAddInformeServlet extends HttpServlet {
 	    	//Aprovació d'informe
 			try {
 				String comentariCap = multipartParams.getParametres().get("comentariCap");	
-				InformeCore.validacioCapInforme(conn, idInformePrevi, Usuari.getIdUsuari(), comentariCap);				
-				informe = InformeCore.getInformePrevi(conn, idInformePrevi);				
+				InformeCore.validacioCapInforme(conn, idInformePrevi, Usuari.getIdUsuari(), comentariCap, new Date());				
+				informe = InformeCore.getInformePrevi(conn, idInformePrevi, false);				
 				if (informe.getLlistaPropostes().size() == 1) InformeCore.seleccionarProposta(conn, informe.getLlistaPropostes().get(0).getIdProposta(), idInformePrevi);
 				if (idActuacio != "") idIncidencia = String.valueOf(ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia());
-			} catch (SQLException e) {
+			} catch (SQLException | NamingException e) {
 				e.printStackTrace();
 			}		   			
 	    }			

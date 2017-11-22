@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,6 +18,7 @@ import bean.ControlPage.SectionPage;
 import core.ControlPageCore;
 import core.RegistreCore;
 import core.UsuariCore;
+import utils.Fitxers;
 import utils.MyUtils;
 
 /**
@@ -48,11 +50,19 @@ public class EditRegistreServlet extends HttpServlet {
  	   		String idRegistre = request.getParameter("id");
  	   		String entradaSortida = request.getParameter("tipus");
  	   		Registre registre = new Registre();
+ 	   		Boolean canModificarCentre = true;
 	        try {
 	        	registre = RegistreCore.findRegistre(conn, entradaSortida, idRegistre);
+	        	if (registre.getIdActuacionsList().size() > 0) {
+	        		canModificarCentre = false;
+	        	}
+	        	if (registre.getIdIncidenciesList().size() > 0 && !registre.getPrimeraIncidencia().equals("-1")) {	        		
+	        		canModificarCentre = false;
+	        	}
 	        	request.setAttribute("registre", registre);
 	        	request.setAttribute("idRegistre", idRegistre);
 				request.setAttribute("entradaSortida", entradaSortida);
+				request.setAttribute("canModificarCentre", canModificarCentre);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

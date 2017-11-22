@@ -58,6 +58,12 @@
                                 	<textarea class="form-control" name="descripcio" placeholder="descripció" rows="3">${actuacio.descripcio}</textarea>
                                 </div>
                             </div>		
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label">Observacions</label>
+                                <div class="col-xs-3">
+                                	<textarea class="form-control" name="observacio" placeholder="observacions" rows="3">${actuacio.notes}</textarea>
+                                </div>
+                            </div>		
                             <br>
 						    <div class="form-group">
 						        <div class="col-xs-offset-3 col-xs-9">

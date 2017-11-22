@@ -17,6 +17,12 @@ $(document).ready(function() {
 	if ($('#estatList').size() > 0) {
 		$('#estatList').selectpicker('refresh');
 	}
+	if ($('#anySelected').val() != '') {		  		
+		$('#anyList option[value="' + $('#anySelected').val() + '"]').attr('selected', 'selected');
+	}
+	if ($('#anyList').size() > 0) {
+		$('#anyList').selectpicker('refresh');
+	}
 	$('.filerTable').DataTable({
 		dom: 'Bfrtip',
         buttons: [ {
@@ -44,15 +50,20 @@ $(document).ready(function() {
     		null,    		
     		{"iDataSort": 5},
     		{"bVisible": false},
-    		{"iDataSort": 7},
+    		null,
+    		{"iDataSort": 8},
     		{"bVisible": false},
-    		{"iDataSort": 9},
+    		null,
+    		null,
+    		{"iDataSort": 12},
     		{"bVisible": false},
-    		{"iDataSort": 11},
+    		{"iDataSort": 14},
     		{"bVisible": false},
-    		{"iDataSort": 13},
+    		{"iDataSort": 16},
     		{"bVisible": false},
-    		{"iDataSort": 15},
+    		{"iDataSort": 18},
+    		{"bVisible": false},
+    		{"iDataSort": 20},
     		{"bVisible": false}
 		]
 	});

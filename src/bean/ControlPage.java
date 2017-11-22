@@ -4,8 +4,9 @@ public class ControlPage {
 	public enum SectionPage{
 		tasques_list, tasques_crear, tasques_detalls,
 		registre_detalls, registre_ent_list, registre_ent_crear, registre_sort_list, registre_sort_crear,
-		actuacio_list, actuacio_modificar, actuacio_detalls, 
+		actuacio_list, actuacio_modificar, actuacio_detalls, actuacio_manual, 
 		expedient_list, expedient_detalls, expedient_modificar,
+		llicencia_list, llicencia_detalls, llicencia_modificar,
 		centres_list, centres_detalls,
 		incidencia_list, incidencia_modificar, incidencia_detalls,
 		partides_list, partides_crear, 
@@ -14,7 +15,8 @@ public class ControlPage {
 		obres_list,
 		factures_list, factures_crear,
 		llistats_list,
-		manuals
+		manuals,
+		personal
 	}
 	public ControlPage(){
 		

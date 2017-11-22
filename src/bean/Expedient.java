@@ -5,11 +5,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Expedient {
-	private Actuacio actuacio;
-	private InformeActuacio informe;
+	private String idActuacio;
+	private String idInforme;
 	private String expContratacio;
+	private Llicencia llicencia;
 	private Date dataCreacio;
 	private Date dataPublicacioBOIB;
+	private Date dataPublicacioPerfilContratant;
 	private Date dataLimitPresentacio;
 	private Date dataAdjudicacio;
 	private Date dataFormalitzacioContracte;
@@ -22,10 +24,9 @@ public class Expedient {
 	private String garantia;
 	private String tipus;
 	private String contracte;
-	private String descripcio;
 	
 	public Expedient() {
-		
+		expContratacio = "-1";
 	}
 	
 	public String getExpContratacio() {
@@ -93,12 +94,12 @@ public class Expedient {
 		this.dataFormalitzacioContracte = dataFormalitzacioContracte;
 	}
 
-	public Actuacio getActuacio() {
-		return actuacio;
+	public String getIdActuacio() {
+		return idActuacio;
 	}
 
-	public void setActuacio(Actuacio actuacio) {
-		this.actuacio = actuacio;
+	public void setIdActuacio(String idActuacio) {
+		this.idActuacio = idActuacio;
 	}
 
 	public Date getDataIniciExecucio() {
@@ -185,14 +186,6 @@ public class Expedient {
 		this.dataFiGarantia = dataFiGarantia;
 	}
 
-	public String getDescripcio() {
-		return descripcio;
-	}
-
-	public void setDescripcio(String descripcio) {
-		this.descripcio = descripcio;
-	}
-
 	public String getTipus() {
 		return tipus;
 	}
@@ -209,19 +202,42 @@ public class Expedient {
 		this.contracte = contracte;
 	}
 
-	public InformeActuacio getInforme() {
-		return informe;
-	}
-
-	public void setInforme(InformeActuacio informe) {
-		this.informe = informe;
-	}
-
 	public Date getDataCreacio() {
 		return dataCreacio;
 	}
 
 	public void setDataCreacio(Date dataCreacio) {
 		this.dataCreacio = dataCreacio;
+	}
+
+	public Date getDataPublicacioPerfilContratant() {
+		return dataPublicacioPerfilContratant;
+	}
+	
+	public String getDataPublicacioPerfilContratantString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+		String dataString = "";
+		if (this.dataPublicacioPerfilContratant != null) dataString = df.format(this.dataPublicacioPerfilContratant);
+		return dataString;
+	}
+
+	public void setDataPublicacioPerfilContratant(Date dataPublicacioPerfilContratant) {
+		this.dataPublicacioPerfilContratant = dataPublicacioPerfilContratant;
+	}
+
+	public String getIdInforme() {
+		return idInforme;
+	}
+
+	public void setIdInforme(String idInforme) {
+		this.idInforme = idInforme;
+	}
+
+	public Llicencia getLlicencia() {
+		return llicencia;
+	}
+
+	public void setLlicencia(Llicencia llicencia) {
+		this.llicencia = llicencia;
 	}
 }

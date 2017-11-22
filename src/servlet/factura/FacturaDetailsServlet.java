@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -46,12 +47,14 @@ public class FacturaDetailsServlet extends HttpServlet {
     		response.sendRedirect(request.getContextPath() + "/");	 
  	   	}else{
 			String idFactura = request.getParameter("ref");	 
+			boolean isUsuariConformador = false;
 	        Factura factura = null;	 
 	        String errorString = null;
 	 
 	        try {
 	            factura = FacturaCore.getFactura(conn, idFactura);
-	        } catch (SQLException e) {
+	            if (factura.getUsuariConformador() != null) isUsuariConformador = factura.getUsuariConformador().getIdUsuari()  == usuari.getIdUsuari();
+	        } catch (SQLException | NamingException e) {
 	            e.printStackTrace();
 	            errorString = e.getMessage();
 	        }
@@ -66,8 +69,10 @@ public class FacturaDetailsServlet extends HttpServlet {
 	        }
 	 
 	        // Store errorString in request attribute, before forward to views.
+	        request.setAttribute("canModificar", UsuariCore.hasPermision(conn, usuari, SectionPage.factures_crear));
 	        request.setAttribute("errorString", errorString);
 	        request.setAttribute("factura", factura);
+	        request.setAttribute("isUsuariConformador", isUsuariConformador);
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Factures"));
 	        
 	        RequestDispatcher dispatcher = request.getServletContext()

@@ -11,6 +11,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.naming.NamingException;
+
 import bean.Actuacio;
 import bean.InformeActuacio;
 import bean.Actuacio.Feina;
@@ -18,18 +20,17 @@ import bean.Resultat;
 import bean.Resultat.Estadistiques;
 public class ActuacioCore {
 	
-	static final String SQL_CAMPS = "id, idincidencia, descripcio, idcentre, usucre, datacre, dataaprovacio, usuaprovacio, datatancament, usutancament, datamodificacio, darreramodificacio, usuaprovarpa, dataaprovarpa, notes";
+	static final String SQL_CAMPS = "id, idincidencia, descripcio, idcentre, usucre, datacre, dataaprovacio, usuaprovacio, datatancament, usutancament, datamodificacio, darreramodificacio, usuaprovarpa, dataaprovarpa, notes, motiutancament";
 	
 	private static Actuacio initActuacio(Connection conn, ResultSet rs, Estadistiques estad) throws SQLException{
 		Actuacio actuacio = new Actuacio();
-		
 		actuacio.setReferencia(rs.getString("id"));
 		actuacio.setDescripcio(rs.getString("descripcio"));		
 		actuacio.setDataCreacio(rs.getTimestamp("datacre"));
 		actuacio.setIdUsuariCreacio(rs.getInt("usucre"));		
-		actuacio.setIdCentre(rs.getString("idcentre"));
-		actuacio.setNomCentre(CentreCore.nomCentreComplet(conn, rs.getString("idcentre")));			
+		actuacio.setCentre(CentreCore.findCentre(conn, rs.getString("idcentre"), false));	
 		actuacio.setDataTancament(rs.getTimestamp("datatancament"));	
+		actuacio.setMotiuTancament(rs.getString("motiutancament"));
 		actuacio.setDataAprovacio(rs.getTimestamp("dataaprovacio"));		
 		actuacio.setIdIncidencia(rs.getString("idincidencia"));		
 		actuacio.setDarreraModificacio(rs.getTimestamp("datamodificacio"));
@@ -56,14 +57,14 @@ public class ActuacioCore {
 	
 	public static void novaActuacio(Connection conn, Actuacio actuacio) throws SQLException {
 		String sql = "INSERT INTO public.tbl_actuacio(" + SQL_CAMPS + ")"
-					+ "VALUES (?,?,?,?,?,localtimestamp,null,null,null,null,localtimestamp,?,null,null,'')";
+					+ "VALUES (?,?,?,?,?,localtimestamp,null,null,null,null,localtimestamp,?,null,null,'','')";
 	 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 	 
 		pstm.setString(1, actuacio.getReferencia());
 		pstm.setString(2, actuacio.getIdIncidencia());
 		pstm.setString(3, actuacio.getDescripcio());
-		pstm.setString(4, actuacio.getIdCentre());
+		pstm.setString(4, actuacio.getCentre().getIdCentre());
 		pstm.setInt(5, actuacio.getIdUsuariCreacio());
 		pstm.setString(6, "Creació");		
 		
@@ -83,7 +84,7 @@ public class ActuacioCore {
 			Actuacio actuacio = initActuacio(conn, rs, null); 
 			return actuacio;
 		}
-		return null;
+		return new Actuacio();
 	}
 	
 	public static Resultat topAcuacions(Connection conn) throws SQLException {
@@ -110,8 +111,7 @@ public class ActuacioCore {
 	public static Resultat searchActuacions(Connection conn, String idCentre, String estat, Date dataIni, Date dataFi) throws SQLException {
 		String sql = "SELECT " + SQL_CAMPS
 					+ " FROM public.tbl_actuacio";					
-		PreparedStatement pstm;
-		System.out.println("idCentre: " + idCentre + " / estat: " + estat);
+		PreparedStatement pstm;		
 		boolean primeraCondicio = true;
 		if (dataIni != null) {
 			if (primeraCondicio) {
@@ -166,7 +166,6 @@ public class ActuacioCore {
 			pstm.setString(contVars, idCentre);
 			contVars += 1;
 		}				
-		System.out.println(pstm.toString());
 		ResultSet rs = pstm.executeQuery();
 		Resultat result = new Resultat();
 		List<Actuacio> list = new ArrayList<Actuacio>();
@@ -180,7 +179,7 @@ public class ActuacioCore {
 		return result;
 	}
 	
-	public static List<Actuacio> searchActuacionsList(Connection conn, String idCentre, String estat, Date dataPeticioIni, Date dataPeticioFi, String tipus, Date dataExecucioIni, Date dataExecucioFi) throws SQLException {
+	public static List<Actuacio> searchActuacionsList(Connection conn, String idCentre, String estat, Date dataPeticioIni, Date dataPeticioFi, String tipus, Date dataExecucioIni, Date dataExecucioFi) throws SQLException, NamingException {
 		String sql = "SELECT DISTINCT a.id AS idactuacio, a.descripcio AS descripcio, i.expcontratacio AS expcontratacio"
 				+ 	" FROM public.tbl_actuacio a LEFT JOIN public.tbl_informeactuacio i ON a.id = i.idactuacio"
 				+ 	"							 LEFT JOIN public.tbl_expedient e ON e.expcontratacio = i.expcontratacio"
@@ -252,7 +251,6 @@ public class ActuacioCore {
 			pstm.setString(contVars, tipus);
 			contVars += 1;
 		}		
-		System.out.println(pstm.toString());
 		ResultSet rs = pstm.executeQuery();		
 		List<Actuacio> list = new ArrayList<Actuacio>();
 		while (rs.next()) {			
@@ -260,7 +258,7 @@ public class ActuacioCore {
 			actuacio.setReferencia(rs.getString("idactuacio"));
 			actuacio.setDescripcio(rs.getString("descripcio"));
 			InformeActuacio informe = new InformeActuacio();
-			informe.setExpcontratacio(rs.getString("expcontratacio"));
+			informe.setExpcontratacio(ExpedientCore.findExpedient(conn, rs.getString("expcontratacio")));
 			actuacio.setInformePrevi(informe);
 			list.add(actuacio);
 		}
@@ -298,23 +296,22 @@ public class ActuacioCore {
 		pstm.setString(1, idActuacio);	
 		ResultSet rs = pstm.executeQuery();
 		while (rs.next()) {
-			refExt += rs.getString("expcontratacio");
+			refExt += rs.getString("expcontratacio") + " // ";
 		}
 		return refExt;
 	}
 	
 	public static String getNewCode(Connection conn) throws SQLException {		
 		String newCode = "1";
-		
-		String sql = "SELECT id, datacre"
-					+ " FROM public.tbl_actuacio"
-					+ " WHERE id like '%ACT%'"
-					+ " ORDER BY datacre DESC, id DESC LIMIT 1;";	 
-		PreparedStatement pstm = conn.prepareStatement(sql);
-		ResultSet rs = pstm.executeQuery();
 		Calendar now = Calendar.getInstance();
 		int year = now.get(Calendar.YEAR);
 		String yearInString = String.valueOf(year);
+		String sql = "SELECT id, datacre"
+					+ " FROM public.tbl_actuacio"
+					+ " WHERE id like '%" + yearInString + "-ACT%'"
+					+ " ORDER BY datacre DESC, id DESC LIMIT 1;";	 
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		ResultSet rs = pstm.executeQuery();		
 		String prefix = "ACT";
 		if (rs.next()) { //Codis nous
 			String actualCode = rs.getString("id");			
@@ -341,14 +338,15 @@ public class ActuacioCore {
 		pstm.executeUpdate();
 	}
 	
-	public static void modificarActuacio(Connection conn, String idActuacio, String descripcio) throws SQLException {
+	public static void modificarActuacio(Connection conn, String idActuacio, String descripcio, String notes) throws SQLException {
 		String sql = "UPDATE public.tbl_actuacio"
-				+ " SET descripcio=?"
+				+ " SET descripcio=?, notes=?"
 				+ " WHERE id=?;";
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		pstm = conn.prepareStatement(sql);
 		pstm.setString(1, descripcio);
-		pstm.setString(2, idActuacio);
+		pstm.setString(2, notes);
+		pstm.setString(3, idActuacio);
 		pstm.executeUpdate();
 	}
 	
@@ -363,6 +361,16 @@ public class ActuacioCore {
 		pstm.executeUpdate();
 	}
 	
+	public static void eliminarAprovacioPA(Connection conn, String referencia) throws SQLException {
+		String sql = "UPDATE public.tbl_actuacio"
+				+ " SET dataaprovarpa=null, usuaprovarpa=null, darreramodificacio='', datamodificacio=localtimestamp"
+				+ " WHERE id=?;";
+		PreparedStatement pstm = conn.prepareStatement(sql);	 
+		pstm = conn.prepareStatement(sql);
+		pstm.setString(1, referencia);
+		pstm.executeUpdate();
+	}
+	
 	public static void aprovar(Connection conn, String referencia, int idUsuari) throws SQLException {
 		String sql = "UPDATE public.tbl_actuacio"
 					+ " SET dataaprovacio=localtimestamp, usuaprovacio=?, darreramodificacio='aprovar actuació', datamodificacio=localtimestamp"
@@ -374,13 +382,23 @@ public class ActuacioCore {
 		pstm.executeUpdate();
 	}
 	
-	public static void tancar(Connection conn, String referencia,  int idUsuari) throws SQLException {
+	public static void tancar(Connection conn, String referencia, String motiu,  int idUsuari) throws SQLException {
 		String sql = "UPDATE public.tbl_actuacio"
-					+ " SET datatancament=localtimestamp, usutancament=?, darreramodificacio='tancar actuació', datamodificacio=localtimestamp"
+					+ " SET datatancament=localtimestamp, usutancament=?, darreramodificacio='tancar actuació', datamodificacio=localtimestamp, motiutancament=?"
 					+ " WHERE id=?;";
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		pstm.setInt(1, idUsuari);
-		pstm.setString(2, referencia);
+		pstm.setString(2, motiu);
+		pstm.setString(3, referencia);
+		pstm.executeUpdate();
+	}
+	
+	public static void obrir(Connection conn, String referencia) throws SQLException {
+		String sql = "UPDATE public.tbl_actuacio"
+					+ " SET datatancament=null, usutancament=null, darreramodificacio='reobrir actuació', datamodificacio=localtimestamp, motiutancament=null"
+					+ " WHERE id=?;";
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setString(1, referencia);
 		pstm.executeUpdate();
 	}
 	

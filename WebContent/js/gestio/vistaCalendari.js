@@ -1,4 +1,12 @@
 $(document).ready(function() {
+	
+	if ($('#departamentSeleccionat').val() != '') {		  		
+  		$('#departament option[value="' + $('#departamentSeleccionat').val() + '"]').attr('selected', 'selected');
+	}
+	if ($('#departament').size() > 0) {
+		  $('#departament').selectpicker('refresh');
+	}
+	
 	$('.canviarSetmana').on('click', function() {
 		if ($(this).hasClass('seguent')) {
 			$('.setmana').addClass('hidden');
@@ -23,6 +31,26 @@ $(document).ready(function() {
 		        url: "DeleteReservaVehicle",
 		        dataType: "json",
 		        data: {"any": $(this).data('any'), "setmana": $(this).data('setmana'), "dia": $(this).data('dia'), "vehicle": $(this).data('vehicle'), "idusuari": $(this).data('idusuari')},
+		        //if received a response from the server
+		        success: function( data, textStatus, jqXHR) {
+		            //our country code was correct so we have some information to display
+		        	location.reload();      
+		        },        
+		        //If there was no resonse from the server
+		        error: function(jqXHR, textStatus, errorThrown){
+		             console.log("Something really bad happened " + jqXHR.responseText);
+		        }  
+		    });
+		}		
+	});
+	
+	$('.deleteReservaVacances').on('click', function() {
+		if(confirm("Segur que voleu eliminar aquests dies?")) {
+			$.ajax({
+		        type: "POST",
+		        url: "DeleteReservaVacances",
+		        dataType: "json",
+		        data: {"idsolicitud": $(this).data('idsolicitud')},
 		        //if received a response from the server
 		        success: function( data, textStatus, jqXHR) {
 		            //our country code was correct so we have some information to display

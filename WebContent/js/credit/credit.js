@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	$('#import').on('keyup', function(){
-		var vec = $('#import').val().replace(',','.');
-		if ($.isNumeric(vec)) {			
+		var pbase = $('#import').val().replace(',','.');
+		if ($.isNumeric(pbase)) {			
 			
 		} else {
 			$('#import').val('');

@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -55,6 +56,9 @@ public class DoAddOfertaServlet extends HttpServlet {
 	    String idProposta = multipartParams.getParametres().get("idProposta");
 	    String idInforme = multipartParams.getParametres().get("idInformePrevi");	   
 	    String errorString = null;
+	    
+	    String afegirOfertaExpedient = multipartParams.getParametres().get("afegirOfertaExpedient");
+	    
 	    //Agafam totes les ofertes
 	    String cifEmpresa = multipartParams.getParametres().get("llistaEmpreses");	    	    
 	    double plic = Double.parseDouble(multipartParams.getParametres().get("oferta").replace(",", "."));
@@ -65,9 +69,9 @@ public class DoAddOfertaServlet extends HttpServlet {
    		oferta.setCifEmpresa(cifEmpresa);
    		oferta.setPlic(plic);
    		DecimalFormat df = new DecimalFormat("#.##");  
-   		double vec = plic / 1.21;
-   		oferta.setVec(Double.valueOf(df.format(vec).replace(",",".")));
-   		oferta.setIva(Double.valueOf(df.format(vec * 0.21).replace(",",".")));			   		
+   		double pbase = plic / 1.21;
+   		oferta.setPbase(Double.valueOf(df.format(pbase).replace(",",".")));
+   		oferta.setIva(Double.valueOf(df.format(pbase * 0.21).replace(",",".")));			   		
    		oferta.setSeleccionada(false);
    		oferta.setDescalificada(false);
 		
@@ -78,11 +82,21 @@ public class DoAddOfertaServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 		//Guardar adjunts
-	   	OfertaCore.guardarFitxer(multipartParams.getFitxers(), idIncidencia, idActuacio, idProposta, cifEmpresa);
+	   	try {
+			OfertaCore.guardarFitxer(multipartParams.getFitxers(), idIncidencia, idActuacio, idInforme, cifEmpresa, "Oferta");
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 			    	
 	   	// Store infomation to request attribute, before forward to views.
 	   	request.setAttribute("errorString", errorString);
-	  	response.sendRedirect(request.getContextPath() + "/tasca?id=" + idTasca + "#afegirOfertes");		
+	   	if (afegirOfertaExpedient != null) {
+	   		String refExp = multipartParams.getParametres().get("expedient");	   
+	   		response.sendRedirect(request.getContextPath() + "/editLicitacio?ref=" + refExp);
+	   	} else {
+	   		response.sendRedirect(request.getContextPath() + "/tasca?id=" + idTasca + "#afegirOfertes");
+		}
 	}
 
 	/**

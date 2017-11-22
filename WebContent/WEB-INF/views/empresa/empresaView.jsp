@@ -41,7 +41,19 @@
                	 </div>
                 <!-- /.row -->
                 <div class="col-md-12 panel-group" id="accordion">
-	                <c:if test="${not empty empresa}">        
+	                <c:if test="${not empty empresa}">   
+	                	<div class="row">
+		                	<div class="col-md-12">
+		               			<p style="color: red;">
+									<c:if test="${!empresa.activa}">
+										Aquesta empresa está extingida.
+										<c:if test="${empresa.succesora.name.isEmpty()}">
+											<br/>La seva succesora és: ${empresa.succesora.name} (${empresa.succesora.cif})
+										</c:if>
+									</c:if>
+								</p>
+		               		</div>
+		               	 </div>     
 	                	<div class="panel panel-default">
 	            		  	<div class="panel-heading">
 						    	<h4 class="panel-title">
@@ -94,12 +106,14 @@
 					                    	</c:if> 		                                                	
 					                    </div>		            	
 				                	</div>				                	
-				                	<c:if test="${empresa.documentEscritura != null}">
-					                	<div class="row">
-					                		<label class="col-xs-offset-1 col-xs-2 control-label">Escritura:</label>
-					                		<a target="_blanck" href="downloadFichero?ruta=${empresa.documentEscritura.getEncodedRuta()}">${empresa.documentEscritura.nom}</a>
-					                	</div>
-					                </c:if> 
+				                	<div class="row">
+				                		<label class="col-xs-offset-1 col-xs-2 control-label">Escritura:</label>
+				                		<c:forEach items="${empresa.documentsEscrituraList}" var="arxiu" >
+						            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.nom}</a>
+											<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
+											<br>
+										</c:forEach>	
+				                	</div>
 		                		</div>
 		                	</div>
 		                </div>
@@ -129,7 +143,8 @@
 						                                <th>N. protocol</th>
 						                                <th>Data</th>		
 						                                <th>Validacio</th>
-								                        <th>Organ validació</th>				                                        							                                       
+								                        <th>Organ validació</th>	
+								                        <th>Documentació</th>			                                        							                                       
 						                            </tr>
 						                        </thead>
 						                        <tbody>
@@ -144,6 +159,7 @@
 										            	<td>${administrador.getDataModificacioString()}</td>
 										            	<td>${administrador.getDataValidacioString()}</td>
 												        <td>${administrador.entitatValidacio}</td>
+												        <td><a target="_blanck" href="downloadFichero?ruta=${administrador.documentAdministrador.getEncodedRuta()}">${administrador.documentAdministrador.nom}</a></td>
 										            </tr>
 									       		</c:forEach>						                                	                              	
 						                        </tbody>
@@ -160,115 +176,111 @@
 							        	<a data-toggle="collapse" data-parent="#accordion" href="#solv">Solvència</a>
 							      	</h4>
 							    </div>
-							    <div id="solv" class="panel-collapse collapse">					    	
-						      		<div class="panel-body">        	               
-					                	<h4 class="margin_bottom30">Solvència econòmica</h4>
-					                	<c:if test="${empresa.solEconomica != null}">
-						                	<div class="row">
-						                		<label class="col-xs-2 control-label">Document:</label>
-						                		<a target="_blanck" href="downloadFichero?ruta=${empresa.solEconomica.getEncodedRuta()}">${empresa.solEconomica.nom}</a>
-						                	</div>
-						                	<div class="row">
+							    <div id="solv" class="panel-collapse collapse">
+							     	<c:if test="${empresa.solEconomica.getEncodedRuta() != '' || empresa.solTecnica.getEncodedRuta() != ''}">					    	
+							      		<div class="panel-body">        	               
+						                	<h4 class="margin_bottom30">Solvència econòmica</h4>
+						                	<c:if test="${empresa.solEconomica != null}">
+							                	<div class="row">
+							                		<label class="col-xs-2 control-label">Document:</label>
+							                		<a target="_blanck" href="downloadFichero?ruta=${empresa.solEconomica.getEncodedRuta()}">${empresa.solEconomica.nom}</a>
+							                	</div>
+							                	<div class="row">
+							                		<div class="col-md-10">
+							                			<p>
+								                        	<label>Exercici:</label> ${empresa.getExerciciEconomicString()}
+								                        </p> 	                		
+						                        	</div>
+							                	</div>
+							                	<div class="row">
+							                		<div class="col-md-10">
+							                			<p>
+								                        	<label>Dipositat en Registre Mercantil amb data:</label> ${empresa.getRegistreMercantilDataString()}
+								                        </p> 	                		
+						                        	</div>					                        	
+							                	</div>
+							                	<div class="row">
+							                		<div class="col-md-10">
+							                			<p>
+								                        	<label>Ràtio A/P:</label> ${empresa.getRatioAP()}
+								                        </p> 	                		
+						                        	</div>
+							                	</div>
+						                	</c:if>
+						                	<h4 class="margin_bottom30">Solvència Tècnica</h4>
+						                	<c:if test="${empresa.solTecnica != null}">
+							                	<div class="row">
+							                		<label class="col-xs-2 control-label">Document:</label>
+							                		<a target="_blanck" href="downloadFichero?ruta=${empresa.solTecnica.getEncodedRuta()}">${empresa.solTecnica.nom}</a>
+							                	</div>
+							                </c:if>
+							            </div>
+							        </c:if>
+						            <c:if test="${empresa.classificacioFileROLECE.getEncodedRuta() != '' || empresa.classificacioFileJCCaib.getEncodedRuta() != '' || empresa.classificacioFileJCA.getEncodedRuta() != ''}">						            
+							            <div class="panel-body"> 
+											<h4 class="margin_bottom30">Classificació</h4>  
+							      			<div class="row">
 						                		<div class="col-md-10">
 						                			<p>
-							                        	<label>Exercici:</label> ${empresa.getExerciciEconomicString()}
+							                        	<label>Darrera data vigència ROLECE:</label> ${empresa.getDataVigenciaClassificacioROLECEString()}
 							                        </p> 	                		
 					                        	</div>
 						                	</div>
 						                	<div class="row">
-						                		<div class="col-md-10">
-						                			<p>
-							                        	<label>Dipositat en Registre Mercantil amb data:</label> ${empresa.getRegistreMercantilDataString()}
-							                        </p> 	                		
-					                        	</div>					                        	
-						                	</div>
+						                		<label class="col-xs-2 control-label">Document:</label>
+						                		<a target="_blanck" href="downloadFichero?ruta=${empresa.classificacioFileROLECE.getEncodedRuta()}">${empresa.classificacioFileROLECE.nom}</a>
+						                	</div> 
+						                	</br>
 						                	<div class="row">
 						                		<div class="col-md-10">
 						                			<p>
-							                        	<label>Ràtio A/P:</label> ${empresa.getRatioAP()}
+							                        	<label>Darrera data vigència JCCaib:</label> ${empresa.getDataVigenciaClassificacioJCCaibString()}
 							                        </p> 	                		
 					                        	</div>
 						                	</div>
-					                	</c:if>
-					                	<h4 class="margin_bottom30">Solvència Tècnica</h4>
-					                	<c:if test="${empresa.solTecnica != null}">
 						                	<div class="row">
 						                		<label class="col-xs-2 control-label">Document:</label>
-						                		<a target="_blanck" href="downloadFichero?ruta=${empresa.solTecnica.getEncodedRuta()}">${empresa.solTecnica.nom}</a>
+						                		<a target="_blanck" href="downloadFichero?ruta=${empresa.classificacioFileJCCaib.getEncodedRuta()}">${empresa.classificacioFileJCCaib.nom}</a>
+						                	</div> 
+						                	</br>
+						                	<div class="row">
+						                		<div class="col-md-10">
+						                			<p>
+							                        	<label>Darrera data vigència JCA:</label> ${empresa.getDataVigenciaClassificacioJCAString()}
+							                        </p> 	                		
+					                        	</div>
 						                	</div>
-						                </c:if>
-						            </div>
+						                	<div class="row">
+						                		<label class="col-xs-2 control-label">Document:</label>
+						                		<a target="_blanck" href="downloadFichero?ruta=${empresa.classificacioFileJCA.getEncodedRuta()}">${empresa.classificacioFileJCA.nom}</a>
+						                	</div>           		
+						                      <%--   <div class="col-xs-offset-2 col-md-7">	
+													<label>Classificació</label>							                        
+									                <div class="table-responsive">							                        
+									                    <table class="table table-striped table-bordered filerTable" id="classificacioTable">
+									                        <thead>
+									                            <tr>
+									                                <th>Grup</th>
+									                                <th>Subgrup</th>
+									                                <th>Categoria</th>				                                        							                                       
+									                            </tr>
+									                        </thead>
+									                        <tbody>	
+										                        <c:forEach items="${empresa.getClassificacio()}" var="classificacio" >
+														          	<tr>							          	
+														           		<td>${classificacio.grup}</td>
+														            	<td>${classificacio.subGrup}</td>
+														            	<td>${classificacio.categoria}</td>
+														            </tr>
+													       		</c:forEach>							                                	                              	
+									                        </tbody>
+									                    </table>
+									                </div>
+									           	</div>	 --%>		
+						                </div>
+					                </c:if>
 						        </div>
 						    </div>
-						    <div class="panel panel-default">      
-							    <div class="panel-heading">
-							    	<h4 class="panel-title">
-							        	<a data-toggle="collapse" data-parent="#accordion" href="#classificacio">Classificació</a>
-							      	</h4>
-							    </div>
-							    <div id="classificacio" class="panel-collapse collapse">					    	
-						      		<div class="panel-body">    
-						      			<div class="row">
-					                		<div class="col-md-10">
-					                			<p>
-						                        	<label>Darrera data vigència ROLECE:</label> ${empresa.getDataVigenciaClassificacioROLECEString()}
-						                        </p> 	                		
-				                        	</div>
-					                	</div>
-					                	<div class="row">
-					                		<label class="col-xs-2 control-label">Document:</label>
-					                		<a target="_blanck" href="downloadFichero?ruta=${empresa.classificacioFileROLECE.getEncodedRuta()}">${empresa.classificacioFileROLECE.nom}</a>
-					                	</div> 
-					                	</br>
-					                	<div class="row">
-					                		<div class="col-md-10">
-					                			<p>
-						                        	<label>Darrera data vigència JCCaib:</label> ${empresa.getDataVigenciaClassificacioJCCaibString()}
-						                        </p> 	                		
-				                        	</div>
-					                	</div>
-					                	<div class="row">
-					                		<label class="col-xs-2 control-label">Document:</label>
-					                		<a target="_blanck" href="downloadFichero?ruta=${empresa.classificacioFileJCCaib.getEncodedRuta()}">${empresa.classificacioFileJCCaib.nom}</a>
-					                	</div> 
-					                	</br>
-					                	<div class="row">
-					                		<div class="col-md-10">
-					                			<p>
-						                        	<label>Darrera data vigència JCA:</label> ${empresa.getDataVigenciaClassificacioJCAString()}
-						                        </p> 	                		
-				                        	</div>
-					                	</div>
-					                	<div class="row">
-					                		<label class="col-xs-2 control-label">Document:</label>
-					                		<a target="_blanck" href="downloadFichero?ruta=${empresa.classificacioFileJCA.getEncodedRuta()}">${empresa.classificacioFileJCA.nom}</a>
-					                	</div>           		
-					                      <%--   <div class="col-xs-offset-2 col-md-7">	
-												<label>Classificació</label>							                        
-								                <div class="table-responsive">							                        
-								                    <table class="table table-striped table-bordered filerTable" id="classificacioTable">
-								                        <thead>
-								                            <tr>
-								                                <th>Grup</th>
-								                                <th>Subgrup</th>
-								                                <th>Categoria</th>				                                        							                                       
-								                            </tr>
-								                        </thead>
-								                        <tbody>	
-									                        <c:forEach items="${empresa.getClassificacio()}" var="classificacio" >
-													          	<tr>							          	
-													           		<td>${classificacio.grup}</td>
-													            	<td>${classificacio.subGrup}</td>
-													            	<td>${classificacio.categoria}</td>
-													            </tr>
-												       		</c:forEach>							                                	                              	
-								                        </tbody>
-								                    </table>
-								                </div>
-								           	</div>	 --%>		
-					                </div>
-					            </div>
-					        </div>
 					        <div class="panel panel-default">      
 							    <div class="panel-heading">
 							    	<h4 class="panel-title">
@@ -283,7 +295,7 @@
 					                				<div class="col-xs-offset-1 col-md-10">
 						                				<div class="checkbox">
 									                        <label>
-									                          	<input name="acreditacio1" type="checkbox" ${empresa.acreditacio1 ? 'checked' : ''} disabled> Certificat positiu de l'Agència Estatal d'Administració Tributària, 
+									                          	Certificat positiu de l'Agència Estatal d'Administració Tributària, 
 									                          	d'estar al corrent en el comliment de les seves obligacions tributàries amb l'Estat.
 									                        </label>
 									                	</div>
@@ -307,7 +319,7 @@
 					                				<div class="col-xs-offset-1 col-md-10">
 						                				<div class="checkbox">
 									                        <label>
-									                          	<input name="acreditacio2" type="checkbox" ${empresa.acreditacio2 ? 'checked' : ''} disabled> Certificat de la Tresoreria General de la Seguretat Social del Ministeri
+									                          	Certificat de la Tresoreria General de la Seguretat Social del Ministeri
 									                          	d'Ocupació i Seguretat Social, de què l'empresa està al corren en el compliment de les obligacions
 									                          	de pagamanet de la Seguretat Social.
 									                        </label>
@@ -330,7 +342,7 @@
 					                				<div class="col-xs-offset-1 col-md-10">
 						                				<div class="checkbox">
 									                        <label>
-									                          	<input name="acreditacio3" type="checkbox" ${empresa.acreditacio3 ? 'checked' : ''} disabled> Certificat de la secretària de la Junta Consultiva de Contratació Administrativa
+									                          	Certificat de la secretària de la Junta Consultiva de Contratació Administrativa
 									                          	de què l'empresa no té deutes de naturalesa tributària amb la Comunitat Autònoma de les Illes Balears, en
 									                          	via de constrenyiment.
 									                        </label>
@@ -417,7 +429,7 @@
 													          	<tr class=${oferta.isSeleccionada() ? "success" : "warning"}>								          	
 													           		<td><a href="actuacionsDetalls?ref=${oferta.idActuacio}">${oferta.idActuacio}</a></td>
 													            	<td>${oferta.actuacio.descripcio}</td>
-													            	<td>${oferta.actuacio.nomCentre}</td>
+													            	<td>${oferta.actuacio.centre.getNomComplet()}</td>
 													            	<td>${oferta.getPlicFormat()}</td>
 													            	<td>${oferta.getDataAprovacioString()}</td>
 													            </tr>
@@ -448,14 +460,20 @@
 				                	</div>
 			                	</div>
 		                	</div>
-	                	</div>
-			                	
+	                	</div>			                	
 	                	<div class="row">
-	               			<c:if test="${canModificar}">
-								<div class="col-md-offset-9 col-md-2 margin_top30">
-									<a href="editEmpresa?cif=${empresa.cif}" class="btn btn-primary" role="button">Modificar</a>
-								</div>
-							</c:if>
+	                		<div class="col-md-offset-7 col-md-2 margin_top30">
+		               			<c:if test="${canModificar}">
+									<a href="editEmpresa?cif=${empresa.cif}" class="btn btn-primary" role="button">Modificar</a>									
+								</c:if>
+							</div>
+							<div class="col-md-2 margin_top30">
+								<form class="form-horizontal" target="_blank" method="POST" action="CrearDocument" onsubmit="setTimeout(function () { window.location.reload(); }, 30)">
+									<input type="hidden" id="cif" name=cif value="${empresa.cif}">
+									<input type="hidden" id="tipus" name=tipus value="empresa">
+									<input class="btn btn-warning" type="submit" name="vistiplau" value="Generar informe empresa">
+								</form>
+							</div>
 	                	</div>                	
 	                </c:if>
                 <!-- /.row -->     

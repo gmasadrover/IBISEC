@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -47,8 +48,7 @@ public class DoCreateUTEServlet extends HttpServlet {
 		for(int i=0; i<paramValues.length; i++) {
 			try {
 				empreses.add(EmpresaCore.findEmpresa(conn, paramValues[i]));
-			} catch (SQLException e) {
-				System.out.println(e.getMessage());
+			} catch (SQLException | NamingException e) {
 				errorString = e.getMessage();
 				e.printStackTrace();
 			}	    	

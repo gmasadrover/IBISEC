@@ -39,7 +39,8 @@
 							<input type="hidden" id="tipusSelected" value="${tipusFilter}" />
 							<input type="hidden" id="contracteSelected" value="${contracteFilter}" />
 							<input type="hidden" id="estatSelected" value="${estatFilter}" />
-							<div class="col-md-offset-1  col-md-3">
+							<input type="hidden" id="anySelected" value="${anyFilter}"/>
+							<div class="col-md-2">
 							    <div class="col-md-12">
 							      <label>Tipus expedient</label>
 							      <div>
@@ -53,7 +54,7 @@
 		                             </div>
 							    </div>						    
 						  	</div>	
-						  	<div class="col-md-3">
+						  	<div class="col-md-2">
 							    <div class="col-md-12">
 							      <label>Tipus contracte</label>
 							      <div>
@@ -65,7 +66,7 @@
 		                             </div>
 							    </div>						    
 						  	</div>	
-						  	<div class="col-md-2">
+						  	<div class="col-md-3">
 							    <div class="col-md-12">
 							      <label>Estat</label>
 							      <div>
@@ -84,10 +85,23 @@
 							      </div>
 							    </div>
 						  	</div>
+						  	<div class="col-md-2">
+							    <div class="col-md-12">
+							      <label>Any</label>
+							      <div>
+		                                <select class="form-control selectpicker" name="any" id="anyList">
+		                                	<option value="-1">Tots</option>
+		                                	<c:forEach items="${anysList}" var="any" >
+		                                		<option value="${any}">${any}</option>
+		                                	</c:forEach>
+		                                </select>
+		                             </div>
+							    </div>						    
+						  	</div>	
 						</div>	
 						<div class="form-group">	
-						  	<div class="col-md-offset-5 col-md-2">
-						    	<input type="submit" class="btn btn-primary" name="filtrar" value="Aplicar Filtres">
+						  	<div class="col-md-offset-9 col-md-3">
+						    	<input type="submit" class="btn btn-primary loadingButton"  data-msg="Aplicant filtres..." name="filtrar" value="Aplicar Filtres">
 							</div>
 						</div>					
 					</form>
@@ -106,12 +120,17 @@
                                         <th>Descripció</th>
                                         <th>Publicat BOIB</th>
                                         <th>Publicat BOIB</th>
+                                        <th>Preu licitació</th>
                                         <th>Adjudicació</th>
                                         <th>Adjudicació</th>
+                                        <th>Adjudicatari</th>
+                                        <th>Preu adjudicació</th>
                                         <th>Firma</th>
                                         <th>Firma</th>
                                         <th>Inici d'obra</th>
                                         <th>Inici d'obra</th>
+                                        <th>Data recepció</th>
+                                        <th>Data recepció</th>
                                         <th>Fi garantia</th>
                                         <th>Fi garantia</th>
                                         <th>Liquidació</th>
@@ -119,24 +138,29 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                	<c:forEach items="${expedientsList}" var="expedient" >
+                                	<c:forEach items="${informesList}" var="informe" >
 							          	<tr>							          	
-							           		<td><a href="expedient?ref=${expedient.expContratacio}">${expedient.expContratacio}</a></td>
-							           		<td>${expedient.dataCreacio}</td>
-							            	<td>${expedient.actuacio.nomCentre}</td>
-							            	<td>${expedient.descripcio}</td>
-							            	<td>${expedient.getDataPublicacioBOIBString()}</td>
-							            	<td>${expedient.dataPublicacioBOIB}</td>
-							            	<td>${expedient.getDataAdjudicacioString()}</td>
-							            	<td>${expedient.dataAdjudicacio}</td>
-							            	<td>${expedient.getDataFirmaString()}</td>
-							            	<td>${expedient.dataFormalitzacioContracte}</td>
-							            	<td>${expedient.getDataIniciObratring()}</td>
-							            	<td>${expedient.dataIniciExecucio}</td>
-							            	<td>${expedient.getDataFiGarantiaString()}</td>
-							            	<td>${expedient.dataRetornGarantia}</td>
-							            	<td>${expedient.getDataLiquidacioString()}</td>
-							            	<td>${expedient.dataLiquidacio}</td>
+							           		<td><a href="expedient?ref=${informe.expcontratacio.expContratacio}" class="loadingButton"  data-msg="obrint expedient...">${informe.expcontratacio.expContratacio}</a></td>
+							           		<td>${informe.expcontratacio.dataCreacio}</td>
+							            	<td>${informe.actuacio.centre.getNomComplet()}</td>
+							            	<td>${informe.getPropostaInformeSeleccionada().objecte}</td>
+							            	<td>${informe.expcontratacio.getDataPublicacioBOIBString()}</td>
+							            	<td>${informe.expcontratacio.dataPublicacioBOIB}</td>
+							            	<td>${informe.getPropostaInformeSeleccionada().getPlicFormat()}</td>
+							            	<td>${informe.expcontratacio.getDataAdjudicacioString()}</td>
+							            	<td>${informe.expcontratacio.dataAdjudicacio}</td>
+							            	<td>${informe.getOfertaSeleccionada().nomEmpresa}</td>
+							            	<td>${informe.getOfertaSeleccionada().getPlicFormat()}</td>
+							            	<td>${informe.expcontratacio.getDataFirmaString()}</td>
+							            	<td>${informe.expcontratacio.dataFormalitzacioContracte}</td>
+							            	<td>${informe.expcontratacio.getDataIniciObratring()}</td>
+							            	<td>${informe.expcontratacio.dataIniciExecucio}</td>
+							            	<td>${informe.expcontratacio.getDataRecepcioString()}</td>
+							            	<td>${informe.expcontratacio.dataRecepcio}</td>
+							            	<td>${informe.expcontratacio.getDataRetornGarantiaString()}</td>
+							            	<td>${informe.expcontratacio.dataRetornGarantia}</td>
+							            	<td>${informe.expcontratacio.getDataLiquidacioString()}</td>
+							            	<td>${informe.expcontratacio.dataLiquidacio}</td>
 							          	</tr>
 							       	</c:forEach>                                	
                                 </tbody>

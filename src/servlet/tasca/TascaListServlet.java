@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -55,6 +56,7 @@ public class TascaListServlet extends HttpServlet {
 	        String[] usuarisValues = null; 	  
 	        String usuarisSeleccionats = String.valueOf(usuari.getIdUsuari());
 	        boolean veureTotes = usuari.getDepartament().equals("gerencia");
+	        boolean canCreateTasca = UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_crear);
 	   	    try {
 	        	if (filtrar != null) {
 	        		usuarisValues = request.getParameterValues("idUsuari");
@@ -81,13 +83,15 @@ public class TascaListServlet extends HttpServlet {
 	        	llistaUsuaris =  UsuariCore.findUsuarisByRol(conn, "");
 	        	listSeguiment.addAll(TascaCore.llistaTasquesSeguiment(conn, usuari.getIdUsuari()));
 	        	seguimentActuacionsList.addAll(ActuacioCore.llistaActuacionsSeguiment(conn, usuari.getIdUsuari()));
-	        } catch (SQLException e) {
+	        } catch (SQLException | NumberFormatException | NamingException e) {
 	            e.printStackTrace();
 	            errorString = e.getMessage();
 	        }	        
 	        
 	        // Store info in request attribute, before forward to views
 	        request.setAttribute("veureTotes", veureTotes);
+	        request.setAttribute("canViewPersonal", UsuariCore.hasPermision(conn, usuari, SectionPage.personal));
+	        request.setAttribute("canCreateTasca", canCreateTasca);
 	        request.setAttribute("llistaUsuaris", llistaUsuaris);
 	        request.setAttribute("errorString", errorString);
 	        request.setAttribute("tasquesList", list);  
@@ -98,10 +102,10 @@ public class TascaListServlet extends HttpServlet {
 		    request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "Tasques"));
 		
 		    
-		    InetAddress IP=InetAddress.getLocalHost();
-		    LoggerCore.addLog("IP remote: " + request.getRemoteAddr(), usuari.getUsuari());
-		    LoggerCore.addLog("IP of my system is := "+IP.getHostAddress(), usuari.getUsuari());
-		    LoggerCore.addLog("USER: " + System.getProperty("user.name"), usuari.getUsuari());
+		    //InetAddress IP=InetAddress.getLocalHost();
+		    //LoggerCore.addLog("IP remote: " + request.getRemoteAddr(), usuari.getUsuari());
+		    //LoggerCore.addLog("IP of my system is := "+IP.getHostAddress(), usuari.getUsuari());
+		    //LoggerCore.addLog("USER: " + System.getProperty("user.name"), usuari.getUsuari());
 	        // Forward to /WEB-INF/views/productListView.jsp
 	        RequestDispatcher dispatcher = request.getServletContext()
 					.getRequestDispatcher("/WEB-INF/views/tasca/tascaListView.jsp");

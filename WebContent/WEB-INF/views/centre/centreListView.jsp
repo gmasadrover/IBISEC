@@ -65,7 +65,7 @@
                                 <tbody>
                                 	<c:forEach items="${centresList}" var="centre" >
 							          	<tr>							          	
-							           		<td><a href="centreDetalls?codi=${centre.idCentre}">${centre.idCentre}</a></td>
+							           		<td><a href="centreDetalls?codi=${centre.idCentre}" class="loadingButton"  data-msg="obrint centre...">${centre.idCentre}</a></td>
 							            	<td>${centre.getNomComplet()}</td>					            						            	
 							          	</tr>
 							       	</c:forEach>                                	

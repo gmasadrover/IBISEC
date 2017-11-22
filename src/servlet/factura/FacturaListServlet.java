@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -50,53 +51,34 @@ public class FacturaListServlet extends HttpServlet {
 		User usuari = MyUtils.getLoginedUser(request.getSession());
 		if (usuari == null) {
 			response.sendRedirect(request.getContextPath() + "/preLogin");
-		}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.actuacio_list)) {
+		}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.factures_list)) {
     		response.sendRedirect(request.getContextPath() + "/");	
 		} else {
 			List<Factura> list = new ArrayList<Factura>();
 			String errorString = null;
 			String filtrar = request.getParameter("filtrar");
-			String concepte = request.getParameter("concepte");
-			String descAct = request.getParameter("descActuacio");
-			String nombreFact = request.getParameter("nombreFact");
-			String tipoContracte = request.getParameter("tipoContracte");
-			String tipoPD = request.getParameter("tipoPD");
-			List<String> llistaTipoPD = new ArrayList<String>();
+			String estatFactura = request.getParameter("estatFactura");
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			Calendar cal = Calendar.getInstance(); 
 			Date dataFi = cal.getTime();
 			String dataFiString = df.format(dataFi);	 
 			cal.add(Calendar.MONTH, -2);
 			Date dataInici = cal.getTime();
-			String dataIniciString = df.format(dataInici);	
-			Date dataFiIdPD = cal.getTime();
-			String dataFiIdPDString = df.format(dataFiIdPD);	 
-			cal.add(Calendar.YEAR, -2);
-			Date dataIniciIdPD = cal.getTime();
-			String dataIniciIdPDString = df.format(dataIniciIdPD);	
+			String dataIniciString = df.format(dataInici);			
 			try {
-				llistaTipoPD = InformeCore.getTiposPD(conn);
 				if (filtrar != null) {	
 					dataInici = null;
 					dataFi = null;
 					if (!request.getParameter("dataInici").isEmpty()) dataInici = df.parse(request.getParameter("dataInici"));
 					dataIniciString = request.getParameter("dataInici");
 	    			if (!request.getParameter("dataFi").isEmpty()) dataFi = df.parse(request.getParameter("dataFi"));	    			
-	    			dataFiString = request.getParameter("dataFi");
-	    			
-	    			dataIniciIdPD = null;
-					dataFiIdPD = null;
-					if (!request.getParameter("dataIniciIdPD").isEmpty()) dataIniciIdPD = df.parse(request.getParameter("dataIniciIdPD"));
-					dataIniciIdPDString = request.getParameter("dataIniciIdPD");
-	    			if (!request.getParameter("dataFiIdPD").isEmpty()) dataFiIdPD = df.parse(request.getParameter("dataFiIdPD"));	    			
-	    			dataFiIdPDString = request.getParameter("dataFiIdPD");
-					
-	    			list = FacturaCore.advancedSearchFactures(conn, dataInici, dataFi, dataIniciIdPD, dataFiIdPD, concepte, descAct, nombreFact, tipoContracte, tipoPD);
+	    			dataFiString = request.getParameter("dataFi");	    			
+	    			list = FacturaCore.advancedSearchFactures(conn, dataInici, dataFi, estatFactura);
 				} else {
-					list = FacturaCore.advancedSearchFactures(conn, dataInici, dataFi, dataIniciIdPD, dataFiIdPD, concepte, descAct, nombreFact, tipoContracte, tipoPD);
+					list = FacturaCore.advancedSearchFactures(conn, dataInici, dataFi,"-1");
 				}
 				
-			} catch (SQLException | ParseException e) {
+			} catch (SQLException | ParseException | NamingException e) {
 				e.printStackTrace();
 				errorString = e.getMessage();			
 			}
@@ -106,13 +88,7 @@ public class FacturaListServlet extends HttpServlet {
 			request.setAttribute("facturesList", list);
 			request.setAttribute("dataInici", dataIniciString);
 		    request.setAttribute("dataFi", dataFiString);
-		    request.setAttribute("dataIniciIdPD", dataIniciIdPDString);
-		    request.setAttribute("dataFiIdPD", dataFiIdPDString);
-		    request.setAttribute("concepte", concepte);
-		    request.setAttribute("nombreFact", nombreFact);
-		    request.setAttribute("tipoPD", tipoPD);
-		    request.setAttribute("llistaTipoPD", llistaTipoPD);
-		    request.setAttribute("tipoContracte", tipoContracte);
+		    request.setAttribute("estatFactura", estatFactura);
 			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Factures"));
 			// Forward to /WEB-INF/views/homeView.jsp
 			// (Users can not access directly into JSP pages placed in WEB-INF)

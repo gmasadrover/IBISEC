@@ -23,14 +23,62 @@
   </error-page>
   <context-param>
     <param-name>datakey</param-name>
-    <param-value>170720</param-value>
+    <param-value>171122</param-value>
   </context-param>
   <context-param>
     <param-name>importObraMajor</param-name>
     <param-value>50000</param-value>
   </context-param>
   <context-param>
+    <param-name>importServeiMajor</param-name>
+    <param-value>18000</param-value>
+  </context-param>
+  <context-param>
+    <param-name>importSubministramentMajor</param-name>
+    <param-value>18000</param-value>
+  </context-param>
+  <context-param>
     <param-name>idUsuariRecercaPresuposts</param-name>
     <param-value>12</param-value>
   </context-param>
+  <context-param>
+    <param-name>idUsuariRedaccioContracte</param-name>
+    <param-value>12</param-value>
+  </context-param>
+  <context-param>
+    <param-name>idUsuariLlicencies</param-name>
+    <param-value>29</param-value>
+  </context-param>
+  <context-param>
+    <param-name>idUsuariPersonal</param-name>
+    <param-value>5</param-value>
+  </context-param>
+  <context-param>
+    <param-name>diesFestius</param-name>
+    <param-value>#1@1#,#6@1#,#1@3#,#13@4#,#14@4#,#17@4#,#1@5#,#15@8#,#12@10#,#1@11#,#6@12#,#8@12#,#25@12#</param-value>
+  </context-param>
+  <context-param>
+    <param-name>pageName</param-name>
+    <param-value>Intranet IBISEC</param-value>
+  </context-param>
+  <env-entry>
+    <env-entry-name>hostName</env-entry-name>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <env-entry-value>10.215.26.87</env-entry-value>
+  </env-entry>
+  <env-entry>
+    <env-entry-name>dbName</env-entry-name>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <env-entry-value>IBISEC</env-entry-value>
+  </env-entry>
+  <env-entry>
+    <env-entry-name>ruta_base_ok</env-entry-name>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <env-entry-value>E:/NOVA INTRANET</env-entry-value>
+  </env-entry>
+  <env-entry>
+    <env-entry-name>ruta_base</env-entry-name>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <env-entry-value>//sibisec1/usuaris/INTERCANVI D'OBRES/IBISEC/NOVA INTRANET</env-entry-value>
+  </env-entry>
 </web-app>

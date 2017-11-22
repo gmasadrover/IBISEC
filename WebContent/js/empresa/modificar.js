@@ -1,4 +1,53 @@
 $(document).ready(function() {
+	
+	// Variable to store your files
+	var files;
+
+	// Add events
+	$('.fileEscritura').on('change', function (event){
+		// Grab the files and set them to our variable
+		files = event.target.files;
+	});
+	$('.fileAdministrador').on('change', function (event){
+		// Grab the files and set them to our variable
+		files = event.target.files;
+	});
+	
+	$('#uploadEscritura').on('click', function(event){
+		event.stopPropagation(); // Stop stuff happening
+	    event.preventDefault(); // Totally stop stuff happening
+	    // START A LOADING SPINNER HERE
+
+	    // Create a formdata object and add the files
+	    var data = new FormData();
+	    if (files != null) {
+		    $.each(files, function(key, value)
+		    {
+		    	data.append('fileEscritura', value);
+		    });
+	    }
+	    data.append('cif', $(this).data('cif'));
+		$.ajax({
+	        type: "POST",
+	        url: "uploadEscritura",
+	        data: data,
+	        cache: false,
+	        dataType: "json",
+	        processData: false, // Don't process the files
+	        contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+	        
+	        //if received a response from the server
+	        success: function( data, textStatus, jqXHR) {
+	            //our country code was correct so we have some information to display	  
+	        	location.reload();
+	        },        
+	        //If there was no resonse from the server
+	        error: function(jqXHR, textStatus, errorThrown){
+	             console.log("Something really bad happened " + jqXHR.responseText);
+	        }  
+	    });
+	});
+	
 	$('#administradorsTable').dataTable( {
 		 
 		} );
@@ -23,16 +72,7 @@ $(document).ready(function() {
 	    format: " yyyy", // Notice the Extra space at the beginning
 	    viewMode: "years", 
 	    minViewMode: "years"
-	});
-	$('.eliminarSeleccionada').on('click', function(){	
-		var table = $('#administradorsTable').DataTable();
-		$(this).parents('tr').addClass('selected');
-		var option =  table.row('.selected').data()[0] + "#" + table.row('.selected').data()[1] + "#" + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[3] + "#" + table.row('.selected').data()[4] + "#" + table.row('.selected').data()[5] + "#" + table.row('.selected').data()[6] + "#" + table.row('.selected').data()[7] + "#" + table.row('.selected').data()[8];
-		if (table.row('.selected').data() != undefined && $('#llistatAdministradors').val().indexOf(option) >= 0) {
-			$('#llistatAdministradors').val($('#llistatAdministradors').val().replace(option + ";", option + '#eliminar;'));				
-		}
-		table.row('.selected').remove().draw( false );
-	});
+	});	
 	$('.eliminarClassificacioSeleccionada').on('click', function(){
 		var table = $('#classificacioTable').DataTable();
 		$(this).parents('tr').addClass('selected');
@@ -43,33 +83,52 @@ $(document).ready(function() {
 		table.row('.selected').remove().draw( false );
 	});
 	$('#afegirAdmin').on('click', function(){
-		if (! $.isNumeric($('#numProtocol').val())) {			
+		
+		event.stopPropagation(); // Stop stuff happening
+	    event.preventDefault(); // Totally stop stuff happening
+	    // START A LOADING SPINNER HERE
+	    if (! $.isNumeric($('#numProtocol').val())) {			
 			$('#numProtocol').val('');
 		}
-		var admin = $('#nomAdmin').val() + "#" + $('#dniAdmin').val() + "#" + $('#tipusAdmin').val() + "#" + $('#validAdmin').val() + "#" + $('#nomNotari').val() + "#" + $('#numProtocol').val() + "#" + $('#dataAlta').val() + "#" + $('#dataValidacio').val() + "#" + $('#organValidador').val() + ";";
-		$('#llistatAdministradors').val($('#llistatAdministradors').val() + admin);
-    	var table = $('#administradorsTable').DataTable();        	
-    	table.row.add( [
-    		 $('#nomAdmin').val(),
-    		 $('#dniAdmin').val(),
-    		 $('#tipusAdmin').val(),
-    		 $('#validAdmin').val(),
-    		 $('#nomNotari').val(),
-    		 $('#numProtocol').val(),
-    		 $('#dataAlta').val(),
-    		 $('#dataValidacio').val(),
-    		 $('#organValidador').val(),
-    		 "<input class='btn btn-danger btn-sm eliminarSeleccionada margin_left10' type='button' value='Eliminar'>"
-        ] ).draw( false );
-    	$('.eliminarSeleccionada').on('click', function(){	
-			var table = $('#administradorsTable').DataTable();
-			$(this).parents('tr').addClass('selected');
-			var option =  table.row('.selected').data()[0] + "#" + table.row('.selected').data()[1] + "#" + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[3] + "#" + table.row('.selected').data()[4] + "#" + table.row('.selected').data()[5] + "#" + table.row('.selected').data()[6] + "#" + table.row('.selected').data()[7] + "#" + table.row('.selected').data()[8];
-			if (table.row('.selected').data() != undefined && $('#llistatAdministradors').val().indexOf(option) >= 0) {
-				$('#llistatAdministradors').val($('#llistatAdministradors').val().replace(option + ";",  option + '#eliminar;'));				
-			}
-			table.row('.selected').remove().draw( false );
-    	});
+	    
+	    // Create a formdata object and add the files
+	    var data = new FormData();
+	    if (files != null) {
+		    $.each(files, function(key, value)
+		    {
+		    	data.append('fileAdministrador', value);
+		    });
+	    }
+	    data.append('nomAdmin', $('#nomAdmin').val());
+	    data.append('dniAdmin',  $('#dniAdmin').val());
+	    data.append('tipusAdmin',  $('#tipusAdmin').val());
+	    data.append('validAdmin',  $('#validAdmin').val());
+	    data.append('nomNotari',  $('#nomNotari').val());
+	    data.append('numProtocol',  $('#numProtocol').val());
+	    data.append('dataAlta',  $('#dataAlta').val());
+	    data.append('dataValidacio',  $('#dataValidacio').val());
+	    data.append('organValidador',  $('#organValidador').val());
+	    data.append('cif', $(this).data('cif'));
+		$.ajax({
+	        type: "POST",
+	        url: "addAdministrador",
+	        data: data,
+	        cache: false,
+	        dataType: "json",
+	        processData: false, // Don't process the files
+	        contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+	        
+	        //if received a response from the server
+	        success: function( data, textStatus, jqXHR) {
+	            //our country code was correct so we have some information to display	  
+	        	location.reload();
+	        },        
+	        //If there was no resonse from the server
+	        error: function(jqXHR, textStatus, errorThrown){
+	             console.log("Something really bad happened " + jqXHR.responseText);
+	        }  
+	    });
+    	
 	});
 	$('#afegirClassificacio').on('click', function(){
 		var clas = $('#grupList').val() + "#" + $('#subGrupList').val() + "#" + $('#categoriaList').val() + ";";

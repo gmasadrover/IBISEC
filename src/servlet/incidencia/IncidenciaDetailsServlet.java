@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,7 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import bean.Registre;
 import bean.Tasca;
 import bean.User;
+import bean.Actuacio.ArxiusAdjunts;
 import bean.ControlPage.SectionPage;
+import bean.Actuacio;
 import bean.Incidencia;
 import core.ControlPageCore;
 import core.IncidenciaCore;
@@ -59,7 +62,7 @@ public class IncidenciaDetailsServlet extends HttpServlet {
 	       List<Registre> sortides = new ArrayList<Registre>();
 	       List<Tasca> tasques = new ArrayList<Tasca>();
 	       List<Tasca> notificacions = new ArrayList<Tasca>();
-	       List<Fitxers.Fitxer> arxius = new ArrayList<Fitxers.Fitxer>();	
+	       ArxiusAdjunts arxius = new Actuacio().new ArxiusAdjunts();	
 	       
 	       boolean canCreateActuacio = false;
 	       boolean canCreateRegistre = false;
@@ -75,7 +78,7 @@ public class IncidenciaDetailsServlet extends HttpServlet {
 	    	   canCreateActuacio = UsuariCore.hasPermision(conn, usuari, SectionPage.actuacio_modificar);
 	    	   canCreateRegistre = UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_crear);
 	    	   canCreateTasca = UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_crear);
-	       } catch (SQLException e) {
+	       } catch (SQLException | NamingException e) {
 	           e.printStackTrace();
 	           errorString = e.getMessage();
 	       }

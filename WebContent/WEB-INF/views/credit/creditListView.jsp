@@ -49,19 +49,21 @@
                                         <th>Total</th>
                                         <th>Per asignar</th>
                                         <th>Reservat</th>
-                                        <th>Assignat / previst</th>                                     
+                                        <th>Assignat / previst</th>    
+                                        <th>Pagat</th>                                 
                                     </tr>
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${partidesList}" var="partida" >
 							          	<tr class=${partida.estat ? "success" : "danger"}>							          	
-							           		<td><a href="partidaDetalls?codi=${partida.codi}">${partida.codi}</a></td>
+							           		<td><a href="partidaDetalls?codi=${partida.codi}" class="loadingButton"  data-msg="obrint partida...">${partida.codi}</a></td>
 							            	<td>${partida.nom}</td>
 							            	<td>${partida.tipus}</td>
 							            	<td>${partida.getTotalPartidaFormat()}</td>
 							            	<td>${partida.getPartidaPerAsignarFormat()}</td>
 							            	<td>${partida.getReservaPartidaFormat()}</td>
-							            	<td>${partida.getPrevistPartidaFormat()}</td>							            	
+							            	<td>${partida.getPrevistPartidaFormat()}</td>
+							            	<td>${partida.getPartidaPagatFormat()}</td>							            	
 							          	</tr>
 							       	</c:forEach>
                                 </tbody>

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -51,44 +52,13 @@ public class DoCreateExpedientServlet extends HttpServlet {
 		}
 		String errorString = null;
 		String idInforme = multipartParams.getParametres().get("idInforme");
-		String descripcio = multipartParams.getParametres().get("descripcio");
     	double importObraMajor = Double.parseDouble(getServletContext().getInitParameter("importObraMajor"));
     	InformeActuacio informe = new InformeActuacio();
-    	String nouCodi = "";
-    	String contracte = "";
-    	String tipus = "";
-    	Expedient nouExpedient = new Expedient();
+    	String nouCodi = "";    	
 		try {
-			informe = InformeCore.getInformePrevi(conn, idInforme);
-			nouCodi = ExpedientCore.getNouCodiExpedient(conn, informe, importObraMajor);
-			
-			if (informe.getPropostaInformeSeleccionada().getVec() < importObraMajor) { // Contractes menors		
-				contracte = "menor";
-			} else {																   // Contractes majors
-				contracte = "major";
-			}
-			if (!informe.getPropostaInformeSeleccionada().isContracte()) {             // Fora contractes
-				contracte = "pd";
-			}
-			if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("obr")) {
-				tipus = "obra";				
-			} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("srv")) {
-				tipus = "servei";			
-			} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("submi")) {
-				tipus = "subministrament";			
-			}
-			
-			if (informe.getOfertaSeleccionada().getVec() < importObraMajor) {
-				nouExpedient.setDataAdjudicacio(ActuacioCore.findActuacio(conn, informe.getIdActuacio()).getDataAprovacio());
-			}
-			
-			nouExpedient.setExpContratacio(nouCodi);
-			nouExpedient.setDescripcio(descripcio);		
-			nouExpedient.setTipus(tipus);
-			nouExpedient.setContracte(contracte);
-			ExpedientCore.crearExpedient(conn, nouExpedient);
-			InformeCore.assignarExpedient(conn, idInforme, nouCodi);
-		} catch (SQLException e2) {
+			informe = InformeCore.getInformePrevi(conn, idInforme, false);
+			nouCodi = ExpedientCore.crearExpedient(conn,  informe, importObraMajor, false, "");		
+		} catch (SQLException | NamingException e2) {
 			errorString = e2.toString();
 		}		
 		

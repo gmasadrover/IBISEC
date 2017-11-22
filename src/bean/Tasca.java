@@ -15,6 +15,7 @@ public class Tasca {
 	private boolean activa;
 	private Date dataCreacio;
 	private String idinforme;
+	private InformeActuacio informe;
 	private boolean llegida;
 	private String primerComentari;
 	private Date darreraModificacio;
@@ -55,6 +56,36 @@ public class Tasca {
 
 	public void setTipus(String tipus) {
 		this.tipus = tipus;
+	}
+	
+	public String getTipusFormat() {
+		switch (this.tipus) {
+			case "conformarFactura":
+				return "Conformar factura";
+			case "resPartidaModificacio":
+				return "Reserva partida modificació";
+			case "autoritzacioDespesa":
+				return "Autorització de la despesa";
+			case "autoritModificacio":
+				return "Autoritzar modificació";
+			case "infPrev":
+				return "Realitzar proposta d'actuació";
+			case "resPartida":
+				return "Reserva de partida";
+			case "autoritzacioActuacio":
+				return "Autoritzar actuació";
+			case "autoritzacioModificacio":
+				return "Autoritzar modificació";
+			case "facturaConformada":
+				return "Factures per pasar a contabilitat";
+		case "modificacio":
+				return "Modificació informe";
+			case "generic":
+				return "";
+			case "liciMenor":
+				return "Realitzar proposta tècnica";
+		}
+		return this.tipus;
 	}
 
 	public Date getDataCreacio() {
@@ -149,5 +180,13 @@ public class Tasca {
 	
 	public void setDarreraModificacio(Date darreraModificacio) {
 		this.darreraModificacio = darreraModificacio;
+	}
+
+	public InformeActuacio getInforme() {
+		return informe;
+	}
+
+	public void setInforme(InformeActuacio informe) {
+		this.informe = informe;
 	}
 }

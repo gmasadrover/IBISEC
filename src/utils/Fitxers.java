@@ -5,15 +5,21 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.attribute.FileTime;
 import java.security.GeneralSecurityException;
 import java.security.Security;
 import java.security.cert.X509Certificate;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItem;
@@ -36,6 +42,9 @@ import com.itextpdf.text.pdf.security.CertificateInfo;
 import com.itextpdf.text.pdf.security.PdfPKCS7;
 import com.itextpdf.text.pdf.security.SignaturePermissions;
 import com.itextpdf.text.pdf.security.SignaturePermissions.FieldLock;
+
+import bean.Actuacio;
+import bean.Actuacio.ArxiusAdjunts;
 public class Fitxers {
 	
 	
@@ -60,11 +69,13 @@ public class Fitxers {
 		}
 		
 		private String nom;
+		private String nomCamp;
 		private String ruta;
 		private String seccio;
 		private boolean signat;
 		private List<infoFirma> firmesList;
 		private FileItem fitxer;
+		private FileTime data;
 		
 		public Fitxer(){
 			this.signat = false;
@@ -129,15 +140,40 @@ public class Fitxers {
 		
 		public void addFirmesList(infoFirma firma) {
 			this.firmesList.add(firma);
+		}
+
+		public FileTime getData() {
+			return data;
+		}
+		
+		public String getDataString() {
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");	
+			String dataString = "";
+			if (this.data != null) dataString = df.format(this.data.toMillis());
+			return dataString;
+		}
+
+		public void setData(FileTime data) {
+			this.data = data;
+		}
+
+		public String getNomCamp() {
+			return nomCamp;
+		}
+
+		public void setNomCamp(String nomCamp) {
+			this.nomCamp = nomCamp;
 		}	
-	}
+		
+	}	
 	
-	public static final String RUTA_BASE = "//sibisec1/usuaris/INTERCANVI D'OBRES/IBISEC/NOVA INTRANET";
-	//public static final String RUTA_BASE = "//sibisec1/usuaris/PERSONAL/MAS GUILLEM/NOVA INTRANET";
-	
-	public static List<Fitxer> ObtenirManuals() {
-		List<Fitxer> arxius = new ArrayList<Fitxer>();	
-		String ruta = RUTA_BASE + "/Manuals/";
+	public static List<Fitxer> ObtenirManuals() throws NamingException {
+		List<Fitxer> arxius = new ArrayList<Fitxer>();	 
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base") + "/Manuals/";
+		
 		File dir = new File(ruta);
 		File[] ficheros = dir.listFiles();
 		LoggerFactory.getInstance().setLogger(new SysoLogger());
@@ -156,20 +192,35 @@ public class Fitxers {
 		return arxius;	
 	}
 	
-	public static List<Fitxer> ObtenirFitxers(String idIncidencia, String idActuacio, String tipus, String idTipus, String idSubTipus) {
+	public static List<Fitxer> ObtenirFitxers(String idIncidencia, String idActuacio, String tipus, String idTipus, String idSubTipus) throws NamingException {
 		List<Fitxer> arxius = new ArrayList<Fitxer>();
-		String rutaBase = RUTA_BASE + "/documents/" + idIncidencia;
-		if (!idActuacio.isEmpty()) rutaBase += "/Actuacio/" + idActuacio;				
+		
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String rutaBase =  (String)env.lookup("ruta_base") + "/documents/" + idIncidencia;
+		if (idActuacio != null && !idActuacio.isEmpty()) rutaBase += "/Actuacio/" + idActuacio;				
 		rutaBase += "/" + tipus + "/" + idTipus;
 		if (!idSubTipus.isEmpty()) rutaBase += "/Comentari/" + idSubTipus;
 		arxius = ObtenirTotsFitxers(rutaBase, tipus);		
 		return arxius;		
 	}
 	
-	public static List<Fitxer> ObtenirTotsFitxers(String idIncidencia) {
-		List<Fitxer> arxius = new ArrayList<Fitxer>();		
-		String rutaBase = RUTA_BASE + "/documents/" + idIncidencia + "/";		
-		arxius = ObtenirTotsFitxers(rutaBase, "Incidencia");			
+	public static ArxiusAdjunts ObtenirTotsFitxers(String idIncidencia) throws NamingException {
+		ArxiusAdjunts arxius = new Actuacio().new ArxiusAdjunts();
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+	    List<Fitxers.Fitxer> arxiusRegistre = new ArrayList<Fitxers.Fitxer>();
+		String rutaBase =  (String)env.lookup("ruta_base") + "/documents/" + idIncidencia + "/RegistreE";	
+		arxiusRegistre = ObtenirTotsFitxers(rutaBase, "Registre");	
+		arxius.setArxiusRegistre(arxiusRegistre);
+		
+	    List<Fitxers.Fitxer> arxiusAltres = new ArrayList<Fitxers.Fitxer>();
+		rutaBase =  (String)env.lookup("ruta_base") + "/documents/" + idIncidencia;		
+		arxiusAltres = ObtenirTotsFitxers(rutaBase, "Altres");	
+		arxius.setArxiusAltres(arxiusAltres);
+		
 		return arxius;	
 	}
 	
@@ -182,22 +233,23 @@ public class Fitxers {
 		Security.addProvider(provider);
 		if (ficheros == null || ficheros.length == 0) {			
 		} else {
-			try {Fitxer fitxer = new Fitxer();	
-				PdfReader reader;						
-				reader = new PdfReader(ruta + "/" + ficheros[0].getName());		
-            	AcroFields acroFields = reader.getAcroFields();
-            	List<String> signatureNames = acroFields.getSignatureNames();
-            	SignaturePermissions perms = null;
-            	for (String name: signatureNames) {
-            		fitxer.setSignat(true);
-            		perms = inspectSignature(acroFields, name, perms, fitxer);
-    			}
-            	
+			try {
+				Fitxer fitxer = new Fitxer();	
+				if (ficheros[0].getName().toLowerCase().contains(".pdf")) {
+					PdfReader reader;						
+					reader = new PdfReader(ruta + "/" + ficheros[0].getName());		
+	            	AcroFields acroFields = reader.getAcroFields();
+	            	List<String> signatureNames = acroFields.getSignatureNames();
+	            	SignaturePermissions perms = null;
+	            	for (String name: signatureNames) {
+	            		fitxer.setSignat(true);
+	            		perms = inspectSignature(acroFields, name, perms, fitxer);
+	    			}
+				}
             	fitxer.setNom(ficheros[0].getName());
 				fitxer.setRuta(ruta + "/" + ficheros[0].getName());
 				fitxer.setSeccio("");
-				arxiu = fitxer;	
-				
+				arxiu = fitxer;				
 			} catch (IOException | GeneralSecurityException e) {
 				e.printStackTrace();
 			}
@@ -215,10 +267,9 @@ public class Fitxers {
 		if (ficheros == null) {			
 		} else {
 			try {
-				for (int x=0;x<ficheros.length;x++) {
-					
+				for (int x=0;x<ficheros.length;x++) {					
 					if (ficheros[x].isDirectory()) {
-						arxius.addAll(ObtenirTotsFitxers(ruta + "/" + ficheros[x].getName(), seccio + "/" + ficheros[x].getName()));
+						if (! ficheros[x].getName().equals("informe")  && ! ficheros[x].getName().equals("RegistreE")) arxius.addAll(ObtenirTotsFitxers(ruta + "/" + ficheros[x].getName(), seccio + " - " + ficheros[x].getName()));
 					} else {
 						Fitxer fitxer = new Fitxer();	
 						if (isPDF(ficheros[x])) {
@@ -229,20 +280,13 @@ public class Fitxers {
 			            	SignaturePermissions perms = null;
 			            	for (String name: signatureNames) {
 			            		fitxer.setSignat(true);
-			            		//verifySignature(acroFields, name);
 			            		perms = inspectSignature(acroFields, name, perms, fitxer);
-			            		/*System.out.println("Signature name: " + name);
-			          		   	System.out.println("Signature covers whole document: "
-			                                          + acroFields.signatureCoversWholeDocument(name));
-			            		   // Affichage sur les revision - version
-			          		   	System.out.println("Document revision: " + acroFields.getRevision(name) + " of "
-			                                          + acroFields.getTotalRevisions());*/
 			    			}
 						}
-		            	
 		            	fitxer.setNom(ficheros[x].getName());
 						fitxer.setRuta(ruta + "/" + ficheros[x].getName());
 						fitxer.setSeccio(seccio);
+						fitxer.setData(Files.getLastModifiedTime(ficheros[x].toPath()));
 						arxius.add(fitxer);
 						
 					}				
@@ -270,7 +314,6 @@ public class Fitxers {
 		//System.out.println("Signature covers whole document: " + fields.signatureCoversWholeDocument(name));
 		//System.out.println("Document revision: " + fields.getRevision(name) + " of " + fields.getTotalRevisions());
         PdfPKCS7 pkcs7 = fields.verifySignature(name);
-        System.out.println("Integrity check OK? " + pkcs7.verify());
         return pkcs7;
 	}
 	
@@ -293,14 +336,11 @@ public class Fitxers {
 		//System.out.println("Digest algorithm: " + pkcs7.getHashAlgorithm());
 		//System.out.println("Encryption algorithm: " + pkcs7.getEncryptionAlgorithm());
 		//System.out.println("Filter subtype: " + pkcs7.getFilterSubtype());
-		X509Certificate cert = (X509Certificate) pkcs7.getSigningCertificate();
-		System.out.println("Name of the signer: " + CertificateInfo.getSubjectFields(cert).getField("CN"));
+		X509Certificate cert = (X509Certificate) pkcs7.getSigningCertificate();		
 		Fitxer.infoFirma info = fitxer.new infoFirma();
-		info.setNomFirmant(CertificateInfo.getSubjectFields(cert).getField("CN"));
-		
+		info.setNomFirmant(CertificateInfo.getSubjectFields(cert).getField("CN"));		
 		//if (pkcs7.getSignName() != null) System.out.println("Alternative name of the signer: " + pkcs7.getSignName());
-		SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS");
-		System.out.println("Signed on: " + date_format.format(pkcs7.getSignDate().getTime()));
+		SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS");		
 		info.setDataFirma(date_format.format(pkcs7.getSignDate().getTime()));
 		/*if (pkcs7.getTimeStampDate() != null) {
 			System.out.println("TimeStamp: " + date_format.format(pkcs7.getTimeStampDate().getTime()));
@@ -313,53 +353,54 @@ public class Fitxers {
 		PdfDictionary sigDict = fields.getSignatureDictionary(name);
 		PdfString contact = sigDict.getAsString(PdfName.CONTACTINFO);
 		if (contact != null)
-			System.out.println("Contact info: " + contact);
 		perms = new SignaturePermissions(sigDict, perms);
 		//System.out.println("Signature type: " + (perms.isCertification() ? "certification" : "approval"));
 		//System.out.println("Filling out fields allowed: " + perms.isFillInAllowed());
 		//System.out.println("Adding annotations allowed: " + perms.isAnnotationsAllowed());
-		for (FieldLock lock : perms.getFieldLocks()) {
-			System.out.println("Lock: " + lock.toString());
-		}
+		
 		fitxer.addFirmesList(info);
         return perms;
 	}
 	
-	public static void guardarFitxer(List<Fitxer> fitxers, String idIncidencia, String idActuacio, String tipus, String idTipus, String idSubTipus, String idInforme, String docInforme) throws IOException{		
+	public static void guardarFitxer(List<Fitxer> fitxers, String idIncidencia, String idActuacio, String tipus, String idTipus, String idSubTipus, String idInforme, String docInforme) throws IOException, NamingException{		
 		if (fitxers != null && !fitxers.isEmpty()) {
 			String fileName = "";
+			 // Get the base naming context
+		    Context env = (Context)new InitialContext().lookup("java:comp/env");
+		    // Get a single value
+			String ruta =  (String)env.lookup("ruta_base");
 			// Crear directoris si no existeixen
-			File tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/"  + idIncidencia);
+			File tmpFile = new File(ruta + "/documents/"  + idIncidencia);
 			if (!tmpFile.exists()) {
 				tmpFile.mkdir();
 			}
-			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio");
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio");
 			if (!tmpFile.exists()) {
 				tmpFile.mkdir();
 			}
-			tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
 			if (!tmpFile.exists()) {
 				tmpFile.mkdir();
 			}
-			fileName = utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/";
+			fileName = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/";
 			// Miram si te tipus
 			if (!tipus.isEmpty()) {
-				tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/" +tipus);
+				tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/" +tipus);
 				if (!tmpFile.exists()) {
 					tmpFile.mkdir();
 				}
-				tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" +idActuacio + "/" + tipus + "/" + idTipus);
+				tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" +idActuacio + "/" + tipus + "/" + idTipus);
 				if (!tmpFile.exists()) {
 					tmpFile.mkdir();
 				}		
-				fileName = utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/" + tipus + "/" + idTipus + "/";
+				fileName = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/" + tipus + "/" + idTipus + "/";
 				// Miram si te subtipus
 				if (!idSubTipus.isEmpty()) {
-					tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/" + tipus + "/" + idTipus + "/Comentari");
+					tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/" + tipus + "/" + idTipus + "/Comentari");
 					if (!tmpFile.exists()) {
 						tmpFile.mkdir();
 					}
-					tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/" + tipus + "/" + idTipus + "/Comentari/" + idSubTipus);
+					tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/" + tipus + "/" + idTipus + "/Comentari/" + idSubTipus);
 					if (!tmpFile.exists()) {
 						tmpFile.mkdir();
 					}
@@ -367,19 +408,43 @@ public class Fitxers {
 				}
 			}
 			else if (!idInforme.isEmpty()) {
-				tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe");
-				if (!tmpFile.exists()) {
-					tmpFile.mkdir();
-				}
-				tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" +idActuacio + "/informe/" + idInforme);
-				if (!tmpFile.exists()) {
-					tmpFile.mkdir();
-				}
-				tmpFile = new File(utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" +idActuacio + "/informe/" + idInforme + "/" + docInforme);
-				if (!tmpFile.exists()) {
-					tmpFile.mkdir();
-				}
-				fileName = utils.Fitxers.RUTA_BASE + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/" + docInforme + "/";
+				if (idInforme.contains("-MOD-")) {
+					tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe");
+					if (!tmpFile.exists()) {
+						tmpFile.mkdir();
+					}
+					tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" +idActuacio + "/informe/" + idSubTipus);
+					if (!tmpFile.exists()) {
+						tmpFile.mkdir();
+					}
+					tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" +idActuacio + "/informe/" + idSubTipus + "/Modificacions");
+					if (!tmpFile.exists()) {
+						tmpFile.mkdir();
+					}
+					tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" +idActuacio + "/informe/" + idSubTipus + "/Modificacions/" + idInforme);
+					if (!tmpFile.exists()) {
+						tmpFile.mkdir();
+					}
+					tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" +idActuacio + "/informe/" + idSubTipus + "/Modificacions/" + idInforme + "/" + docInforme);
+					if (!tmpFile.exists()) {
+						tmpFile.mkdir();
+					}
+					fileName = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idSubTipus + "/Modificacions/" + idInforme + "/" + docInforme + "/";
+				} else {
+					tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe");
+					if (!tmpFile.exists()) {
+						tmpFile.mkdir();
+					}
+					tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" +idActuacio + "/informe/" + idInforme);
+					if (!tmpFile.exists()) {
+						tmpFile.mkdir();
+					}
+					tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" +idActuacio + "/informe/" + idInforme + "/" + docInforme);
+					if (!tmpFile.exists()) {
+						tmpFile.mkdir();
+					}
+					fileName = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/" + docInforme + "/";
+				}				
 			}
 	        for(int i=0;i<fitxers.size();i++){
 	            Fitxer fitxer = (Fitxer) fitxers.get(i);
@@ -397,11 +462,14 @@ public class Fitxers {
 	
 	public static void eliminarFitxer(String ruta) {
 		File tmpFile = new File(ruta);
-		if (tmpFile.exists()) tmpFile.delete();
+		if (tmpFile.exists()) {
+			tmpFile.delete();
+		}
 	}
 	
 	public static class formParameters {
 		private  Hashtable<String,String> parametres;
+		private  Hashtable<String,Fitxer> fitxersByName;
 		private List<Fitxer> fitxers;
 		
 		public formParameters(){
@@ -416,32 +484,42 @@ public class Fitxers {
 		}
 		public List<Fitxer> getFitxers() {
 			return fitxers;
-		}
+		}		
 		public void setFitxers(List<Fitxer> fitxers) {
 			this.fitxers = fitxers;
+		}
+		public Hashtable<String,Fitxer> getFitxersByName() {
+			return fitxersByName;
+		}
+		public void setFitxersByName(Hashtable<String,Fitxer> fitxersByName) {
+			this.fitxersByName = fitxersByName;
 		}
 	}
 	
 	public static formParameters getParamsFromMultipartForm(HttpServletRequest req) throws FileUploadException, UnsupportedEncodingException {
-        Hashtable<String,String> ret=new Hashtable<String,String>();
+        Hashtable<String,String> parametres=new Hashtable<String,String>();
+        Hashtable<String,Fitxer> fitxersByName =new Hashtable<String,Fitxer>();
         List<?> items = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(req);  
         List<Fitxer> fitxers = new ArrayList<Fitxer>();
         formParameters form = new formParameters();
         for(int i=0;i<items.size();i++){
         	FileItem item = (FileItem) items.get(i);
             if (item.isFormField()) {
-                ret.put(item.getFieldName(), item.getString("UTF-8"));
+                parametres.put(item.getFieldName(), item.getString("UTF-8"));
             } else {
             	if (item.getSize() != 0) {
             		Fitxer fitxer = new Fitxer();
-                	fitxer.setNom(item.getFieldName());
+                	fitxer.setNom(item.getName());
+                	fitxer.setNomCamp(item.getFieldName());
                 	fitxer.setFitxer(item);
                 	fitxers.add(fitxer);
+                	fitxersByName.put(item.getFieldName(), fitxer);
             	}
             }
         }        
-        form.setParametres(ret);
+        form.setParametres(parametres);
         form.setFitxers(fitxers);
+        form.setFitxersByName(fitxersByName);
         return form;
     }
 }

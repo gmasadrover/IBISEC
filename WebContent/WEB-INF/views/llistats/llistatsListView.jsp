@@ -94,7 +94,7 @@
 								</div>                                
 						  	</div>	
 						  	<div class="col-md-offset-5 col-md-2">
-						    	<input type="submit" class="btn btn-primary" name="filtrar" value="Aplicar Filtres">
+						    	<input type="submit" class="btn btn-primary loadingButton"  data-msg="Aplicant filtres..." name="filtrar" value="Aplicar Filtres">
 							</div>
 						</div>
 						<div class="form-group">

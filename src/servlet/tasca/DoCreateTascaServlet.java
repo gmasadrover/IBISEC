@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,7 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.lang.math.NumberUtils;
 
+import bean.Actuacio;
+import bean.Incidencia;
 import core.ActuacioCore;
+import core.CentreCore;
+import core.IncidenciaCore;
 import core.TascaCore;
 import core.UsuariCore;
 import utils.Fitxers;
@@ -53,35 +58,58 @@ public class DoCreateTascaServlet extends HttpServlet {
 		}
 			
 	    int idUsuari = MyUtils.getLoginedUser(request.getSession()).getIdUsuari();
+	    int idTasca = -1;
 	    String tipus = multipartParams.getParametres().get("tipus");
 	    String assumpte = multipartParams.getParametres().get("assumpte");
 	   	String comentari =multipartParams.getParametres().get("comentari");
 	   	String usuari = multipartParams.getParametres().get("idUsuari");
-	   
+	   	String idCentre = multipartParams.getParametres().get("idCentre");
 	   	String errorString = null;	   		   	
 	   	try {	   		
-   			
-	   		idIncidencia = multipartParams.getParametres().get("idIncidencia"); 
-	   		if (multipartParams.getParametres().get("idActuacio") != "") {
-				idActuacio = multipartParams.getParametres().get("idActuacio"); 
-				String modificacio = "Crear nova tasca";
-				if ("infPrev".equals(tipus)) {
-					modificacio = "Sol·licitar proposta d'actuació";
-				} else if ("notificacio".equals(tipus)) {
-					modificacio = "Enviar nova notificació";
-				}
-				ActuacioCore.actualitzarActuacio(conn, idActuacio, modificacio);
-				idIncidencia = ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia();
-			}	
-	   		
+   			if (tipus.equals("manual")) {
+   				//Crear incidencia
+   				Incidencia incidencia = new Incidencia();
+   				idIncidencia = IncidenciaCore.getNewCode(conn);
+	   		    incidencia.setIdIncidencia(idIncidencia);
+	   		    incidencia.setIdCentre(idCentre);
+	   		    incidencia.setUsuCre(UsuariCore.findUsuariByID(conn, idUsuari));
+	   		    incidencia.setDescripcio(assumpte);
+	   		    IncidenciaCore.novaIncidencia(conn, incidencia);   				
+   				
+   				//Crear actuació
+	   		    Actuacio actuacio = new Actuacio();
+	   		    idActuacio = ActuacioCore.getNewCode(conn);
+		 	    actuacio.setReferencia(idActuacio);
+		 	    actuacio.setDescripcio(assumpte);
+		 	    actuacio.setCentre(CentreCore.findCentre(conn, idCentre, false));
+		 	    actuacio.setIdIncidencia(incidencia.getIdIncidencia());
+		 	    actuacio.setIdUsuariCreacio(idUsuari);
+		 	    ActuacioCore.novaActuacio(conn, actuacio);   				
+   				
+		 	   tipus = "generic";
+		 	    
+   			} else {
+   				idIncidencia = multipartParams.getParametres().get("idIncidencia"); 
+   		   		if (multipartParams.getParametres().get("idActuacio") != "") {
+   					idActuacio = multipartParams.getParametres().get("idActuacio"); 
+   					String modificacio = "Crear nova tasca";
+   					if ("infPrev".equals(tipus)) {
+   						modificacio = "Sol·licitar proposta d'actuació";
+   					} else if ("notificacio".equals(tipus)) {
+   						modificacio = "Enviar nova notificació";
+   					}
+   					ActuacioCore.actualitzarActuacio(conn, idActuacio, modificacio);
+   					idIncidencia = ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia();
+   				}	
+   			}
    			int idUsuariTasca = -1;
    			if (NumberUtils.isNumber(usuari)) {
    				idUsuariTasca = Integer.parseInt(usuari);
    			}else{
    				idUsuariTasca = UsuariCore.finCap(conn, usuari).getIdUsuari();
    			}	
-   			TascaCore.novaTasca(conn, tipus, idUsuariTasca, idUsuari, idActuacio, idIncidencia, comentari, assumpte, "", multipartParams.getFitxers());
-   		} catch (SQLException e) {
+   			idTasca = TascaCore.novaTasca(conn, tipus, idUsuariTasca, idUsuari, idActuacio, idIncidencia, comentari, assumpte, "", multipartParams.getFitxers());
+   		} catch (SQLException | NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			errorString = e.getMessage();
@@ -94,12 +122,9 @@ public class DoCreateTascaServlet extends HttpServlet {
 	   		RequestDispatcher dispatcher = request.getServletContext()
 	   				.getRequestDispatcher("/WEB-INF/views/tasca/createTascaView.jsp");
 	   		dispatcher.forward(request, response);
-	   	}// If everything nice. Redirect to the product listing page.            
-	   	else if (! idActuacio.isEmpty()) {
-	   		response.sendRedirect(request.getContextPath() + "/actuacionsDetalls?ref=" + idActuacio);
-	   	} else {
-	   		response.sendRedirect(request.getContextPath() + "/incidenciaDetalls?ref=" + idIncidencia);
-	   	}
+	   	}// If everything nice. Redirect to the product listing page.       
+	   	
+	   	response.sendRedirect(request.getContextPath() + "/tasca?id=" + idTasca);
 	}
 
 	/**

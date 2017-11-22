@@ -37,7 +37,7 @@
 				<c:if test="${not empty incidencia}">
 				<div class="row">
 	                <div class="col-md-12">
-	                    <div class="panel panel-${incidencia.activa ? "success" : "danger"}">
+	                    <div class="panel panel-${incidencia.isActiva() ? incidencia.isIgnorada() ? "warning" : "success" : "danger"}">
 	                        <div class="panel-heading">
 	                           	<div class="row">
 	                        		<div class="col-md-3">
@@ -61,13 +61,54 @@
 	                        		</div>
 	                        		<div class="col-md-4">
 	                        			<c:if test="${!incidencia.activa}">
-	                        				Data Tancament: ${actuacio.getTancamentString()}
+	                        				Data Tancament: ${incidencia.getTancamentString()}
 	                        			</c:if>
 	                        		</div>
 	                        	</div>
 	                        </div>
 	                    </div>
 	                </div>
+            	</div>
+            	<div class="row">
+            		<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoCanvisIncidencia">
+                		<input class="hidden" name="idIncidencia" value=${incidencia.idIncidencia}>
+                		<div class="form-group">
+               				<div class="col-md-5">
+               					
+               				</div>
+		        			<div class="col-md-4">
+				        		<c:if test="${incidencia.isActiva()}">
+				        			<input class="btn btn-danger" data-toggle="modal" data-target="#myModal" name="tancar" value="Tancar actuació">
+				        		</c:if>
+				        	</div>
+				        	<div class="col-md-2"> 
+					        	<c:if test="${!incidencia.isIgnorada()}">					      			
+						      		<a href="ignorarIncidencia?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary right" role="button">Arxivar com a futura</a>
+								</c:if> 
+								<c:if test="${incidencia.isIgnorada()}">					      			
+						      		<a href="recuperarIncidencia?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary right" role="button">Recuperar</a>
+								</c:if> 
+							</div>   
+							<!-- Modal -->
+							<div id="myModal" class="modal fade" role="dialog">
+								<div class="modal-dialog">																	
+							    <!-- Modal content-->
+							    	<div class="modal-content">
+							      		<div class="modal-header">
+							        		<button type="button" class="close" data-dismiss="modal">&times;</button>
+							        		<h4 class="modal-title">Motiu tancament</h4>
+							      		</div>
+							      		<div class="modal-body">
+							        		<textarea name="motiu" required></textarea>
+							      		</div>
+							      		<div class="modal-footer">
+							        		<input class="btn btn-danger" type="submit" name="tancar" value="Tancar incidència">
+							      		</div>
+						    		</div>																	
+							  	</div>
+							</div>                  			 
+                 		</div>	                    		                       	
+                	</form>		  
             	</div>
             	<div class="row">
             		<div class="col-md-12 panel-group" id="accordion">
@@ -78,14 +119,12 @@
 						      </h4>
 						    </div>
 						    <div id="actuacions" class="panel-collapse collapse">
-						      	<div class="panel-body">
-						      		<c:if test="${incidencia.activa && canCreateActuacio}">
-							      		<div class="row margin_bottom10">
-								    		<div class="col-md-12 panel">
-												<a href="createActuacio?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary" role="button">Nova actuacio</a>
-											</div>
-							    		</div>
-							    	</c:if>
+						      	<div class="panel-body">						      		
+						      		<div class="row margin_bottom10">
+							    		<div class="col-md-12 panel">
+											<a href="createActuacio?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary" role="button">Nova actuacio</a>
+										</div>
+						    		</div>
 						    		<div class="row panel-body">
 										<div class="table-responsive">                        
 				                            <table class="table table-striped table-bordered">
@@ -103,7 +142,7 @@
 				                                	<c:forEach items="${incidencia.getLlistaActuacions().llistaActuacions}" var="actuacio" >
 											          	<tr class=${actuacio.activa ? actuacio.aprovada? "success" : "warning" : "danger"}>							          	
 											           		<td><a href="actuacionsDetalls?ref=${actuacio.referencia}">${actuacio.referencia}</a></td>	
-											           		<td>${actuacio.nomCentre}</td>
+											           		<td>${actuacio.centre.getNomComplet()}</td>
 											           		<td>${actuacio.descripcio}</td>	
 											           		<td>${actuacio.getDataCreacioString()}</td>					            	
 											            	<td>${actuacio.getDarreraModificacioString()}</td>	
@@ -210,12 +249,15 @@
 					    <div id="arxiusAdjunts" class="panel-collapse collapse in">
 					      	<div class="panel-body">
 					    		<div class="row panel-body">					    		
-									<c:forEach items="${arxius}" var="arxiu" >
+									<c:forEach items="${arxius.arxiusRegistre}" var="arxiu" >
 					            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
 											${arxiu.seccio} - ${arxiu.nom}
-										</a>
-<%-- 										<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a> --%>
-										<br>
+										</a><br>
+									</c:forEach>	
+									<c:forEach items="${arxius.arxiusAltres}" var="arxiu" >
+					            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
+											${arxiu.seccio} - ${arxiu.nom}
+										</a><br>
 									</c:forEach>	
 								</div>
 								<div class="row">            			

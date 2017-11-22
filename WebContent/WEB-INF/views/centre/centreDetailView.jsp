@@ -91,7 +91,7 @@
 			                        <tbody>
 									<c:forEach items="${centre.llistaIncidencies}" var="incidencia" >
 							          	<tr class=${incidencia.activa ? "success" : "danger"}>							          	
-							           		<td><a href="incidenciaDetalls?ref=${incidencia.idIncidencia}">${incidencia.idIncidencia}</a></td>
+							           		<td><a href="incidenciaDetalls?ref=${incidencia.idIncidencia}" class="loadingButton"  data-msg="obrint incidència...">${incidencia.idIncidencia}</a></td>
 							            	<td>${incidencia.descripcio}</td>
 							            	<td>${incidencia.nomCentre}</td>
 							            	<td>${incidencia.getPeticioString()}</td>
@@ -125,8 +125,8 @@
 		                        <tbody>
 								<c:forEach items="${centre.llistaActuacions.llistaActuacions}" var="actuacio" >
 						          	<tr class=${actuacio.activa ? actuacio.aprovada ? "success" : "warning" : "danger"}>							          	
-						           		<td><a href="actuacionsDetalls?ref=${actuacio.referencia}">${actuacio.referencia}</a></td>
-						            	<td>${actuacio.nomCentre}</td>
+						           		<td><a href="actuacionsDetalls?ref=${actuacio.referencia}" class="loadingButton"  data-msg="obrint actuació...">${actuacio.referencia}</a></td>
+						            	<td>${actuacio.centre.getNomComplet()}</td>
 						            	<td>${actuacio.descripcio}</td>
 						            	<td>${actuacio.getDataCreacioString()}</td>
 						            	<td>${actuacio.dataCreacio}</td>						            	

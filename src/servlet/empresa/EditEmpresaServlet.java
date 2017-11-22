@@ -3,7 +3,10 @@ package servlet.empresa;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -40,12 +43,13 @@ public class EditEmpresaServlet extends HttpServlet {
 			String cif = request.getParameter("cif");
 	 
 	        Empresa empresa = null;
-	 
+	        List<Empresa> empresesList = new ArrayList<Empresa>();
 	        String errorString = null;
 	 
 	        try {
 	            empresa = EmpresaCore.findEmpresa(conn, cif);
-	        } catch (SQLException e) {
+	            empresesList = EmpresaCore.getEmpreses(conn);
+	        } catch (SQLException | NamingException e) {
 	            e.printStackTrace();
 	            errorString = e.getMessage();
 	        }
@@ -62,6 +66,7 @@ public class EditEmpresaServlet extends HttpServlet {
 	        // Store errorString in request attribute, before forward to views.
 	        request.setAttribute("errorString", errorString);
 	        request.setAttribute("empresa", empresa);
+	        request.setAttribute("empresesList", empresesList);
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Empreses"));
 	        
 	        RequestDispatcher dispatcher = request.getServletContext()

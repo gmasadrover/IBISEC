@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -58,6 +59,8 @@ public class DespesesListServlet extends HttpServlet {
 			String filterWithOutDate = request.getParameter("filterWithOutDate");
 			String errorString = null;
 			String idPartida = "";
+			String idCentre = request.getParameter("idCentre");
+			if (idCentre == null) idCentre = "-1";
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			Calendar cal = Calendar.getInstance(); 
 			Date dataFi = cal.getTime();
@@ -70,7 +73,7 @@ public class DespesesListServlet extends HttpServlet {
 			try {
 				if (filtrar != null) {					
 					if (!"-1".equals(request.getParameter("idPartida"))) {						
-						idPartida =request.getParameter("idPartida");
+						idPartida = request.getParameter("idPartida");
 					}
 					dataInici = null;
 					dataFi = null;
@@ -80,12 +83,12 @@ public class DespesesListServlet extends HttpServlet {
 		    			dataFi = df.parse(request.getParameter("dataFi"));
 		    			dataFiString = request.getParameter("dataFi");
 					}				
-					list = CreditCore.findAssignacions(conn, idPartida, dataInici, dataFi);
+					list = CreditCore.findAssignacions(conn, idPartida, idCentre, dataInici, dataFi);
 				} else {
-					list = CreditCore.findAssignacions(conn, "", dataInici, dataFi);
+					list = CreditCore.findAssignacions(conn, "", idCentre, dataInici, dataFi);
 				}				
 				llistaPartides = CreditCore.getPartides(conn, true);
-			} catch (SQLException | ParseException e) {
+			} catch (SQLException | ParseException | NamingException e) {
 				e.printStackTrace();
 				errorString = e.getMessage();
 			}
@@ -97,6 +100,7 @@ public class DespesesListServlet extends HttpServlet {
 	       request.setAttribute("dataInici", dataIniciString);
 		   request.setAttribute("dataFi", dataFiString);
 		   request.setAttribute("idPartida", idPartida);
+		   request.setAttribute("idCentre", idCentre);
 	       request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Partides"));
 	       // Forward to /WEB-INF/views/homeView.jsp
 	       // (Users can not access directly into JSP pages placed in WEB-INF)

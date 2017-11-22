@@ -54,7 +54,7 @@
 							          	<tr class="${notificacio.activa ? notificacio.llegida ? "success" : "warning" : "danger"}">							          	
 							           		<td>${notificacio.descripcio}</td>
 							            	<td><a href="actuacionsDetalls?ref=${notificacio.actuacio.referencia}">${notificacio.actuacio.referencia}</a></td>
-							            	<td>${notificacio.actuacio.nomCentre}</td>							            	
+							            	<td>${notificacio.actuacio.centre.getNomComplet()}</td>							            	
 							            	<td>${notificacio.getDataCreacioString()}</td>
 							            	<td>${notificacio.dataCreacio}</td>	
 							            	<td>${notificacio.usuari.getNomComplet()}					            	

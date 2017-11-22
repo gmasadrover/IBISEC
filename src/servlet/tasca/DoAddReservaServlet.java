@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,8 +12,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import bean.InformeActuacio;
 import bean.User;
 import core.CreditCore;
+import core.ExpedientCore;
 import core.InformeCore;
 import core.TascaCore;
 import utils.MyUtils;
@@ -47,18 +50,23 @@ public class DoAddReservaServlet extends HttpServlet {
 	    String reservar = request.getParameter("reservar");
 	    String rebutjar = request.getParameter("rebutjar");
 	    User Usuari = MyUtils.getLoginedUser(request.getSession());	   
-	    String comentari = request.getParameter("comentariFinancer");	   
+	    String comentari = request.getParameter("comentariFinancer");	  
+	    InformeActuacio informe = new InformeActuacio();
 	    String errorString = null;
 	   	//Registrar comentari;	   
 	   	try {
+	   		if (idInforme.contains("-MOD-")) {
+	   			informe = InformeCore.getMoficacioInforme(conn, idInforme);
+	   		} else {
+	   			informe = InformeCore.getInformePrevi(conn, idInforme, false);
+	   		}
 	   		if (reservar != null) {
 		   		//Reservem el crèdit
 		   		CreditCore.reservar(conn, idPartida, idActuacio, idInforme, valor, comentari, Usuari.getIdUsuari());
 		   	}else if(rebutjar != null) {
-		   		InformeCore.rebutjarPartida(conn, idInforme, comentari, Usuari.getIdUsuari());
-		   		
+		   		InformeCore.rebutjarPartida(conn, idInforme, comentari, Usuari.getIdUsuari());		   		
 		   	}	   	
-		} catch (SQLException e) {
+		} catch (SQLException | NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			errorString = e.getMessage();
@@ -73,8 +81,16 @@ public class DoAddReservaServlet extends HttpServlet {
 	   				.getRequestDispatcher("/WEB-INF/views/actuacio/tascaView.jsp");
 	   		dispatcher.forward(request, response);
 	   	}// If everything nice. Redirect to the product listing page.            
-	   	else {
-	   		response.sendRedirect(request.getContextPath() + "/CrearDocument?tipus=financeraPAObres&idIncidencia=" + idIncidencia + "&idActuacio=" + idActuacio + "&idInforme=" + idInforme);  		
+	   	else {	   		
+	   		if (idInforme.contains("-MOD-")) {
+	   			response.sendRedirect(request.getContextPath() + "/CrearDocument?tipus=financeraPAObres&idIncidencia=" + idIncidencia + "&idActuacio=" + idActuacio + "&idInforme=" + idInforme);  		 		
+	   		} else {
+	   			if (informe.getExpcontratacio().getExpContratacio().equals("-1") || !informe.getExpcontratacio().getContracte().equals("major")){
+					response.sendRedirect(request.getContextPath() + "/CrearDocument?tipus=financeraPAObres&idIncidencia=" + idIncidencia + "&idActuacio=" + idActuacio + "&idInforme=" + idInforme);  		
+				} else {
+					response.sendRedirect(request.getContextPath() + "/CrearDocument?tipus=financeraMajor&idIncidencia=" + idIncidencia + "&idActuacio=" + idActuacio + "&idInforme=" + idInforme);  		
+				}
+	   		}	   		
 	   	}
 	}
 

@@ -38,9 +38,22 @@
                 	<div class="col-md-12">
                			<p style="color: red;">${errorString}</p>
                		</div>
-               	 </div>
+               	 </div>               	 
+               	
                 <!-- /.row -->
                 <c:if test="${not empty empresa}">
+                	<div class="row">
+	                	<div class="col-md-12">
+	               			<p style="color: red;">
+								<c:if test="${!empresa.activa}">
+									Aquesta empresa está extingida.
+									<c:if test="${empresa.succesora.name.isEmpty()}">
+										<br/>La seva succesora és: ${empresa.succesora.name} (${empresa.succesora.cif})
+									</c:if>
+								</c:if>
+							</p>
+	               		</div>
+	               	 </div>
                 	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="doEditEmpresa">                		
                 		<h2 class="margin_bottom30">Informació bàsica</h2>
 			    		<div class="row">			    				    				    		
@@ -130,20 +143,24 @@
 	                	</div>	                	
 	                	<div class="row">
 	                		<div class="col-md-12">
-		                		<div class="form-group">
-			                		<c:if test="${empresa.documentEscritura.ruta != null}">
-					                	<div class="row">
-					                		<label class="col-xs-2 control-label">Document:</label>
-					                		<a  target="_blanck" href="downloadFichero?ruta=${empresa.documentEscritura.getEncodedRuta()}">${empresa.documentEscritura.nom}</a>
-					                		<span data-ruta="${empresa.documentEscritura.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
-					                	</div>	                	
-			                		</c:if>
+		                		<div class="form-group">			                	
+				                	<div class="row">
+				                		<label class="col-xs-2 control-label">Document:</label>
+				                		<c:forEach items="${empresa.documentsEscrituraList}" var="arxiu" >
+						            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.nom}</a>
+											<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
+											<br>
+										</c:forEach>	
+				                	</div>
 				                	<div class="row">
 				                		<label class="col-xs-2 control-label">Adjuntar escritura:</label>	                	
 				                        <div class="col-xs-5">   
-				                            <input type="file" class="btn" name="fileEscritura" /><br/>
-										</div>
-									</div> 	                                
+				                            <input type="file" class="btn fileEscritura" name="fileEscritura" /><br/>
+										</div>			    
+										<div class="col-xs-2"> 
+			         						<input type="button" id="uploadEscritura" data-cif="${empresa.cif}" class="btn btn-primary" value="Pujar" />
+			         					</div> 								
+									</div> 	                      
 	                            </div>
                             </div>
 	                	</div>
@@ -158,29 +175,40 @@
 	                	<div class="row">
 	                		<div class="col-md-6">
 		                		<div class="form-group">
-	                                <label class="col-xs-4 control-label">Nom</label>
+	                                <label class="col-xs-3 control-label">Nom</label>
 	                                <div class="col-xs-6">
 	                                	<input class="form-control" name="nomAdmin" id="nomAdmin" placeholder="nom administrador" value="">
 	                                </div>
 	                            </div>	                            
 	                            <div class="form-group">
-	                                <label class="col-xs-4 control-label">Vàlid fins</label>
+	                                <label class="col-xs-3 control-label">Vàlid fins</label>
 	                                <div class="input-group date col-xs-6 datepicker">
 									  	<input type="text" class="form-control" name="validAdmin" id="validAdmin"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 									</div>
 	                            </div>	                            
 	                            <div class="form-group">
-	                                <label class="col-xs-4 control-label">Notari</label>
+	                                <label class="col-xs-3 control-label">Notari</label>
 	                                <div class="col-xs-6">
 	                                	<input class="form-control" name="nomNotari" id="nomNotari" placeholder="nom Notari" value="">
 	                                </div>
 	                            </div>
 	                            <div class="form-group">
-	                                <label class="col-xs-4 control-label">Número protocol</label>
+	                                <label class="col-xs-3 control-label">Número protocol</label>
 	                                <div class="col-xs-6">
 	                                	<input class="form-control" name="numProtocol" id="numProtocol" placeholder="xxxx" value="">
 	                                </div>
-	                            </div> 	                              
+	                            </div> 	
+	                            <div class="form-group">
+	                                <label class="col-xs-3 control-label">Organ validador</label>
+	                                <div class="col-xs-6">
+		                                <select class="form-control" name="organValidador" id="organValidador">
+		                                	<option value="">--</option>
+		                                	<option value="caib">Advocacia CAIB</option>
+		                                	<option value="estat">Advocacia Estat</option>
+		                                	<option value="ibisec">Assessoria jurídica IBISEC</option>
+		                                </select>
+		                             </div>
+	                            </div>                              
 	                        </div>
 	                        <div class="col-md-6">
 	                        	<div class="form-group">
@@ -206,21 +234,19 @@
 	                                <div class="input-group date col-xs-6 datepicker">
 									  	<input type="text" class="form-control" name="dataValidacio" id="dataValidacio"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 									</div>
-	                            </div>
-	                             <div class="form-group">
-	                                <label class="col-xs-3 control-label">Organ validador</label>
-	                                <div class="col-xs-6">
-		                                <select class="form-control" name="organValidador" id="organValidador">
-		                                	<option value="caib">Advocacia CAIB</option>
-		                                	<option value="estat">Advocacia Estat</option>
-		                                	<option value="ibisec">Assessoria jurídica IBISEC</option>
-		                                </select>
-		                             </div>
-	                            </div>
-	                            <div class="col-xs-offset-2">	 
-	                            	<input class="btn btn-primary" type="button" name="afegirAdmin" id="afegirAdmin" value="Afegir">
-	                            </div>     			
-	                        </div>	
+	                            </div>	
+	                            <div class="form-group">
+			                		<label class="col-xs-2 control-label">Adjuntar document:</label>	                	
+			                        <div class="col-xs-5">   
+			                            <input type="file" class="btn fileAdministrador" name="fileAdministrador" /><br/>
+									</div>							
+								</div> 	
+	                        </div>
+	                        <div class="row">	
+	                        	<div class="col-md-offset-10">	 
+	                            	<input class="btn btn-primary" type="button" data-cif="${empresa.cif}" name="afegirAdmin" id="afegirAdmin" value="Afegir">
+	                            </div> 
+	                        </div>  
                         	<input type="hidden" name="llistatAdministradors" id="llistatAdministradors" value="${empresa.administradorsString}">                        
 				     		<div class="col-md-12">	
 								<label>Administradors actius</label>							                        
@@ -237,13 +263,13 @@
 				                                <th>Data</th>
 				                                <th>Validacio</th>
 				                                <th>Organ validació</th>
-				                                <th>Control</th>						                                        							                                       
+				                                <th>Documentació</th>					                                        							                                       
 				                            </tr>
 				                        </thead>
 				                        <tbody>
 										<c:forEach items="${empresa.administradors}" var="administrador" >
 								          	<tr class="${administrador.isCaducat() ? 'danger' : '' }">							          	
-								           		<td>${administrador.nom}</td>
+								           		<td><a target="_blanck" href="editAdministrador?empresa=${empresa.cif}&administrador=${administrador.dni}">${administrador.nom}</a></td>
 								            	<td>${administrador.dni}</td>
 								            	<td>${administrador.tipus}</td>
 								            	<td>${administrador.getDataValidesaFinsString()}</td>
@@ -252,8 +278,8 @@
 								            	<td>${administrador.getDataModificacioString()}</td>
 								            	<td>${administrador.getDataValidacioString()}</td>
 								            	<td>${administrador.entitatValidacio}</td>
-								            	<td><input class='btn btn-danger btn-sm eliminarSeleccionada margin_left10' type='button' value='Eliminar'></td>					            	
-								          	</tr>
+								            	<td><a target="_blanck" href="downloadFichero?ruta=${administrador.documentAdministrador.getEncodedRuta()}">${administrador.documentAdministrador.nom}</a></td>
+								            </tr>
 							       		</c:forEach>						                                	                              	
 				                        </tbody>
 				                    </table>
@@ -472,7 +498,7 @@
 		                				<div class="col-xs-offset-1 col-md-10">
 			                				<div class="checkbox">
 						                        <label>
-						                          	<input name="acreditacio1" type="checkbox" ${empresa.acreditacio1 ? 'checked' : ''}> Certificat positiu de l'Agència Estatal d'Administració Tributària, 
+						                          	Certificat positiu de l'Agència Estatal d'Administració Tributària, 
 						                          	d'estar al corrent en el comliment de les seves obligacions tributàries amb l'Estat.
 						                        </label>
 						                	</div>
@@ -497,7 +523,7 @@
 		                				<div class="col-xs-offset-1 col-md-10">
 			                				<div class="checkbox">
 						                        <label>
-						                          	<input name="acreditacio2" type="checkbox" ${empresa.acreditacio2 ? 'checked' : ''}> Certificat de la Tresoreria General de la Seguretat Social del Ministeri
+						                          	Certificat de la Tresoreria General de la Seguretat Social del Ministeri
 						                          	d'Ocupació i Seguretat Social, de què l'empresa està al corren en el compliment de les obligacions
 						                          	de pagamanet de la Seguretat Social.
 						                        </label>
@@ -523,7 +549,7 @@
 		                				<div class="col-xs-offset-1 col-md-10">
 			                				<div class="checkbox">
 						                        <label>
-						                          	<input name="acreditacio3" type="checkbox" ${empresa.acreditacio3 ? 'checked' : ''}> Certificat de la secretària de la Junta Consultiva de Contratació Administrativa
+						                          	Certificat de la secretària de la Junta Consultiva de Contratació Administrativa
 						                          	de què l'empresa no té deutes de naturalesa tributària amb la Comunitat Autònoma de les Illes Balears, en
 						                          	via de constrenyiment.
 						                        </label>
@@ -581,7 +607,70 @@
 	                                </div>
 	                            </div>
                             </div>	                		
-	                	</div>	    	                	        	              	
+	                	</div>	
+	                	<h2 class="margin_bottom30">Modificació estat empresa</h2>
+	                	<div class="row">
+	                		<h4>Extinció</h4>
+	                		<c:if test="${empresa.extincioFile.ruta != null}">
+			                	<div class="form-group">	   
+			                		<label class="col-xs-2 control-label">Escritura:</label>
+			                		<div class="col-xs-5">
+			                			<a target="_blanck" href="downloadFichero?ruta=${empresa.extincioFile.getEncodedRuta()}">${empresa.extincioFile.nom}</a>
+			                			<span data-ruta="${empresa.extincioFile.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+			                		</div>    
+			                	</div>            	
+		                	</c:if>	                		
+	                		<div class="form-group">	                		
+	                			<label class="col-md-2 control-label">Escritura:</label>	                	
+		                        <div class="col-md-5">   
+		                            <input type="file" class="btn" name="documentextincio" /><br/>
+								</div>
+							</div>
+	                		<div class="form-group">
+	                			<label class="col-xs-2  control-label">Motiu</label>
+	                			<div class="col-md-6">
+	                                	<textarea class="form-control" name="motiuextincio" placeholder="Motiu extinció" rows="3">${empresa.motiuExtincio}</textarea>
+	                            </div>
+						        <div class="col-md-3">
+						            <input type="submit" class="btn btn-danger" name="extincio" value="Extinció">							            
+						        </div>						        
+						    </div> 
+	                	</div>    	        
+	                	<div class="row">
+	                		<h4>Successió</h4>
+	                		<c:if test="${empresa.succesoraFile.ruta != null}">
+			                	<div class="form-group">	   
+			                		<label class="col-xs-2 control-label">Escritura:</label>
+			                		<div class="col-xs-5">
+			                			<a target="_blanck" href="downloadFichero?ruta=${empresa.succesoraFile.getEncodedRuta()}">${empresa.succesoraFile.nom}</a>
+			                			<span data-ruta="${empresa.succesoraFile.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+			                		</div>    
+			                	</div>            	
+		                	</c:if>	   
+	                		<div class="form-group">	                		
+	                			<label class="col-md-2 control-label">Escritura:</label>	                	
+		                        <div class="col-md-5">   
+		                            <input type="file" class="btn" name="documentsuccessio" /><br/>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group">	  
+								<label class="col-md-2 control-label">Empresa</label>
+                                <div class="col-md-6">
+	                                <select class="form-control" name="cifsuccesora" id="cifsuccesora" data-live-search="true" data-size="10">
+	                                	<c:forEach items="${empresesList}" var="succesor">
+	                                		<c:if test="${succesor.activa}">
+					                   			<option value="${succesor.cif}">${succesor.name}</option>
+					                   		</c:if>
+					                   	</c:forEach>	
+	                                </select>
+	                             </div>
+						        <div class="col-md-3">
+						            <input type="submit" class="btn btn-warning" name="succecio" value="Succeció">							            
+						        </div>
+						    </div> 
+						</div>  	                	        	              	
 	                	<div class="row">
 	                		<div class="form-group">
 						        <div class="col-xs-offset-9 col-xs-9">

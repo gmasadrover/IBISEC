@@ -8,5 +8,6 @@ $(document).ready(function() {
 		}
 	});		
 	$('#llistaEmpreses option[value="' + $('#nifProveidor').val() + '"]').attr('selected', 'selected');	
-	$('.selectpicker').selectpicker('refresh');	
+	$('#usuarisList option[value="' + $('#idUsuariInforme').val() + '"]').attr('selected', 'selected');	
+	$('.selectpicker').selectpicker('refresh');		
 });

@@ -38,11 +38,11 @@ public class DoModificarActuacioServlet extends HttpServlet {
 		Connection conn = MyUtils.getStoredConnection(request);		
 	    String referencia = request.getParameter("idActuacio");	   
 	    String descripcio = request.getParameter("descripcio");	       
-	    	    
+	    String notes = request.getParameter("observacio");
 	    String errorString = null;	 	      
 	   	if (errorString == null) {
 	   		try {
-	   			ActuacioCore.modificarActuacio(conn, referencia, descripcio);
+	   			ActuacioCore.modificarActuacio(conn, referencia, descripcio, notes);
 	   		} catch (SQLException e) {
 	  			e.printStackTrace();
 	  			errorString = e.getMessage();

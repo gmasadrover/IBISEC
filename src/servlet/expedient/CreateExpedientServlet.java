@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -52,12 +53,12 @@ public class CreateExpedientServlet extends HttpServlet {
 	        try {
 	        	String idInforme = request.getParameter("idInforme");
 	        	double importObraMajor = Double.parseDouble(getServletContext().getInitParameter("importObraMajor"));
-	        	InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme);
+	        	InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme, false);
 	        	request.setAttribute("informe", informe);	     
-	        	request.setAttribute("actuacio", ActuacioCore.findActuacio(conn, informe.getIdActuacio()));	     
+	        	request.setAttribute("actuacio", ActuacioCore.findActuacio(conn, informe.getActuacio().getReferencia()));	     
 				request.setAttribute("nouCodi", ExpedientCore.getNouCodiExpedient(conn, informe, importObraMajor));
 				request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"expedients"));
-			} catch (SQLException e) {
+			} catch (SQLException | NamingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

@@ -79,9 +79,24 @@
 								  	<input type="text" class="form-control" name="peticio" value="${registre.getDataString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>
                             </div>   
+                            <c:if test="${canModificarCentre}">
+                            	<div class="form-group">
+	                                <label class="col-xs-3  control-label">Centre</label>
+	                                <div class="col-xs-3">
+		                                <select class="form-control selectpicker centresList" name="idCentre" data-live-search="true" data-size="5" id="centresList" multiple>
+			                            	<option value="-1">No hi ha relació</option>
+			                            </select>
+		                             </div>
+	                            </div> 
+	                            <div id="incidencies"></div>                            	
+							</c:if>									
+                            <br>
 						    <div class="form-group">
-						        <div class="col-xs-offset-3 col-xs-9">
-						            <input type="submit" class="btn btn-primary" value="Modificar">
+						    	<div class="col-xs-offset-8 col-xs-2">
+						            <input type="submit" class="btn btn-danger" name="anular" value="Anul·lar">
+						        </div>
+						        <div class=" col-xs-2">
+						            <input type="submit" class="btn btn-primary" name="modificar" value="Modificar">
 						        </div>
 						    </div>    				
 		    			</form>		    			

@@ -50,7 +50,7 @@
 		</p>	
 		<div class="row">
 			<div class="col-md-4">
-		       	<label>VEC:</label> ${informePrevi.propostaInformeSeleccionada.vec}€						                                
+		       	<label>PBase:</label> ${informePrevi.propostaInformeSeleccionada.pbase}€						                                
 			</div>
 			<div class="col-md-4"> 
 				<label>IVA:</label> ${informePrevi.propostaInformeSeleccionada.iva}€
@@ -96,7 +96,7 @@
 	      			<label>Partida asignada</label>									            	 										            	 	
 	                <select class="form-control selectpicker" name="llistaPartides" id="llistaPartides">
 	                	<c:forEach items="${partidesList}" var="partida">
-	                		<option value="${partida.codi}">${partida.nom} - Restant: ${partida.getPartidaPerAsignarFormat()}</option>
+	                		<option value="${partida.codi}">${partida.codi} (${partida.nom} - Restant: ${partida.getPartidaPerAsignarFormat()})</option>
 	                	</c:forEach>					                                	
 	                </select>	
 	            </div>					                       		

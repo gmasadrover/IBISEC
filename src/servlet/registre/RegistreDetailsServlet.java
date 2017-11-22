@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -66,14 +67,20 @@ public class RegistreDetailsServlet extends HttpServlet {
 		           e.printStackTrace();
 		           errorString = e.getMessage();
 		       }
-		       System.out.println(registre.getPrimeraIncidencia() + registre.getId());
-		       List<Fitxers.Fitxer> arxius = Fitxers.ObtenirFitxers(registre.getPrimeraIncidencia(), "", "RegistreE", registre.getId(), "");
+		       List<Fitxers.Fitxer> arxius;
+			try {
+				arxius = Fitxers.ObtenirFitxers(registre.getPrimeraIncidencia(), "", "RegistreE", registre.getId(), "");
+				request.setAttribute("arxius", arxius);
+			} catch (NamingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		      
 		       // Store info in request attribute, before forward to views
 		       request.setAttribute("errorString", errorString);
 		       request.setAttribute("registre", registre);
 		       request.setAttribute("tipus", tipus);
-		       request.setAttribute("arxius", arxius);
+		       request.setAttribute("canViewPersonal", UsuariCore.hasPermision(conn, usuari, SectionPage.personal));
 		       request.setAttribute("canCreateRegistre", UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_crear));
 		       request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Registre"));
 		       // Forward to /WEB-INF/views/homeView.jsp

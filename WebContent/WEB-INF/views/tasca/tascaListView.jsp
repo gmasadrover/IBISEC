@@ -61,52 +61,25 @@
                                 		<option value='instalacions'>Instal·lacions i Manteniment</option>                               
                                 </select>				    
 						  	</div>	
-						  	<div class="col-md-4">
+						  	<div class="col-md-2">
 						  		<input type="checkbox" name="filterWithClosed" ${filterWithClosed ? "checked" : ""}> Mostrar tancades
-						  	</div>					  	
+						  	</div>	
+						  	<div class="col-md-2">
+						    	<input type="submit" class="btn btn-primary loadingButton"  data-msg="Aplicant filtres..." name="filtrar" value="Aplicar Filtres">
+							</div>				  	
 						 </div>
-						 <div class="form-group"> 	
-						  	<div class="col-md-offset-1 col-md-2">
-						    	<input type="submit" class="btn btn-primary" name="filtrar" value="Aplicar Filtres">
-							</div>
-						</div>	
 					</form>
 				</div>
-
+				<br>
+				<c:if test="${canCreateTasca}">
+		      		<div class="row margin_bottom10">
+			    		<div class="col-md-12 panel">
+							<a href="createTasca?idActuacio=${actuacio.referencia}&tipus=manual" class="btn btn-primary loadingButton"  data-msg="obrint formulari..." role="button">Nova tasca manual</a>
+						</div>
+		    		</div>
+		    	</c:if>
                 <div class="row">
-                    <div class="col-md-12">
-                        <h2>Tasques</h2>
-                        <div class="table-responsive">                        
-                            <table class="table table-striped table-bordered filerTable tasques">
-                                <thead>
-                                    <tr>                                        
-                                        <th>Tasca</th>
-                                        <th>id Actuació</th>
-                                        <th>Centre</th>                                        
-                                        <th>Data creació</th>
-                                        <th>Data creació</th>
-                                        <th>Data modificació</th>
-                                        <th>Data modificació</th>
-                                        <th>Responsable</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                	<c:forEach items="${tasquesList}" var="tasca" >
-							          	<tr class="${tasca.activa ? tasca.tipus == 'notificacio' ? "warning" : "success" : "danger"}">							          	
-							           		<td><a href="tasca?id=${tasca.idTasca}">${tasca.idTasca} - ${tasca.descripcio}</a></td>
-							            	<td><a href="actuacionsDetalls?ref=${tasca.actuacio.referencia}">${tasca.actuacio.referencia}</a></td>
-							            	<td>${tasca.actuacio.nomCentre}</td>							            	
-							            	<td>${tasca.getDataCreacioString()}</td>
-							            	<td>${tasca.dataCreacio}</td>	
-							            	<td>${tasca.getDarreraModificacioString()}</td>
-							            	<td>${tasca.darreraModificacio}</td>
-							            	<td>${tasca.usuari.getNomComplet()}</td>					            	
-							          	</tr>
-							       	</c:forEach>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                    <jsp:include page="include/_tasquesList.jsp"></jsp:include>
                 </div>
                 <c:if test="${seguimentList.size() > 0}">
 	                <div class="row">
@@ -125,11 +98,11 @@
 	                                    </tr>
 	                                </thead>
 	                                <tbody>
-	                                	<c:forEach items="${seguimentList}" var="tasca" >
+	                                	<c:forEach items="${seguimentList}" var="tasca" >	                                		
 								          	<tr class="${tasca.activa ? tasca.tipus == 'notificacio' ? "warning" : "success" : "danger"}">							          	
 								           		<td><a href="tasca?id=${tasca.idTasca}">${tasca.idTasca} - ${tasca.descripcio}</a></td>
 								            	<td><a href="actuacionsDetalls?ref=${tasca.actuacio.referencia}">${tasca.actuacio.referencia}</a></td>
-								            	<td>${tasca.actuacio.nomCentre}</td>							            	
+								            	<td>${tasca.actuacio.centre.getNomComplet()}</td>							            	
 								            	<td>${tasca.getDataCreacioString()}</td>
 								            	<td>${tasca.dataCreacio}</td>	
 								            	<td>${tasca.usuari.getNomComplet()}</td>					            	
@@ -160,7 +133,7 @@
 								          	<tr class=${actuacio.isActiva() ? actuacio.isPaAprovada() ? actuacio.isAprovada() ? "success" : "info" : "warning" : "danger"}>							          	
 								           		<td><a href="actuacionsDetalls?ref=${actuacio.referencia}">${actuacio.referencia}</a></td>
 								            	<td>${actuacio.descripcio}</td>
-								            	<td>${actuacio.nomCentre}</td>	
+								            	<td>${actuacio.centre.getNomComplet()}</td>	
 								            	<td>${actuacio.getEstat()}</td>					            	
 								          	</tr>
 								       	</c:forEach>

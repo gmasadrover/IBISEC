@@ -5,9 +5,8 @@
 <c:set var="language" value="${not empty param.language ? param.language : not empty language ? language : pageContext.request.locale}" scope="session" />
 <m:setLocale value="${language}" />
 <m:setBundle basename="i18n.base"/>	
-<input type="hidden" id="liciMenor">
+<div id="liciMenor"></div>
 <div class="panel-body">
-	<c:set var="numPA" value="1" scope="request" />
 	<h2>Informe inicial</h2>	
 	<br />
 	<p>
@@ -28,16 +27,11 @@
 	<p>
 		<label>Tipus de contracte:</label> <m:message key="${informePrevi.propostaInformeSeleccionada.tipusObra}"/>
 	</p>
-	<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra} == 'obr'">
+	<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra == 'obr'}">
 		<div class="row">
 			<div class="col-md-4">
-				<label>Requereix llicència:</label> ${informePrevi.propostaInformeSeleccionada.llicencia ? "Si" : "No"}
-			</div>
-			<c:if test="${informePrevi.propostaInformeSeleccionada.llicencia}">
-				<div class="col-md-4">
-					<label>Tipus llicència:</label> ${informePrevi.propostaInformeSeleccionada.tipusLlicencia}
-				</div>
-			</c:if>
+				<label>Requereix llicència:</label> ${informePrevi.propostaInformeSeleccionada.llicencia ? informePrevi.propostaInformeSeleccionada.tipusLlicencia : "No"}
+			</div>			
 		</div>
 		<p></p>
 	</c:if>
@@ -49,7 +43,7 @@
 	</p>	
 	<div class="row">
 		<div class="col-md-4">
-	       	<label>VEC:</label> ${informePrevi.propostaInformeSeleccionada.vec}€						                                
+	       	<label>Pbase:</label> ${informePrevi.propostaInformeSeleccionada.pbase}€						                                
 		</div>
 		<div class="col-md-4"> 
 			<label>IVA:</label> ${informePrevi.propostaInformeSeleccionada.iva}€
@@ -101,7 +95,7 @@
                 </select>	
         	</div>
          	<div class="col-md-4">
-           		<label>Oferta</label>
+           		<label>Oferta (amb IVA)</label>
             	<input name="oferta" id="oferta" placeholder="0000.00">
             	<label class="">€</label>
            	</div>	
@@ -164,7 +158,7 @@
                </div>
           	</div>
 	</div>
-	<form class="form-horizontal margin_top30" method="POST" target="_blank"  action="DoAddPropostaTecnica" onsubmit="setTimeout(function () { window.location.reload(); }, 10)">
+	<form class="form-horizontal margin_top30" method="POST" action="DoAddPropostaTecnica">
 		<input type="hidden" name="idOfertaSeleccionada" id="idOfertaSeleccionada" value="">
    		<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
    		<input type="hidden" name="idIncidencia" value="${actuacio.idIncidencia}">
@@ -201,16 +195,7 @@
 	                  		<input class="btn btn-primary" type="submit" name="guardar" value="Generar proposta tècnica">
 						</div>
 	       			</div>
-	   			</div>	
-	   			<c:if test="${estatActuacio == 7 && esCap}">
-		 			<div class="col-md-6">
-			    		<div class="row">
-			        		<div class="col-md-12">
-			              		<input class="btn btn-success" type="submit" name="enviar" value="Vistiplau">
-							</div>
-			     		</div>
-			 		</div>
-		 		</c:if>											    
+	   			</div>		   										    
     		</div> 
 		</c:if>	     	                     	
 	</form>
@@ -245,5 +230,5 @@
      		</div>
     		</div>
   		</form>	
-  	</div>
+  	</div>  	
 </div>

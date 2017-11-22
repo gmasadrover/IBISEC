@@ -78,7 +78,7 @@
 						</div>	
 						<div class="form-group">
 							<div class="col-md-offset-10 col-md-2">
-						    	<input type="submit" class="btn btn-primary" name="filtrar" value="Aplicar Filtres">
+						    	<input type="submit" class="btn btn-primary loadingButton"  data-msg="Aplicant filtres..." name="filtrar" value="Aplicar Filtres">
 							</div>
 						</div>
 						<div class="form-group">
@@ -140,22 +140,24 @@
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${actuacionsList}" var="actuacio" >
-							          	<tr class=${actuacio.isActiva() ? actuacio.isPaAprovada() ? actuacio.isAprovada() ? "success" : "info" : "warning" : "danger"}>							          	
-							           		<td><a href="actuacionsDetalls?ref=${actuacio.referencia}">${actuacio.referencia}</a></td>
-							            	<td>${actuacio.nomCentre}</td>
-							            	<td>${actuacio.descripcio}</td>
-							            	<td>${actuacio.getDataCreacioString()}</td>
-							            	<td>${actuacio.dataCreacio}</td>		
-							            	<td>${actuacio.getDataAprovarPaString()}</td>
-							            	<td>${actuacio.dataAprovarPa}</td>		
-							            	<td>${actuacio.getDataAprovacioString()}</td>
-							            	<td>${actuacio.dataAprovacio}</td>
-										   	<td>${actuacio.getDataTancamentString()}</td>
-										   	<td>${actuacio.dataTancament}</td>
-										   	<td>${actuacio.modificacio}</td>
-										   	<td>${actuacio.getDarreraModificacioString()}</td>
-										   	<td>${actuacio.darreraModificacio}</td>				            	
-							          	</tr>
+                                		<c:if test="${!(actuacio.centre.idCentre == '9999PERSO' && !canViewPersonal)}">
+								          	<tr class=${actuacio.isActiva() ? actuacio.isPaAprovada() ? actuacio.isAprovada() ? "success" : "info" : "warning" : "danger"}>							          	
+								           		<td><a href="actuacionsDetalls?ref=${actuacio.referencia}" class="loadingButton"  data-msg="obrint actuació...">${actuacio.referencia}</a></td>
+								            	<td>${actuacio.centre.getNomComplet()}</td>
+								            	<td>${actuacio.descripcio}</td>
+								            	<td>${actuacio.getDataCreacioString()}</td>
+								            	<td>${actuacio.dataCreacio}</td>		
+								            	<td>${actuacio.getDataAprovarPaString()}</td>
+								            	<td>${actuacio.dataAprovarPa}</td>		
+								            	<td>${actuacio.getDataAprovacioString()}</td>
+								            	<td>${actuacio.dataAprovacio}</td>
+											   	<td>${actuacio.getDataTancamentString()}</td>
+											   	<td>${actuacio.dataTancament}</td>
+											   	<td>${actuacio.modificacio}</td>
+											   	<td>${actuacio.getDarreraModificacioString()}</td>
+											   	<td>${actuacio.darreraModificacio}</td>				            	
+								          	</tr>
+							          	</c:if>
 							       	</c:forEach>                                	
                                 </tbody>
                             </table>

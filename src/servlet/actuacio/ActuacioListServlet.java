@@ -89,6 +89,7 @@ public class ActuacioListServlet extends HttpServlet {
 
 			// Store info in request attribute, before forward to views
 			request.setAttribute("errorString", errorString);
+			request.setAttribute("canViewPersonal", UsuariCore.hasPermision(conn, usuari, SectionPage.personal));
 			request.setAttribute("actuacionsList", result.getLlistaActuacions());
 			request.setAttribute("actuacionsAprovadesPA", result.getEstad().getAprovadesPA());
 			request.setAttribute("actuacionsAprovadesPT", result.getEstad().getAprovadesPT());

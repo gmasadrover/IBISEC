@@ -9,22 +9,27 @@
     <div class="panel-heading">
         <div class="row">
     		<div class="col-md-6">
-    			id actuació: <a href="actuacionsDetalls?ref=${actuacio.referencia}">${actuacio.referencia}</a>
+    			id actuació: <a href="actuacionsDetalls?ref=${actuacio.referencia}" class="loadingButton"  data-msg="obrint actuació...">${actuacio.referencia}</a>
     		</div>
     		<div class="col-md-6">
-    			Centre: ${actuacio.nomCentre}
+    			Centre: ${actuacio.centre.getNomComplet()}
    			</div>
     	</div>
     </div>
     <div class="panel-body">
         <p>${actuacio.descripcio}</p>
-        <p>Documents adjunts:</p>
-        <c:forEach items="${actuacio.arxiusAdjunts}" var="arxiu" >
-          	<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
-				${arxiu.seccio} - ${arxiu.nom}
-			</a>
-			<br>
-		</c:forEach>		
+        <a href="#" data-toggle="modal" data-target="#ModalDocuments">Veure documents</a>
+        <div id="ModalDocuments" class="modal fade" role="dialog">
+			<div class="modal-dialog">																	
+		    <!-- Modal content-->
+		    	<div class="modal-content">
+		    		<div class="documentsModal">
+			      		<p>Documents adjunts:</p>
+			      		<jsp:include page="_resumFitxers.jsp"></jsp:include>
+					</div>	
+	    		</div>																	
+		  	</div>
+		</div>
     </div>
     <div class="panel-footer">
     	<div class="row">

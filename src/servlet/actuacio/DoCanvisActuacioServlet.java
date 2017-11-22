@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,6 +20,7 @@ import bean.User;
 import core.ActuacioCore;
 import core.CreditCore;
 import core.InformeCore;
+import core.LlicenciaCore;
 import core.OfertaCore;
 import core.TascaCore;
 import core.UsuariCore;
@@ -61,43 +63,73 @@ public class DoCanvisActuacioServlet extends HttpServlet {
 	    String idInforme = multipartParams.getParametres().get("idInforme");
 	    String aprovarPA = multipartParams.getParametres().get("aprovarPA");
 	    String aprovarPD = multipartParams.getParametres().get("aprovarPD");
+	    int idTasca = -1;
+	    if (multipartParams.getParametres().get("idTasca") != null) idTasca = Integer.parseInt(multipartParams.getParametres().get("idTasca"));
+	    String obrir = multipartParams.getParametres().get("obrir");
 	    String tancar = multipartParams.getParametres().get("tancar");	   
+	    String motiu = multipartParams.getParametres().get("motiu");
 	    User Usuari = MyUtils.getLoginedUser(request.getSession());	   
-	    List<Fitxer> fitxers = multipartParams.getFitxers(); 	
-   		try {
-		    if (aprovarPA != null) { 
-		    	//aprovam actuació
-				ActuacioCore.aprovarPA(conn, idActuacio, Usuari.getIdUsuari());				
-				//aprovam informe
-				InformeCore.aprovacioInforme(conn, idInforme, Usuari.getIdUsuari());  
-		    }else if (aprovarPD != null) {
-		    	System.out.println("entra a pd");
-		    	try {
-					ActuacioCore.aprovar(conn, idActuacio, Usuari.getIdUsuari());
-					ActuacioCore.actualitzarActuacio(conn, idActuacio, "Autorització generada");
-					OfertaCore.aprovarOferta(conn, idInforme, Usuari.getIdUsuari());
-		   			CreditCore.assignar(conn, idInforme, OfertaCore.findOfertaSeleccionada(conn, idInforme).getPlic());
-		   			
-		   			Fitxers.guardarFitxer(fitxers, idIncidencia, idActuacio, "", "", "", idInforme, "Autorització  Proposta despesa");
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-	   		}else if (tancar != null) { // tancam actuació
-	   			try {
-	   				ActuacioCore.actualitzarActuacio(conn, idActuacio, "Tancar actuació");
-	   				ActuacioCore.tancar(conn, idActuacio, Usuari.getIdUsuari());
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}   			
-	   		}else {
+	    List<Fitxer> fitxers = multipartParams.getFitxers(); 	   		
+	    if (aprovarPA != null) { 
+	    	
+	    }else if (aprovarPD != null) {
+	    	try {
+	    		InformeActuacio informe = new InformeActuacio();
+				ActuacioCore.aprovar(conn, idActuacio, Usuari.getIdUsuari());
+				ActuacioCore.actualitzarActuacio(conn, idActuacio, "Autorització generada");
+				OfertaCore.aprovarOferta(conn, idInforme, Usuari.getIdUsuari());
+	   			CreditCore.assignar(conn, idInforme, OfertaCore.findOfertaSeleccionada(conn, idInforme).getPlic());
+	   			TascaCore.nouHistoric(conn, String.valueOf(idTasca), "Autorització generada", Usuari.getIdUsuari());
+	   			TascaCore.tancar(conn, idTasca);
 	   			
-	   		} 
-	    } catch (SQLException e) {
+	   			
+	   			if (idInforme.contains("-MOD-")) {
+	   				informe = InformeCore.getMoficacioInforme(conn, idInforme);
+	   				//Notificam la modificació al cap
+	   				Fitxers.guardarFitxer(fitxers, informe.getActuacio().getIdIncidencia(), idActuacio, "", "", informe.getIdInfOriginal(), idInforme, "Autorització Despesa modificació");
+		    		TascaCore.nouHistoric(conn, String.valueOf(idTasca), "Autorització Proposta modificació", Usuari.getIdUsuari());			   		
+			   		TascaCore.tancar(conn, idTasca);
+			   		CreditCore.assignar(conn, idInforme, informe.getOfertaSeleccionada().getPlic());
+			   		if (informe.getUsuariCapValidacio() != null) TascaCore.novaTasca(conn, "generic", informe.getUsuariCapValidacio().getIdUsuari(), Usuari.getIdUsuari(), idActuacio, idIncidencia, "S'ha aprovat la despesa de modificació per a l'informe: " + informe.getIdInfOriginal(), "Aprovació proposta despesa modificació",informe.getIdInf(),null);
+	   			} else {
+	   				Fitxers.guardarFitxer(fitxers, idIncidencia, idActuacio, "", "", "", idInforme, "Autorització  Proposta despesa");
+	   				informe = InformeCore.getInformePrevi(conn, idInforme, false);
+	   				//Crear tasca redacció contracte
+		   			if (informe.getPropostaInformeSeleccionada().isContracte()) {
+		   				int usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariRedaccioContracte"));   		
+						TascaCore.novaTasca(conn, "generic", usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Redactar contracte per informe " + informe.getIdInf(), "Redacció contracte",informe.getIdInf(),null);
+		   			} else {
+		   				TascaCore.novaTasca(conn, "generic", informe.getUsuariCapValidacio().getIdUsuari(), Usuari.getIdUsuari(), idActuacio, idIncidencia, "S'ha aprovat la despesa per a l'informe: " + informe.getIdInf(), "Aprovació proposta despesa",informe.getIdInf(),null);
+		   			}
+		   			
+		   			//Nova tasca llicència
+	   				if (informe.getPropostaInformeSeleccionada().isLlicencia() && informe.getPropostaInformeSeleccionada().getTipusLlicencia().equals("comun")) {
+						int usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariLlicencies"));   		
+						TascaCore.novaTasca(conn, "generic", usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Sol·licitar comunicació prèvia obra", "Sol·licitud comunicació prèvia",informe.getIdInf(),null);
+						LlicenciaCore.novaLlicencia(conn, informe.getExpcontratacio().getExpContratacio(), informe.getPropostaInformeSeleccionada().getTipusLlicencia());
+	   				}
+	   			}
+	   			
+			} catch (SQLException | NamingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+   		}else if (tancar != null) { // tancam actuació
+   			try {
+   				ActuacioCore.actualitzarActuacio(conn, idActuacio, "Tancar actuació");
+   				ActuacioCore.tancar(conn, idActuacio, motiu, Usuari.getIdUsuari());
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}   			
+   		}else if (obrir != null) { // obrim actuació
+   			try {
+				ActuacioCore.obrir(conn, idActuacio);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+   		} 
 	    if (aprovarPA != null) { 
 	    	response.sendRedirect(request.getContextPath() + "/CrearDocument?tipus=AutoritzacioPAObres&idIncidencia=" + idIncidencia + "&idActuacio=" + idActuacio + "&idInforme=" + idInforme); 
 	    }else{

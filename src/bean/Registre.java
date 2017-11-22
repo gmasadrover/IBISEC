@@ -19,6 +19,7 @@ public class Registre {
 	private String nomCentres;
 	private int idUsuari;
 	private Date usuMod;
+	private boolean actiu;
 	 
 	public Registre() {
 		 
@@ -193,6 +194,14 @@ public class Registre {
 			}
 		}
 		return list;
+	}
+
+	public boolean isActiu() {
+		return actiu;
+	}
+
+	public void setActiu(boolean actiu) {
+		this.actiu = actiu;
 	}
 	
 }

@@ -11,19 +11,23 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.naming.NamingException;
+
+import bean.Actuacio;
 import bean.Expedient;
 import bean.InformeActuacio;
 public class ExpedientCore {
-	static final String SQL_CAMPS = "e.expcontratacio AS expcontratacio, databoib, datalimitprsentacio," +
+	static final String SQL_CAMPS = "e.expcontratacio AS expcontratacio, databoib, dataperfilcontratant, datalimitprsentacio," +
 									" dataadjudicacio, dataformalitzaciocontracte, datainiciexecucio, datarecepcio," +
-									" dataretorngarantia, dataliquidacio, garantia, idinf, idactuacio, tipus, contracte, e.datacre AS datacre, e.descripcio AS descripcio";
+									" dataretorngarantia, dataliquidacio, garantia, idinf, idactuacio, tipus, contracte, e.datacre AS datacre";
 	
-	private static Expedient initExpedient(Connection conn, ResultSet rs) throws SQLException{
+	private static Expedient initExpedient(Connection conn, ResultSet rs) throws SQLException, NamingException{
 		Expedient expedient = new Expedient();
 		expedient.setExpContratacio(rs.getString("expcontratacio"));
-		expedient.setActuacio(ActuacioCore.findActuacio(conn, rs.getString("idactuacio")));
-		expedient.setInforme(InformeCore.getInformePrevi(conn, rs.getString("idinf")));	
+		expedient.setIdActuacio(rs.getString("idactuacio"));
+		expedient.setIdInforme(rs.getString("idinf"));	
 		expedient.setDataPublicacioBOIB(rs.getTimestamp("databoib"));
+		expedient.setDataPublicacioPerfilContratant(rs.getTimestamp("dataperfilcontratant"));
 		expedient.setDataLimitPresentacio(rs.getTimestamp("datalimitprsentacio"));
 		expedient.setDataAdjudicacio(rs.getTimestamp("dataadjudicacio"));
 		expedient.setDataFormalitzacioContracte(rs.getTimestamp("dataformalitzaciocontracte"));
@@ -32,14 +36,13 @@ public class ExpedientCore {
 		expedient.setDataRetornGarantia(rs.getTimestamp("dataretorngarantia"));
 		expedient.setDataLiquidacio(rs.getTimestamp("dataliquidacio"));
 		expedient.setGarantia(rs.getString("garantia"));
-		expedient.setDescripcio(rs.getString("descripcio"));
 		expedient.setTipus(rs.getString("tipus"));
 		expedient.setDataCreacio(rs.getTimestamp("datacre"));
 		expedient.setContracte(rs.getString("contracte"));
 		return expedient;
 	}
 	
-	public static List<Expedient> getExpedients(Connection conn, String estat, String tipus, String contracte, double importObraMajor) throws SQLException {
+	public static List<Expedient> getExpedients(Connection conn, String estat, String tipus, String contracte, double importObraMajor, String year) throws SQLException, NamingException {
 		List<Expedient> expedientsList = new ArrayList<Expedient>();
 		String sql = "SELECT " + SQL_CAMPS
 				+ " FROM public.tbl_expedient e LEFT JOIN public.tbl_informeactuacio i ON e.expcontratacio = i.expcontratacio";					
@@ -80,8 +83,18 @@ public class ExpedientCore {
 			}
 			
 		}	
+		if (year != null && !year.isEmpty() && ! year.equals("-1")) {
+			if (primeraCondicio) {
+				primeraCondicio = false;
+				sql += " WHERE e.anyexpedient::INT = " + year;
+							
+			}else{
+					sql += " AND e.anyexpedient::INT = " + year;
+							
+			}			
+		}
 		sql += " ORDER BY datacre DESC, expcontratacio DESC";
-		pstm = conn.prepareStatement(sql);		
+		pstm = conn.prepareStatement(sql);	
 		ResultSet rs = pstm.executeQuery();
 		while (rs.next()) {		
 			expedientsList.add(initExpedient(conn, rs));
@@ -89,7 +102,7 @@ public class ExpedientCore {
 		return expedientsList;
 	}
 	
-	public static Expedient findExpedient(Connection conn, String referencia) throws SQLException {
+	public static Expedient findExpedient(Connection conn, String referencia) throws SQLException, NamingException {
 		Expedient expedient = new Expedient();
 		String sql = "SELECT " + SQL_CAMPS
 				+ " FROM public.tbl_expedient e LEFT JOIN public.tbl_informeactuacio i ON e.expcontratacio = i.expcontratacio"
@@ -102,26 +115,89 @@ public class ExpedientCore {
 		return expedient;
 	}
 	
-	public static void crearExpedient(Connection conn, Expedient nouExpedient) throws SQLException {
-		String sql = "INSERT INTO public.tbl_expedient(expcontratacio, dataadjudicacio, tipus, descripcio, contracte, datacre)"
-					+ " VALUES(?, ?, ?, ?, ?, localtimestamp);";					
+	public static String crearExpedient(Connection conn, InformeActuacio informe, double importObraMajor, boolean senseCodiAutomatic, String codExpManual) throws SQLException {
+		String tipusContracte = "";
+		String tipus = "";
+		if (informe.getPropostaInformeSeleccionada() != null) {
+			if (informe.getPropostaInformeSeleccionada().getPbase() < importObraMajor) { // Contractes menors		
+				tipusContracte = "menor";
+				if (!informe.getPropostaInformeSeleccionada().isContracte()) {             // Fora contractes
+					tipusContracte = "pd";
+				}
+			} else {																   // Contractes majors
+				tipusContracte = "major";
+			}					
+			if (informe.getPropostaInformeSeleccionada().getTipusObra() != null) {
+				if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("obr")) {
+					tipus = "obra";				
+				} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("srv")) {
+					tipus = "servei";			
+				} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("submi")) {
+					tipus = "subministrament";			
+				}
+			}
+		}
+		String sql = "INSERT INTO public.tbl_expedient(expcontratacio, dataadjudicacio, tipus, contracte, datacre, anyexpedient)"
+				+ " VALUES(?, ?, ?, ?, localtimestamp, ?);";					
 		PreparedStatement pstm;
 		pstm = conn.prepareStatement(sql);	
-		pstm.setString(1, nouExpedient.getExpContratacio());
-		if (nouExpedient.getDataAdjudicacio() != null) {
-			pstm.setDate(2, new java.sql.Date(nouExpedient.getDataAdjudicacio().getTime()));
+		String nouCodi = "";
+		if (senseCodiAutomatic) {
+			nouCodi = informe.getIdInf();
+			if (!codExpManual.isEmpty()) nouCodi = codExpManual;
+			pstm.setString(1, nouCodi);
+		}else{
+			nouCodi = getNouCodiExpedient(conn, informe, importObraMajor);
+			pstm.setString(1, nouCodi);
+		}
+		if (informe.getDataAprovacio() != null) {
+			pstm.setDate(2, new java.sql.Date(informe.getDataAprovacio().getTime()));		
 		} else {
-			pstm.setDate(2, null);
-		}	
-		pstm.setString(3, nouExpedient.getTipus());
-		pstm.setString(4, nouExpedient.getDescripcio());
-		pstm.setString(5, nouExpedient.getContracte());
+			pstm.setDate(2, null);			
+		}
+		pstm.setString(3, tipus);
+		pstm.setString(4, tipusContracte);
+		Calendar now = Calendar.getInstance();
+		int year = now.get(Calendar.YEAR);
+		String yearInString = String.valueOf(year);
+		pstm.setString(5, yearInString);
 		pstm.executeUpdate();
+		
+		InformeCore.assignarExpedient(conn, informe.getIdInf(), nouCodi);
+		
+		return nouCodi;
+	}
+	
+	public static void actualitzarCodiExpedient(Connection conn, String refExp, String refExpNou, String idInforme) throws SQLException {
+		String sql = "UPDATE public.tbl_expedient"
+					+ " SET expcontratacio = ?"
+					+ " WHERE expcontratacio = ?";
+		PreparedStatement pstm;
+		pstm = conn.prepareStatement(sql);	
+		pstm.setString(1, refExpNou);
+		pstm.setString(2, refExp);
+		pstm.executeUpdate();		
+		
+		sql = "UPDATE public.tbl_informeactuacio"
+				+ " SET expcontratacio = ?"
+				+ " WHERE idinf = ?";
+		pstm = conn.prepareStatement(sql);	
+		pstm.setString(1, refExpNou);
+		pstm.setString(2, idInforme);
+		pstm.executeUpdate();	
+		
+		sql = "UPDATE public.tbl_llicencia"
+				+ " SET expcontratacio = ?"
+				+ " WHERE expcontratacio = ?";
+		pstm = conn.prepareStatement(sql);	
+		pstm.setString(1, refExpNou);
+		pstm.setString(2, refExp);
+		pstm.executeUpdate();	
 	}
 	
 	public static void updateExpedient(Connection conn, Expedient expedient) throws SQLException {
 		String sql = "UPDATE public.tbl_expedient"
-					+ " SET databoib=?, datalimitprsentacio=?, dataadjudicacio=?, dataformalitzaciocontracte=?, datainiciexecucio=?, datarecepcio=?, dataretorngarantia=?, dataliquidacio=?, garantia=?, descripcio=?"
+					+ " SET databoib=?, datalimitprsentacio=?, dataadjudicacio=?, dataformalitzaciocontracte=?, datainiciexecucio=?, datarecepcio=?, dataretorngarantia=?, dataliquidacio=?, dataperfilcontratant=?, garantia=?"
 					+ " WHERE expcontratacio=?;";
 		PreparedStatement pstm;
 		pstm = conn.prepareStatement(sql);	
@@ -165,11 +241,28 @@ public class ExpedientCore {
 		} else {
 			pstm.setDate(8, null);
 		}
-		pstm.setString(9, expedient.getGarantia());
-		pstm.setString(10, expedient.getDescripcio());
+		if (expedient.getDataPublicacioPerfilContratant() != null) {
+			pstm.setDate(9, new java.sql.Date(expedient.getDataPublicacioPerfilContratant().getTime()));
+		} else {
+			pstm.setDate(9, null);
+		}
+		pstm.setString(10, expedient.getGarantia());
 		pstm.setString(11, expedient.getExpContratacio());
-		pstm.executeUpdate();
-		
+		pstm.executeUpdate();		
+	}
+	
+	public static List<String> getAnysExpedients(Connection conn) throws SQLException {
+		List<String> anysList = new ArrayList<String>();
+		String sql = "SELECT DISTINCT anyexpedient"
+					+ " FROM public.tbl_expedient"
+					+ " WHERE anyexpedient IS NOT NULL"
+					+ " ORDER BY anyexpedient DESC";	 
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		ResultSet rs = pstm.executeQuery();
+		while (rs.next()) {
+			anysList.add(rs.getString("anyexpedient"));
+		}
+		return anysList;
 	}
 	
 	public static String getNouCodiExpedient(Connection conn, InformeActuacio informe, double importObraMajor) throws SQLException {
@@ -178,14 +271,15 @@ public class ExpedientCore {
 		String yearInString = String.valueOf(year);
 		String nouCodi = "";		
 		String contracte = "";
-		if (informe.getPropostaInformeSeleccionada().getVec() < importObraMajor) { // Contractes menors		
+		if (informe.getPropostaInformeSeleccionada().getPbase() < importObraMajor) { // Contractes menors		
 			contracte = "menor";
+			if (!informe.getPropostaInformeSeleccionada().isContracte()) {             // Fora contractes
+				contracte = "pd";
+			}
 		} else {																   // Contractes majors
 			contracte = "major";
-		}
-		if (!informe.getPropostaInformeSeleccionada().isContracte()) {             // Fora contractes
-			contracte = "pd";
-		}
+			yearInString = yearInString.substring(2,4);
+		}		
 		String tipus = "";
 		if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("obr")) {
 			tipus = "obra";				
@@ -197,32 +291,36 @@ public class ExpedientCore {
 				
 		String sql = "SELECT expcontratacio"
 					+ " FROM public.tbl_expedient"
-					+ " WHERE contracte = '" + contracte + "' AND tipus = '" + tipus + "'"
+					+ " WHERE expcontratacio like '%/" + yearInString + "%' AND contracte = '" + contracte + "'"
 					+ " ORDER BY expcontratacio DESC LIMIT 1;";	 
+		if (!contracte.equals("major")) {
+			sql = "SELECT expcontratacio"
+					+ " FROM public.tbl_expedient"
+					+ " WHERE expcontratacio like '%/" + yearInString + "%' AND contracte = '" + contracte + "' AND tipus = '" + tipus + "'"
+					+ " ORDER BY expcontratacio DESC LIMIT 1;";	 
+		}
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		ResultSet rs = pstm.executeQuery();
-		System.out.println(pstm.toString());
 		if (rs.next()) { //Codis nous
 			String actualCode = rs.getString("expcontratacio");			
 			int num = 0;
 			String numFormatted = String.format("%03d", num + 1);	
-			if (informe.getPropostaInformeSeleccionada().getVec() < importObraMajor) {
+			if (informe.getPropostaInformeSeleccionada().getPbase() < importObraMajor) {
 				if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("obr")) {				
 					if (informe.getPropostaInformeSeleccionada().isContracte()) {
 						num = Integer.valueOf(actualCode.split("/")[0].replace("OBM", "").trim());
 						numFormatted = String.format("%03d", num + 1);		
 						nouCodi = "OBM " + numFormatted + "/" + yearInString;	
 					}else{
-						nouCodi = "CA " + informe.getIdActuacio();		
+						nouCodi = "CA " + informe.getActuacio().getReferencia();		
 					}	
 				} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("srv")) {
 					if (informe.getPropostaInformeSeleccionada().isContracte()) {
-						num = Integer.valueOf(actualCode.split("/")[0].replace("SVM", "").trim());
-						System.out.println(num);
+						num = Integer.valueOf(actualCode.split("/")[0].replace("SVM", "").trim());						
 						numFormatted = String.format("%03d", num + 1);		
 						nouCodi = "SVM " + numFormatted + "/" + yearInString;	
 					}else{
-						nouCodi = "CA " + informe.getIdActuacio();	
+						nouCodi = "CA " + informe.getActuacio().getReferencia();	
 					}
 				} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("submi")) {
 					if (informe.getPropostaInformeSeleccionada().isContracte()) {
@@ -230,16 +328,40 @@ public class ExpedientCore {
 						numFormatted = String.format("%03d", num + 1);		
 						nouCodi = "SBM " + numFormatted + "/" + yearInString;	
 					}else{
-						nouCodi = "CA " + informe.getIdActuacio();		
+						nouCodi = "CA " + informe.getActuacio().getReferencia();		
 					}
 				}
 			} else {
 				num = Integer.valueOf(actualCode.split("/")[0].trim());
 				numFormatted = String.format("%03d", num + 1);		
-				nouCodi = numFormatted + "/" + yearInString.subSequence(2,3);
+				nouCodi = numFormatted + "/" + yearInString;
+			}
+		} else {
+			if (informe.getPropostaInformeSeleccionada().getPbase() < importObraMajor) {
+				if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("obr")) {				
+					if (informe.getPropostaInformeSeleccionada().isContracte()) {							
+						nouCodi = "OBM 001/" + yearInString;	
+					}else{
+						nouCodi = "CA " + informe.getActuacio().getReferencia();			
+					}	
+				} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("srv")) {
+					if (informe.getPropostaInformeSeleccionada().isContracte()) {
+						;		
+						nouCodi = "SVM 001/" + yearInString;	
+					}else{
+						nouCodi = "CA " + informe.getActuacio().getReferencia();	
+					}
+				} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("submi")) {
+					if (informe.getPropostaInformeSeleccionada().isContracte()) {							
+						nouCodi = "SBM 001/" + yearInString;	
+					}else{
+						nouCodi = "CA " + informe.getActuacio().getReferencia();			
+					}
+				}
+			} else {				
+				nouCodi = "001/" + yearInString;
 			}
 		}
-		
 		return nouCodi;
 	}
 }

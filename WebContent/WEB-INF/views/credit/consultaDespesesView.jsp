@@ -39,15 +39,26 @@
 					<form class="form-horizontal" method="POST" action="despeses">						
 						<div class="form-group">
 							<input type="hidden" id="idPartidaSelected" value="${idPartida}" />
+							<input type="hidden" id="idCentreSelected" value="${idCentre}" />
 							<div class="col-md-offset-1  col-md-3">
 							    <div class="col-md-12">
-							      <label>Filtrar per centre</label>
-							      <div>
+							      	<label>Filtrar per partida</label>
+							      	<div>
 		                                <select class="form-control selectpicker" name="idPartida" data-size="10" id="partidesList" data-live-search="true" >
 		                                	<option value="-1">No filtrar partida</option>
 		                                	<c:forEach items="${llistaPartides}" var="partida" >		                                		
 		                                		<option value="${partida.codi}">${partida.nom}</option>
 		                                	</c:forEach>
+		                                </select>
+		                       		</div>
+							    </div>						    
+						  	</div>	
+						  	<div class="col-md-3">
+							    <div class="col-md-12">
+							      <label>Filtrar per centre</label>
+							      <div>
+		                                <select class="form-control selectpicker" name="idCentre" data-size="10" id="centresList" data-live-search="true" >
+		                                	<option value="-1">No filtrar centre</option>		                                	
 		                                </select>
 		                             </div>
 							    </div>						    
@@ -64,7 +75,7 @@
 								</div>                                
 						  	</div>						  				 
 						  	<div class="col-md-2">
-						    	<input type="submit" class="btn btn-primary" name="filtrar" value="Aplicar Filtres">
+						    	<input type="submit" class="btn btn-primary loadingButton"  data-msg="Aplicant filtres..." name="filtrar" value="Aplicar Filtres">
 							</div>
 						</div>	
 					</form>
@@ -77,8 +88,13 @@
                                 <thead>
                                     <tr>
                                         <th>Referència</th>
-                                        <th>Descripció</th>
-                                        <th>Actuacio</th>
+                                        <th>Data aprovació</th>
+		                                <th>Data aprovació</th>
+		                                <th>Actuacio</th>
+                                        <th>Centre</th>
+		                                <th>Objecte</th>
+		                                <th>Expedient</th>
+                                        <th>Comentari</th>                                       
                                         <th>Valor PA</th>
                                         <th>Valor PA</th>
                                         <th>Valor PD</th>
@@ -90,13 +106,18 @@
                                 	<c:forEach items="${despesesList}" var="despesa" >
 							          	<tr>							          	
 							           		<td>${despesa.idAssignacio}</td>
+							           		<td>${assignacio.informe.getDataAprovacioString()}</td>
+						            		<td>${assignacio.informe.dataAprovacio}</td>
+						            		<td><a href="actuacionsDetalls?ref=${despesa.informe.actuacio.referencia}" class="loadingButton"  data-msg="obrint actuació...">${despesa.informe.actuacio.referencia}</a></td>
+							            	<td>${despesa.informe.actuacio.centre.getNomComplet()}</td>
+						            		<td>${despesa.informe.actuacio.descripcio}</td>
+						            		<td>${despesa.informe.expcontratacio.expContratacio}</td>
 							            	<td>${despesa.comentari}</td>
-							            	<td><a href="actuacionsDetalls?ref=${despesa.idActuacio}">${despesa.idActuacio}</a></td>
 							            	<td>${despesa.getValorPAFormat()}</td>
 							            	<td>${despesa.valorPA}</td>
 							            	<td>${despesa.getValorPDFormat()}</td>
 							            	<td>${despesa.valorPD}</td>
-							            	<td><a href="partidaDetalls?codi=${despesa.idPartida}">${despesa.idPartida}</a></td>								            				            	
+							            	<td><a href="partidaDetalls?codi=${despesa.idPartida}" class="loadingButton"  data-msg="obrint partida...">${despesa.idPartida}</a></td>								            				            	
 							          	</tr>
 							       	</c:forEach>                                	
                                 </tbody>

@@ -19,7 +19,7 @@ public class InformeActuacio {
 		private boolean llicencia;
 		private String tipusLlicencia;
 		private boolean contracte;
-		private double vec;
+		private double pbase;
 		private double iva;
 		private double plic;
 		private String termini;
@@ -43,7 +43,13 @@ public class InformeActuacio {
 		}
 		
 		public String getTipusObraFormat() {
-			if ("obr".equals(this.tipusObra)) return "Obra";
+			if ("obr".equals(this.tipusObra)) {
+				if (this.pbase > 50000) {
+					return "Obra Major";
+				} else {
+					return "Obra menor";
+				}
+			}
 			if ("srv".equals(this.tipusObra)) return "Servei";
 			if ("submi".equals(this.tipusObra)) return "Subministrament";
 			return "";
@@ -77,19 +83,11 @@ public class InformeActuacio {
 			this.contracte = contracte;
 		}
 
-		public double getVec() {
-			return vec;
-		}
 		
-		public String getVecFormat(){
+		public String getPbaseFormat(){
 			DecimalFormat num = new DecimalFormat("#,##0.00");
-		    return num.format(this.vec) + '€';
+		    return num.format(this.pbase) + '€';
 		}
-
-		public void setVec(double vec) {
-			this.vec = vec;
-		}
-
 		public double getIva() {
 			return iva;
 		}
@@ -147,12 +145,21 @@ public class InformeActuacio {
 		public void setSeleccionada(boolean seleccionada) {
 			this.seleccionada = seleccionada;
 		}
+
+		public double getPbase() {
+			return pbase;
+		}
+
+		public void setPbase(double pbase) {
+			this.pbase = pbase;
+		}
 		
 	}
 	
 	private String idInf;
+	private String idInfOriginal;
 	private int idTasca;
-	private String idActuacio;
+	private Actuacio actuacio;
 	private String idIncidencia;	
 	private List<Fitxers.Fitxer> adjunts; 
 	private List<PropostaInforme> llistaPropostes;
@@ -162,6 +169,7 @@ public class InformeActuacio {
 	private String partidaRebutjadaMotiu;
 	private Date dataRebujada;
 	private String partida;
+	private String codiPartida;
 	private String comentariPartida;
 	private User usuariCapValidacio;
 	private Date dataCapValidacio;
@@ -171,18 +179,27 @@ public class InformeActuacio {
 	private List<Oferta> llistaOfertes;
 	private Oferta ofertaSeleccionada;
 	private List<Factura> llistaFactures;
+	private List<Factura> llistaCertificacions;
+	private List<InformeActuacio> llistaModificacions;
 	private Date dataTancament;
+	private Date dataRecepcio;
 	private String notes;
 	private String tipo;
-	private String expcontratacio;
+	private Expedient expcontratacio;
+	private Llicencia llicencia;
 	private Date dataPD;
 	private String tipoPD;
 	private Fitxer propostaActuacio;
 	private Fitxer vistiplauPropostaActuacio;
+	private Fitxer informeSupervisio;
 	private Fitxer conformeAreaEconomivaPropostaActuacio;
 	private Fitxer autoritzacioPropostaAutoritzacio;
+	private Fitxer autoritzacioConsellDeGovern;
+	private Fitxer autoritzacioConseller;
 	private Fitxer propostaTecnica;
 	private Fitxer autoritzacioPropostaDespesa;
+	private Fitxer resolucioModificacio;
+	private Fitxer contracteSignat;
 	
 	public InformeActuacio() {	
 		this.llistaPropostes = new ArrayList<PropostaInforme>();
@@ -202,17 +219,7 @@ public class InformeActuacio {
 
 	public void setIdTasca(int idTasca) {
 		this.idTasca = idTasca;
-	}
-
-	public String getIdActuacio() {
-		return idActuacio;
-	}
-
-	public void setIdActuacio(String idActuacio) {
-		this.idActuacio = idActuacio;
-	}
-
-	
+	}	
 
 	public List<Fitxers.Fitxer> getAdjunts() {
 		return adjunts;
@@ -239,7 +246,7 @@ public class InformeActuacio {
 	}
 	
 	public String getDataCreacioString() {
-		DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");	
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
 		String dataString = "";
 		if (this.dataCreacio != null) dataString = df.format(this.dataCreacio);
 		return dataString;
@@ -338,11 +345,26 @@ public class InformeActuacio {
 	public void setLlistaFactures(List<Factura> llistaFactures) {
 		this.llistaFactures = llistaFactures;
 	}
+	
+	public double getTotalFacturat() {
+		double total = 0;
+		if (this.llistaFactures != null) {
+			for (Factura factura: this.llistaFactures) {
+				if (!factura.isAnulada()) total += factura.getValor();
+			}
+		}
+		return total;
+	}
+	
+	public String getTotalFacturatFormat() {
+		DecimalFormat num = new DecimalFormat("#,##0.00");
+	    return num.format(this.getTotalFacturat()) + '€';
+	}
 
 	public Date getDataTancament() {
 		return dataTancament;
 	}
-
+	
 	public void setDataTancament(Date dataTancament) {
 		this.dataTancament = dataTancament;
 	}
@@ -402,11 +424,11 @@ public class InformeActuacio {
 		this.tipo = tipo;
 	}
 
-	public String getExpcontratacio() {
+	public Expedient getExpcontratacio() {
 		return expcontratacio;
 	}
 
-	public void setExpcontratacio(String expcontratacio) {
+	public void setExpcontratacio(Expedient expcontratacio) {
 		this.expcontratacio = expcontratacio;
 	}
 
@@ -487,5 +509,125 @@ public class InformeActuacio {
 
 	public void setAutoritzacioPropostaDespesa(Fitxer autoritzacioPropostaDespesa) {
 		this.autoritzacioPropostaDespesa = autoritzacioPropostaDespesa;
+	}
+
+	public String getCodiPartida() {
+		return codiPartida;
+	}
+
+	public void setCodiPartida(String codiPartida) {
+		this.codiPartida = codiPartida;
+	}
+
+	public List<InformeActuacio> getLlistaModificacions() {
+		return llistaModificacions;
+	}
+
+	public void setLlistaModificacions(List<InformeActuacio> llistaModificacions) {
+		this.llistaModificacions = llistaModificacions;
+	}
+
+	public String getIdInfOriginal() {
+		return idInfOriginal;
+	}
+
+	public void setIdInfOriginal(String idInfOriginal) {
+		this.idInfOriginal = idInfOriginal;
+	}
+
+	public Fitxer getContracteSignat() {
+		return contracteSignat;
+	}
+
+	public void setContracteSignat(Fitxer contracteSignat) {
+		this.contracteSignat = contracteSignat;
+	}
+
+	public Date getDataRecepcio() {
+		return dataRecepcio;
+	}
+
+	public void setDataRecepcio(Date dataRecepcio) {
+		this.dataRecepcio = dataRecepcio;
+	}
+	
+	public String getDataRecepcioString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+		String dataString = "";
+		if (this.dataRecepcio != null) dataString = df.format(this.dataRecepcio);
+		return dataString;
+	}
+
+	public Actuacio getActuacio() {
+		return actuacio;
+	}
+
+	public void setActuacio(Actuacio actuacio) {
+		this.actuacio = actuacio;
+	}
+	
+	public String getEstatEconomic() {
+		String estat = "Sense partida";
+		if (this.partida!= null && !this.partida.isEmpty()) {
+			//RF (Reserva de fons)
+			estat = "RF";			
+		}
+		//Contractat (PD i Contracte)
+		if (this.autoritzacioPropostaDespesa.getRuta() != null || this.contracteSignat.getRuta() != null) {
+			estat = "Contratat";
+		}
+		//Facturat (factures i certificacions)
+		if (this.getTotalFacturat() > 0) {
+			estat = "Facturat";
+		}
+		return estat;
+	}
+
+	public Fitxer getAutoritzacioConsellDeGovern() {
+		return autoritzacioConsellDeGovern;
+	}
+
+	public void setAutoritzacioConsellDeGovern(Fitxer autoritzacioConsellDeGovern) {
+		this.autoritzacioConsellDeGovern = autoritzacioConsellDeGovern;
+	}
+
+	public Fitxer getAutoritzacioConseller() {
+		return autoritzacioConseller;
+	}
+
+	public void setAutoritzacioConseller(Fitxer autoritzacioConseller) {
+		this.autoritzacioConseller = autoritzacioConseller;
+	}
+
+	public Fitxer getInformeSupervisio() {
+		return informeSupervisio;
+	}
+
+	public void setInformeSupervisio(Fitxer informeSupervisio) {
+		this.informeSupervisio = informeSupervisio;
+	}
+
+	public List<Factura> getLlistaCertificacions() {
+		return llistaCertificacions;
+	}
+
+	public void setLlistaCertificacions(List<Factura> llistaCertificacions) {
+		this.llistaCertificacions = llistaCertificacions;
+	}
+
+	public Fitxer getResolucioModificacio() {
+		return resolucioModificacio;
+	}
+
+	public void setResolucioModificacio(Fitxer resolucioModificacio) {
+		this.resolucioModificacio = resolucioModificacio;
+	}
+
+	public Llicencia getLlicencia() {
+		return llicencia;
+	}
+
+	public void setLlicencia(Llicencia llicencia) {
+		this.llicencia = llicencia;
 	}
 }

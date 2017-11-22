@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -133,7 +134,7 @@ public class DoCreateSortidaServlet extends HttpServlet {
 	   			}	 
 	   			//Actualitzam referències registres
 	   			RegistreCore.actualitzarIdIncidencia(conn, "S", referencia, referenciesIncidencies);
-	   		} catch (SQLException e) {
+	   		} catch (SQLException | NamingException e) {
 	  			e.printStackTrace();
 	  			errorString = e.getMessage();
 	   		}

@@ -46,7 +46,9 @@ function loadTipus(){
 function searchIncidencies(idCentre) {
 	var optionDefault = '';
 	if ($('#tipusRegistre').val() == 'E') {
-		optionDefault = "<option value='-1'>Nova incidència</option>";
+		
+		optionDefault = "<option value='-1'>Nova incidència</option>";	
+		optionDefault += "<option value='-2'>Sense incidència</option>";
 	} else {
 		optionDefault = "<option value='-1'>Sense incidència</option>";
 	}
@@ -71,7 +73,7 @@ function searchIncidencies(idCentre) {
             	$('#incidencies').append(html);
         		$.each(data.llistatActuacions, function( key, data ) {
         			var refExt = '';
-        			if (data.refExt != '') refExt = ' (EXP ' + data.refExt + ') ';
+        			if (data.refExt != '') refExt = ' <b>(EXP ' + data.refExt + ')</b> ';
         			$('#incidenciesList' + idCentre).append('<option value=' + data.referencia + '>' + data.referencia + refExt + '-' + data.descripcio + '</option>');
         		});     
         		$('.selectpicker').selectpicker('refresh');

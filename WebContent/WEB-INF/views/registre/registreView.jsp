@@ -34,9 +34,20 @@
                     </div>
                 </div>
                 <!-- /.row -->
+                
+                 <div class="row">
+                	<div class="col-md-12">
+               			<p style="color: red;">
+						<c:if test="${!registre.actiu}">
+							Anul·lat
+						</c:if>
+						</p>
+               		</div>
+               	 </div>      
+                
 				<div class="row">
 	                <div class="col-md-12">
-	                    <div class="panel panel-success">
+	                    <div class="panel panel-${registre.actiu ? 'success' : 'danger' }">
 	                        <div class="panel-heading">
 	                           	<div class="row">
 	                        		<div class="col-md-4">
@@ -55,17 +66,17 @@
 	                        </div>
 	                        <div class="panel-body">
 	                        	<c:choose>
-								    <c:when test="${registre.tipus == 'Sol·licitud Personal'}">			
+								    <c:when test="${registre.tipus == 'Sol·licitud Personal' && ! canViewPersonal}">			
 								    	<div class="row panel-body">
 			                        		<p>Sol·licitud personal</p>
 			                        	</div>		
 								   	</c:when>    
-								   	 <c:when test="${registre.tipus == 'Resposta Sol·licitud Personal'}">			
+								   	 <c:when test="${registre.tipus == 'Resposta Sol·licitud Personal' && ! canViewPersonal}">			
 								    	<div class="row panel-body">
 			                        		<p>Resposta Sol·licitud Personal</p>
 			                        	</div>		
 								   	</c:when>    
-								   	 <c:when test="${registre.tipus == 'Tramesa documentació Personal'}">			
+								   	 <c:when test="${registre.tipus == 'Tramesa documentació Personal' && ! canViewPersonal}">			
 								    	<div class="row panel-body">
 			                        		<p>Tramesa documentació Personal</p>
 			                        	</div>		
@@ -113,11 +124,11 @@
 	                        		</div>
 	                        		<div class="col-md-4">            			
 	                        		</div>
-	                        		<c:if test="${registre.idIncidencies != '-1#' && registre.idIncidencies != '-1'}">
+	                        		<c:if test="${registre.idIncidencies != '-1#' && registre.idIncidencies != '-1' && registre.idIncidencies != '-2#' && registre.idIncidencies != '-2'}">
 		                        		<div class="col-md-4">
 		                        			Incidències relacionades: </br>
 		                        			<c:forEach items="${registre.getIdIncidenciesList()}" var="idIncidencia" >
-	                        			 		<a href="incidenciaDetalls?ref=${idIncidencia}">${idIncidencia}</a></br>
+	                        			 		<a href="incidenciaDetalls?ref=${idIncidencia}" class="loadingButton"  data-msg="obrint incidència...">${idIncidencia}</a></br>
 	                        			 	</c:forEach>           			
 		                        		</div>
 		                        	</c:if>
