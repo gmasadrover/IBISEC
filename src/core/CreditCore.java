@@ -406,6 +406,14 @@ public class CreditCore {
 		pstm.executeUpdate();
 	}
 	
+	public static void anularReserva(Connection conn, String idInforme) throws SQLException {
+		String sql = "DELETE FROM public.tbl_assignacionscredit"
+					+ " WHERE idinf = ?;";
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setString(1, idInforme);
+		pstm.executeUpdate();
+	}
+	
 	public static double getTotalReservat(Connection conn, String idPartida) throws SQLException{
 		double totalReservat = 0;
 		String sql = "SELECT SUM(valorpa) AS total"

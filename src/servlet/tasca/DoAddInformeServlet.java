@@ -96,12 +96,12 @@ public class DoAddInformeServlet extends HttpServlet {
 				tipusObra = multipartParams.getParametres().get("tipusContracte");						
 				llicencia = false;
 				tipusLlicencia = "";
-				contracte = false;		 
-			    if (new String("obr").equals(tipusObra)) {
-			    	llicencia = new String("si").equals(multipartParams.getParametres().get("reqLlicencia"));	 	   
-					if (llicencia) tipusLlicencia = multipartParams.getParametres().get("tipusLlicencia");					
-					contracte = new String("si").equals(multipartParams.getParametres().get("formContracte"));
-			    }			    
+				contracte = false;	
+				if ("obr".equals(tipusObra)) {
+					llicencia = new String("si").equals(multipartParams.getParametres().get("reqLlicencia"));	 	   
+					if (llicencia) tipusLlicencia = multipartParams.getParametres().get("tipusLlicencia");			
+				}		    			
+				contracte = new String("si").equals(multipartParams.getParametres().get("formContracte"));			    		    
 			    pbase = Double.parseDouble(multipartParams.getParametres().get("pbase").replace(',','.'));
 			    iva = Double.parseDouble(multipartParams.getParametres().get("iva"));
 			    plic = Double.parseDouble(multipartParams.getParametres().get("plic").replace(',','.'));	

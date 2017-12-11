@@ -153,62 +153,64 @@ public class DoEditFacturaServlet extends HttpServlet {
 					}
 					InputStream inStream = null;
 					OutputStream outStream = null;			   
-				    for (Fitxer arxiu: fitxers) {			    			    	
-				    	File tmpFile =  new File(ruta + "/documents/" + idIncidencia);
-						if (!tmpFile.exists()) {
-							tmpFile.mkdir();
-						}
-						tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio");
-						if (!tmpFile.exists()) {
-							tmpFile.mkdir();
-						}
-						tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
-						if (!tmpFile.exists()) {
-							tmpFile.mkdir();
-						}
-						tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe");
-						if (!tmpFile.exists()) {
-							tmpFile.mkdir();
-						}
-						tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme);
-						if (!tmpFile.exists()) {
-							tmpFile.mkdir();
-						}
-						tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses");
-						if (!tmpFile.exists()) {
-							tmpFile.mkdir();
-						}
-						tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + idProveidor);
-						if (!tmpFile.exists()) {
-							tmpFile.mkdir();
-						}
-						tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + idProveidor + "/Factures");
-						if (!tmpFile.exists()) {
-							tmpFile.mkdir();
-						}
-						tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + idProveidor + "/Factures/" + idFactura);
-						if (!tmpFile.exists()) {
-							tmpFile.mkdir();
-						}
-						String fileName = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + idProveidor + "/Factures/" + idFactura + "/";
-	        			File b = new File(fileName + arxiu.getNom());
-				    	
-	        			inStream = new FileInputStream(new File(arxiu.getRuta()));
-			    	    outStream = new FileOutputStream(b);
-
-			    	    byte[] buffer = new byte[1024];
-
-			    	    int length;
-			    	    //copy the file content in bytes
-			    	    while ((length = inStream.read(buffer)) > 0){
-			    	    	outStream.write(buffer, 0, length);
-			    	    }
-
-			    	    inStream.close();
-			    	    outStream.close();
-
-			    	    //delete the original file
-			    	    Fitxers.eliminarFitxer(arxiu.getRuta());
+				    for (Fitxer arxiu: fitxers) {	
+				    	if (arxiu.getRuta() != null) {
+					    	File tmpFile =  new File(ruta + "/documents/" + idIncidencia);
+							if (!tmpFile.exists()) {
+								tmpFile.mkdir();
+							}
+							tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio");
+							if (!tmpFile.exists()) {
+								tmpFile.mkdir();
+							}
+							tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
+							if (!tmpFile.exists()) {
+								tmpFile.mkdir();
+							}
+							tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe");
+							if (!tmpFile.exists()) {
+								tmpFile.mkdir();
+							}
+							tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme);
+							if (!tmpFile.exists()) {
+								tmpFile.mkdir();
+							}
+							tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses");
+							if (!tmpFile.exists()) {
+								tmpFile.mkdir();
+							}
+							tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + idProveidor);
+							if (!tmpFile.exists()) {
+								tmpFile.mkdir();
+							}
+							tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + idProveidor + "/Factures");
+							if (!tmpFile.exists()) {
+								tmpFile.mkdir();
+							}
+							tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + idProveidor + "/Factures/" + idFactura);
+							if (!tmpFile.exists()) {
+								tmpFile.mkdir();
+							}
+							String fileName = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + idProveidor + "/Factures/" + idFactura + "/";
+		        			File b = new File(fileName + arxiu.getNom());
+					    	
+		        			inStream = new FileInputStream(new File(arxiu.getRuta()));
+				    	    outStream = new FileOutputStream(b);
+	
+				    	    byte[] buffer = new byte[1024];
+	
+				    	    int length;
+				    	    //copy the file content in bytes
+				    	    while ((length = inStream.read(buffer)) > 0){
+				    	    	outStream.write(buffer, 0, length);
+				    	    }
+	
+				    	    inStream.close();
+				    	    outStream.close();
+	
+				    	    //delete the original file
+				    	    Fitxers.eliminarFitxer(arxiu.getRuta());
+				    	}
 				    }
 	   			} else {
 	   				FacturaCore.saveArxiu(ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia(), idActuacio, idInforme, idProveidor, idFactura, fitxers, conn);

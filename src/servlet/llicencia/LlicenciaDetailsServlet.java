@@ -52,7 +52,7 @@ public class LlicenciaDetailsServlet extends HttpServlet {
 		   }else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.llicencia_detalls)) {
 	   		response.sendRedirect(request.getContextPath() + "/");	 	
 		   }else{		   
-			   String codi = request.getParameter("codi");   
+			   String codi = request.getParameter("codi"); 			  
 		       String errorString = null;
 		       Llicencia llicencia = new Llicencia();
 		       Actuacio actuacio = new Actuacio();	
@@ -72,7 +72,7 @@ public class LlicenciaDetailsServlet extends HttpServlet {
 		       // Store info in request attribute, before forward to views
 		       request.setAttribute("errorString", errorString);
 		       request.setAttribute("llicencia", llicencia);
-		       request.setAttribute("actuacio", actuacio);
+		       request.setAttribute("actuacio", actuacio);		       
 		       request.setAttribute("incidencia", incidencia);
 		       request.setAttribute("canModificar", canModificar);
 		       request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "llicencies"));

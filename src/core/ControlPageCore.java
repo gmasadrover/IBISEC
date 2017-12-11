@@ -104,11 +104,29 @@ public class ControlPageCore {
 			active = "";
 			collapse = "";
 		}
+		//Bastanteos
+		if (UsuariCore.hasPermision(conn, usuari, SectionPage.bastanteos_list)) {			
+			if (seccio.equals("bastanteos")) active = "active"; 
+			menu.append("<li class='" + active + "'>");
+			menu.append("	<a href='bastanteos' class='loadingButton'  data-msg='Carregant bastanteos...'><i class='fa fa-fw fa-list'></i> Bastanteos</a>");
+			menu.append("</li>");
+			active = "";
+			collapse = "";
+		}
+		//Judicials
+		if (UsuariCore.hasPermision(conn, usuari, SectionPage.judicials_list)) {			
+			if (seccio.equals("judicials")) active = "active"; 
+			menu.append("<li class='" + active + "'>");
+			menu.append("	<a href='judicials' class='loadingButton'  data-msg='Carregant estat contenciós...'><i class='fa fa-fw fa-list'></i> Procediments judicials</a>");
+			menu.append("</li>");
+			active = "";
+			collapse = "";
+		}
 		//Llicencies
 		if (UsuariCore.hasPermision(conn, usuari, SectionPage.llicencia_list)) {			
 			if (seccio.equals("llicencies")) active = "active"; 
 			menu.append("<li class='" + active + "'>");
-			menu.append("	<a href='llicencies' class='loadingButton'  data-msg='Carregant llicències...'><i class='fa fa-fw fa-list'></i> Llicencies</a>");
+			menu.append("	<a href='llicencies' class='loadingButton'  data-msg='Carregant autoritzacions urbanístiques...'><i class='fa fa-fw fa-list'></i> Aut Urbanístiques</a>");
 			menu.append("</li>");
 			active = "";
 			collapse = "";

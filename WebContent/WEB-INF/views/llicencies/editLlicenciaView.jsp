@@ -49,7 +49,9 @@
 	                                <label class="col-xs-3 control-label">Llicencia</label>
 	                                <div class="col-xs-6">
 	                                	<input class="form-control" name="newLlicencia" value="${llicencia.codi}" disabled>
-	                                	<input type="hidden" name="llicencia" value="${llicencia.codi}">                            	
+	                                	<input type="hidden" name="llicencia" value="${llicencia.codi}">  
+	                                	<input type="hidden" name="idActuacio" value="${actuacio.referencia}"> 
+	                                	<input type="hidden" name="from" value="${from}">                         	
 	                                </div>
 	                            </div>   
 	                    	</div>
@@ -99,7 +101,40 @@
 	                                </div>
 	                            </div>
                             </div>
-	                	</div>	                	           	
+	                	</div>	
+	                	<div class="row">
+		                    <div class="col-md-12">
+		                        <h2 class="margin_bottom30">Arxius</h2>
+		                        <div class="row">  
+			                        <c:forEach items="${llicencia.arxius}" var="arxiu" >
+										<div class="document">
+											<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
+												${arxiu.nom} - ${arxiu.getDataString()}
+											</a>
+											<c:if test="${arxiu.signat}">
+												<span class="glyphicon glyphicon-pencil signedFile"></span>
+											</c:if>
+											<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
+											<br>
+											<div class="infoSign hidden">
+												<c:forEach items="${arxiu.firmesList}" var="firma" >
+													<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+													<br>
+												</c:forEach>
+											</div>
+										</div>					            		
+									</c:forEach>	
+								</div>
+		                		<div class="row">            			
+									<div class="form-group">
+										<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+			                            <div class="col-xs-5">   
+			                                <input type="file" class="btn" name="file" multiple/><br/>
+										</div>					
+			         				</div>						
+				            	</div>              		
+		                    </div>
+		                </div>                	           	
 	                	<div class="row">
 	                		<div class="form-group">
 						        <div class="col-xs-offset-9 col-xs-9">

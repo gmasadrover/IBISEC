@@ -79,6 +79,7 @@
 		    				<div class="form-group">
 		    					<input type="hidden" name="idActuacio" value="${idActuacio}">
 		    					<input type="hidden" name="idIncidencia" value="${idIncidencia}">
+		    					<input type="hidden" name="idProcediment" value="${idProcediment}">
 		    					<input type="hidden" name="tipus" value="${tipus}">
 		    					<input type="hidden" name="referencia" value="${nouCodi}">    
 		    					<input type="hidden" id="idCentreSelected" value="-1">                   

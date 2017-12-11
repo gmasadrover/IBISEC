@@ -101,7 +101,16 @@
 	                                	<c:forEach items="${seguimentList}" var="tasca" >	                                		
 								          	<tr class="${tasca.activa ? tasca.tipus == 'notificacio' ? "warning" : "success" : "danger"}">							          	
 								           		<td><a href="tasca?id=${tasca.idTasca}">${tasca.idTasca} - ${tasca.descripcio}</a></td>
-								            	<td><a href="actuacionsDetalls?ref=${tasca.actuacio.referencia}">${tasca.actuacio.referencia}</a></td>
+								            	<td>
+								            		<c:choose>
+								            			<c:when test="${tasca.actuacio.referencia != '-1'}">
+								            				<a href="actuacionsDetalls?ref=${tasca.actuacio.referencia}" class="loadingButton"  data-msg="obrint actuació...">${tasca.actuacio.referencia}</a>
+								            			</c:when>
+								            			<c:otherwise>
+								            				${tasca.idinforme}
+								            			</c:otherwise>
+								            		</c:choose>
+								            	</td>
 								            	<td>${tasca.actuacio.centre.getNomComplet()}</td>							            	
 								            	<td>${tasca.getDataCreacioString()}</td>
 								            	<td>${tasca.dataCreacio}</td>	

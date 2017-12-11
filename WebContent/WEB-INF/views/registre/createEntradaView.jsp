@@ -80,7 +80,7 @@
                             </div>
                             
                             <c:if test="${idIncidencia == null}">
-                            	<div class="form-group">
+                            	<div class="form-group centresdiv">
 	                                <label class="col-xs-3  control-label">Centre</label>
 	                                <div class="col-xs-3">
 		                                <select class="form-control selectpicker centresList" name="idCentre" data-live-search="true" data-size="5" id="centresList" multiple>
@@ -88,7 +88,18 @@
 			                            </select>
 		                             </div>
 	                            </div> 
-	                            <div id="incidencies"></div>                            	
+	                            <div id="incidencies"></div>        
+	                            <div class="form-group procedimentdiv hidden">
+	                            	<label class="col-xs-3  control-label">Procediments</label>
+	                                <div class="col-xs-3">
+		                                <select class="form-control selectpicker procedimentList" name="idProcediment" data-live-search="true" data-size="5" id="procedimentList">
+			                            	<option value="-1">No hi ha relació</option>
+			                            	<c:forEach items="${llistaProcediment}" var="procediment" >
+		                                		<option value='${procediment.referencia}'>${procediment.numAutos}</option>
+		                                	</c:forEach>	
+			                            </select>
+		                             </div>
+	                            </div>                    	
 							</c:if>									
                             <br>
 						    <div class="form-group">

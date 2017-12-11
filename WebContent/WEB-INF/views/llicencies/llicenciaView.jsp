@@ -33,71 +33,15 @@
                         </ol>
                     </div>
                 </div>
-                <!-- /.row -->
-				<c:if test="${not empty actuacio}">
-				<div class="row">
-	                <div class="col-md-12">
-	                    <div class="panel panel-${actuacio.isActiva() ? actuacio.isPaAprovada() ? actuacio.isAprovada() ? "success" : "info" : "warning" : "danger"}">
-	                        <div class="panel-heading">
-	                           	<div class="row">
-	                        		<div class="col-md-6">
-	                        			 ${actuacio.referencia} - ${actuacio.centre.getNomComplet()}
-	                        		</div>
-	                        		<div class="col-md-6">
-	                        			Darrera modificació: ${actuacio.modificacio} - ${actuacio.getDarreraModificacioString()}
-	                        		</div>
-	                        	</div>
-	                        </div>
-	                        <div class="panel-body">
-	                            <p>${actuacio.descripcio}</p>
-	                            <br />
-	                            <p>Notes: ${actuacio.notes}</p>
-	                        </div>
-	                        <div class="panel-footer">
-	                        	<div class="row">
-	                        		<div class="col-md-3">
-	                        			Creació: ${actuacio.getDataCreacioString()}
-	                        		</div>
-	                        		<div class="col-md-3">
-	                        			<c:if test="${actuacio.isPaAprovada()}">
-	                        				Aprovació PA: ${actuacio.getDataAprovarPaString()}
-	                        			</c:if>
-	                        		</div>
-	                        		<div class="col-md-3">
-	                        			<c:if test="${actuacio.isAprovada()}">
-	                        				Aprovació: ${actuacio.getDataAprovacioString()}
-	                        			</c:if>
-	                        		</div>
-	                        		<div class="col-md-3">
-	                        			<c:if test="${!actuacio.isActiva()}">
-	                        				Tancament: ${actuacio.getDataTancamentString()}
-	                        			</c:if>
-	                        		</div>
-	                        	</div>
-	                        </div>
-	                    </div>
-	                </div>
-            	</div> 
-            	<div class="row">
-	                <div class="col-md-offset-10 col-md-2">	
-	                	<div class="checkbox">
-	                        <label>
-	                          	<input id="seguimentActuacio" data-idactuacio="${actuacio.referencia}" data-idusuari="${idUsuariLogg}" data-seguir="${!actuacio.seguiment}" type="checkbox" ${actuacio.seguiment ? 'checked' : ''}> Seguir Actuació
-	                        </label>
-	                	</div> 
-	                </div>
-	            </div>
+                <!-- /.row -->				
             	<div class="row">
             		<div class="col-md-12">
             			<p> 
                         	<label>Llicència: </label> ${llicencia.codi}
                         </p>
             			<p> 
-                        	<label>Expedient: </label> ${llicencia.expedient.expContratacio}
-                        </p>
-                        <p> 
-                        	<label>Descripció: </label> ${llicencia.expedient.informe.getPropostaInformeSeleccionada().objecte}
-                        </p>    
+                        	<label>Expedient: </label> ${llicencia.codiExpedient}
+                        </p>                       
                         <p> 
                         	<label>Tipus: </label> ${llicencia.getTipusFormat()}
                         </p>    
@@ -106,9 +50,6 @@
                         </p> 
                         <p> 
                         	<label>ICO: </label> ${llicencia.ico}
-                        </p>    
-                        <p> 
-                        	<label>Recàrreg ATIB: </label> ${llicencia.valorATIB}
                         </p>
                         <p> 
                         	<label>Data sol·licitud: </label> ${llicencia.getDataPeticioString()}
@@ -121,7 +62,27 @@
                         </p>       
                         <p> 
                         	<label>Observacions: </label> ${llicencia.observacio}
-                        </p>    
+                        </p>  
+                        <p>  
+	                        <c:forEach items="${llicencia.arxius}" var="arxiu" >
+								<div class="document">
+									<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
+										${arxiu.nom} - ${arxiu.getDataString()}
+									</a>
+									<c:if test="${arxiu.signat}">
+										<span class="glyphicon glyphicon-pencil signedFile"></span>
+									</c:if>
+									<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
+									<br>
+									<div class="infoSign hidden">
+										<c:forEach items="${arxiu.firmesList}" var="firma" >
+											<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+											<br>
+										</c:forEach>
+									</div>
+								</div>					            		
+							</c:forEach>	
+						</p>  
             		</div>            		 
             	</div>
             	<div class="row">
@@ -135,13 +96,10 @@
 	                	</div>       
             		</div>
             	</div>
-				</c:if>
             </div>
             <!-- /.container-fluid -->
-
         </div>
         <!-- /#page-wrapper -->
-
     </div>
     <jsp:include page="../_footer.jsp"></jsp:include>
     <script src="js/llicencia/detalls.js?<%=application.getInitParameter("datakey")%>"></script>

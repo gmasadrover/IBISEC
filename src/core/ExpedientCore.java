@@ -19,7 +19,7 @@ import bean.InformeActuacio;
 public class ExpedientCore {
 	static final String SQL_CAMPS = "e.expcontratacio AS expcontratacio, databoib, dataperfilcontratant, datalimitprsentacio," +
 									" dataadjudicacio, dataformalitzaciocontracte, datainiciexecucio, datarecepcio," +
-									" dataretorngarantia, dataliquidacio, garantia, idinf, idactuacio, tipus, contracte, e.datacre AS datacre";
+									" dataretorngarantia, dataliquidacio, garantia, idinf, idactuacio, tipus, contracte, e.datacre AS datacre, e.anulat AS anulat, e.motiuanulacio AS motiuanulacio";
 	
 	private static Expedient initExpedient(Connection conn, ResultSet rs) throws SQLException, NamingException{
 		Expedient expedient = new Expedient();
@@ -39,6 +39,8 @@ public class ExpedientCore {
 		expedient.setTipus(rs.getString("tipus"));
 		expedient.setDataCreacio(rs.getTimestamp("datacre"));
 		expedient.setContracte(rs.getString("contracte"));
+		expedient.setAnulat(rs.getBoolean("anulat"));
+		expedient.setMotiuAnulament(rs.getString("motiuanulacio"));
 		return expedient;
 	}
 	
@@ -137,8 +139,8 @@ public class ExpedientCore {
 				}
 			}
 		}
-		String sql = "INSERT INTO public.tbl_expedient(expcontratacio, dataadjudicacio, tipus, contracte, datacre, anyexpedient)"
-				+ " VALUES(?, ?, ?, ?, localtimestamp, ?);";					
+		String sql = "INSERT INTO public.tbl_expedient(expcontratacio, dataadjudicacio, tipus, contracte, datacre, anyexpedient, anulat)"
+				+ " VALUES(?, ?, ?, ?, localtimestamp, ?, false);";					
 		PreparedStatement pstm;
 		pstm = conn.prepareStatement(sql);	
 		String nouCodi = "";
@@ -193,6 +195,17 @@ public class ExpedientCore {
 		pstm.setString(1, refExpNou);
 		pstm.setString(2, refExp);
 		pstm.executeUpdate();	
+	}
+	
+	public static void anularExpedient(Connection conn, String refExp, String motiuAnulacio) throws SQLException {
+		String sql = "UPDATE public.tbl_expedient"
+				+ " SET anulat = true, motiuanulacio = ?"
+				+ " WHERE expcontratacio = ?";
+		PreparedStatement pstm;
+		pstm = conn.prepareStatement(sql);	
+		pstm.setString(1, motiuAnulacio);
+		pstm.setString(2, refExp);
+		pstm.executeUpdate();
 	}
 	
 	public static void updateExpedient(Connection conn, Expedient expedient) throws SQLException {

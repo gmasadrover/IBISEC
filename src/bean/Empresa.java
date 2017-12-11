@@ -168,6 +168,7 @@ public class Empresa {
    private String email;
    private Date dataConstitucio;
    private List<Fitxers.Fitxer> documentsEscrituraList;
+   private Fitxers.Fitxer documentREA;
    private String classificacioString;
    private Fitxers.Fitxer classificacioFileROLECE;
    private Fitxers.Fitxer classificacioFileJCCaib;
@@ -599,6 +600,14 @@ public class Empresa {
 
 	public void setExtincioFile(Fitxers.Fitxer extincioFile) {
 		this.extincioFile = extincioFile;
+	}
+
+	public Fitxers.Fitxer getDocumentREA() {
+		return documentREA;
+	}
+
+	public void setDocumentREA(Fitxers.Fitxer documentREA) {
+		this.documentREA = documentREA;
 	}
 
 }

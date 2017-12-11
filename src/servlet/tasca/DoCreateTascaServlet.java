@@ -48,7 +48,7 @@ public class DoCreateTascaServlet extends HttpServlet {
 		Connection conn = MyUtils.getStoredConnection(request);
 		String idIncidencia = "";		
 		String idActuacio = "";
-		
+		String idInformePrevi = "";
 		Fitxers.formParameters multipartParams = new Fitxers.formParameters();
 		try {
 			multipartParams = Fitxers.getParamsFromMultipartForm(request);
@@ -64,6 +64,7 @@ public class DoCreateTascaServlet extends HttpServlet {
 	   	String comentari =multipartParams.getParametres().get("comentari");
 	   	String usuari = multipartParams.getParametres().get("idUsuari");
 	   	String idCentre = multipartParams.getParametres().get("idCentre");
+	   	String idProcediment = multipartParams.getParametres().get("idProcediment");
 	   	String errorString = null;	   		   	
 	   	try {	   		
    			if (tipus.equals("manual")) {
@@ -87,7 +88,10 @@ public class DoCreateTascaServlet extends HttpServlet {
 		 	    ActuacioCore.novaActuacio(conn, actuacio);   				
    				
 		 	   tipus = "generic";
-		 	    
+   			} else if (idProcediment != null && !idProcediment.equals("")) {
+   				idIncidencia = "-1";
+   				idActuacio = "-1";
+   				idInformePrevi = idProcediment;
    			} else {
    				idIncidencia = multipartParams.getParametres().get("idIncidencia"); 
    		   		if (multipartParams.getParametres().get("idActuacio") != "") {
@@ -108,7 +112,7 @@ public class DoCreateTascaServlet extends HttpServlet {
    			}else{
    				idUsuariTasca = UsuariCore.finCap(conn, usuari).getIdUsuari();
    			}	
-   			idTasca = TascaCore.novaTasca(conn, tipus, idUsuariTasca, idUsuari, idActuacio, idIncidencia, comentari, assumpte, "", multipartParams.getFitxers());
+   			idTasca = TascaCore.novaTasca(conn, tipus, idUsuariTasca, idUsuari, idActuacio, idIncidencia, comentari, assumpte, idInformePrevi, multipartParams.getFitxers());
    		} catch (SQLException | NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

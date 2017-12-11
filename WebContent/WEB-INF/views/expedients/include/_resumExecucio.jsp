@@ -63,7 +63,7 @@
 	                      	<th>Tipus</th>
 	                        <th>Proveïdor</th>
 	                      	<th>notes</th>  	
-	                      	<th>a</th>                      	
+	                      	<th>Arxiu</th>                      	
 	                   	</tr>
 	               	</thead>
 	              	<tbody>
@@ -86,7 +86,7 @@
 				            	<td>${certificacio.tipusFactura}</td>
 				            	<td>${certificacio.idProveidor}</td>
 				            	<td>${certificacio.notes}</td>	 
-				            	<td>a<td>				            	
+				            	<td><a target="_blanck" href="downloadFichero?ruta=${certificacio.arxiu.getEncodedRuta()}">${certificacio.arxiu.nom}</a></td>			            				            	
 				          	</tr>
 				       	</c:forEach>
               		</tbody>

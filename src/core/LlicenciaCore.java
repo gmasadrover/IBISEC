@@ -1,5 +1,6 @@
 package core;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,9 +9,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import bean.Llicencia;
+import utils.Fitxers;
+import utils.Fitxers.Fitxer;
 
 public class LlicenciaCore {
 	static final String SQL_CAMPS = "codi, expcontratacio, tipus, taxa, observacio, datapagada, importatib, ico, datasolicitud, dataconcesio";
@@ -21,12 +26,12 @@ public class LlicenciaCore {
 		llicencia.setCodiExpedient(rs.getString("expcontratacio"));
 		llicencia.setTipus(rs.getString("tipus"));
 		llicencia.setTaxa(rs.getDouble("taxa"));
-		llicencia.setIco(rs.getDouble("ico"));
-		llicencia.setValorATIB(rs.getDouble("importatib"));
+		llicencia.setIco(rs.getDouble("ico"));		
 		llicencia.setObservacio(rs.getString("observacio"));
 		llicencia.setPeticio(rs.getTimestamp("datasolicitud"));
 		llicencia.setConcesio(rs.getTimestamp("dataconcesio"));
 		llicencia.setPagament(rs.getTimestamp("datapagada"));
+		llicencia.setArxius(getArxius(rs.getString("codi")));
 		return llicencia;
 	}
 	
@@ -165,5 +170,58 @@ public class LlicenciaCore {
 			code = yearInString + "-" + prefix + "-" + numFormatted;
 		}
 		return code;
+	}
+	
+	public static void guardarArxiu(List<Fitxer> fitxers, String codi) throws NamingException {
+		if (!fitxers.isEmpty()) {
+			String fileName = "";
+			// Crear directoris si no existeixen
+			 // Get the base naming context
+		    Context env = (Context)new InitialContext().lookup("java:comp/env");
+		    // Get a single value
+			String ruta =  (String)env.lookup("ruta_base");
+			File tmpFile = new File(ruta + "/documents/Llicencies");
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(ruta + "/documents/Llicencies/" + codi);
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			fileName = ruta + "/documents/Llicencies/" + codi + "/";
+	        for(int i=0;i<fitxers.size();i++){		        	
+	            Fitxer fitxer = (Fitxer) fitxers.get(i);	           
+	            if (fitxer.getFitxer().getName() != "") {	
+	            	File archivo_server = new File(fileName + fitxer.getFitxer().getName());
+	               	try {
+	               		fitxer.getFitxer().write(archivo_server);
+	           		} catch (Exception e) {
+	           			e.printStackTrace();
+	           		}
+	            } 
+	        }
+		}
+	}
+	
+	private static List<Fitxers.Fitxer> getArxius(String codi) throws NamingException {
+		List<Fitxer> fitxersList = new ArrayList<Fitxer>();
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		 File dir = new File(ruta + "/documents/Llicencies/" + codi);
+		 File[] fichers = dir.listFiles();
+		 Fitxer fitxer = new Fitxer();
+		 if (fichers == null) {
+			
+		 } else { 
+			 for (int x=0;x<fichers.length;x++) {
+				 fitxer = new Fitxer();
+				 fitxer.setNom(fichers[x].getName());
+				 fitxer.setRuta(ruta + "/documents/Llicencies/" + codi + "/" + fichers[x].getName());
+				 fitxersList.add(fitxer);
+			 }
+		 }
+		 return fitxersList;
 	}
 }

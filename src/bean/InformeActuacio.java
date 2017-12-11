@@ -25,6 +25,8 @@ public class InformeActuacio {
 		private String termini;
 		private String comentari;
 		private boolean seleccionada;
+		private boolean ebss;
+		private boolean coordinacio;
 				
 		public PropostaInforme() {
 			
@@ -69,6 +71,12 @@ public class InformeActuacio {
 
 		public String getTipusLlicencia() {
 			return tipusLlicencia;
+		}
+		
+		public String getTipusLlicenciaFormat() {
+			if ("llicencia".equals(this.tipusLlicencia)) return "Llicència";
+			if ("comun".equals(this.tipusLlicencia)) return "Comunicació prèvia";
+			return "";
 		}
 
 		public void setTipusLlicencia(String tipusLlicencia) {
@@ -153,6 +161,22 @@ public class InformeActuacio {
 		public void setPbase(double pbase) {
 			this.pbase = pbase;
 		}
+
+		public boolean isEbss() {
+			return ebss;
+		}
+
+		public void setEbss(boolean ebss) {
+			this.ebss = ebss;
+		}
+
+		public boolean isCoordinacio() {
+			return coordinacio;
+		}
+
+		public void setCoordinacio(boolean coordinacio) {
+			this.coordinacio = coordinacio;
+		}
 		
 	}
 	
@@ -200,6 +224,9 @@ public class InformeActuacio {
 	private Fitxer autoritzacioPropostaDespesa;
 	private Fitxer resolucioModificacio;
 	private Fitxer contracteSignat;
+	private Fitxer memoriaOrdreInici;
+	private Fitxer justProcForma;
+	private Fitxer aprovacioEXPPlecsDespesa;
 	
 	public InformeActuacio() {	
 		this.llistaPropostes = new ArrayList<PropostaInforme>();
@@ -629,5 +656,29 @@ public class InformeActuacio {
 
 	public void setLlicencia(Llicencia llicencia) {
 		this.llicencia = llicencia;
+	}
+
+	public Fitxer getMemoriaOrdreInici() {
+		return memoriaOrdreInici;
+	}
+
+	public void setMemoriaOrdreInici(Fitxer memoriaOrdreInici) {
+		this.memoriaOrdreInici = memoriaOrdreInici;
+	}
+
+	public Fitxer getJustProcForma() {
+		return justProcForma;
+	}
+
+	public void setJustProcForma(Fitxer justProcForma) {
+		this.justProcForma = justProcForma;
+	}
+
+	public Fitxer getAprovacioEXPPlecsDespesa() {
+		return aprovacioEXPPlecsDespesa;
+	}
+
+	public void setAprovacioEXPPlecsDespesa(Fitxer aprovacioEXPPlecsDespesa) {
+		this.aprovacioEXPPlecsDespesa = aprovacioEXPPlecsDespesa;
 	}
 }

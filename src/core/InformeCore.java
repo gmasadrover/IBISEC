@@ -71,7 +71,9 @@ public class InformeCore {
 			informe.setPropostaTecnica(getPropostaTecnica(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
 			informe.setAutoritzacioPropostaDespesa(getAutoritzacioPropostaDespesa(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
 			informe.setContracteSignat(getContracteSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
-			
+			informe.setMemoriaOrdreInici(getMemoriaOrdreIniciSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+			informe.setJustProcForma(getJustProcFormaSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+			informe.setAprovacioEXPPlecsDespesa(getAprovacioEXPPlecsDespesaSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
 		}
 		return informe;
 	}
@@ -90,6 +92,8 @@ public class InformeCore {
 		proposta.setTermini(rs.getString("termini"));
 		proposta.setComentari(rs.getString("comentari"));	
 		proposta.setSeleccionada(rs.getBoolean("seleccionada"));
+		proposta.setEbss(rs.getBoolean("ebss"));
+		proposta.setCoordinacio(rs.getBoolean("coordinacio"));
 		return proposta;
 	}
 	
@@ -156,7 +160,7 @@ public class InformeCore {
 	
 	public static void modificarProposta(Connection conn, PropostaInforme proposta) throws SQLException {		
 		String sql = "UPDATE public.tbl_propostesinforme"
-					+ " SET objecte=?, tipusobra=?, llicencia=?, tipusllicencia=?, contracte=?, pbase=?, iva=?, plic=?, termini=?, comentari=?"
+					+ " SET objecte=?, tipusobra=?, llicencia=?, tipusllicencia=?, contracte=?, pbase=?, iva=?, plic=?, termini=?, comentari=?, ebss=?, coordinacio=?"
 					+ " WHERE idproposta=?";
 		
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
@@ -171,7 +175,10 @@ public class InformeCore {
 		pstm.setDouble(8, proposta.getPlic());
 		pstm.setString(9, proposta.getTermini());
 		pstm.setString(10, proposta.getComentari());
-		pstm.setString(11, proposta.getIdProposta());
+		System.out.println(proposta.isEbss());
+		pstm.setBoolean(11, proposta.isEbss());
+		pstm.setBoolean(12, proposta.isCoordinacio());
+		pstm.setString(13, proposta.getIdProposta());
 		pstm.executeUpdate();
 	}
 	
@@ -311,6 +318,36 @@ public class InformeCore {
 		return PT;
 	}
 	
+	public static Fitxer getMemoriaOrdreIniciSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
+		Fitxer contracte = new Fitxer();
+		// Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		contracte =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Memòria odre inici/");
+		return contracte;
+	}
+	
+	public static Fitxer getJustProcFormaSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
+		Fitxer contracte = new Fitxer();
+		// Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		contracte =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Justificació procediment i forma/");
+		return contracte;
+	}
+	
+	public static Fitxer getAprovacioEXPPlecsDespesaSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
+		Fitxer contracte = new Fitxer();
+		// Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		contracte =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Aprovació expedient/");
+		return contracte;
+	}
+	
 	public static Fitxer getContracteSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
 		Fitxer contracte = new Fitxer();
 		// Get the base naming context
@@ -340,7 +377,7 @@ public class InformeCore {
 	
 	public static List<PropostaInforme> getPropostesInforme(Connection conn, String idInf) throws SQLException {
 		List<PropostaInforme> propostes = new ArrayList<PropostaInforme>();
-		String sql = "SELECT idproposta, idinf, objecte, tipusobra, llicencia, tipusllicencia, contracte, pbase, iva, plic, termini, comentari, seleccionada"
+		String sql = "SELECT idproposta, idinf, objecte, tipusobra, llicencia, tipusllicencia, contracte, pbase, iva, plic, termini, comentari, seleccionada, ebss, coordinacio"
 					+ " FROM public.tbl_propostesinforme"
 					+ " WHERE idinf = ?"
 					+ " ORDER BY 1";
@@ -355,7 +392,7 @@ public class InformeCore {
 	
 	public static PropostaInforme getPropostaSeleccionada(Connection conn, String idInf) throws SQLException {
 		PropostaInforme proposta = new InformeActuacio().new PropostaInforme();
-		String sql = "SELECT idproposta, idinf, objecte, tipusobra, llicencia, tipusllicencia, contracte, pbase, iva, plic, termini, comentari, seleccionada"
+		String sql = "SELECT idproposta, idinf, objecte, tipusobra, llicencia, tipusllicencia, contracte, pbase, iva, plic, termini, comentari, seleccionada, ebss, coordinacio"
 				+ " FROM public.tbl_propostesinforme"
 				+ " WHERE idinf = ? AND seleccionada='true'";
 		PreparedStatement pstm = conn.prepareStatement(sql);		
@@ -363,6 +400,45 @@ public class InformeCore {
 		ResultSet rs = pstm.executeQuery();
 		if (rs.next()) 	proposta = initProposta(rs);		
 		return proposta;
+	}
+	
+	public static List<InformeActuacio> getInformesLlicencia(Connection conn, String estat, String tipus) throws SQLException, NamingException {
+		List<InformeActuacio> informes = new ArrayList<InformeActuacio>();
+		String sql = "SELECT i.idinf AS idinf, i.idtasca AS idtasca, i.idincidencia AS idincidencia, i.idactuacio AS idactuacio, i.usucre AS usucre, i.datacre AS datacre, i.usucapvalidacio AS usucapvalidacio, i.datacapvalidacio AS datacapvalidacio, i.comentaricap AS comentaricap, i.usuaprovacio AS usuaprovacio, i.dataaprovacio AS dataaprovacio, i.notes AS notes, i.datapartidarebujada AS datapartidarebujada, i.motiupartidarebujada AS motiupartidarebujada, i.tipo AS tipo, i.expcontratacio AS expcontratacio, i.datapd AS datapd, i.tipopd AS tipopd" 
+				+ " FROM public.tbl_informeactuacio i LEFT JOIN public.tbl_llicencia l ON i.expcontratacio = l.expcontratacio"
+				+ " WHERE l.codi IS NOT NULL";
+		if (!tipus.isEmpty()) {
+			sql += " AND l.tipus = ?";
+		}
+		if (!estat.isEmpty()) {
+			sql += " AND";			
+			if ("pendent".equals(estat)) {
+				sql += " l.datasolicitud IS NULL";
+			}
+			if ("solicitad".equals(estat)) {
+				sql += " l.datasolicitud IS NOT NULL AND l.dataconcesio IS NULL";
+			}
+			if ("concedida".equals(estat)) {
+				sql += " l.dataconcesio IS NOT NULL AND l.datapagada IS NULL";
+			}
+			if ("pagada".equals(estat)) {
+				sql += " l.datapagada IS NOT NULL";
+			}
+		}
+				
+		sql += " ORDER BY l.codi DESC;";		 
+	
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		int contVars = 1;
+		if (!tipus.isEmpty()) {
+			pstm.setString(contVars, tipus);
+			contVars += 1;
+		}		
+		ResultSet rs = pstm.executeQuery();
+		while (rs.next()) {
+			informes.add(initInforme(conn, rs, false));			
+		}
+		return informes;
 	}
 	
 	public static void validacioCapInforme(Connection conn, String idInf, int idUsuari, String comentariCap, Date datacapvalidacio) throws SQLException {

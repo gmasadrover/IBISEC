@@ -90,7 +90,7 @@ public class DoCanvisActuacioServlet extends HttpServlet {
 		    		TascaCore.nouHistoric(conn, String.valueOf(idTasca), "Autorització Proposta modificació", Usuari.getIdUsuari());			   		
 			   		TascaCore.tancar(conn, idTasca);
 			   		CreditCore.assignar(conn, idInforme, informe.getOfertaSeleccionada().getPlic());
-			   		if (informe.getUsuariCapValidacio() != null) TascaCore.novaTasca(conn, "generic", informe.getUsuariCapValidacio().getIdUsuari(), Usuari.getIdUsuari(), idActuacio, idIncidencia, "S'ha aprovat la despesa de modificació per a l'informe: " + informe.getIdInfOriginal(), "Aprovació proposta despesa modificació",informe.getIdInf(),null);
+			   		if (informe.getUsuari() != null) TascaCore.novaTasca(conn, "generic", informe.getUsuari().getIdUsuari(), Usuari.getIdUsuari(), idActuacio, idIncidencia, "S'ha aprovat la despesa de modificació per a l'informe: " + informe.getIdInfOriginal(), "Aprovació proposta despesa modificació",informe.getIdInf(),null);
 	   			} else {
 	   				Fitxers.guardarFitxer(fitxers, idIncidencia, idActuacio, "", "", "", idInforme, "Autorització  Proposta despesa");
 	   				informe = InformeCore.getInformePrevi(conn, idInforme, false);
@@ -99,7 +99,7 @@ public class DoCanvisActuacioServlet extends HttpServlet {
 		   				int usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariRedaccioContracte"));   		
 						TascaCore.novaTasca(conn, "generic", usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Redactar contracte per informe " + informe.getIdInf(), "Redacció contracte",informe.getIdInf(),null);
 		   			} else {
-		   				TascaCore.novaTasca(conn, "generic", informe.getUsuariCapValidacio().getIdUsuari(), Usuari.getIdUsuari(), idActuacio, idIncidencia, "S'ha aprovat la despesa per a l'informe: " + informe.getIdInf(), "Aprovació proposta despesa",informe.getIdInf(),null);
+		   				TascaCore.novaTasca(conn, "generic", informe.getUsuariCapValidacio().getIdUsuari(), Usuari.getIdUsuari(), idActuacio, idIncidencia, "S'ha aprovat la despesa per a l'informe: " + informe.getIdInf() + " <br>Podeu posar-vos amb l'empresa per a començar l'obra", "Aprovació proposta despesa",informe.getIdInf(),null);
 		   			}
 		   			
 		   			//Nova tasca llicència

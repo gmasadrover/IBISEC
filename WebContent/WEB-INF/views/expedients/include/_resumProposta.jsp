@@ -18,7 +18,7 @@
 	<c:if test="${propostaActuacio.tipusObra=='obr'}">
 		<div class="row">
 			<div class="col-md-4">
-				<label>Requereix llicència:</label> ${propostaActuacio.llicencia ? propostaActuacio.tipusLlicencia : "No"}
+				<label>Autorització urbanística:</label> ${propostaActuacio.llicencia ? propostaActuacio.getTipusLlicenciaFormat() : "No"}
 			</div>					
 		</div>
 		<p></p>

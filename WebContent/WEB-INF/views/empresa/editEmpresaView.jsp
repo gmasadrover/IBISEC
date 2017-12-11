@@ -164,6 +164,26 @@
 	                            </div>
                             </div>
 	                	</div>
+	                	<div class="row">
+	                		<div class="col-md-12">
+		                		<div class="form-group">			                	
+				                	<div class="row">
+				                		<label class="col-xs-8 control-label">Documentació acreditativa d'estar d'alta com a constructor(REA, o últim rebut d'autònom i model 036 0 037):</label>
+				                		<c:if test="${empresa.documentREA.getEncodedRuta() != ''}">
+						            		<a target="_blanck" href="downloadFichero?ruta=${empresa.documentREA.getEncodedRuta()}">${empresa.documentREA.nom}</a>
+											<a href="#"><span data-ruta="${empresa.documentREA.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
+											<br>
+										</c:if>	
+				                	</div>
+				                	<div class="row">
+				                		<label class="col-xs-2 control-label">Adjuntar documentació:</label>	                	
+				                        <div class="col-xs-5">   
+				                            <input type="file" class="btn fileREA" name="fileREA" /><br/>
+										</div>							
+									</div> 	                      
+	                            </div>
+                            </div>
+	                	</div>
 		                <c:choose>
 		                 	<c:when test="${empresa.isUte()}"> 
 	                			<h2 class="margin_bottom30">Gerents</h2>

@@ -69,6 +69,15 @@ public class DoEditLicitacio extends HttpServlet {
        		informe = InformeCore.getInformePrevi(conn, idInforme, false);
        		OfertaCore.seleccionarOferta(conn, idInforme, seleccionada, termini, comentari);    	   
     	    expedient = ExpedientCore.findExpedient(conn, refExp);
+    	    if (multipartParams.getFitxersByName().get("memoriaOrdreInici") != null) {
+    	    	Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("memoriaOrdreInici")), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Memòria odre inici");
+    	    }
+    	    if (multipartParams.getFitxersByName().get("justProcForma") != null) {
+    	    	Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("justProcForma")), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Justificació procediment i forma");
+    	    }
+    	    if (multipartParams.getFitxersByName().get("aprovacioEXPPlecsDespesa") != null) {
+    	    	Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("aprovacioEXPPlecsDespesa")), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Aprovació expedient");
+    	    }
     	    if (informe.getPartida() != null && !informe.getPartida().isEmpty()) CreditCore.assignar(conn, idInforme, OfertaCore.findOfertaById(conn, seleccionada).getPlic());   
     	    if (multipartParams.getFitxersByName().get("propostaTecnica") != null) Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("propostaTecnica")), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Proposta tècnica");
     	    if (multipartParams.getFitxersByName().get("autoritzacioDespesa") != null) {
@@ -77,6 +86,7 @@ public class DoEditLicitacio extends HttpServlet {
 				ActuacioCore.actualitzarActuacio(conn, informe.getActuacio().getReferencia(), "Autorització generada");
 				OfertaCore.aprovarOferta(conn, idInforme, Usuari.getIdUsuari());
     	    }
+    	    
     	    if (!capDobra.isEmpty()) OfertaCore.actualitzarCapDobra(conn, seleccionada, capDobra);
     	    Oferta oferta = OfertaCore.findOfertaById(conn, seleccionada);
     	    if (multipartParams.getFitxersByName().get("personalInscrit") != null) OfertaCore.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("personalInscrit")), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), idInforme, oferta.getCifEmpresa(), "Personal Inscrit");

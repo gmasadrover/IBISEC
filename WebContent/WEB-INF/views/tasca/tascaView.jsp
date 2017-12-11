@@ -106,7 +106,7 @@
 	                	</div> 
 	                </div>
 	                <div class="col-md-2">	
-	                	<c:if test="${tasca.tipus!='vacances'}">
+	                	<c:if test="${tasca.tipus!='vacances' && tasca.tipus!='judicial'}">
 		                	<div class="checkbox">
 		                        <label>
 		                          	<input id="seguimentActuacio" data-idactuacio="${actuacio.referencia}" data-idusuari="${idUsuariLogg}" data-seguir="${!actuacio.seguiment}" type="checkbox" ${actuacio.seguiment ? 'checked' : ''}> Seguir Actuació
@@ -120,10 +120,17 @@
                			<p style="color: red;">${errorString}</p>
                		</div>
                	</div>
-	            <c:if test="${tasca.tipus!='vacances'}">					
+	            <c:if test="${tasca.tipus!='vacances' && tasca.tipus!='judicial'}">					
 					<div class="row">					
 		                <div class="col-md-12">	                	
 		                	<jsp:include page="../actuacio/include/_resumActuacio.jsp"></jsp:include>		                	
+		                </div>				            	
+					</div>						
+				</c:if>
+				<c:if test="${tasca.tipus=='judicial'}">					
+					<div class="row">					
+		                <div class="col-md-12">	                	
+		                	<a target="_blanck" href="procediment?ref=${tasca.idinforme}">Anar al procediment -></a><br>              	
 		                </div>				            	
 					</div>						
 				</c:if>
@@ -332,7 +339,7 @@
 										</c:choose>
 									</div>
 								</c:if>
-								<c:if test="${tasca.tipus=='generic' || tasca.tipus=='liciMenor' || tasca.tipus=='conformarFactura' || tasca.tipus=='facturaConformada' || tasca.tipus=='vacances' || esCap}">				 	
+								<c:if test="${tasca.tipus=='generic' || tasca.tipus=='liciMenor' || tasca.tipus=='conformarFactura' || tasca.tipus=='facturaConformada' || tasca.tipus=='vacances' || tasca.tipus=='judicial' || esCap}">				 	
 		                    		<div class="panel-footer">	                    		                  	
 				                    	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddHistoric">
 				                    		<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
@@ -378,7 +385,7 @@
 											        	<div class="col-md-6"></div>
 											            <div><input class="btn btn-primary" type="submit" name="afegirComentari" value="Només afegir comentari"></div>
 											        </div>
-											        <c:if test="${esCap || tasca.tipus=='generic' || tasca.tipus=='vacances'}">
+											        <c:if test="${esCap || tasca.tipus=='vacances'}">
 												        <div class="row margin_top10">
 												        	<div class="col-md-6"></div>
 												            <div><input class="btn btn-danger" type="submit" name="tancar" value="Tancar"></div>

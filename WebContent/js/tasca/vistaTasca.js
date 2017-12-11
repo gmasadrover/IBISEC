@@ -105,6 +105,7 @@ $(document).ready(function() {
 
 function initInformePrevi() {
 		$('#tipusContracte option[value="' + $('#tipusContractePrev').val() + '"]').attr('selected', 'selected');	
+		$('#formContracte option[value="' + $('#formContractePrev').val() + '"]').attr('selected', 'selected');
 		if ($('#tipusContractePrev').val() != 'obr' && $('#tipusContractePrev').val() != '') {
 			$('.visibleObres').addClass('hidden');
 		}
@@ -115,8 +116,7 @@ function initInformePrevi() {
 			}
 			else {
 				$('#tipusLlicencia option[value="' + $('#tipusLlicenciaPrev').val() + '"]').attr('selected', 'selected');
-			}
-			$('#formContracte option[value="' + $('#formContractePrev').val() + '"]').attr('selected', 'selected');
+			}			
 		}
 		$('.selectpicker').selectpicker('refresh');		
 		$('#pbase').on('keyup', function(){

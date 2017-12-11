@@ -220,9 +220,38 @@
 	<div class="col-md-12">
 		<div class="row">
   			<c:if test="${canModificarExpedient}">
-				<div class="col-md-offset-9 col-md-2 margin_top30">
+				<div class="col-md-offset-7 col-md-2 margin_top30">
 					<a href="editInforme?${informePrevi.expcontratacio.expContratacio != '-1' ? 'ref=' += informePrevi.expcontratacio.expContratacio : 'idinf=' += informePrevi.idInf}&from=${redireccio}" class="btn btn-primary" role="button">Modificar</a>
-				</div>
+				</div>				
+				<c:if test="${!informePrevi.expcontratacio.isAnulat()}">
+					<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="anularExpedient">
+						<input class="hidden" name="expedient" value="${informePrevi.expcontratacio.expContratacio}">
+                		<input class="hidden" name="idActuacio" value="${informePrevi.actuacio.referencia}">
+                		<input class="hidden" name="idInforme" value="${informePrevi.idInf}">
+                		<input class="hidden" name="redireccio" value="${redireccio}">
+						<div class="col-md-2 margin_top30">
+							<input class="btn btn-danger" data-toggle="modal" data-target="#myModalInforme" name="anular" value="Anul·lar">
+						</div>
+	        			<!-- Modal -->
+						<div id="myModalInforme" class="modal fade" role="dialog">
+							<div class="modal-dialog">																	
+						    <!-- Modal content-->
+						    	<div class="modal-content">
+						      		<div class="modal-header">
+						        		<button type="button" class="close" data-dismiss="modal">&times;</button>
+						        		<h4 class="modal-title">Motiu anul·lació</h4>
+						      		</div>
+						      		<div class="modal-body">
+						        		<textarea name="motiuAnulacio" required></textarea>
+						      		</div>
+						      		<div class="modal-footer">
+						        		<input class="btn btn-danger" type="submit" name="anular" value="Anul·lar">
+						      		</div>
+					    		</div>																	
+						  	</div>
+						</div> 
+					</form>
+        		</c:if>
 			</c:if>
     	</div>       
 	</div>

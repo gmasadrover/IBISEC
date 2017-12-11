@@ -221,6 +221,21 @@ public class TascaCore {
 	     return list;
 	}
 	
+	public static List<Tasca> findTasquesJudicial(Connection conn, String referencia) throws SQLException, NamingException {
+		 String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament"
+				 	+ " FROM public.tbl_tasques"
+				 	+ " WHERE idinforme = ?";	 
+		 PreparedStatement pstm = conn.prepareStatement(sql);	 
+		 pstm.setString(1, referencia);		
+		 ResultSet rs = pstm.executeQuery();
+		 List<Tasca> list = new ArrayList<Tasca>();
+		 while (rs.next()) {
+			 Tasca tasca = initTasca(conn, rs);
+			 list.add(tasca);
+		 }
+	     return list;
+	}
+	
 	public static Tasca findTascaVacances(Connection conn, int idSolicitud) throws SQLException, NamingException {
 		 String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament"
 				 	+ " FROM public.tbl_tasques"

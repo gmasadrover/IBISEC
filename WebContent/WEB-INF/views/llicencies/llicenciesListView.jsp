@@ -21,11 +21,11 @@
                 <div class="row">
                     <div class="col-md-12">
                         <h1 class="page-header">
-                            Llicencies <small>Llicencies</small>
+                            Autoritzacions <small>Urbanístiques</small>
                         </h1>
                         <ol class="breadcrumb">
                             <li class="active">
-                                <i class="fa fa-dashboard"></i> Llicencies
+                                <i class="fa fa-dashboard"></i> Autoritzacions Urbanístiques
                             </li>
                             <li class="active">
                                 <i class="fa fa-table"></i> Llistat
@@ -40,13 +40,12 @@
 							<input type="hidden" id="estatSelected" value="${estatFilter}" />
 							<div class="col-md-offset-1  col-md-3">
 							    <div class="col-md-12">
-							      <label>Tipus llicència</label>
+							      <label>Tipus Autorització</label>
 							      <div>
-		                                <select class="form-control selectpicker" name="tipus" data-live-search="true" id="tipusList">
+		                                <select class="form-control selectpicker" name="tipus" id="tipusList">
 		                                	<option value="">Qualsevol</option>
 		                                	<option value="comun">Comunicació prèvia</option>
-		                                	<option value="menor">Menor</option>
-		                                	<option value="major">Major</option>
+		                                	<option value="llicencia">Llicencia</option>
 		                                </select>
 		                             </div>
 							    </div>						    
@@ -76,13 +75,15 @@
                 <!-- /.row -->
                 <div class="row">
                     <div class="col-md-12">
-                        <h2>llicencies</h2>
+                        <h2>Autoritzacions Urbanístiques</h2>
                         <div class="table-responsive">                        
                             <table class="table table-striped table-bordered filerTable">
                                 <thead>
                                     <tr>
                                         <th>Codi</th>
                                         <th>Expedient</th>
+                                        <th>Descripció</th>
+                                        <th>Centre</th>
                                         <th>Tipus</th>
                                         <th>Sol·licitud</th>
                                         <th>Sol·licitud</th>
@@ -93,17 +94,19 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                	<c:forEach items="${llicenciesList}" var="llicencia" >
+                                	<c:forEach items="${informeList}" var="informe" >
 							          	<tr>							          	
-							           		<td><a href="llicencia?codi=${llicencia.codi}" class="loadingButton"  data-msg="obrint llicència...">${llicencia.codi}</a></td>
-							           		<td>${llicencia.codiExpedient}</td>
-							            	<td>${llicencia.getTipusFormat()}</td>
-							            	<td>${llicencia.peticio}</td>
-							            	<td>${llicencia.getDataPeticioString()}</td>
-							            	<td>${llicencia.concesio}</td>
-							            	<td>${llicencia.getDataConcesioString()}</td>
-							            	<td>${llicencia.pagament}</td>
-							            	<td>${llicencia.getDataPagamentString()}</td>
+							           		<td><a href="llicencia?codi=${informe.llicencia.codi}" class="loadingButton"  data-msg="obrint llicència...">${informe.llicencia.codi}</a></td>
+							           		<td><a href="actuacionsDetalls?ref=${informe.actuacio.referencia}" class="loadingButton"  data-msg="obrint expedient...">${informe.expcontratacio.expContratacio}</a></td>
+							           		<td>${informe.propostaInformeSeleccionada.objecte}</td>
+							           		<td>${informe.actuacio.centre.getNomComplet()}</td>
+							            	<td>${informe.llicencia.getTipusFormat()}</td>
+							            	<td>${informe.llicencia.peticio}</td>
+							            	<td>${informellicencia.getDataPeticioString()}</td>
+							            	<td>${informe.llicencia.concesio}</td>
+							            	<td>${informe.llicencia.getDataConcesioString()}</td>
+							            	<td>${informe.llicencia.pagament}</td>
+							            	<td>${informe.llicencia.getDataPagamentString()}</td>
 							          	</tr>
 							       	</c:forEach>                                	
                                 </tbody>

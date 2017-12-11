@@ -55,7 +55,7 @@ public class DoCreateCertificacioServlet extends HttpServlet {
 	    Date dataPasadaConformar = null;
 		try {
 			if (request.getParameter("dataEntrada") != null && ! request.getParameter("dataEntrada").isEmpty()) dataEntrada = formatter.parse(request.getParameter("dataEntrada"));
-			if (request.getParameter("dataCertificacio") != null && ! request.getParameter("dataCertificacio").isEmpty()) dataCertificacio = formatter.parse(request.getParameter("dataCertificacio"));
+			if (request.getParameter("dataFactura") != null && ! request.getParameter("dataFactura").isEmpty()) dataCertificacio = formatter.parse(request.getParameter("dataFactura"));
 			if (request.getParameter("dataPasadaConformar") != null && ! request.getParameter("dataPasadaConformar").isEmpty()) dataPasadaConformar = formatter.parse(request.getParameter("dataPasadaConformar"));
 		} catch (ParseException e1) {
 			// TODO Auto-generated catch block

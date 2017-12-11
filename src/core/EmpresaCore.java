@@ -41,6 +41,7 @@ public class EmpresaCore {
 		empresa.setEmail(rs.getString("email"));
 		empresa.setDataConstitucio(rs.getTimestamp("dataconstitucio"));	
 		empresa.setDocumentsEscrituraList(getEscritures(empresa.getCif()));
+		empresa.setDocumentREA(getDocumentREA(empresa.getCif()));
 		empresa.setDateExpAcreditacio1(rs.getTimestamp("dataexpacreditacio1"));
 		empresa.setDateExpAcreditacio2(rs.getTimestamp("dataexpacreditacio2"));
 		empresa.setDateExpAcreditacio3(rs.getTimestamp("dataexpacreditacio3"));	
@@ -278,8 +279,8 @@ public class EmpresaCore {
 	 }
 	 
 	 public static void insertUTE(Connection conn, Empresa empresa, int idUsuari) throws SQLException {
-		String sql = "INSERT INTO public.tbl_ute(cif, nom, empreses, datacre, usucre)"
-					+ " VALUES (?, ?, ?, localtimestamp, ?)";		 
+		String sql = "INSERT INTO public.tbl_ute(cif, nom, empreses, datacre, usucre, activa)"
+					+ " VALUES (?, ?, ?, localtimestamp, ?, true)";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		pstm.setString(1, empresa.getCif());
 		pstm.setString(2, empresa.getName());
@@ -507,6 +508,26 @@ public class EmpresaCore {
 		 return fitxersList;
 	 }
 	 
+	 public static Fitxer getDocumentREA(String cif) throws NamingException {
+		 Fitxer fitxer = new Fitxer();
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		 File dir = new File(ruta + "/documents/Empreses/" + cif + "/REA");
+		 File[] fichers = dir.listFiles();
+		 if (fichers == null) {
+			
+		 } else { 
+			 for (int x=0;x<fichers.length;x++) {
+				 fitxer = new Fitxer();
+				 fitxer.setNom(fichers[x].getName());
+				 fitxer.setRuta(ruta + "/documents/Empreses/" + cif + "/REA/" + fichers[x].getName());
+			 }
+		 }
+		 return fitxer;
+	 }
+	 
 	 public static Fitxer getClassificacioROLECE(String cif) throws NamingException {
 		 Fitxer fitxer = new Fitxer();
 		 // Get the base naming context
@@ -718,6 +739,13 @@ public class EmpresaCore {
 							tmpFile.mkdir();
 						}
 						fileName = ruta + "/documents/Empreses/" + cif + "/Escritura/";
+					}
+					if (("fileREA").equals(fitxer.getNomCamp())) {
+						tmpFile = new File(ruta + "/documents/Empreses/" + cif + "/REA");
+						if (!tmpFile.exists()) {
+							tmpFile.mkdir();
+						}
+						fileName = ruta + "/documents/Empreses/" + cif + "/REA/";
 					}
 					if (("fileAdministrador").equals(fitxer.getNomCamp())) {
 						tmpFile = new File(ruta + "/documents/Empreses/" + cif + "/Administrador");

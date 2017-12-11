@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -49,6 +50,8 @@ public class DoEditLlicenciaServlet extends HttpServlet {
 		}
        	
        	String codi = multipartParams.getParametres().get("llicencia");
+       	String from = multipartParams.getParametres().get("from");  
+    	String idActuacio = multipartParams.getParametres().get("idActuacio");  
        	Llicencia llicencia = new Llicencia();
        	String errorString = null;
        	SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -69,15 +72,11 @@ public class DoEditLlicenciaServlet extends HttpServlet {
 			}
 			
 			llicencia.setObservacio(multipartParams.getParametres().get("observacions"));
-			
+			LlicenciaCore.guardarArxiu(multipartParams.getFitxers(), codi);
 			LlicenciaCore.updateLlicencia(conn, llicencia);
-		} catch (ParseException | SQLException e) {
+		} catch (ParseException | SQLException | NamingException e) {
 			errorString = e.toString();
 		}
-       	
-		
-
- 
 		// Store infomation to request attribute, before forward to views.
 		request.setAttribute("errorString", errorString);
 		request.setAttribute("llicencia", llicencia);
@@ -93,7 +92,11 @@ public class DoEditLlicenciaServlet extends HttpServlet {
 		// If everything nice.
 		// Redirect to the product listing page.            
 		else {
-           response.sendRedirect(request.getContextPath() + "/editLlicencia?codi=" + llicencia.getCodi());
+			if (from.equals("expedient")) {
+				response.sendRedirect(request.getContextPath() + "/actuacionsDetalls?ref=" + idActuacio);
+			} else {
+				response.sendRedirect(request.getContextPath() + "/editLlicencia?codi=" + llicencia.getCodi());
+			}           
 		}
 	}
 

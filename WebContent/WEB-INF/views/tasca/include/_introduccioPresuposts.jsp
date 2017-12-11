@@ -190,6 +190,18 @@
 	       	</div>
 	       	<div class="form-group">
 	        	<div class="col-md-6">
+	            	<label>És necessari realitzar EBSS?</label>
+	             	<input type="checkbox" name="ebss" ${informePrevi.propostaInformeSeleccionada.ebss ? "checked" : ""}>
+	        	</div>
+	       	</div>
+	       	<div class="form-group">
+	        	<div class="col-md-6">
+	            	<label>És necessari realitzar coordinació?</label>
+	             	<input type="checkbox" name="coordinacio" ${informePrevi.propostaInformeSeleccionada.coordinacio ? "checked" : ""}>
+	        	</div>
+	       	</div>
+	       	<div class="form-group">
+	        	<div class="col-md-6">
 	       			<div class="row">
 	           			<div class="col-md-12">
 	                  		<input class="btn btn-primary" type="submit" name="guardar" value="Generar proposta tècnica">

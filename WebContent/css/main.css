@@ -33,7 +33,9 @@ body{
 }
 .separator{
 	border: solid 2px;
-    color: #d9edf7;
+    color: #000000;
+    display: block;
+    margin: 30px;
 }
  #map {
   	height: 100%;

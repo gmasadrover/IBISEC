@@ -74,8 +74,13 @@ public class DoEditInformeServlet extends HttpServlet {
     	    PropostaInforme proposta = informe.getPropostaInformeSeleccionada();
     	    proposta.setObjecte(multipartParams.getParametres().get("descripcio"));
 		    proposta.setTipusObra(multipartParams.getParametres().get("tipusContracte"));
-		    proposta.setLlicencia(multipartParams.getParametres().get("reqLlicencia").equals("si"));
-		    proposta.setTipusLlicencia(multipartParams.getParametres().get("tipusLlicencia"));
+		    if ("obr".equals(multipartParams.getParametres().get("tipusContracte"))) {
+		    	 proposta.setLlicencia(multipartParams.getParametres().get("reqLlicencia").equals("si"));
+				 proposta.setTipusLlicencia(multipartParams.getParametres().get("tipusLlicencia"));
+		    } else {
+		    	 proposta.setLlicencia(false);
+				 proposta.setTipusLlicencia("");
+		    }
 		    proposta.setContracte(multipartParams.getParametres().get("formContracte").equals("si"));
 		    proposta.setPbase(Double.parseDouble(multipartParams.getParametres().get("pbase").replace(',','.')));
 		    proposta.setIva(Double.parseDouble(multipartParams.getParametres().get("iva").replace(',','.')));

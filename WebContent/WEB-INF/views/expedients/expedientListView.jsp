@@ -139,7 +139,7 @@
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${informesList}" var="informe" >
-							          	<tr>							          	
+							          	<tr class=${informe.expcontratacio.anulat ? "danger" : ""}>							          	
 							           		<td><a href="expedient?ref=${informe.expcontratacio.expContratacio}" class="loadingButton"  data-msg="obrint expedient...">${informe.expcontratacio.expContratacio}</a></td>
 							           		<td>${informe.expcontratacio.dataCreacio}</td>
 							            	<td>${informe.actuacio.centre.getNomComplet()}</td>

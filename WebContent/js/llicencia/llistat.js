@@ -4,13 +4,7 @@ $(document).ready(function() {
 	}
 	if ($('#tipusList').size() > 0) {
 		  $('#tipusList').selectpicker('refresh');
-	}
-	if ($('#contracteSelected').val() != '') {		  		
-  		$('#contracteList option[value="' + $('#contracteSelected').val() + '"]').attr('selected', 'selected');
-	}
-	if ($('#contracteList').size() > 0) {
-		  $('#contracteList').selectpicker('refresh');
-	}
+	}	
 	if ($('#estatSelected').val() != '') {		  		
 			$('#estatList option[value="' + $('#estatSelected').val() + '"]').attr('selected', 'selected');
 	}
@@ -40,13 +34,15 @@ $(document).ready(function() {
 		"aoColumns": [
 			null,
     		null,    		
+    		null,  
     		null,    		
-    		{"bVisible": false},
-    		{"iDataSort": 4},
+    		null,  
     		{"bVisible": false},
     		{"iDataSort": 6},
     		{"bVisible": false},
-    		{"iDataSort": 8}
+    		{"iDataSort": 8},
+    		{"bVisible": false},
+    		{"iDataSort": 10}
 		]
 	});
 });	

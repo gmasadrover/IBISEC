@@ -22,6 +22,7 @@ import bean.Incidencia;
 import bean.Oferta;
 import bean.InformeActuacio;
 import bean.InformeActuacio.PropostaInforme;
+import bean.Judicial;
 import bean.Partida;
 import bean.Tasca;
 import bean.User;
@@ -31,6 +32,7 @@ import core.CreditCore;
 import core.EmpresaCore;
 import core.FacturaCore;
 import core.InformeCore;
+import core.JudicialCore;
 import core.OfertaCore;
 import core.TascaCore;
 import core.UsuariCore;
@@ -79,6 +81,7 @@ public class TascaDetailsServlet extends HttpServlet {
  	       List<Oferta> ofertes = new ArrayList<Oferta>();
 	       Oferta ofertaSeleccionada = new Oferta();
 	       Factura factura = new Factura();
+	       Judicial procediment = new Judicial();
  	       try {
  	    	   tasca = TascaCore.findTascaId(conn, idTasca, usuari.getIdUsuari());
  	    	   actuacio = tasca.getActuacio(); 	  
@@ -89,7 +92,7 @@ public class TascaDetailsServlet extends HttpServlet {
  	    	   if (usuari.getRol().contains("CAP")) {
  	    		   llistaUsuaris = UsuariCore.llistaUsuaris(conn, true); 
  	    	   }
- 	    	   canRealitzarTasca = usuari.getDepartament().equals(tasca.getDepartament()) || "ADMIN".equals(usuari.getRol()); 
+ 	    	   canRealitzarTasca = usuari.getDepartament().equals(tasca.getDepartament()) || usuari.getRol().contains("ADMIN") || usuari.getRol().contains("MANUAL"); 
  	    	   if (actuacio != null) {
  	    		  actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia()));
  	    		  historial = TascaCore.findHistorial(conn, idTasca, incidencia.getIdIncidencia(), actuacio.getReferencia());
@@ -183,6 +186,8 @@ public class TascaDetailsServlet extends HttpServlet {
  	 	    		   llistaUsuaris.add(informeActuacioPrevi.getUsuari());
  	 	    		   llistaUsuaris.add(UsuariCore.finCap(conn, tasca.getDepartament()));
  	    		   } 	
+	    	   }else if("judicial".equals(tipusTasca)) {
+	    		   procediment = JudicialCore.findProcediment(conn, tasca.getIdinforme());
 	    	   }
  	    	   
  	       } catch (SQLException | NamingException e) {

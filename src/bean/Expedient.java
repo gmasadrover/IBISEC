@@ -8,7 +8,6 @@ public class Expedient {
 	private String idActuacio;
 	private String idInforme;
 	private String expContratacio;
-	private Llicencia llicencia;
 	private Date dataCreacio;
 	private Date dataPublicacioBOIB;
 	private Date dataPublicacioPerfilContratant;
@@ -24,6 +23,9 @@ public class Expedient {
 	private String garantia;
 	private String tipus;
 	private String contracte;
+	
+	private boolean anulat;
+	private String motiuAnulament;
 	
 	public Expedient() {
 		expContratacio = "-1";
@@ -233,11 +235,19 @@ public class Expedient {
 		this.idInforme = idInforme;
 	}
 
-	public Llicencia getLlicencia() {
-		return llicencia;
+	public boolean isAnulat() {
+		return anulat;
 	}
 
-	public void setLlicencia(Llicencia llicencia) {
-		this.llicencia = llicencia;
+	public void setAnulat(boolean anulat) {
+		this.anulat = anulat;
+	}
+
+	public String getMotiuAnulament() {
+		return motiuAnulament;
+	}
+
+	public void setMotiuAnulament(String motiuAnulament) {
+		this.motiuAnulament = motiuAnulament;
 	}
 }

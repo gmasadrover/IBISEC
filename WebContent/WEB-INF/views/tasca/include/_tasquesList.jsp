@@ -32,7 +32,16 @@
 						<tr class="${tasca.activa ? tasca.tipus == 'notificacio' ? "warning" : "success" : "danger"}">							          	
 							<td><a href="tasca?id=${tasca.idTasca}" class="loadingButton"  data-msg="obrint tasca...">${tasca.idTasca} - ${tasca.descripcio}</a></td>
 							<td>${tasca.usuari.getNomComplet()}</td>	
-							<td><a href="actuacionsDetalls?ref=${tasca.actuacio.referencia}" class="loadingButton"  data-msg="obrint actuació...">${tasca.actuacio.referencia}</a></td>
+							<td>
+			            		<c:choose>
+			            			<c:when test="${tasca.actuacio.referencia != '-1'}">
+			            				<a href="actuacionsDetalls?ref=${tasca.actuacio.referencia}" class="loadingButton"  data-msg="obrint actuació...">${tasca.actuacio.referencia}</a>
+			            			</c:when>
+			            			<c:otherwise>
+			            				${tasca.idinforme}
+			            			</c:otherwise>
+			            		</c:choose>
+			            	</td>
 							<td>${tasca.actuacio.centre.illa}</td>	
 							<td>${tasca.actuacio.centre.getNomComplet()}</td>	
 							<td>${tasca.actuacio.descripcio}</td>							            	

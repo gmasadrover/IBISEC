@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import bean.User;
 import bean.ControlPage.SectionPage;
+import core.ActuacioCore;
 import core.ControlPageCore;
 import core.TascaCore;
 import core.UsuariCore;
@@ -51,7 +52,8 @@ public class CreateTascaServlet extends HttpServlet {
 	        	String tipus = request.getParameter("tipus");
 	        	List<User> llistaUsuaris = new ArrayList<User>();
 	        	request.setAttribute("idActuacio", request.getParameter("idActuacio"));
-	        	request.setAttribute("idIncidencia", request.getParameter("idIncidencia"));
+	        	request.setAttribute("idIncidencia", ActuacioCore.findActuacio(conn, request.getParameter("idActuacio")).getIdIncidencia());
+	        	request.setAttribute("idProcediment", request.getParameter("idProcediment"));
 	        	request.setAttribute("tipus", tipus);
 				request.setAttribute("nouCodi", TascaCore.idNovaTasca(conn));
 				if ("infPrev".equals(tipus)) {

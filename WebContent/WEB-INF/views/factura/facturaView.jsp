@@ -137,7 +137,7 @@
 							</c:if>
 						</div>	
 						<div class="col-md-4">
-	               			<c:if test="${canModificar && factura.dataEnviatConformador == null}">
+	               			<c:if test="${canModificar && factura.dataEnviatConformador == null && factura.dataConformacio == null}">
 								<a href="enviarAConformar?ref=${factura.idFactura}" class="btn btn-success" role="button">Enviar a conformar</a>									
 							</c:if>
 						</div>		

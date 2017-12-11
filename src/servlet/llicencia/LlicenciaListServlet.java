@@ -18,7 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 import bean.Llicencia;
 import bean.User;
 import bean.ControlPage.SectionPage;
+import bean.InformeActuacio;
 import core.ControlPageCore;
+import core.InformeCore;
 import core.LlicenciaCore;
 import core.UsuariCore;
 import utils.MyUtils;
@@ -50,19 +52,16 @@ public class LlicenciaListServlet extends HttpServlet {
     		response.sendRedirect(request.getContextPath() + "/");	
 		} else {
 			String errorString = "";
-			List<Llicencia> llicenciesList = new ArrayList<Llicencia>();
+			List<InformeActuacio> informeList = new ArrayList<InformeActuacio>();
 			String filtrar = request.getParameter("filtrar");
 			String estat = "";
 			String tipus = "";
-			Calendar now = Calendar.getInstance();
-			int year = now.get(Calendar.YEAR);
-			String yearInString = String.valueOf(year);
 			try {
 				if (filtrar != null) {	
 					estat = request.getParameter("estat");		
 					tipus = request.getParameter("tipus");		
 				} 
-				llicenciesList = LlicenciaCore.getLlicencies(conn, estat, tipus);					
+				informeList = InformeCore.getInformesLlicencia(conn, estat, tipus);				
 			} catch (SQLException | NamingException e) {
 				e.printStackTrace();
 				errorString = e.getMessage();
@@ -72,7 +71,7 @@ public class LlicenciaListServlet extends HttpServlet {
 			request.setAttribute("estatFilter", estat);
 			request.setAttribute("tipusFilter", tipus);
 			request.setAttribute("errorString", errorString);
-			request.setAttribute("llicenciesList", llicenciesList);
+			request.setAttribute("informeList", informeList);
 			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"llicencies"));
 			// Forward to /WEB-INF/views/homeView.jsp
 			// (Users can not access directly into JSP pages placed in WEB-INF)

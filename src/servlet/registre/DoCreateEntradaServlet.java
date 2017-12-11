@@ -70,7 +70,7 @@ public class DoCreateEntradaServlet extends HttpServlet {
 			}
 	    } else {
 	    	idCentres = request.getParameterValues("idCentre");
-	    	if (idCentres != null) {
+	    	if (idCentres != null && !tipus.equals("Procediment judicial")) {
 	    		idCentresSeleccionats = "";
 	    		idIncidencies = "";
  		        for(int i=0; i<idCentres.length; i++) { 		
@@ -92,6 +92,8 @@ public class DoCreateEntradaServlet extends HttpServlet {
 					}
  		        	
  		        }
+	    	} else if(tipus.equals("Procediment judicial")) {
+	    		idCentresSeleccionats = request.getParameter("idProcediment");
 	    	}
 	    }
 	    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");

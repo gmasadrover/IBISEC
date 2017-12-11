@@ -47,6 +47,20 @@
 					    	</div>
 					    </div>
 					</div>
+					<c:if test="${informePrevi.expcontratacio.anulat}">
+						<div class="panel panel-danger">
+						    <div class="panel-heading">
+						        <div class="row">
+						    		<div class="col-md-2">
+						    			Anul·lat
+						    		</div>
+						    		<div class="col-md-10">
+						    			Motiu: ${informePrevi.expcontratacio.motiuAnulament}
+						   			</div>
+						    	</div>
+						    </div>
+						</div>
+					</c:if>
 					<div class="row">
 		                <div class="col-md-12">  
 	                        <c:set var="ofertes" scope="request" value="${informePrevi.llistaOfertes}"></c:set>

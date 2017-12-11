@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,8 +12,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import bean.InformeActuacio;
+import bean.InformeActuacio.PropostaInforme;
 import bean.User;
 import core.ActuacioCore;
+import core.InformeCore;
 import core.OfertaCore;
 import core.TascaCore;
 import core.UsuariCore;
@@ -40,23 +44,30 @@ public class DoAddPropostaTecnicaServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		
 		Connection conn = MyUtils.getStoredConnection(request);		
+		User usuari = MyUtils.getLoginedUser(request.getSession());
 	    int idTasca = Integer.parseInt(request.getParameter("idTasca"));
 	    String idIncidencia = request.getParameter("idIncidencia");
 	    String idActuacio = request.getParameter("idActuacio");
 	    String idInforme = request.getParameter("idInformePrevi");
-	    User Usuari = MyUtils.getLoginedUser(request.getSession());	   
 	    String comentari = request.getParameter("propostaTecnica");	   
 	    String errorString = null;
 	    String termini = request.getParameter("termini");
 	    String seleccionada = request.getParameter("idOfertaSeleccionada");
+	    Boolean EBSS = "on".equals(request.getParameter("ebss"));
+	    Boolean coordinacio = "on".equals(request.getParameter("coordinacio"));
 	    //Agafam totes les ofertes
 	    String guardar = request.getParameter("guardar");
 	    if (guardar != null) {
 	    	if (seleccionada != null && !seleccionada.isEmpty()){
 			  	try {	   	
-			  		OfertaCore.seleccionarOferta(conn, idInforme, seleccionada, termini, comentari);	
+			  		OfertaCore.seleccionarOferta(conn, idInforme, seleccionada, termini, comentari);
+			  		InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme, false);
+			  		PropostaInforme proposta = informe.getPropostaInformeSeleccionada();
+			  		proposta.setEbss(EBSS);
+			  		proposta.setCoordinacio(coordinacio);
+			  		InformeCore.modificarProposta(conn, proposta);
 			   		/*;*/
-				} catch (SQLException e) {
+				} catch (SQLException | NamingException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					errorString = e.getMessage();

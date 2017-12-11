@@ -3,6 +3,9 @@ package bean;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+
+import utils.Fitxers;
 
 public class Llicencia {
 	private String codiExpedient;
@@ -10,11 +13,11 @@ public class Llicencia {
 	private String tipus;
 	private double taxa;
 	private double ico;
-	private double valorATIB;
 	private String observacio;
 	private Date peticio;
 	private Date concesio;
 	private Date pagament;
+	private List<Fitxers.Fitxer> arxius;
 	
 	public Llicencia() {
 		
@@ -41,27 +44,20 @@ public class Llicencia {
 	}
 	
 	public String getTipusFormat(){		
-		switch(this.tipus) {
-			case "menor":
-				return "llicència menor";
-			case "major":
-				return "llicència major";
+		if (this.tipus != null) {
+			switch(this.tipus) {
+			case "llicencia":
+				return "llicència";
 			case "comun":
 				return "comunicació prèvia";
 			}		
+		}
+		
 		return "";
 	}
 
 	public void setTipus(String tipus) {
 		this.tipus = tipus;
-	}
-
-	public double getValorATIB() {
-		return valorATIB;
-	}
-
-	public void setValorATIB(double valorATIB) {
-		this.valorATIB = valorATIB;
 	}
 
 	public String getObservacio() {
@@ -131,5 +127,13 @@ public class Llicencia {
 
 	public void setIco(double ico) {
 		this.ico = ico;
+	}
+
+	public List<Fitxers.Fitxer> getArxius() {
+		return arxius;
+	}
+
+	public void setArxius(List<Fitxers.Fitxer> arxius) {
+		this.arxius = arxius;
 	}
 }

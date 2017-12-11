@@ -8,46 +8,28 @@
 <div class="row">
 	<div class="col-md-12">
 		<p> 
-        	<label>Llicència: </label> ${llicencia.codi}
+        	<label>Llicència: </label> ${informePrevi.llicencia.codi}
      	</p>
 		<p> 
-         	<label>Expedient: </label> ${llicencia.expedient.expContratacio}
-       	</p>
-       	<p> 
-       		<label>Descripció: </label> ${llicencia.expedient.informe.getPropostaInformeSeleccionada().objecte}
-       	</p>    
-       	<p> 
-       		<label>Tipus: </label> ${llicencia.getTipusFormat()}
-       	</p>    
-       	<p> 
-       		<label>Taxa: </label> ${llicencia.taxa}
+       		<label>Tipus: </label> ${informePrevi.llicencia.getTipusFormat()}
        	</p> 
        	<p> 
-       		<label>ICO: </label> ${llicencia.ico}
-       	</p>    
-       	<p> 
-       		<label>Recàrreg ATIB: </label> ${llicencia.valorATIB}
-       	</p>
-       	<p> 
-       		<label>Data sol·licitud: </label> ${llicencia.getDataPeticioString()}
+       		<label>Data sol·licitud: </label> ${informePrevi.llicencia.getDataPeticioString()}
        	</p>   
        	<p> 
-       		<label>Data concesió: </label> ${llicencia.getDataConcesioString()}
+       		<label>Data concesió: </label> ${informePrevi.llicencia.getDataConcesioString()}
        	</p>    
        	<p> 
-       		<label>Data pagament: </label> ${llicencia.getDataPagamentString()}
-       	</p>       
-       	<p> 
-       		<label>Observacions: </label> ${llicencia.observacio}
-     	</p>    
+       		<label>Data pagament: </label> ${informePrevi.llicencia.getDataPagamentString()}
+       	</p>  
 	</div>            		 
 </div>
 <div class="row">
 	<div class="col-md-12">
 		<div class="row">
-   			<c:if test="${canModificar}">
+   			<c:if test="${canModificarUrbanisme}">
 				<div class="col-md-offset-9 col-md-2 margin_top30">
-					<a href="editLlicencia?codi=${llicencia.codi}" class="btn btn-primary" role="button">Actualitzar</a>
+					<a href="editLlicencia?codi=${informePrevi.llicencia.codi}&from=expedient" class="btn btn-primary" role="button">Actualitzar</a>
 				</div>
 			</c:if>
  		</div>       

@@ -257,6 +257,18 @@ public class UsuariCore {
 			case expedient_modificar:
 				permision = (rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("JUR") || rols.toUpperCase().contains("MANUAL"));
 				break;
+			case bastanteos_list:
+				permision = (rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("JUR"));
+				break;
+			case bastanteos_modificar:
+				permision = (rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("JUR"));
+				break;
+			case judicials_list:
+				permision = true;
+				break;
+			case judicials_modificar:
+				permision = (rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("JUR"));
+				break;
 			case llicencia_list:
 				permision = true;
 				break;

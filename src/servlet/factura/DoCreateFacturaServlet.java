@@ -103,7 +103,6 @@ public class DoCreateFacturaServlet extends HttpServlet {
 	   			factura.setUsuariConformador(UsuariCore.findUsuariByID(conn, idUsuariConformador));
 	   			FacturaCore.newFactura(conn, factura, idUsuari);	
 	   			FacturaCore.saveArxiu(actuacio.getIdIncidencia(), idActuacio, idInforme, idProveidor, idFactura, multipartParams.getFitxers(), conn);
-	   			TascaCore.novaTasca(conn, "conformarFactura", idUsuariConformador, idUsuari, idActuacio, actuacio.getIdIncidencia(), "Conformar factura", "Conformar factura", idFactura, null);
 	   			//Registram la factura
 	   			Date peticio = new Date();
 	   			peticio = formatter.parse(factura.getDataEntradaString());

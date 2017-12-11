@@ -122,7 +122,7 @@ public class Actuacio {
 	 private boolean seguiment;
 	 
 	 public Actuacio() {
- 
+		 this.referencia = "-1";
 	 }
  
 	 public String getReferencia() {

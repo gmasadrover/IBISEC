@@ -114,6 +114,13 @@
 											<br>
 										</c:forEach>	
 				                	</div>
+				                	<div class="row">
+				                		<label class="col-xs-offset-1 col-xs-5 control-label">Documentació acreditativa d'estar d'alta com a constructor(REA, o últim rebut d'autònom i model 036 0 037):</label>
+				                		<c:if test="${empresa.documentREA.getEncodedRuta() != ''}">
+					                		<a target="_blanck" href="downloadFichero?ruta=${empresa.documentREA.getEncodedRuta()}">${empresa.documentREA.nom}</a>
+											<br>
+										</c:if>
+				                	</div>
 		                		</div>
 		                	</div>
 		                </div>

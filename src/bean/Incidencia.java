@@ -20,7 +20,7 @@ public class Incidencia {
 	private String solicitant;
 	
 	public Incidencia() {
-		 
+		 this.idIncidencia = "-1";
 	}
 
 	public String getIdIncidencia() {

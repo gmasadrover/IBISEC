@@ -1,5 +1,8 @@
 $(document).ready(function() {
 	loadTipus();
+	$(".centresList").selectpicker('deselectAll');
+	$('.centresList').selectpicker('val', "-1");				
+	$('.centresList').selectpicker('refresh');
 	$('#centresList').on('change', function(){
 		$('.incidencies').addClass('hidden');	
 		if ($(this).val() != null && ($(this).val().length == 2 || $(this).val().indexOf("-1") < 0)) {		
@@ -22,8 +25,20 @@ $(document).ready(function() {
 	    	}
 		}		
 	});
-	$('#centresList option[value="-1"]').attr('selected', 'selected');
-	$('.selectpicker').selectpicker('refresh');
+	$('#tipusList').on('change', function(){		
+		if (decodeURIComponent($(this).val()) == 'Procediment judicial') {	
+			$(".centresList").selectpicker('deselectAll');
+			$('.centresList').selectpicker('val', "-1");				
+    		$('.centresList').selectpicker('refresh');
+    		$('.centresdiv').addClass('hidden');
+    		$('.incidencies').addClass('hidden');	
+    		$('.procedimentdiv').removeClass('hidden');
+		} else {
+			$('.centresdiv').removeClass('hidden');
+			$('.procedimentdiv').addClass('hidden');
+			
+		}		
+	});
 });
 
 function loadTipus(){

@@ -61,7 +61,7 @@ public class DoEditCertificacioServlet extends HttpServlet {
 	    Date dataPasadaComptabilitat = null;
 	    try {
 			if (request.getParameter("dataEntrada") != null && ! request.getParameter("dataEntrada").isEmpty()) dataEntrada = formatter.parse(request.getParameter("dataEntrada"));
-			if (request.getParameter("dataCertificacio") != null && ! request.getParameter("dataCertificacio").isEmpty()) dataCertificacio = formatter.parse(request.getParameter("dataCertificacio"));
+			if (request.getParameter("dataFactura") != null && ! request.getParameter("dataFactura").isEmpty()) dataCertificacio = formatter.parse(request.getParameter("dataFactura"));
 			if (request.getParameter("dataPasadaConformar") != null && ! request.getParameter("dataPasadaConformar").isEmpty()) dataPasadaConformar = formatter.parse(request.getParameter("dataPasadaConformar"));
 			if (request.getParameter("dataConformada") != null && ! request.getParameter("dataConformada").isEmpty()) dataConformada = formatter.parse(request.getParameter("dataConformada"));
 			if (request.getParameter("dataPasadaComptabilitat") != null && ! request.getParameter("dataPasadaComptabilitat").isEmpty()) dataPasadaComptabilitat = formatter.parse(request.getParameter("dataPasadaComptabilitat"));
