@@ -57,6 +57,8 @@ public class DespesesListServlet extends HttpServlet {
 		}else{	  
 			String filtrar = request.getParameter("filtrar");
 			String filterWithOutDate = request.getParameter("filterWithOutDate");
+			String filterWithBEI = request.getParameter("filterBEI");
+			String filterWithFEDER = request.getParameter("filterFEDER");
 			String errorString = null;
 			String idPartida = "";
 			String idCentre = request.getParameter("idCentre");
@@ -65,7 +67,7 @@ public class DespesesListServlet extends HttpServlet {
 			Calendar cal = Calendar.getInstance(); 
 			Date dataFi = cal.getTime();
 			String dataFiString = df.format(dataFi);	 
-			cal.set(2017, 0, 1);
+			cal.set(Calendar.getInstance().get(Calendar.YEAR), 0, 1);
 			Date dataInici = cal.getTime();
 			String dataIniciString = df.format(dataInici);	
 			List<AssignacioCredit> list = new ArrayList<AssignacioCredit>();
@@ -83,9 +85,9 @@ public class DespesesListServlet extends HttpServlet {
 		    			dataFi = df.parse(request.getParameter("dataFi"));
 		    			dataFiString = request.getParameter("dataFi");
 					}				
-					list = CreditCore.findAssignacions(conn, idPartida, idCentre, dataInici, dataFi);
+					list = CreditCore.findAssignacions(conn, idPartida, idCentre, dataInici, dataFi, "on".equals(filterWithBEI), "on".equals(filterWithFEDER));
 				} else {
-					list = CreditCore.findAssignacions(conn, "", idCentre, dataInici, dataFi);
+					list = CreditCore.findAssignacions(conn, "", idCentre, dataInici, dataFi, "on".equals(filterWithBEI), "on".equals(filterWithFEDER));
 				}				
 				llistaPartides = CreditCore.getPartides(conn, true);
 			} catch (SQLException | ParseException | NamingException e) {
@@ -97,6 +99,8 @@ public class DespesesListServlet extends HttpServlet {
 	       request.setAttribute("despesesList", list);
 	       request.setAttribute("llistaPartides", llistaPartides);
 	       request.setAttribute("filterWithOutDate", "on".equals(filterWithOutDate));
+	       request.setAttribute("filterWithBEI", "on".equals(filterWithBEI));
+	       request.setAttribute("filterWithFEDER", "on".equals(filterWithFEDER));
 	       request.setAttribute("dataInici", dataIniciString);
 		   request.setAttribute("dataFi", dataFiString);
 		   request.setAttribute("idPartida", idPartida);

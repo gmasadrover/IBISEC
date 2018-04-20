@@ -10,7 +10,8 @@
 	<div class="table-responsive">                        
 	    <table class="table table-striped table-bordered filerTable tasques">
 	        <thead>
-	            <tr>                                        
+	            <tr>    
+	            	<th>Expedient</th>                                    
 	                <th>Tasca</th>
 	                <th>Responsable</th>
 	                <th>id Actuació</th>
@@ -30,6 +31,19 @@
 	        	<c:forEach items="${tasquesList}" var="tasca" >
 	        		<c:if test="${!(tasca.actuacio.centre.idCentre == '9999PERSO' && !canViewPersonal)}">
 						<tr class="${tasca.activa ? tasca.tipus == 'notificacio' ? "warning" : "success" : "danger"}">							          	
+							<td>
+								<c:choose>
+			            			<c:when test="${tasca.informe != null && tasca.informe.expcontratacio != null && tasca.informe.expcontratacio.expContratacio != '-1'}">
+			            				<a href="actuacionsDetalls?ref=${tasca.actuacio.referencia}&exp=${tasca.informe.idInf}" class="loadingButton"  data-msg="obrint expedient...">${tasca.informe.expcontratacio.expContratacio}</a>
+			            			</c:when>
+			            			<c:otherwise>
+			            				${tasca.idinforme}		            				
+			            			</c:otherwise>
+			            		</c:choose>
+			            		<c:if test="${tasca.prioritat > 0}">
+			            			- Prioritat ${tasca.prioritat}
+			            		</c:if>
+							</td>
 							<td><a href="tasca?id=${tasca.idTasca}" class="loadingButton"  data-msg="obrint tasca...">${tasca.idTasca} - ${tasca.descripcio}</a></td>
 							<td>${tasca.usuari.getNomComplet()}</td>	
 							<td>

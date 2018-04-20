@@ -101,7 +101,7 @@ public class DoCreateCompletActuacioServlet extends HttpServlet {
 			    if (new String("obr").equals(tipusObra)) {
 			    	llicencia = new String("si").equals(reqLlicencia);	 	   
 					if (llicencia) tipusLlicencia = request.getParameter("tipusLlicencia") ;		
-					contracte = new String("si").equals(request.getParameter("formContracte"));
+					contracte = true;
 			    }	
 			    proposta.setLlicencia(llicencia);
 			    proposta.setTipusLlicencia(tipusLlicencia);

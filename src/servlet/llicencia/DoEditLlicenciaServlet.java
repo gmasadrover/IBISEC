@@ -67,8 +67,11 @@ public class DoEditLlicenciaServlet extends HttpServlet {
 			if (multipartParams.getParametres().get("dataConcesio") != null && ! multipartParams.getParametres().get("dataConcesio").isEmpty()) {
 				llicencia.setConcesio(formatter.parse(multipartParams.getParametres().get("dataConcesio")));
 			}
-			if (multipartParams.getParametres().get("dataPagament") != null && ! multipartParams.getParametres().get("dataPagament").isEmpty()) {
-				llicencia.setPagament(formatter.parse(multipartParams.getParametres().get("dataPagament")));
+			if (multipartParams.getParametres().get("dataPagamentTaxa") != null && ! multipartParams.getParametres().get("dataPagamentTaxa").isEmpty()) {
+				llicencia.setPagamentTaxa(formatter.parse(multipartParams.getParametres().get("dataPagamentTaxa")));
+			}
+			if (multipartParams.getParametres().get("dataPagamentICO") != null && ! multipartParams.getParametres().get("dataPagamentICO").isEmpty()) {
+				llicencia.setPagamentICO(formatter.parse(multipartParams.getParametres().get("dataPagamentICO")));
 			}
 			
 			llicencia.setObservacio(multipartParams.getParametres().get("observacions"));

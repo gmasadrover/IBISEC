@@ -40,7 +40,7 @@
 						<div class="form-group">
 							<input type="hidden" id="idPartidaSelected" value="${idPartida}" />
 							<input type="hidden" id="idCentreSelected" value="${idCentre}" />
-							<div class="col-md-offset-1  col-md-3">
+							<div class="col-md-3">
 							    <div class="col-md-12">
 							      	<label>Filtrar per partida</label>
 							      	<div>
@@ -53,6 +53,10 @@
 		                       		</div>
 							    </div>						    
 						  	</div>	
+						  	<div class="col-md-2 margin_top20">
+							  	<input type="checkbox" name="filterBEI" ${filterWithBEI ? "checked" : ""}> Filtrar afectats BEI </br>
+							  	<input type="checkbox" name="filterFEDER" ${filterWithFEDER ? "checked" : ""}> Filtrar afectats FEDER
+						  	</div>
 						  	<div class="col-md-3">
 							    <div class="col-md-12">
 							      <label>Filtrar per centre</label>
@@ -95,11 +99,14 @@
 		                                <th>Objecte</th>
 		                                <th>Expedient</th>
                                         <th>Comentari</th>                                       
-                                        <th>Valor PA</th>
-                                        <th>Valor PA</th>
-                                        <th>Valor PD</th>
-                                        <th>Valor PD</th>
-                                        <th>Partida</th>                                       
+                                        <th>Valor reserva</th>
+                                        <th>Valor reserva</th>
+                                        <th>Valor adjudicació</th>
+                                        <th>Valor adjudicació</th>
+                                        <th>Valor facturat</th>
+                                        <th>Valor facturat</th>
+                                        <th>Partida</th>   
+                                        <th>Afectat</th>                                    
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -115,9 +122,37 @@
 							            	<td>${despesa.comentari}</td>
 							            	<td>${despesa.getValorPAFormat()}</td>
 							            	<td>${despesa.valorPA}</td>
-							            	<td>${despesa.getValorPDFormat()}</td>
-							            	<td>${despesa.valorPD}</td>
-							            	<td><a href="partidaDetalls?codi=${despesa.idPartida}" class="loadingButton"  data-msg="obrint partida...">${despesa.idPartida}</a></td>								            				            	
+							            	<td>
+							            		<c:choose>
+							            			<c:when test="${despesa.valorPD != ''}">
+							            				${despesa.getValorPDFormat()}
+							            			</c:when>
+							            			<c:otherwise>
+							            				<c:if test="${despesa.informe.ofertaSeleccionada != null}">
+									            			${despesa.informe.ofertaSeleccionada.getPlicFormat()}
+									            		</c:if>
+							            			</c:otherwise>							            			
+							            		</c:choose>							            		
+							            	</td>
+							            	<td>
+							            		<c:choose>
+							            			<c:when test="${despesa.valorPD != ''}">
+							            				${despesa.getValorPD()}
+							            			</c:when>
+							            			<c:otherwise>
+							            				<c:if test="${despesa.informe.ofertaSeleccionada != null}">
+									            			${despesa.informe.ofertaSeleccionada.getPlic()}
+									            		</c:if>
+							            			</c:otherwise>							            			
+							            		</c:choose>	
+							            	</td>
+							            	<td>${despesa.informe.getTotalFacturatFormat()}</td>
+							            	<td>${despesa.informe.getTotalFacturat()}</td>
+							            	<td><a href="partidaDetalls?codi=${despesa.partida.codi}" class="loadingButton"  data-msg="obrint partida...">${despesa.partida.codi}</a></td>								            				            	
+							          		<td>
+							          			<c:if test="${despesa.bei}">Afectat BEI </br></c:if>
+							          			<c:if test="${despesa.feder}">Afectat FEDER</c:if>
+							          		</td>
 							          	</tr>
 							       	</c:forEach>                                	
                                 </tbody>

@@ -59,6 +59,7 @@ public class LlistatExpedientsActuacio extends HttpServlet {
         response.setHeader("Access-Control-Allow-Headers", "Content-Type");
         response.setHeader("Access-Control-Max-Age", "86400");
         String idActuacio = request.getParameter("idActuacio");
+        String idCentre = request.getParameter("idCentre");
         Gson gson = new Gson(); 
         JsonObject myObj = new JsonObject();
         Connection conn = MyUtils.getStoredConnection(request);
@@ -68,6 +69,8 @@ public class LlistatExpedientsActuacio extends HttpServlet {
 			myObj.addProperty("success", true);
 			JsonElement llistatObj = gson.toJsonTree(llistatExpedients);
 			myObj.add("llistatExpedients", llistatObj);
+			JsonElement nomCentreObj = gson.toJsonTree(CentreCore.nomCentre(conn, idCentre));
+			myObj.add("nomCentre", nomCentreObj);
 		} catch (SQLException | NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

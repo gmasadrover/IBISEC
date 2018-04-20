@@ -41,12 +41,177 @@
                	 </div>
                 <!-- /.row -->
                 <c:if test="${not empty expedient}">
+                	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="doEditLicitacio"> 
+			   			<input type="hidden" name="redireccio" value="${redireccio}">  
+			   			<input type="hidden" name="expedient" value="${expedient.expContratacio}">
+                	 	<input type="hidden" name="informe" value="${informePrevi.idInf}">           
+			   			
+				   		<div class="form-group">			   				
+		   					<div class="col-md-6">
+		   						<h2>Preparacio Licitació</h2>
+		   					</div>	
+				       		<div class="col-md-12">				       			
+				       			<div class="document">
+			               			<label>Memòria més ordre d'inici signada:</label>											                  	
+				           			<a target="_blanck" href="downloadFichero?ruta=${informePrevi.memoriaOrdreInici.getEncodedRuta()}">
+										${informePrevi.memoriaOrdreInici.nom}
+									</a>	
+									<c:if test="${informePrevi.memoriaOrdreInici.signat}">
+										<span class="glyphicon glyphicon-pencil signedFile"></span>
+									</c:if>
+									<c:if test="${informePrevi.memoriaOrdreInici.ruta != null}">
+										<span data-ruta="${informePrevi.memoriaOrdreInici.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+									</c:if>
+									<br>
+									<div class="infoSign hidden">
+										<c:forEach items="${informePrevi.memoriaOrdreInici.firmesList}" var="firma" >
+											<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+											<br>
+										</c:forEach>
+									</div>
+								</div>	
+								<input type="file" class="btn uploadImage" name="memoriaOrdreInici" /><br/>	
+				       		</div>	
+					      	<c:if test="${expedient.contracte == 'major'}">
+					       		<div class="col-md-12">				       			
+					       			<div class="document">
+				               			<label>Justificació de procediment signada:</label>											                  	
+					           			<a target="_blanck" href="downloadFichero?ruta=${informePrevi.justProcForma.getEncodedRuta()}">
+											${informePrevi.justProcForma.nom}
+										</a>	
+										<c:if test="${informePrevi.justProcForma.signat}">
+											<span class="glyphicon glyphicon-pencil signedFile"></span>
+										</c:if>
+										<c:if test="${informePrevi.justProcForma.ruta != null}">
+											<span data-ruta="${informePrevi.justProcForma.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+										</c:if>
+										<br>
+										<div class="infoSign hidden">
+											<c:forEach items="${informePrevi.justProcForma.firmesList}" var="firma" >
+												<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+												<br>
+											</c:forEach>
+										</div>
+									</div>	
+									<input type="file" class="btn uploadImage" name="justProcForma" /><br/>	
+					       		</div>	
+					       		<div class="col-md-12">				       			
+					       			<div class="document">
+				               			<label>Justificació criteris d'adjudicació, condicions d'aptitud licitador i condicions especials signada:</label>											                  	
+					           			<a target="_blanck" href="downloadFichero?ruta=${informePrevi.justCriterisAdjudicacio.getEncodedRuta()}">
+											${informePrevi.justCriterisAdjudicacio.nom}
+										</a>	
+										<c:if test="${informePrevi.justCriterisAdjudicacio.signat}">
+											<span class="glyphicon glyphicon-pencil signedFile"></span>
+										</c:if>
+										<c:if test="${informePrevi.justCriterisAdjudicacio.ruta != null}">
+											<span data-ruta="${informePrevi.justCriterisAdjudicacio.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+										</c:if>
+										<br>
+										<div class="infoSign hidden">
+											<c:forEach items="${informePrevi.justCriterisAdjudicacio.firmesList}" var="firma" >
+												<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+												<br>
+											</c:forEach>
+										</div>
+									</div>	
+									<input type="file" class="btn uploadImage" name="justCriterisAdjudicacio" /><br/>	
+					       		</div>	
+					       		<div class="col-md-12">				       			
+					       			<div class="document">
+				               			<label>Declaració d'urgència signada:</label>											                  	
+					           			<a target="_blanck" href="downloadFichero?ruta=${informePrevi.declaracioUrgencia.getEncodedRuta()}">
+											${informePrevi.declaracioUrgencia.nom}
+										</a>	
+										<c:if test="${informePrevi.declaracioUrgencia.signat}">
+											<span class="glyphicon glyphicon-pencil signedFile"></span>
+										</c:if>
+										<c:if test="${informePrevi.declaracioUrgencia.ruta != null}">
+											<span data-ruta="${informePrevi.declaracioUrgencia.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+										</c:if>
+										<br>
+										<div class="infoSign hidden">
+											<c:forEach items="${informePrevi.declaracioUrgencia.firmesList}" var="firma" >
+												<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+												<br>
+											</c:forEach>
+										</div>
+									</div>	
+									<input type="file" class="btn uploadImage" name="declaracioUrgencia" /><br/>	
+					       		</div>	
+					       		<div class="col-md-12">				       			
+					       			<div class="document">
+				               			<label>Resolució d'aprovació del projecte amb indicació de disponibilitat dels terrenys signada:</label>											                  	
+					           			<a target="_blanck" href="downloadFichero?ruta=${informePrevi.aprovacioDispoTerrenys.getEncodedRuta()}">
+											${informePrevi.aprovacioDispoTerrenys.nom}
+										</a>	
+										<c:if test="${informePrevi.aprovacioDispoTerrenys.signat}">
+											<span class="glyphicon glyphicon-pencil signedFile"></span>
+										</c:if>
+										<c:if test="${informePrevi.aprovacioDispoTerrenys.ruta != null}">
+											<span data-ruta="${informePrevi.aprovacioDispoTerrenys.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+										</c:if>
+										<br>
+										<div class="infoSign hidden">
+											<c:forEach items="${informePrevi.aprovacioDispoTerrenys.firmesList}" var="firma" >
+												<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+												<br>
+											</c:forEach>
+										</div>
+									</div>	
+									<input type="file" class="btn uploadImage" name="aprovacioDispoTerrenys" /><br/>	
+					       		</div>		
+					       		<div class="col-md-12">				       			
+					       			<div class="document">
+				               			<label>Aprovació expedient, plecs i despesa signada:</label>											                  	
+					           			<a target="_blanck" href="downloadFichero?ruta=${informePrevi.aprovacioEXPPlecsDespesa.getEncodedRuta()}">
+											${informePrevi.aprovacioEXPPlecsDespesa.nom}
+										</a>	
+										<c:if test="${informePrevi.aprovacioEXPPlecsDespesa.signat}">
+											<span class="glyphicon glyphicon-pencil signedFile"></span>
+										</c:if>
+										<c:if test="${informePrevi.aprovacioEXPPlecsDespesa.ruta != null}">
+											<span data-ruta="${informePrevi.aprovacioEXPPlecsDespesa.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+										</c:if>
+										<br>
+										<div class="infoSign hidden">
+											<c:forEach items="${informePrevi.aprovacioEXPPlecsDespesa.firmesList}" var="firma" >
+												<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+												<br>
+											</c:forEach>
+										</div>
+									</div>	
+									<input type="file" class="btn uploadImage" name="aprovacioEXPPlecsDespesa" /><br/>	
+					       		</div>				       		
+					       	</div>	
+					   	</c:if>
+				       	<div class="form-group">
+				    		<div class="col-md-12">
+						       	<div class="row">
+			                		<div class="form-group">
+								        <div class="col-xs-offset-6 col-xs-3">
+								            <input type="submit" class="btn btn-primary" value="Actualitzar expedient">							            
+								        </div>
+								       	<div class="col-xs-3">
+								        	<input id="createTascaPreLicitacio" data-informe="${informePrevi.idInf}" class="btn btn-success" value="Enviar documents a firma">							            
+										</div>
+									</div> 
+			                	</div>
+			                </div>
+			           	</div>
+					</form>	
+					<div class="separator"></div>			
                 	<form class="form-horizontal margin_top30" enctype="multipart/form-data" method="POST" action="DoAddOferta">
 	               		<input type="hidden" name="expedient" value="${expedient.expContratacio}">  
 						<input type="hidden" name="idActuacio" value="${informePrevi.actuacio.referencia}">
 						<input type="hidden" name="idIncidencia" value="${informePrevi.actuacio.idIncidencia}">
 						<input type="hidden" name="idTasca" value="-1">
-						<input type="hidden" name="idInformePrevi" value="${informePrevi.idInf}">					                    		
+						<input type="hidden" name="idInformePrevi" value="${informePrevi.idInf}">
+						<div class="form-group">			   				
+		   					<div class="col-md-6">
+		   						<h2>Empreses presentades</h2>
+		   					</div>	
+			   			</div>										                    		
 				   		<div class="form-group">
 				        	<div class="col-md-4">	
 				         		<label>Empresa</label>									            	 										            	 	
@@ -73,7 +238,7 @@
 				                <input type="file" class="btn" name="file" /><br/>
 							</div> 
 				   		</div>
-				   	</form>
+				   	</form>				   	
 				   	<div class="row">		 				
 			    		<div class="col-md-12">	
 							<label>Resum presupostos</label>							                        
@@ -98,12 +263,14 @@
 			                        		<td><a target="_blanck" href="empresa?cif=${oferta.cifEmpresa}">${oferta.nomEmpresa} (${oferta.cifEmpresa})</a></td>
 			                        		<td>${oferta.nomEmpresa} (${oferta.cifEmpresa})</td>
 			                        		<td>${oferta.cifEmpresa}</td>
-			                        		<td>${oferta.plic} €</td>
 			                        		<td>${oferta.plic}</td>
+			                        		<td>${oferta.getPlicFormat()}</td>
 			                        		<td><a target="_blanck" href="downloadFichero?ruta=${oferta.presupost.getEncodedRuta()}">${oferta.presupost.nom}</a></td>
 			                        		<td>
 			                        			<input class="btn btn-danger btn-sm deleteOferta" data-idoferta="${oferta.idOferta}" type="button" value="Eliminar">
-			                        			<input class="btn btn-primary btn-sm ofertaSeleccionada" type="button" value="Seleccionar">			                        			                       			
+			                        			<c:if test="${oferta.plic > 0}">
+			                        				<input class="btn btn-primary btn-sm ofertaSeleccionada" type="button" value="Seleccionar">	
+			                        			</c:if>		                        			                       			
 			                        		</td>
 			                       		</tr>
 			                       	</c:forEach>						                                	                              	
@@ -111,88 +278,68 @@
 			                   	</table>
 		               		</div>
           				</div>
-					</div>
+					</div>						
+					<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="doEditLicitacio"> 
+						<input type="hidden" name="redireccio" value="${redireccio}">  
+			   			<input type="hidden" name="expedient" value="${expedient.expContratacio}">
+                	 	<input type="hidden" name="informe" value="${informePrevi.idInf}">           
+			   			<c:if test="${expedient.contracte == 'major'}">
+			   				<div class="separator"></div>
+				   			<div class="form-group">			   				
+			   					<div class="col-md-6">
+			   						<h2>Avaluació de criteris</h2>
+			   					</div>	
+					       		<div class="col-md-12">
+			               			<label>Ratificació classificació:</label>		
+			               			<c:forEach items="${informePrevi.ratificacioClassificacio}" var="arxiu" >	
+			               				<div class="document">								                  	
+						           			<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
+												${arxiu.getDataString()} - ${arxiu.nom}
+											</a>	
+											<c:if test="${arxiu.signat}">
+												<span class="glyphicon glyphicon-pencil signedFile"></span>
+											</c:if>
+											<c:if test="${arxiu.ruta != null}">
+												<span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+											</c:if>
+											<br>
+											<div class="infoSign hidden">
+												<c:forEach items="${arxiu.firmesList}" var="firma" >
+													<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+													<br>
+												</c:forEach>
+											</div>
+										</div>
+									</c:forEach>
+										
+									<input type="file" class="btn uploadImage" name="ratificacioClassificacio" /><br/>	
+					       		</div>						       					       		
+					       	</div>	
+					       	<div class="form-group">
+					    		<div class="col-md-12">
+							       	<div class="row">
+				                		<div class="form-group">
+									        <div class="col-xs-offset-6 col-xs-3">
+									            <input type="submit" class="btn btn-primary" value="Actualitzar expedient">							            
+									        </div>
+									       	<div class="col-xs-3">
+									        	<input id="createTascaAvaluacioCriteris" data-informe="${informePrevi.idInf}" class="btn btn-success" value="Enviar documents a firma">							            
+											</div>
+										</div> 
+				                	</div>
+				                </div>
+				           	</div>						
+					    </c:if>
+					</form>	
+					<div class="separator"></div>		
 			   		<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="doEditLicitacio"> 
 			   			<input type="hidden" name="redireccio" value="${redireccio}">  
 			   			<input type="hidden" name="expedient" value="${expedient.expContratacio}">
                 	 	<input type="hidden" name="informe" value="${informePrevi.idInf}">   
                 	 	<input type="hidden" id="idOfertaSeleccionada" name="idOfertaSeleccionada" value="${informePrevi.ofertaSeleccionada.idOferta}">            
-			   			<c:if test="${expedient.contracte == 'major'}">
-				   			<div class="form-group">			   				
-			   					<div class="col-md-6">
-			   						<h2>Preparacio Licitació</h2>
-			   					</div>	
-					       		<div class="col-md-12">				       			
-					       			<div class="document">
-				               			<label>Memòria més ordre d'inici signada:</label>											                  	
-					           			<a target="_blanck" href="downloadFichero?ruta=${informePrevi.memoriaOrdreInici.getEncodedRuta()}">
-											${informePrevi.memoriaOrdreInici.nom}
-										</a>	
-										<c:if test="${informePrevi.memoriaOrdreInici.signat}">
-											<span class="glyphicon glyphicon-pencil signedFile"></span>
-										</c:if>
-										<c:if test="${informePrevi.memoriaOrdreInici.ruta != null}">
-											<span data-ruta="${informePrevi.memoriaOrdreInici.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
-										</c:if>
-										<br>
-										<div class="infoSign hidden">
-											<c:forEach items="${informePrevi.memoriaOrdreInici.firmesList}" var="firma" >
-												<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-												<br>
-											</c:forEach>
-										</div>
-									</div>	
-									<input type="file" class="btn uploadImage" name="memoriaOrdreInici" /><br/>	
-					       		</div>	
-					       		<div class="col-md-12">				       			
-					       			<div class="document">
-				               			<label>Justificació de procediment i forma d'adjudicació signada:</label>											                  	
-					           			<a target="_blanck" href="downloadFichero?ruta=${informePrevi.justProcForma.getEncodedRuta()}">
-											${informePrevi.justProcForma.nom}
-										</a>	
-										<c:if test="${informePrevi.justProcForma.signat}">
-											<span class="glyphicon glyphicon-pencil signedFile"></span>
-										</c:if>
-										<c:if test="${informePrevi.justProcForma.ruta != null}">
-											<span data-ruta="${informePrevi.justProcForma.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
-										</c:if>
-										<br>
-										<div class="infoSign hidden">
-											<c:forEach items="${informePrevi.justProcForma.firmesList}" var="firma" >
-												<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-												<br>
-											</c:forEach>
-										</div>
-									</div>	
-									<input type="file" class="btn uploadImage" name="justProcForma" /><br/>	
-					       		</div>		
-					       		<div class="col-md-12">				       			
-					       			<div class="document">
-				               			<label>Aprovació expedient, plecs i despesa signada:</label>											                  	
-					           			<a target="_blanck" href="downloadFichero?ruta=${informePrevi.aprovacioEXPPlecsDespesa.getEncodedRuta()}">
-											${informePrevi.aprovacioEXPPlecsDespesa.nom}
-										</a>	
-										<c:if test="${informePrevi.aprovacioEXPPlecsDespesa.signat}">
-											<span class="glyphicon glyphicon-pencil signedFile"></span>
-										</c:if>
-										<c:if test="${informePrevi.aprovacioEXPPlecsDespesa.ruta != null}">
-											<span data-ruta="${informePrevi.aprovacioEXPPlecsDespesa.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
-										</c:if>
-										<br>
-										<div class="infoSign hidden">
-											<c:forEach items="${informePrevi.aprovacioEXPPlecsDespesa.firmesList}" var="firma" >
-												<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-												<br>
-											</c:forEach>
-										</div>
-									</div>	
-									<input type="file" class="btn uploadImage" name="aprovacioEXPPlecsDespesa" /><br/>	
-					       		</div>				       		
-					       	</div>
-					    </c:if>
 			   			<div class="form-group">
 				        	<div class="col-md-6">
-				            	<h2>Proposta tècnica</h2>	
+				            	<h2>Adjudicació</h2>	
 				           		<label>Oferta seleccionada: </label>
 				           		<label id="ofertaSeleccionada">${informePrevi.ofertaSeleccionada.nomEmpresa} (${informePrevi.ofertaSeleccionada.cifEmpresa})</label>	           		
 				           	</div>	         	
@@ -201,7 +348,7 @@
 				        	<div class="col-md-12">							                    			
 				     			<div class="row">	 
 				     				<div class="col-md-12">						                    						
-				     					<textarea class="form-control" name="propostaTecnica" placeholder="Proposta tècnica" rows="3" required>${informePrevi.ofertaSeleccionada.comentari}</textarea> 
+				     					<textarea class="form-control" name="propostaTecnica" placeholder="Motivació adjudicació" rows="3" required>${informePrevi.ofertaSeleccionada.comentari}</textarea> 
 				       				</div>
 				       			</div>
 				       		</div>						                       		
@@ -211,17 +358,19 @@
 				            	<label>Termini d'execució definitiu</label>
 				             	<input name="termini" placeholder="1 mes" value="${informePrevi.ofertaSeleccionada.termini == '' ? informePrevi.propostaInformeSeleccionada.termini : informePrevi.ofertaSeleccionada.termini}" required>
 				        	</div>
-				       	</div>  
-				       	<div class="form-group">
-				        	<div class="col-md-6">
-				            	<label>Cap d'Obra designat</label>
-				             	<input name="capDobra" placeholder="" value="${informePrevi.ofertaSeleccionada.capDobra}">
-				        	</div>
-				       	</div>  
+				       	</div>
+				       	<c:if test="${expedient.tipus == 'obra'}">  
+					       	<div class="form-group">
+					        	<div class="col-md-6">
+					            	<label>Cap d'Obra designat</label>
+					             	<input name="capDobra" placeholder="" value="${informePrevi.ofertaSeleccionada.capDobra}">
+					        	</div>
+					       	</div>
+				       	</c:if> 
 				       	<div class="form-group">
 				       		<div class="col-md-6">
 				       			<div class="document">
-			               			<label>Personal inscrit:</label>											                  	
+			               			<label>Personal adscrit:</label>											                  	
 				           			<a target="_blanck" href="downloadFichero?ruta=${informePrevi.ofertaSeleccionada.personalInscrit.getEncodedRuta()}">
 										${informePrevi.ofertaSeleccionada.personalInscrit.nom}
 									</a>
@@ -233,47 +382,49 @@
 								<input type="file" class="btn uploadImage" name="personalInscrit" /><br/>	
 				       		</div>	
 				       	</div>
-				       	<div class="form-group">
+				       	<c:if test="${expedient.contracte != 'major'}">
+					       	<div class="form-group">
+					       		<div class="col-md-6">
+					       			<div class="document">
+				               			<label>Proposta tècnica signada:</label>											                  	
+					           			<a target="_blanck" href="downloadFichero?ruta=${informePrevi.propostaTecnica.getEncodedRuta()}">
+											${informePrevi.propostaTecnica.nom}
+										</a>	
+										<c:if test="${informePrevi.propostaTecnica.signat}">
+											<span class="glyphicon glyphicon-pencil signedFile"></span>
+										</c:if>
+										<c:if test="${informePrevi.propostaTecnica.ruta != null}">
+											<span data-ruta="${informePrevi.propostaTecnica.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+										</c:if>
+										<br>
+										<div class="infoSign hidden">
+											<c:forEach items="${informePrevi.propostaTecnica.firmesList}" var="firma" >
+												<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+												<br>
+											</c:forEach>
+										</div>
+									</div>	
+									<input type="file" class="btn uploadImage" name="propostaTecnica" /><br/>	
+					       		</div>
+					       		<div class="col-md-6">
+									<div class="form-group">
+							    		<div class="col-md-12">
+									       	<div class="row">
+						                		<div class="form-group">
+											        <div class="col-md-12">
+											            <input id="createTascaLicitacio" data-informe="${informePrevi.idInf}" class="btn btn-success" value="Sol·licitar proposta tècnica">							            
+											        </div>
+											    </div> 
+						                	</div>
+						                </div>
+						           	</div>
+								</div>		
+					       	</div>	
+					    </c:if>			       	
+				       	<div class="form-group">				       		
 				       		<div class="col-md-6">
 				       			<div class="document">
-			               			<label>Proposta tècnica signada:</label>											                  	
-				           			<a target="_blanck" href="downloadFichero?ruta=${informePrevi.propostaTecnica.getEncodedRuta()}">
-										${informePrevi.propostaTecnica.nom}
-									</a>	
-									<c:if test="${informePrevi.propostaTecnica.signat}">
-										<span class="glyphicon glyphicon-pencil signedFile"></span>
-									</c:if>
-									<c:if test="${informePrevi.propostaTecnica.ruta != null}">
-										<span data-ruta="${informePrevi.propostaTecnica.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
-									</c:if>
-									<br>
-									<div class="infoSign hidden">
-										<c:forEach items="${informePrevi.propostaTecnica.firmesList}" var="firma" >
-											<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-											<br>
-										</c:forEach>
-									</div>
-								</div>	
-								<input type="file" class="btn uploadImage" name="propostaTecnica" /><br/>	
-				       		</div>
-				       		<div class="col-md-6">
-								<div class="form-group">
-						    		<div class="col-md-12">
-								       	<div class="row">
-					                		<div class="form-group">
-										        <div class="col-md-12">
-										            <input id="createTascaLicitacio" data-informe="${informePrevi.idInf}" class="btn btn-success" value="Sol·licitar proposta tècnica">							            
-										        </div>
-										    </div> 
-					                	</div>
-					                </div>
-					           	</div>
-							</div>		
-				       	</div>
-				       	<div class="form-group">
-				       		<div class="col-md-6">
-				       			<div class="document">
-			               			<label>Autorització proposta despesa:</label>											                  	
+			               			<label>Resolució d'adjudicació:</label>											                  	
 				           			<a target="_blanck" href="downloadFichero?ruta=${informePrevi.autoritzacioPropostaDespesa.getEncodedRuta()}">
 										${informePrevi.autoritzacioPropostaDespesa.nom}
 									</a>	
@@ -292,20 +443,66 @@
 									</div>
 								</div>	
 								<input type="file" class="btn uploadImage" name="autoritzacioDespesa" /><br/>	
-				       		</div>
+				       		</div>				       		
+				       	</div>
+				       	<div class="form-group">
+				    		<div class="col-md-12">
+						       	<div class="row">
+			                		<div class="form-group">
+								        <div class="col-xs-offset-6 col-xs-3">
+								            <input type="submit" class="btn btn-primary" value="Actualitzar expedient">							            
+								        </div>
+								        <c:if test="${expedient.contracte == 'major'}">
+									       	<div class="col-xs-3">
+									        	<input id="createTascaAutoDespesa" data-informe="${informePrevi.idInf}" class="btn btn-success" value="Enviar documents a firma">							            
+											</div>
+										</c:if>
+										<c:if test="${expedient.contracte != 'major'}">
+									       	<div class="col-xs-3">
+									        	<input id="createTascaAutoDespesa" data-informe="${informePrevi.idInf}" class="btn btn-success" value="Sol·licitar resolució">							            
+											</div>
+										</c:if>
+									</div> 
+			                	</div>
+			                </div>
+			           	</div>			
+				       	<div class="separator"></div>
+						<div class="form-group">
 				       		<div class="col-md-6">
-								<div class="form-group">
-						    		<div class="col-md-12">
-								       	<div class="row">
-					                		<div class="form-group">
-										        <div class="col-md-12">
-										            <input id="createTascaAutoDespesa" data-informe="${informePrevi.idInf}" class="btn btn-success" value="Sol·licitar autorització">							            
-										        </div>
-										    </div> 
-					                	</div>
-					                </div>
-					           	</div>
-							</div>		
+				            	<h2>Formalització contracte</h2>	
+			               	</div>
+	   					</div>	
+   					 	<div class="form-group">  
+							<div class="col-md-3">
+								<label>Data firma contracte</label>
+                                <div class="input-group date datepicker">
+								  	<input type="text" class="form-control" name="dataContracte" value="${informePrevi.expcontratacio.getDataFirmaString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+								</div>
+							</div>
+						</div>
+	   					<div class="form-group">				       		
+				       		<div class="col-md-6">
+				       			<div class="document">
+			               			<label>Contracte signat:</label>											                  	
+				           			<a target="_blanck" href="downloadFichero?ruta=${informePrevi.contracteSignat.getEncodedRuta()}">
+										${informePrevi.contracteSignat.nom}
+									</a>	
+									<c:if test="${informePrevi.contracteSignat.signat}">
+										<span class="glyphicon glyphicon-pencil signedFile"></span>
+									</c:if>
+									<c:if test="${informePrevi.contracteSignat.ruta != null}">
+										<span data-ruta="${informePrevi.contracteSignat.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+									</c:if>
+									<br>
+									<div class="infoSign hidden">
+										<c:forEach items="${informePrevi.contracteSignat.firmesList}" var="firma" >
+											<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+											<br>
+										</c:forEach>
+									</div>
+								</div>	
+								<input type="file" class="btn uploadImage" name="contracte" /><br/>	
+				       		</div>				       		
 				       	</div>
 				       	<div class="form-group">
 				    		<div class="col-md-12">

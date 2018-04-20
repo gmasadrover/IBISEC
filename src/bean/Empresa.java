@@ -42,7 +42,7 @@ public class Empresa {
 	   private Date dataValidesaFins;
 	   private Date dataModificacio;
 	   private String notariModificacio;
-	   private int protocolModificacio;
+	   private String protocolModificacio;
 	   private Date dataValidacio;
 	   private String entitatValidacio;
 	   private String tipus;
@@ -100,10 +100,10 @@ public class Empresa {
 		public void setNotariModificacio(String notariModificacio) {
 			this.notariModificacio = notariModificacio;
 		}
-		public int getProtocolModificacio() {
+		public String getProtocolModificacio() {
 			return protocolModificacio;
 		}
-		public void setProtocolModificacio(int protocolModificacio) {
+		public void setProtocolModificacio(String protocolModificacio) {
 			this.protocolModificacio = protocolModificacio;
 		}
 		public String getTipus() {
@@ -126,6 +126,21 @@ public class Empresa {
 		}
 		public String getEntitatValidacio() {
 			return entitatValidacio;
+		}
+		public String getEntitatValidacioString() {
+			if (this.entitatValidacio != null) {
+				if(this.entitatValidacio.equals("caib")) {
+					return "Advocacia CAIB";
+				} else if (this.entitatValidacio.equals("estat")) {
+					return "Advocacia Estat";
+				} else if (this.entitatValidacio.equals("ibisec")) {
+					return "Assessoria jurídica IBISEC";
+				} else {
+					return this.entitatValidacio;
+				}
+			} else {
+				return "";
+			}
 		}
 		public void setEntitatValidacio(String entitatValidacio) {
 			this.entitatValidacio = entitatValidacio;
@@ -194,6 +209,8 @@ public class Empresa {
    private Fitxers.Fitxer succesoraFile;
    private String motiuExtincio;
    private Fitxers.Fitxer extincioFile;
+   private double totalPbasePeriode;
+   private double totalPLicPeriode;
    
    public Empresa() {
  
@@ -608,6 +625,22 @@ public class Empresa {
 
 	public void setDocumentREA(Fitxers.Fitxer documentREA) {
 		this.documentREA = documentREA;
+	}
+
+	public double getTotalPbasePeriode() {
+		return totalPbasePeriode;
+	}
+
+	public void setTotalPbasePeriode(double totalPbasePeriode) {
+		this.totalPbasePeriode = totalPbasePeriode;
+	}
+
+	public double getTotalPLicPeriode() {
+		return totalPLicPeriode;
+	}
+
+	public void setTotalPLicPeriode(double totalPLicPeriode) {
+		this.totalPLicPeriode = totalPLicPeriode;
 	}
 
 }

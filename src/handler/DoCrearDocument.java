@@ -264,7 +264,7 @@ public class DoCrearDocument extends HttpServlet {
    	            AcroFields fields = stamper.getAcroFields();
    	            fields.setField("informe",informe.getIdInf());
    	        	fields.setField("capFinancera", Usuari.getNomCompletReal());
-   	        	fields.setField("partida", informe.getPartida());	   	       
+   	        	fields.setField("partida", informe.getAssignacioCredit().getPartida().getNom());	   	       
    	   	       	fields.setField("observacions", CreditCore.getComentariPartida(conn, idInforme));	
    	   	       	String resolucio = "El cap de l'àrea econòmica financera dóna el seu vistiplau a l'informe i procedeix a l'assignació de la partida pressupostària";
 	   	        if (informe.getDataRebujada() != null) {
@@ -306,7 +306,7 @@ public class DoCrearDocument extends HttpServlet {
   	            fields.setField("expedient",expedient.getExpContratacio());
   	        	fields.setField("tipus", expedient.getTipus());
   	        	fields.setField("objecte", informe.getPropostaInformeSeleccionada().getObjecte());	   	       
-  	   	       	fields.setField("partida", informe.getCodiPartida());	
+  	   	       	fields.setField("partida", informe.getAssignacioCredit().getPartida().getCodi());	
   	   	       	fields.setField("PBase", informe.getPropostaInformeSeleccionada().getPbaseFormat());
   	   	       	fields.setField("IVA", informe.getPropostaInformeSeleccionada().getIvaFormat());
   	   	       	fields.setField("PLic", informe.getPropostaInformeSeleccionada().getPlicFormat());

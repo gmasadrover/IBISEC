@@ -63,9 +63,9 @@
                             <p> 
 	                        	<label>Conformador: </label> ${certificacio.usuariConformador.getNomComplet()}
                             </p> 
-                            <p> 
+                           <%--  <p> 
 	                        	<label>Data conformada: </label> ${certificacio.getDataConformacioString()}
-                            </p>    	                            
+                            </p> --%>    	                            
 	                  	</div>
 		             	<div class="col-xs-offset-1 col-md-5">
 		             		<p> 
@@ -80,14 +80,38 @@
 	                        <p> 
 	                        	<label>Data entrada: </label> ${certificacio.getDataEntradaString()}
                             </p> 
-                            <p> 
+                           <%--  <p> 
 	                        	<label>Data enviada a conformar: </label> ${certificacio.getDataEnviatConformadorString()}
                             </p>                             
                             <p> 
 	                        	<label>Data enviada a comptabilitat: </label> ${certificacio.getDataEnviatComptabilitatString()}
-                            </p> 		                                                	
+                            </p> 		 --%>                                                	
 	                    </div>		            	
                 	</div>
+                	<div class="row">
+                		<div class="col-xs-offset-1 col-md-10">
+		                	<c:if test="${certificacio.arxiu.ruta != null}">															
+								<p>
+							    	<div class="document">
+							        	<label>Certificació:	</label>											                  	
+						          		<a target="_blanck" href="downloadFichero?ruta=${certificacio.arxiu.getEncodedRuta()}">
+											${certificacio.arxiu.nom}
+										</a>	
+										<c:if test="${certificacio.arxiu.signat}">
+											<span class="glyphicon glyphicon-pencil signedFile"></span>
+										</c:if>
+										<br>
+										<div class="infoSign hidden">
+											<c:forEach items="${certificacio.arxiu.firmesList}" var="firma" >
+												<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+												<br>
+											</c:forEach>
+										</div>
+									</div>																				
+								</p>	
+							</c:if>
+						</div>
+					</div>
                 	<div class="row">
                 		<div class="col-xs-offset-1 col-md-10 longText">
                 			<p> 

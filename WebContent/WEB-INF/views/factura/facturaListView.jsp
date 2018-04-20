@@ -106,7 +106,7 @@
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${facturesList}" var="factura" >
-							          	<tr class="success">							          	
+							          	<tr class="${factura.anulada ? 'danger' : ''}">							          	
 							           		<td><a href="facturaDetalls?ref=${factura.idFactura}" class="loadingButton"  data-msg="obrint factura...">${factura.idFactura}</a></td>
 							            	<td><a href="actuacionsDetalls?ref=${factura.idActuacio}" class="loadingButton"  data-msg="obrint actuació...">${factura.idActuacio} - ${factura.actuacio.descripcio}</a></td>
 							            	<td>${factura.getDataFacturaString()}</td>
@@ -119,7 +119,7 @@
 							            	<td>${factura.usuariConformador.getNomCompletReal()}</td>
 							            	<td>${factura.dataConformacio}</td>
 							            	<td>${factura.getDataConformacioString()}</td>
-							            	<td>${factura.informe.codiPartida}</td>
+							            	<td>${factura.informe.assignacioCredit.partida.codi}</td>
 							            	<td>${factura.notes}</td>	 
 							            	<td>${factura.actuacio.centre.getNomComplet()}</td>    
 							            	<td>${factura.actuacio.dataCreacio}</td> 

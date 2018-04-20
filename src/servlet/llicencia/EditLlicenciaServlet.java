@@ -50,11 +50,15 @@ public class EditLlicenciaServlet extends HttpServlet {
     		response.sendRedirect(request.getContextPath() + "/");	 
  	   	}else{
 			String codi = request.getParameter("codi");
+			String expContractacio = request.getParameter("exp");
 			String from = request.getParameter("from"); 
 	        Llicencia llicencia = new Llicencia();	
 	        Actuacio actuacio = new Actuacio();	
 	        String errorString = null;	 
 	        try {
+	        	if (codi == null || codi.isEmpty()) {
+	        		codi = LlicenciaCore.novaLlicencia(conn, expContractacio, "");
+	        	}
 	            llicencia = LlicenciaCore.findLlicencia(conn, codi);
 	            actuacio = ActuacioCore.findActuacio(conn, ExpedientCore.findExpedient(conn, llicencia.getCodiExpedient()).getIdActuacio());
 	        } catch (SQLException | NamingException e) {

@@ -12,6 +12,72 @@ import utils.Fitxers.Fitxer;
 
 public class InformeActuacio {
 	
+	public class IncidenciaGarantia {
+		private int idIncidencia;
+		private String objecte;
+		private Date dataInici;
+		private Date dataFi;
+		private List<Fitxers.Fitxer> documentsList;
+		
+		public IncidenciaGarantia() {
+			
+		}
+
+		public int getIdIncidencia() {
+			return idIncidencia;
+		}
+
+		public void setIdIncidencia(int idIncidencia) {
+			this.idIncidencia = idIncidencia;
+		}
+
+		public String getObjecte() {
+			return objecte;
+		}
+
+		public void setObjecte(String objecte) {
+			this.objecte = objecte;
+		}
+
+		public Date getDataInici() {
+			return dataInici;
+		}
+		
+		public String getDataIniciString() {
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+			String dataString = "";
+			if (this.dataInici != null) dataString = df.format(this.dataInici);
+			return dataString;
+		}
+
+		public void setDataInici(Date dataInici) {
+			this.dataInici = dataInici;
+		}
+
+		public Date getDataFi() {
+			return dataFi;
+		}
+
+		public String getDataFiString() {
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+			String dataString = "";
+			if (this.dataFi != null) dataString = df.format(this.dataFi);
+			return dataString;
+		}
+		
+		public void setDataFi(Date dataFi) {
+			this.dataFi = dataFi;
+		}
+
+		public List<Fitxers.Fitxer> getDocumentsList() {
+			return documentsList;
+		}
+
+		public void setDocumentsList(List<Fitxers.Fitxer> documentsList) {
+			this.documentsList = documentsList;
+		}
+	}
+	
 	public class PropostaInforme {
 		private String idProposta;
 		private String objecte;
@@ -180,20 +246,79 @@ public class InformeActuacio {
 		
 	}
 	
+	public class Personal {
+		private User usuari;
+		private String idInf;
+		private String funcio;
+		private boolean actiu;
+		private Date dataAlta;
+		private Date dataBaixa;
+		public User getUsuari() {
+			return usuari;
+		}
+		public void setUsuari(User usuari) {
+			this.usuari = usuari;
+		}
+		public String getIdInf() {
+			return idInf;
+		}
+		public void setIdInf(String idInf) {
+			this.idInf = idInf;
+		}
+		public String getFuncio() {
+			return funcio;
+		}
+		public void setFuncio(String funcio) {
+			this.funcio = funcio;
+		}
+		public boolean isActiu() {
+			return actiu;
+		}
+		public void setActiu(boolean actiu) {
+			this.actiu = actiu;
+		}
+		public Date getDataAlta() {
+			return dataAlta;
+		}
+		public String getDataAltaString() {
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+			String dataString = "";
+			if (this.dataAlta != null) dataString = df.format(this.dataAlta);
+			return dataString;
+		}
+		public void setDataAlta(Date dataAlta) {
+			this.dataAlta = dataAlta;
+		}
+		public Date getDataBaixa() {
+			return dataBaixa;
+		}
+		public String getDataBaixaString() {
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+			String dataString = "";
+			if (this.dataBaixa != null) dataString = df.format(this.dataBaixa);
+			return dataString;
+		}
+		public void setDataBaixa(Date dataBaixa) {
+			this.dataBaixa = dataBaixa;
+		}
+	}
+	
 	private String idInf;
 	private String idInfOriginal;
 	private int idTasca;
 	private Actuacio actuacio;
 	private String idIncidencia;	
 	private List<Fitxers.Fitxer> adjunts; 
+	private List<Fitxers.Fitxer> informesPrevis; 
+	private List<Fitxers.Fitxer> docTecnica;
 	private List<PropostaInforme> llistaPropostes;
+	private List<IncidenciaGarantia> llistaIncidenciesGarantia;
 	private PropostaInforme propostaInformeSeleccionada;
 	private User usuari;
 	private Date dataCreacio;
 	private String partidaRebutjadaMotiu;
 	private Date dataRebujada;
-	private String partida;
-	private String codiPartida;
+	private AssignacioCredit assignacioCredit;
 	private String comentariPartida;
 	private User usuariCapValidacio;
 	private Date dataCapValidacio;
@@ -203,6 +328,7 @@ public class InformeActuacio {
 	private List<Oferta> llistaOfertes;
 	private Oferta ofertaSeleccionada;
 	private List<Factura> llistaFactures;
+	private double totalFacturat;
 	private List<Factura> llistaCertificacions;
 	private List<InformeActuacio> llistaModificacions;
 	private Date dataTancament;
@@ -211,8 +337,10 @@ public class InformeActuacio {
 	private String tipo;
 	private Expedient expcontratacio;
 	private Llicencia llicencia;
+	private Instalacions instalacions;
 	private Date dataPD;
 	private String tipoPD;
+	private String estat;
 	private Fitxer propostaActuacio;
 	private Fitxer vistiplauPropostaActuacio;
 	private Fitxer informeSupervisio;
@@ -226,7 +354,38 @@ public class InformeActuacio {
 	private Fitxer contracteSignat;
 	private Fitxer memoriaOrdreInici;
 	private Fitxer justProcForma;
+	private Fitxer justCriterisAdjudicacio;
+	private Fitxer declaracioUrgencia;
 	private Fitxer aprovacioEXPPlecsDespesa;
+	private Fitxer aprovacioDispoTerrenys;
+	private List<Fitxer> ratificacioClassificacio;
+	private Date publicacioBOIB;
+	private Fitxer documentBOIB;
+	private Fitxer correuInvitacio;
+	private Fitxer actaInici;
+	private Fitxer actaFinalitzacio;
+	private List<Fitxers.Fitxer> documentsAltresPrevis; 
+	private List<Fitxers.Fitxer> documentsAltresLicitacio; 
+	private List<Fitxers.Fitxer> documentsAltresExecucio; 
+	private List<Fitxers.Fitxer> documentsAltresGarantia; 
+	private List<Fitxers.Fitxer> documentsAltresAutUrbanistica; 
+	private String recursAdministratiu;
+	private List<Fitxers.Fitxer> documentsRecursosAdministratius;
+	private List<Fitxers.Fitxer> documentsIntalacioBaixaTensio;
+	private List<Fitxers.Fitxer> documentsIntalacioContraincendis;
+	private List<Fitxers.Fitxer> documentsCertificatEficienciaEnergetica;
+	private List<Fitxers.Fitxer> documentsIntalacioTermica;
+	private List<Fitxers.Fitxer> documentsIntalacioAscensor;
+	private List<Fitxers.Fitxer> documentsIntalacioAlarma;
+	private List<Fitxers.Fitxer> documentsIntalacioSubministreAigua;
+	private List<Fitxers.Fitxer> documentsPlaAutoproteccio;
+	private List<Fitxers.Fitxer> documentsCedulaDeHabitabilitat;
+	private List<Fitxers.Fitxer> documentsInstalacioPetrolifera;
+	private List<Registre> entrades;
+	private List<Registre> sortides;
+	private List<Tasca> tasques;
+	private List<Personal> personal;
+		
 	
 	public InformeActuacio() {	
 		this.llistaPropostes = new ArrayList<PropostaInforme>();
@@ -279,12 +438,12 @@ public class InformeActuacio {
 		return dataString;
 	}
 
-	public String getPartida() {
-		return partida;
+	public AssignacioCredit getAssignacioCredit() {
+		return assignacioCredit;
 	}
 
-	public void setPartida(String partida) {
-		this.partida = partida;
+	public void setAssignacioCredit(AssignacioCredit assignacioCredit) {
+		this.assignacioCredit = assignacioCredit;
 	}
 
 	public String getIdIncidencia() {
@@ -371,6 +530,11 @@ public class InformeActuacio {
 
 	public void setLlistaFactures(List<Factura> llistaFactures) {
 		this.llistaFactures = llistaFactures;
+		if (this.llistaFactures != null) {
+			for (Factura factura: this.llistaFactures) {
+				if (!factura.isAnulada()) this.setTotalFacturat(this.getTotalFacturat() + factura.getValor());
+			}
+		}
 	}
 	
 	public double getTotalFacturat() {
@@ -387,7 +551,22 @@ public class InformeActuacio {
 		DecimalFormat num = new DecimalFormat("#,##0.00");
 	    return num.format(this.getTotalFacturat()) + '€';
 	}
+	
+	public double getTotalCertificat() {
+		double total = 0;
+		if (this.llistaCertificacions != null) {
+			for (Factura certificacio: this.llistaCertificacions) {
+				if (!certificacio.isAnulada()) total += certificacio.getValor();
+			}
+		}
+		return total;
+	}
 
+	public String getTotalCertificatFormat() {
+		DecimalFormat num = new DecimalFormat("#,##0.00");
+	    return num.format(this.getTotalCertificat()) + '€';
+	}
+	
 	public Date getDataTancament() {
 		return dataTancament;
 	}
@@ -538,14 +717,6 @@ public class InformeActuacio {
 		this.autoritzacioPropostaDespesa = autoritzacioPropostaDespesa;
 	}
 
-	public String getCodiPartida() {
-		return codiPartida;
-	}
-
-	public void setCodiPartida(String codiPartida) {
-		this.codiPartida = codiPartida;
-	}
-
 	public List<InformeActuacio> getLlistaModificacions() {
 		return llistaModificacions;
 	}
@@ -595,13 +766,13 @@ public class InformeActuacio {
 	
 	public String getEstatEconomic() {
 		String estat = "Sense partida";
-		if (this.partida!= null && !this.partida.isEmpty()) {
+		if (this.assignacioCredit != null && this.assignacioCredit.getIdAssignacio() != null) {
 			//RF (Reserva de fons)
 			estat = "RF";			
 		}
 		//Contractat (PD i Contracte)
 		if (this.autoritzacioPropostaDespesa.getRuta() != null || this.contracteSignat.getRuta() != null) {
-			estat = "Contratat";
+			estat = "Contractat";
 		}
 		//Facturat (factures i certificacions)
 		if (this.getTotalFacturat() > 0) {
@@ -680,5 +851,328 @@ public class InformeActuacio {
 
 	public void setAprovacioEXPPlecsDespesa(Fitxer aprovacioEXPPlecsDespesa) {
 		this.aprovacioEXPPlecsDespesa = aprovacioEXPPlecsDespesa;
+	}
+
+	public Fitxer getAprovacioDispoTerrenys() {
+		return aprovacioDispoTerrenys;
+	}
+
+	public void setAprovacioDispoTerrenys(Fitxer aprovacioDispoTerrenys) {
+		this.aprovacioDispoTerrenys = aprovacioDispoTerrenys;
+	}
+
+	public Fitxer getDocumentBOIB() {
+		return documentBOIB;
+	}
+
+	public void setDocumentBOIB(Fitxer documentBOIB) {
+		this.documentBOIB = documentBOIB;
+	}
+
+	public Fitxer getCorreuInvitacio() {
+		return correuInvitacio;
+	}
+
+	public void setCorreuInvitacio(Fitxer correuInvitacio) {
+		this.correuInvitacio = correuInvitacio;
+	}
+
+	public Date getPublicacioBOIB() {
+		return publicacioBOIB;
+	}
+	
+	public String getPublicacioBOIBString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+		String dataString = "";
+		if (this.publicacioBOIB != null) dataString = df.format(this.publicacioBOIB);
+		return dataString;
+	}
+
+	public void setPublicacioBOIB(Date publicacioBOIB) {
+		this.publicacioBOIB = publicacioBOIB;
+	}
+
+	public double getTotalModificacions() {
+		double total = 0;
+		for (InformeActuacio modificacio:  this.llistaModificacions) {
+			if (modificacio.getAutoritzacioPropostaDespesa().getRuta() != null) {				
+				total += modificacio.getOfertaSeleccionada().getPlic();
+			}
+		}
+		return total;
+	}
+	
+	public String getTotalModificacionsString() {
+		DecimalFormat num = new DecimalFormat("#,##0.00");
+	    return num.format(this.getTotalModificacions()) + '€';
+	}
+	
+	public String getEstatExpedientFormat() {
+		String estat = "";	
+		if (this.estat != null) {
+			estat = "En execució";	
+			if (this.estat.equals("garantia")) {
+				estat = "Garantia";
+			} else if (this.estat.equals("previs")) {
+				estat = "Prèvis licitació";
+			} else if(this.estat.equals("licitacio")) {
+				estat = "En licitació";
+			} else if(this.estat.equals("acabat")) {
+				estat = "Tancada";
+			}
+		}		
+		return estat;
+	}
+
+	public List<Fitxer> getRatificacioClassificacio() {
+		return ratificacioClassificacio;
+	}
+
+	public void setRatificacioClassificacio(List<Fitxer> ratificacioClassificacio) {
+		this.ratificacioClassificacio = ratificacioClassificacio;
+	}
+
+	public List<IncidenciaGarantia> getLlistaIncidenciesGarantia() {
+		return llistaIncidenciesGarantia;
+	}
+
+	public void setLlistaIncidenciesGarantia(List<IncidenciaGarantia> llistaIncidenciesGarantia) {
+		this.llistaIncidenciesGarantia = llistaIncidenciesGarantia;
+	}
+
+	public List<Fitxers.Fitxer> getInformesPrevis() {
+		return informesPrevis;
+	}
+
+	public void setInformesPrevis(List<Fitxers.Fitxer> informesPrevis) {
+		this.informesPrevis = informesPrevis;
+	}
+
+	public Fitxer getActaFinalitzacio() {
+		return actaFinalitzacio;
+	}
+
+	public void setActaFinalitzacio(Fitxer actaFinalitzacio) {
+		this.actaFinalitzacio = actaFinalitzacio;
+	}
+
+	public Fitxer getActaInici() {
+		return actaInici;
+	}
+
+	public void setActaInici(Fitxer actaInici) {
+		this.actaInici = actaInici;
+	}
+
+	public List<Fitxers.Fitxer> getDocTecnica() {
+		return docTecnica;
+	}
+
+	public void setDocTecnica(List<Fitxers.Fitxer> docTecnica) {
+		this.docTecnica = docTecnica;
+	}
+
+	public void setTotalFacturat(double totalFacturat) {
+		this.totalFacturat = totalFacturat;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsAltresPrevis() {
+		return documentsAltresPrevis;
+	}
+
+	public void setDocumentsAltresPrevis(List<Fitxers.Fitxer> documentsAltresPrevis) {
+		this.documentsAltresPrevis = documentsAltresPrevis;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsAltresLicitacio() {
+		return documentsAltresLicitacio;
+	}
+
+	public void setDocumentsAltresLicitacio(List<Fitxers.Fitxer> documentsAltresLicitacio) {
+		this.documentsAltresLicitacio = documentsAltresLicitacio;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsAltresExecucio() {
+		return documentsAltresExecucio;
+	}
+
+	public void setDocumentsAltresExecucio(List<Fitxers.Fitxer> documentsAltresExecucio) {
+		this.documentsAltresExecucio = documentsAltresExecucio;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsAltresGarantia() {
+		return documentsAltresGarantia;
+	}
+
+	public void setDocumentsAltresGarantia(List<Fitxers.Fitxer> documentsAltresGarantia) {
+		this.documentsAltresGarantia = documentsAltresGarantia;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsAltresAutUrbanistica() {
+		return documentsAltresAutUrbanistica;
+	}
+
+	public void setDocumentsAltresAutUrbanistica(List<Fitxers.Fitxer> documentsAltresAutUrbanistica) {
+		this.documentsAltresAutUrbanistica = documentsAltresAutUrbanistica;
+	}
+	
+	public String getRecursAdministratiu() {
+		return recursAdministratiu;
+	}
+
+	public void setRecursAdministratiu(String recursAdministratiu) {
+		this.recursAdministratiu = recursAdministratiu;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsRecursosAdministratius() {
+		return documentsRecursosAdministratius;
+	}
+
+	public void setDocumentsRecursosAdministratius(List<Fitxers.Fitxer> documentsRecursosAdministratius) {
+		this.documentsRecursosAdministratius = documentsRecursosAdministratius;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsIntalacioBaixaTensio() {
+		return documentsIntalacioBaixaTensio;
+	}
+
+	public void setDocumentsIntalacioBaixaTensio(List<Fitxers.Fitxer> documentsIntalacioBaixaTensio) {
+		this.documentsIntalacioBaixaTensio = documentsIntalacioBaixaTensio;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsIntalacioContraincendis() {
+		return documentsIntalacioContraincendis;
+	}
+
+	public void setDocumentsIntalacioContraincendis(List<Fitxers.Fitxer> documentsIntalacioContraincendis) {
+		this.documentsIntalacioContraincendis = documentsIntalacioContraincendis;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsCertificatEficienciaEnergetica() {
+		return documentsCertificatEficienciaEnergetica;
+	}
+
+	public void setDocumentsCertificatEficienciaEnergetica(List<Fitxers.Fitxer> documentsCertificatEficienciaEnergetica) {
+		this.documentsCertificatEficienciaEnergetica = documentsCertificatEficienciaEnergetica;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsIntalacioTermica() {
+		return documentsIntalacioTermica;
+	}
+
+	public void setDocumentsIntalacioTermica(List<Fitxers.Fitxer> documentsIntalacioTermica) {
+		this.documentsIntalacioTermica = documentsIntalacioTermica;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsIntalacioAscensor() {
+		return documentsIntalacioAscensor;
+	}
+
+	public void setDocumentsIntalacioAscensor(List<Fitxers.Fitxer> documentsIntalacioAscensor) {
+		this.documentsIntalacioAscensor = documentsIntalacioAscensor;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsIntalacioAlarma() {
+		return documentsIntalacioAlarma;
+	}
+
+	public void setDocumentsIntalacioAlarma(List<Fitxers.Fitxer> documentsIntalacioAlarma) {
+		this.documentsIntalacioAlarma = documentsIntalacioAlarma;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsIntalacioSubministreAigua() {
+		return documentsIntalacioSubministreAigua;
+	}
+
+	public void setDocumentsIntalacioSubministreAigua(List<Fitxers.Fitxer> documentsIntalacioSubministreAigua) {
+		this.documentsIntalacioSubministreAigua = documentsIntalacioSubministreAigua;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsPlaAutoproteccio() {
+		return documentsPlaAutoproteccio;
+	}
+
+	public void setDocumentsPlaAutoproteccio(List<Fitxers.Fitxer> documentsPlaAutoproteccio) {
+		this.documentsPlaAutoproteccio = documentsPlaAutoproteccio;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsCedulaDeHabitabilitat() {
+		return documentsCedulaDeHabitabilitat;
+	}
+
+	public void setDocumentsCedulaDeHabitabilitat(List<Fitxers.Fitxer> documentsCedulaDeHabitabilitat) {
+		this.documentsCedulaDeHabitabilitat = documentsCedulaDeHabitabilitat;
+	}
+
+	public Instalacions getInstalacions() {
+		return instalacions;
+	}
+
+	public void setInstalacions(Instalacions instalacions) {
+		this.instalacions = instalacions;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsInstalacioPetrolifera() {
+		return documentsInstalacioPetrolifera;
+	}
+
+	public void setDocumentsInstalacioPetrolifera(List<Fitxers.Fitxer> documentsInstalacioPetrolifera) {
+		this.documentsInstalacioPetrolifera = documentsInstalacioPetrolifera;
+	}
+
+	public String getEstat() {
+		return estat;
+	}
+
+	public void setEstat(String estat) {
+		this.estat = estat;
+	}
+
+	public List<Registre> getEntrades() {
+		return entrades;
+	}
+
+	public void setEntrades(List<Registre> entrades) {
+		this.entrades = entrades;
+	}
+
+	public List<Registre> getSortides() {
+		return sortides;
+	}
+
+	public void setSortides(List<Registre> sortides) {
+		this.sortides = sortides;
+	}
+
+	public List<Tasca> getTasques() {
+		return tasques;
+	}
+
+	public void setTasques(List<Tasca> tasques) {
+		this.tasques = tasques;
+	}
+
+	public List<Personal> getPersonal() {
+		return personal;
+	}
+
+	public void setPersonal(List<Personal> personal) {
+		this.personal = personal;
+	}
+
+	public Fitxer getJustCriterisAdjudicacio() {
+		return justCriterisAdjudicacio;
+	}
+
+	public void setJustCriterisAdjudicacio(Fitxer justCriterisAdjudicacio) {
+		this.justCriterisAdjudicacio = justCriterisAdjudicacio;
+	}
+
+	public Fitxer getDeclaracioUrgencia() {
+		return declaracioUrgencia;
+	}
+
+	public void setDeclaracioUrgencia(Fitxer declaracioUrgencia) {
+		this.declaracioUrgencia = declaracioUrgencia;
 	}
 }

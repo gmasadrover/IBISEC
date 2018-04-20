@@ -38,6 +38,9 @@ $(document).ready(function() {
     		{"bVisible": false},
     		{"iDataSort": 11},
     		{"bVisible": false},
+    		{"iDataSort": 13},
+    		{"bVisible": false},
+    		null,
     		null
 		]
 	});

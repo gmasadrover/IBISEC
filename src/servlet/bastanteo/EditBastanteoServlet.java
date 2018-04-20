@@ -60,7 +60,8 @@ public class EditBastanteoServlet extends HttpServlet {
 	        String errorString = null;	      
 	        try {
 	        	bastanteo = BastanteosCore.findBastanteo(conn, ref);
-	        	empresesList = EmpresaCore.getEmpreses(conn); 	   
+	        	empresesList = EmpresaCore.getEmpreses(conn); 	
+	        	empresesList.addAll(EmpresaCore.getEmpresesUTE(conn)); 	
 	        } catch (SQLException | NamingException e) {
 	            e.printStackTrace();
 	            errorString = e.getMessage();

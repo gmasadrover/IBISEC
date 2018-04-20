@@ -30,7 +30,7 @@ public class Oferta {
 	private Date dataCapValidacio;
 	private String idInforme;
 	private Fitxers.Fitxer presupost;
-	
+		
 	public Oferta(){
 		
 	}
@@ -86,6 +86,12 @@ public class Oferta {
 	}
 	
 	public String getPlicFormat(){
+		if (this.plic == 0) return "No presentada";
+		DecimalFormat num = new DecimalFormat("#,##0.00");
+	    return num.format(this.plic) + '€';
+	}
+	
+	public String getPlicFormatNormal(){
 		DecimalFormat num = new DecimalFormat("#,##0.00");
 	    return num.format(this.plic) + '€';
 	}

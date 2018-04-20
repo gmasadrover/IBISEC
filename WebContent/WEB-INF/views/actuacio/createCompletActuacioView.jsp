@@ -109,15 +109,7 @@
 						                	<option value="major">Llicència</option>
 						                	<option value="comun">Comunicació prèvia</option>
 						                </select>
-						           	</div>
-						           	<div class="col-md-3">
-						      	 		<label>Formalització contracte</label>
-						      	 		<input type="hidden" id="formContractePrev" value="" >
-						                <select class="form-control selectpicker" name="formContracte" id="formContracte">
-						                	<option value="si">Si</option>
-						                	<option value="no">No</option>
-						                </select>
-						      		</div>
+						           	</div>						           	
 								</div>				                       																
 							</div>								
 							<div class="form-group">

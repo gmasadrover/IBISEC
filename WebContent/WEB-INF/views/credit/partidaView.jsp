@@ -52,13 +52,13 @@
 	                        	<label>Estat:</label> ${partida.getEstatFormat()}
 	                        </p>    
 	                        <p> 
-	                        	<label>Total: </label> ${partida.getTotalPartidaFormat()}
+	                        	<label>Total: </label> <a href="partidaDetalls?codi=${partida.codi}" class="loadingButton"  data-msg="obrint total partida...">${partida.getTotalPartidaFormat()}</a> 
                             </p>
                             <p> 
-	                        	<label>Reservat (RF): </label> ${partida.getReservaPartidaFormat()}
+	                        	<label>Reservat (RF): </label> <a href="partidaDetalls?codi=${partida.codi}&estat=reservat" class="loadingButton"  data-msg="obrint total reservat...">${partida.getReservaPartidaFormat()}</a>
                             </p>
                             <p> 
-	                        	<label>Pagat: </label> ${partida.getPartidaPagatFormat()} 
+	                        	<label>Facturat: </label> <a href="partidaDetalls?codi=${partida.codi}&estat=pagat" class="loadingButton"  data-msg="obrint total facturat...">${partida.getPartidaPagatFormat()}</a>
                             </p>                       
 	                  	</div>
 		             	<div class="col-xs-offset-1 col-md-5">
@@ -72,10 +72,17 @@
                             	<label>Disponible: </label> ${partida.getPartidaPerAsignarFormat()}
                             </p>
 	                        <p> 
-	                        	<label>Assignat / previst (Contractat): </label> ${partida.getPrevistPartidaFormat()}
+	                        	<label>Assignat / previst (Contractat): </label> <a href="partidaDetalls?codi=${partida.codi}&estat=contractat" class="loadingButton"  data-msg="obrint total contractat...">${partida.getPrevistPartidaFormat()}</a>
                             </p>                                       	
 	                    </div>		            	
-                	</div>    
+                	</div>   
+                	<c:if test="${canEditPartida}">
+			      		<div class="row margin_bottom10">
+				    		<div class="col-md-offset-9 col-md-3 panel">
+								<a href="editPartida?idPartida=${partida.codi}" class="btn btn-primary loadingButton"  data-msg="obrint formulari..." role="button">Modificar partida</a>
+							</div>
+			    		</div>
+			    	</c:if> 
                 	<h2 class="margin_bottom30">Assignacions</h2>
                 	<div class="row">
 	                	<div class="table-responsive col-xs-offset-1 col-md-10">							                        

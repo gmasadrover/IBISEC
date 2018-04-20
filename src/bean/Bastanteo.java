@@ -3,20 +3,65 @@ package bean;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class Bastanteo {
+	public class Escritura{
+		private int codi;
+		private String escritura;
+		private Date dataEscritura;
+		private String numProtocol;
+		private String notari;
+		
+		public Escritura() {}
+		
+		public int getCodi() {
+			return codi;
+		}
+		public void setCodi(int codi) {
+			this.codi = codi;
+		}
+		
+		public String getEscritura() {
+			return escritura;
+		}
+		public void setEscritura(String escritura) {
+			this.escritura = escritura;
+		}
+		public Date getDataEscritura() {
+			return dataEscritura;
+		}
+		public String getDataEscrituraString() {
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+			String dataString = "";
+			if (this.dataEscritura != null) dataString = df.format(this.dataEscritura);
+			return dataString;
+		}
+		public void setDataEscritura(Date dataEscritura) {
+			this.dataEscritura = dataEscritura;
+		}
+		public String getNumProtocol() {
+			return numProtocol;
+		}
+		public void setNumProtocol(String numProtocol) {
+			this.numProtocol = numProtocol;
+		}
+		public String getNotari() {
+			return notari;
+		}
+		public void setNotari(String notari) {
+			this.notari = notari;
+		}
+	}
+	
 	private String ref;
 	private Date databastanteo;
-	private Empresa empresa;
-	private String escritura;
+	private Empresa empresa;	
 	private String personaFacultada;
 	private String carrec;
-	private Date dataEscritura;
-	private String numProtocol;
-	private String notari;
-	private String procedencia;
-	private String desti;
 	private String anyBastanteo;
+	private List<Escritura> escrituresList;
+	
 	public Bastanteo() {
 		 
 	}
@@ -44,12 +89,7 @@ public class Bastanteo {
 	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
 	}
-	public String getEscritura() {
-		return escritura;
-	}
-	public void setEscritura(String escritura) {
-		this.escritura = escritura;
-	}
+	
 	public String getPersonaFacultada() {
 		return personaFacultada;
 	}
@@ -61,47 +101,17 @@ public class Bastanteo {
 	}
 	public void setCarrec(String carrec) {
 		this.carrec = carrec;
-	}
-	public Date getDataEscritura() {
-		return dataEscritura;
-	}
-	public String getDataEscrituraString() {
-		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
-		String dataString = "";
-		if (this.dataEscritura != null) dataString = df.format(this.dataEscritura);
-		return dataString;
-	}
-	public void setDataEscritura(Date dataEscritura) {
-		this.dataEscritura = dataEscritura;
-	}
-	public String getNumProtocol() {
-		return numProtocol;
-	}
-	public void setNumProtocol(String numProtocol) {
-		this.numProtocol = numProtocol;
-	}
-	public String getNotari() {
-		return notari;
-	}
-	public void setNotari(String notari) {
-		this.notari = notari;
-	}
-	public String getProcedencia() {
-		return procedencia;
-	}
-	public void setProcedencia(String procedencia) {
-		this.procedencia = procedencia;
-	}
-	public String getDesti() {
-		return desti;
-	}
-	public void setDesti(String desti) {
-		this.desti = desti;
-	}
+	}	
 	public String getAnyBastanteo() {
 		return anyBastanteo;
 	}
 	public void setAnyBastanteo(String anyBastanteo) {
 		this.anyBastanteo = anyBastanteo;
+	}
+	public List<Escritura> getEscrituresList() {
+		return escrituresList;
+	}
+	public void setEscrituresList(List<Escritura> escrituresList) {
+		this.escrituresList = escrituresList;
 	}
 }

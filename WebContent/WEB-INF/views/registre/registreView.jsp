@@ -89,7 +89,7 @@
 			                        		<p>Arxius adjunts:</p>
 			                        		<c:forEach items="${arxius}" var="arxiu" >
 							            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
-													${arxiu.nom}
+													${arxiu.getDataString()} - ${arxiu.nom}
 												</a>
 												<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
 												<br>
@@ -126,10 +126,20 @@
 	                        		</div>
 	                        		<c:if test="${registre.idIncidencies != '-1#' && registre.idIncidencies != '-1' && registre.idIncidencies != '-2#' && registre.idIncidencies != '-2'}">
 		                        		<div class="col-md-4">
-		                        			Incidències relacionades: </br>
-		                        			<c:forEach items="${registre.getIdIncidenciesList()}" var="idIncidencia" >
-	                        			 		<a href="incidenciaDetalls?ref=${idIncidencia}" class="loadingButton"  data-msg="obrint incidència...">${idIncidencia}</a></br>
-	                        			 	</c:forEach>           			
+		                        			<c:choose>
+		                        				<c:when test="${registre.tipus == 'Procediment judicial'}">
+		                        					Procediment relacionat: </br>
+		                        					<c:forEach items="${registre.getIdIncidenciesList()}" var="idIncidencia" >
+			                        			 		<a href="procediment?ref=${idIncidencia}" class="loadingButton"  data-msg="obrint procediment...">${numAutosProcediment}</a></br>
+			                        			 	</c:forEach>   
+		                        				</c:when>
+		                        				<c:otherwise>
+		                        					Incidències relacionades: </br>
+				                        			<c:forEach items="${registre.getIdIncidenciesList()}" var="idIncidencia" >
+			                        			 		<a href="incidenciaDetalls?ref=${idIncidencia}" class="loadingButton"  data-msg="obrint incidència...">${idIncidencia}</a></br>
+			                        			 	</c:forEach>     
+		                        				</c:otherwise>
+		                        			</c:choose>	
 		                        		</div>
 		                        	</c:if>
 	                        	</div>

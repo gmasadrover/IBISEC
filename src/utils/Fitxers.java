@@ -13,6 +13,7 @@ import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Scanner;
@@ -201,7 +202,7 @@ public class Fitxers {
 		String rutaBase =  (String)env.lookup("ruta_base") + "/documents/" + idIncidencia;
 		if (idActuacio != null && !idActuacio.isEmpty()) rutaBase += "/Actuacio/" + idActuacio;				
 		rutaBase += "/" + tipus + "/" + idTipus;
-		if (!idSubTipus.isEmpty()) rutaBase += "/Comentari/" + idSubTipus;
+		if (!idSubTipus.isEmpty()) rutaBase += "/Comentari/" + idSubTipus;		
 		arxius = ObtenirTotsFitxers(rutaBase, tipus);		
 		return arxius;		
 	}
@@ -234,27 +235,68 @@ public class Fitxers {
 		if (ficheros == null || ficheros.length == 0) {			
 		} else {
 			try {
-				Fitxer fitxer = new Fitxer();	
-				if (ficheros[0].getName().toLowerCase().contains(".pdf")) {
-					PdfReader reader;						
-					reader = new PdfReader(ruta + "/" + ficheros[0].getName());		
-	            	AcroFields acroFields = reader.getAcroFields();
-	            	List<String> signatureNames = acroFields.getSignatureNames();
-	            	SignaturePermissions perms = null;
-	            	for (String name: signatureNames) {
-	            		fitxer.setSignat(true);
-	            		perms = inspectSignature(acroFields, name, perms, fitxer);
-	    			}
-				}
-            	fitxer.setNom(ficheros[0].getName());
-				fitxer.setRuta(ruta + "/" + ficheros[0].getName());
-				fitxer.setSeccio("");
-				arxiu = fitxer;				
+				for (int x=0;x<ficheros.length;x++) {	
+					if (!ficheros[x].isDirectory()) {
+						Fitxer fitxer = new Fitxer();	
+						if (ficheros[x].getName().toLowerCase().contains(".pdf")) {
+							PdfReader reader;		
+							reader = new PdfReader(ruta + "/" + ficheros[x].getName());		
+			            	AcroFields acroFields = reader.getAcroFields();
+			            	List<String> signatureNames = acroFields.getSignatureNames();
+			            	SignaturePermissions perms = null;
+			            	for (String name: signatureNames) {
+			            		fitxer.setSignat(true);
+			            		perms = inspectSignature(acroFields, name, perms, fitxer);
+			    			}
+						}
+		            	fitxer.setNom(ficheros[x].getName());
+						fitxer.setRuta(ruta + "/" + ficheros[x].getName());
+						fitxer.setSeccio("");
+						arxiu = fitxer;				
+					}
+				}				
 			} catch (IOException | GeneralSecurityException e) {
 				e.printStackTrace();
 			}
 		}
 		return arxiu;
+	}
+	
+	public static List<Fitxer> ObtenirFitxers(String ruta) {
+		List<Fitxer> arxius = new ArrayList<Fitxer>();		
+		File dir = new File(ruta);
+		File[] ficheros = dir.listFiles();
+		LoggerFactory.getInstance().setLogger(new SysoLogger());
+		BouncyCastleProvider provider = new BouncyCastleProvider();
+		Security.addProvider(provider);
+		if (ficheros == null) {			
+		} else {
+			try {
+				for (int x=0;x<ficheros.length;x++) {					
+					if (!ficheros[x].isDirectory()) {
+						Fitxer fitxer = new Fitxer();	
+						if (isPDF(ficheros[x])) {
+							PdfReader reader;						
+							reader = new PdfReader(ruta + "/" + ficheros[x].getName());						
+			            	AcroFields acroFields = reader.getAcroFields();
+			            	List<String> signatureNames = acroFields.getSignatureNames();		            	
+			            	SignaturePermissions perms = null;
+			            	for (String name: signatureNames) {
+			            		fitxer.setSignat(true);
+			            		perms = inspectSignature(acroFields, name, perms, fitxer);
+			    			}
+						}
+		            	fitxer.setNom(ficheros[x].getName());
+						fitxer.setRuta(ruta + "/" + ficheros[x].getName());
+						fitxer.setData(Files.getLastModifiedTime(ficheros[x].toPath()));
+						arxius.add(fitxer);
+					}				
+				}
+			} catch (IOException | GeneralSecurityException e) {
+				e.printStackTrace();
+			}
+		}
+		return arxius;	
 	}
 	
 	public static List<Fitxer> ObtenirTotsFitxers(String ruta, String seccio) {
@@ -340,7 +382,7 @@ public class Fitxers {
 		Fitxer.infoFirma info = fitxer.new infoFirma();
 		info.setNomFirmant(CertificateInfo.getSubjectFields(cert).getField("CN"));		
 		//if (pkcs7.getSignName() != null) System.out.println("Alternative name of the signer: " + pkcs7.getSignName());
-		SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS");		
+		SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy HH:mm");		
 		info.setDataFirma(date_format.format(pkcs7.getSignDate().getTime()));
 		/*if (pkcs7.getTimeStampDate() != null) {
 			System.out.println("TimeStamp: " + date_format.format(pkcs7.getTimeStampDate().getTime()));
@@ -446,6 +488,7 @@ public class Fitxers {
 					fileName = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/" + docInforme + "/";
 				}				
 			}
+			System.out.println(fileName);
 	        for(int i=0;i<fitxers.size();i++){
 	            Fitxer fitxer = (Fitxer) fitxers.get(i);
 	            if (fitxer.getFitxer().getName() != "") {
@@ -461,15 +504,21 @@ public class Fitxers {
 	}
 	
 	public static void eliminarFitxer(String ruta) {
-		File tmpFile = new File(ruta);
-		if (tmpFile.exists()) {
-			tmpFile.delete();
-		}
+		try {
+			File tmpFile = new File(ruta);
+			tmpFile = tmpFile.getCanonicalFile(); 
+			if (tmpFile.exists()) {
+				System.out.println("elimina: " + ruta);
+				if (tmpFile.delete()) System.out.println("eliminat");
+			}
+		} catch (Exception e) {
+			System.out.println(e.toString());
+   		}
 	}
 	
 	public static class formParameters {
 		private  Hashtable<String,String> parametres;
-		private  Hashtable<String,Fitxer> fitxersByName;
+		private  Hashtable<String,List<Fitxer>> fitxersByName;
 		private List<Fitxer> fitxers;
 		
 		public formParameters(){
@@ -488,17 +537,17 @@ public class Fitxers {
 		public void setFitxers(List<Fitxer> fitxers) {
 			this.fitxers = fitxers;
 		}
-		public Hashtable<String,Fitxer> getFitxersByName() {
+		public Hashtable<String,List<Fitxer>> getFitxersByName() {
 			return fitxersByName;
 		}
-		public void setFitxersByName(Hashtable<String,Fitxer> fitxersByName) {
+		public void setFitxersByName(Hashtable<String,List<Fitxer>> fitxersByName) {
 			this.fitxersByName = fitxersByName;
 		}
 	}
 	
 	public static formParameters getParamsFromMultipartForm(HttpServletRequest req) throws FileUploadException, UnsupportedEncodingException {
         Hashtable<String,String> parametres=new Hashtable<String,String>();
-        Hashtable<String,Fitxer> fitxersByName =new Hashtable<String,Fitxer>();
+        Hashtable<String,List<Fitxer>> fitxersByName = new Hashtable<String,List<Fitxer>>();
         List<?> items = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(req);  
         List<Fitxer> fitxers = new ArrayList<Fitxer>();
         formParameters form = new formParameters();
@@ -513,7 +562,16 @@ public class Fitxers {
                 	fitxer.setNomCamp(item.getFieldName());
                 	fitxer.setFitxer(item);
                 	fitxers.add(fitxer);
-                	fitxersByName.put(item.getFieldName(), fitxer);
+                	List<Fitxer> aux = new ArrayList<Fitxer>();
+                	if (!fitxersByName.containsKey(item.getFieldName())) {
+                		aux.add(fitxer);
+                		fitxersByName.put(item.getFieldName(), aux);
+                	}else{
+                		aux = fitxersByName.get(item.getFieldName());
+                		aux.add(fitxer);
+                		fitxersByName.replace(item.getFieldName(), aux);
+                	}
+                	
             	}
             }
         }        

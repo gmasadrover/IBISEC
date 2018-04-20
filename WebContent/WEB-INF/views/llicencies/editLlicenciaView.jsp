@@ -71,9 +71,15 @@
 									</div>
 	                            </div>	
 	                            <div class="form-group">
-	                                <label class="col-xs-3 control-label">Data pagament</label>
+	                                <label class="col-xs-3 control-label">Data pagament Taxa</label>
 	                                <div class="input-group date col-xs-6 datepicker">
-									  	<input type="text" class="form-control" name="dataPagament" value="${llicencia.getDataPagamentString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+									  	<input type="text" class="form-control" name="dataPagamentTaxa" value="${llicencia.getDataPagamentTaxaString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+									</div>
+	                            </div>
+	                            <div class="form-group">
+	                                <label class="col-xs-3 control-label">Data pagament ICO</label>
+	                                <div class="input-group date col-xs-6 datepicker">
+									  	<input type="text" class="form-control" name="dataPagamentICO" value="${llicencia.getDataPagamentICOString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 									</div>
 	                            </div>
 		                    </div>
@@ -109,7 +115,7 @@
 			                        <c:forEach items="${llicencia.arxius}" var="arxiu" >
 										<div class="document">
 											<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
-												${arxiu.nom} - ${arxiu.getDataString()}
+												${arxiu.getDataString()} - ${arxiu.nom}
 											</a>
 											<c:if test="${arxiu.signat}">
 												<span class="glyphicon glyphicon-pencil signedFile"></span>

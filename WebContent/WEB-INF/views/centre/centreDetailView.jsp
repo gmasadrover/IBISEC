@@ -71,6 +71,13 @@
                             </p>                                            	
 	                    </div>		            	
                 	</div>  
+                	<c:if test="${canCreateTasca}">
+			      		<div class="row margin_bottom10">
+				    		<div class="col-md-12 panel">
+								<a href="createTasca?centre=${centre.idCentre}&tipus=centre" class="btn btn-primary loadingButton"  data-msg="obrint formulari..." role="button">Nova incidència</a>
+							</div>
+			    		</div>
+			    	</c:if>
                 	<c:if test="${canViewIncidencies}">              	
 	                	<h2 class="margin_bottom30">Incidencies</h2>
 	                	<div class="row">

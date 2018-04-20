@@ -37,6 +37,40 @@ $(document).ready(function() {
 	        }  
 	    });
 	});
+	$('#createTascaPreLicitacio').on('click', function(){
+		$.ajax({
+	        type: "POST",
+	        url: "DoCreateTascaPreLicitacio",
+	        dataType: "json",
+	        data: {"informe": $(this).data('informe')},
+	        //if received a response from the server
+	        success: function( data, textStatus, jqXHR) {
+	            //our country code was correct so we have some information to display
+	        	location.reload();      
+	        },        
+	        //If there was no resonse from the server
+	        error: function(jqXHR, textStatus, errorThrown){
+	             console.log("Something really bad happened " + jqXHR.responseText);
+	        }  
+	    });
+	});
+	$('#createTascaAvaluacioCriteris').on('click', function(){
+		$.ajax({
+	        type: "POST",
+	        url: "DoCreateTascaAvaluacioCriteris",
+	        dataType: "json",
+	        data: {"informe": $(this).data('informe')},
+	        //if received a response from the server
+	        success: function( data, textStatus, jqXHR) {
+	            //our country code was correct so we have some information to display
+	        	location.reload();      
+	        },        
+	        //If there was no resonse from the server
+	        error: function(jqXHR, textStatus, errorThrown){
+	             console.log("Something really bad happened " + jqXHR.responseText);
+	        }  
+	    });
+	});
 	$('#createTascaLicitacio').on('click', function(){
 		$.ajax({
 	        type: "POST",

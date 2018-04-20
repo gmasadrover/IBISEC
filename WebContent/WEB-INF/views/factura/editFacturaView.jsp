@@ -42,7 +42,7 @@
                 <!-- /.row -->
                 
     			<div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-9">
 						<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="doEditFactura">
 		    				<div class="form-group">
                                 <label class="col-xs-3 control-label">id factura</label>
@@ -72,6 +72,7 @@
                                 <input class="hidden" name="nifProveidor" id=nifProveidor value="${factura.idProveidor}"> 
                                 <div class="col-xs-3">
                                 	<select class="selectpicker" name="idEmpresa" id="llistaEmpreses" data-live-search="true" data-size="5">						                                					                                	
+					               		<option value="-1">No hi ha relació</option>
 					               		<c:forEach items="${empresesList}" var="empresa">
 					                   		<option value="${empresa.cif}">${empresa.name} (${empresa.cif})</option>
 					                   	</c:forEach>	
@@ -120,7 +121,7 @@
                                 	<input class="hidden" name="idUsuariInforme" id=idUsuariInforme value="${factura.usuariConformador.idUsuari}"> 
                                 	<select class="form-control selectpicker" data-live-search="true" data-size="10" name="idConformador" id="usuarisList">
 		                                <c:forEach items="${llistaUsuaris}" var="usuari" >
-	                                		<option value='${usuari.idUsuari}'>${usuari.getNomComplet()}</option>
+	                                		<option value='${usuari.idUsuari}'>${usuari.getNomCompletReal()}</option>
 	                                	</c:forEach>
                                 	</select>
                                 </div>
@@ -135,6 +136,12 @@
                                 <label class="col-xs-3 control-label">Data conformada</label>
                                 <div class="input-group date col-xs-3 datepicker">
 								  	<input type="text" class="form-control" name="dataConformada" value="${factura.getDataConformacioString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+								</div>
+                            </div>  
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label">Data pasada a comtabilitat</label>
+                                <div class="input-group date col-xs-3 datepicker">
+								  	<input type="text" class="form-control" name="dataPasadaComptabilitat" value="${factura.getDataEnviatComptabilitatString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>
                             </div>                            
                             <div class="form-group">
@@ -152,7 +159,22 @@
 											<span data-ruta="${factura.arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
 										</c:if>
 										<br>									
-					           			<input type="file" class="btn uploadImage" name="file" /><br/>	
+					           			<input type="file" class="btn uploadImage" name="factura" /><br/>	
+				           			</div>															 		
+				    			</div>
+				      		</div>	  
+				      		<div class="form-group">						       	
+				    			<div class="col-md-12">
+				    				<label class="col-xs-3 control-label">Altres</label> 				    				
+				    				<div class="col-xs-3">
+				    					<c:forEach items="${factura.altres}" var="arxiu" >
+											<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
+											<c:if test="${arxiu.ruta != null && arxiu.ruta != ''}">
+												<span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+											</c:if>
+											<br>	
+										</c:forEach>								
+					           			<input type="file" class="btn uploadImage" name="altres"  multiple/><br/>	
 				           			</div>															 		
 				    			</div>
 				      		</div>	                           
@@ -163,6 +185,8 @@
 						        </div>
 						    </div>    				
 		    			</form>
+                    </div>
+                    <div class="col-md-3 infoExpedient">                    	
                     </div>
                 </div>
                 <!-- /.row -->     

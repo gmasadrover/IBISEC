@@ -53,9 +53,7 @@ public class CreateCertificacioServlet extends HttpServlet {
     	Connection conn = MyUtils.getStoredConnection(request);
         if (usuari == null){
  		   response.sendRedirect(request.getContextPath() + "/preLogin");
-        }else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.factures_crear)) {
-    		response.sendRedirect(request.getContextPath() + "/");	
- 	   	}else{ 	 
+        } else{ 	 
  	   		String idInforme = request.getParameter("idInforme");
  	   		List<Empresa> empresesList = new ArrayList<Empresa>();
 	        try {
@@ -65,7 +63,7 @@ public class CreateCertificacioServlet extends HttpServlet {
 	        	request.setAttribute("idInforme", oferta.getIdInforme());
 				request.setAttribute("idCertificacio", FacturaCore.getNewCodeCert(conn));
 				request.setAttribute("nifProveidor", oferta.getCifEmpresa());
-				request.setAttribute("valorOferta", oferta.getPlic());
+				request.setAttribute("valorRestantCertificar", oferta.getPlic() + informe.getTotalModificacions() - informe.getTotalCertificat());
 				request.setAttribute("idUsuariInforme", informe.getUsuari().getIdUsuari());
 				request.setAttribute("concepte", informe.getPropostaInformeSeleccionada().getObjecte());
 				request.setAttribute("llistaUsuaris", UsuariCore.llistaUsuaris(conn, true));

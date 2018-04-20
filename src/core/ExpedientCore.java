@@ -13,11 +13,10 @@ import java.util.List;
 
 import javax.naming.NamingException;
 
-import bean.Actuacio;
 import bean.Expedient;
 import bean.InformeActuacio;
 public class ExpedientCore {
-	static final String SQL_CAMPS = "e.expcontratacio AS expcontratacio, databoib, dataperfilcontratant, datalimitprsentacio," +
+	static final String SQL_CAMPS = "e.expcontratacio AS expcontratacio, dataperfilcontratant, datalimitprsentacio," +
 									" dataadjudicacio, dataformalitzaciocontracte, datainiciexecucio, datarecepcio," +
 									" dataretorngarantia, dataliquidacio, garantia, idinf, idactuacio, tipus, contracte, e.datacre AS datacre, e.anulat AS anulat, e.motiuanulacio AS motiuanulacio";
 	
@@ -26,7 +25,6 @@ public class ExpedientCore {
 		expedient.setExpContratacio(rs.getString("expcontratacio"));
 		expedient.setIdActuacio(rs.getString("idactuacio"));
 		expedient.setIdInforme(rs.getString("idinf"));	
-		expedient.setDataPublicacioBOIB(rs.getTimestamp("databoib"));
 		expedient.setDataPublicacioPerfilContratant(rs.getTimestamp("dataperfilcontratant"));
 		expedient.setDataLimitPresentacio(rs.getTimestamp("datalimitprsentacio"));
 		expedient.setDataAdjudicacio(rs.getTimestamp("dataadjudicacio"));
@@ -59,13 +57,13 @@ public class ExpedientCore {
 		if (estat != null && !estat.isEmpty() && ! estat.equals("-1")) {	
 			primeraCondicio = false;
 			if ("redaccio".equals(estat)) sql+= " WHERE a.datatancament IS NULL AND e.dataliquidacio IS NULL AND i.expcontratacio = ''"; 
-			if ("iniciExpedient".equals(estat)) sql+= " WHERE e.dataliquidacio IS NULL AND i.expcontratacio != '' AND e.databoib IS NULL AND e.dataadjudicacio IS NULL"; 
-			if ("publicat".equals(estat)) sql+= " WHERE e.dataliquidacio IS NULL AND e.databoib IS NOT NULL AND e.datalimitprsentacio >= '" + dataFiString + "' AND e.dataadjudicacio IS NULL"; 
-			if ("licitacio".equals(estat)) sql+= " WHERE e.dataliquidacio IS NULL AND e.databoib IS NOT NULL AND e.datalimitprsentacio < '" + dataFiString + "' AND e.dataadjudicacio IS NULL"; 	
+			if ("iniciExpedient".equals(estat)) sql+= " WHERE e.dataliquidacio IS NULL AND i.expcontratacio != '' AND i.databoib IS NULL AND e.dataadjudicacio IS NULL"; 
+			if ("publicat".equals(estat)) sql+= " WHERE e.dataliquidacio IS NULL AND i.databoib IS NOT NULL AND e.datalimitprsentacio >= '" + dataFiString + "' AND e.dataadjudicacio IS NULL"; 
+			if ("licitacio".equals(estat)) sql+= " WHERE e.dataliquidacio IS NULL AND i.databoib IS NOT NULL AND e.datalimitprsentacio < '" + dataFiString + "' AND e.dataadjudicacio IS NULL"; 	
 			if ("adjudicacio".equals(estat)) sql+= " WHERE e.dataliquidacio IS NULL AND e.dataadjudicacio IS NOT NULL AND e.dataformalitzaciocontracte IS NULL"; 	
-			if ("firmat".equals(estat)) sql+= " WHERE e.dataliquidacio IS NULL AND e.datarecepcio IS NULL AND e.databoib > '01/01/2016' AND (e.datainiciexecucio IS NULL OR e.datainiciexecucio > localtimestamp) AND e.dataformalitzaciocontracte IS NOT NULL"; 	
-			if ("execucio".equals(estat)) sql+= " WHERE e.dataliquidacio IS NULL AND e.databoib > '01/01/2016' AND e.datainiciexecucio <= localtimestamp AND e.datarecepcio IS NULL"; 	
-			if ("garantia".equals(estat)) sql+= " WHERE e.dataliquidacio IS NULL AND e.databoib > '01/01/2016' AND e.datarecepcio IS NOT NULL AND e.dataretorngarantia < localtimestamp"; 	
+			if ("firmat".equals(estat)) sql+= " WHERE e.dataliquidacio IS NULL AND e.datarecepcio IS NULL AND i.databoib > '01/01/2016' AND (e.datainiciexecucio IS NULL OR e.datainiciexecucio > localtimestamp) AND e.dataformalitzaciocontracte IS NOT NULL"; 	
+			if ("execucio".equals(estat)) sql+= " WHERE e.dataliquidacio IS NULL AND i.databoib > '01/01/2016' AND e.datainiciexecucio <= localtimestamp AND e.datarecepcio IS NULL"; 	
+			if ("garantia".equals(estat)) sql+= " WHERE e.dataliquidacio IS NULL AND i.databoib > '01/01/2016' AND e.datarecepcio IS NOT NULL AND e.dataretorngarantia < localtimestamp"; 	
 			if ("acabat".equals(estat)) sql+= " WHERE e.dataliquidacio IS NOT NULL"; 	
 		}		
 		if (tipus != null && !tipus.isEmpty() && ! tipus.equals("-1")) {
@@ -122,10 +120,7 @@ public class ExpedientCore {
 		String tipus = "";
 		if (informe.getPropostaInformeSeleccionada() != null) {
 			if (informe.getPropostaInformeSeleccionada().getPbase() < importObraMajor) { // Contractes menors		
-				tipusContracte = "menor";
-				if (!informe.getPropostaInformeSeleccionada().isContracte()) {             // Fora contractes
-					tipusContracte = "pd";
-				}
+				tipusContracte = "menor";				
 			} else {																   // Contractes majors
 				tipusContracte = "major";
 			}					
@@ -163,6 +158,7 @@ public class ExpedientCore {
 		int year = now.get(Calendar.YEAR);
 		String yearInString = String.valueOf(year);
 		pstm.setString(5, yearInString);
+	
 		pstm.executeUpdate();
 		
 		InformeCore.assignarExpedient(conn, informe.getIdInf(), nouCodi);
@@ -210,57 +206,52 @@ public class ExpedientCore {
 	
 	public static void updateExpedient(Connection conn, Expedient expedient) throws SQLException {
 		String sql = "UPDATE public.tbl_expedient"
-					+ " SET databoib=?, datalimitprsentacio=?, dataadjudicacio=?, dataformalitzaciocontracte=?, datainiciexecucio=?, datarecepcio=?, dataretorngarantia=?, dataliquidacio=?, dataperfilcontratant=?, garantia=?"
+					+ " SET datalimitprsentacio=?, dataadjudicacio=?, dataformalitzaciocontracte=?, datainiciexecucio=?, datarecepcio=?, dataretorngarantia=?, dataliquidacio=?, dataperfilcontratant=?, garantia=?"
 					+ " WHERE expcontratacio=?;";
 		PreparedStatement pstm;
-		pstm = conn.prepareStatement(sql);	
-		if (expedient.getDataPublicacioBOIB() != null) {
-			pstm.setDate(1, new java.sql.Date(expedient.getDataPublicacioBOIB().getTime()));
+		pstm = conn.prepareStatement(sql);			
+		if (expedient.getDataLimitPresentacio() != null) {
+			pstm.setDate(1, new java.sql.Date(expedient.getDataLimitPresentacio().getTime()));
 		} else {
 			pstm.setDate(1, null);
 		}
-		if (expedient.getDataLimitPresentacio() != null) {
-			pstm.setDate(2, new java.sql.Date(expedient.getDataLimitPresentacio().getTime()));
+		if (expedient.getDataAdjudicacio() != null) {
+			pstm.setDate(2, new java.sql.Date(expedient.getDataAdjudicacio().getTime()));
 		} else {
 			pstm.setDate(2, null);
 		}
-		if (expedient.getDataAdjudicacio() != null) {
-			pstm.setDate(3, new java.sql.Date(expedient.getDataAdjudicacio().getTime()));
+		if (expedient.getDataFormalitzacioContracte() != null) {
+			pstm.setDate(3, new java.sql.Date(expedient.getDataFormalitzacioContracte().getTime()));
 		} else {
 			pstm.setDate(3, null);
 		}
-		if (expedient.getDataFormalitzacioContracte() != null) {
-			pstm.setDate(4, new java.sql.Date(expedient.getDataFormalitzacioContracte().getTime()));
+		if (expedient.getDataIniciExecucio() != null) {
+			pstm.setDate(4, new java.sql.Date(expedient.getDataIniciExecucio().getTime()));
 		} else {
 			pstm.setDate(4, null);
 		}
-		if (expedient.getDataIniciExecucio() != null) {
-			pstm.setDate(5, new java.sql.Date(expedient.getDataIniciExecucio().getTime()));
+		if (expedient.getDataRecepcio() != null) {
+			pstm.setDate(5, new java.sql.Date(expedient.getDataRecepcio().getTime()));
 		} else {
 			pstm.setDate(5, null);
 		}
-		if (expedient.getDataRecepcio() != null) {
-			pstm.setDate(6, new java.sql.Date(expedient.getDataRecepcio().getTime()));
+		if (expedient.getDataRetornGarantia() != null) {
+			pstm.setDate(6, new java.sql.Date(expedient.getDataRetornGarantia().getTime()));
 		} else {
 			pstm.setDate(6, null);
 		}
-		if (expedient.getDataRetornGarantia() != null) {
-			pstm.setDate(7, new java.sql.Date(expedient.getDataRetornGarantia().getTime()));
+		if (expedient.getDataLiquidacio() != null) {
+			pstm.setDate(7, new java.sql.Date(expedient.getDataLiquidacio().getTime()));
 		} else {
 			pstm.setDate(7, null);
 		}
-		if (expedient.getDataLiquidacio() != null) {
-			pstm.setDate(8, new java.sql.Date(expedient.getDataLiquidacio().getTime()));
+		if (expedient.getDataPublicacioPerfilContratant() != null) {
+			pstm.setDate(8, new java.sql.Date(expedient.getDataPublicacioPerfilContratant().getTime()));
 		} else {
 			pstm.setDate(8, null);
 		}
-		if (expedient.getDataPublicacioPerfilContratant() != null) {
-			pstm.setDate(9, new java.sql.Date(expedient.getDataPublicacioPerfilContratant().getTime()));
-		} else {
-			pstm.setDate(9, null);
-		}
-		pstm.setString(10, expedient.getGarantia());
-		pstm.setString(11, expedient.getExpContratacio());
+		pstm.setString(9, expedient.getGarantia());
+		pstm.setString(10, expedient.getExpContratacio());
 		pstm.executeUpdate();		
 	}
 	
@@ -285,23 +276,19 @@ public class ExpedientCore {
 		String nouCodi = "";		
 		String contracte = "";
 		if (informe.getPropostaInformeSeleccionada().getPbase() < importObraMajor) { // Contractes menors		
-			contracte = "menor";
-			if (!informe.getPropostaInformeSeleccionada().isContracte()) {             // Fora contractes
-				contracte = "pd";
-			}
+			contracte = "menor";			
 		} else {																   // Contractes majors
 			contracte = "major";
 			yearInString = yearInString.substring(2,4);
 		}		
 		String tipus = "";
 		if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("obr")) {
-			tipus = "obra";				
+			tipus = "OBM";				
 		} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("srv")) {
-			tipus = "servei";			
+			tipus = "SVM";			
 		} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("submi")) {
-			tipus = "subministrament";			
-		}
-				
+			tipus = "SBM";			
+		}				
 		String sql = "SELECT expcontratacio"
 					+ " FROM public.tbl_expedient"
 					+ " WHERE expcontratacio like '%/" + yearInString + "%' AND contracte = '" + contracte + "'"
@@ -309,10 +296,11 @@ public class ExpedientCore {
 		if (!contracte.equals("major")) {
 			sql = "SELECT expcontratacio"
 					+ " FROM public.tbl_expedient"
-					+ " WHERE expcontratacio like '%/" + yearInString + "%' AND contracte = '" + contracte + "' AND tipus = '" + tipus + "'"
+					+ " WHERE expcontratacio like '" + tipus + "%/" + yearInString + "%'"
 					+ " ORDER BY expcontratacio DESC LIMIT 1;";	 
 		}
 		PreparedStatement pstm = conn.prepareStatement(sql);
+		System.out.println(pstm.toString());
 		ResultSet rs = pstm.executeQuery();
 		if (rs.next()) { //Codis nous
 			String actualCode = rs.getString("expcontratacio");			
@@ -320,29 +308,17 @@ public class ExpedientCore {
 			String numFormatted = String.format("%03d", num + 1);	
 			if (informe.getPropostaInformeSeleccionada().getPbase() < importObraMajor) {
 				if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("obr")) {				
-					if (informe.getPropostaInformeSeleccionada().isContracte()) {
-						num = Integer.valueOf(actualCode.split("/")[0].replace("OBM", "").trim());
-						numFormatted = String.format("%03d", num + 1);		
-						nouCodi = "OBM " + numFormatted + "/" + yearInString;	
-					}else{
-						nouCodi = "CA " + informe.getActuacio().getReferencia();		
-					}	
-				} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("srv")) {
-					if (informe.getPropostaInformeSeleccionada().isContracte()) {
-						num = Integer.valueOf(actualCode.split("/")[0].replace("SVM", "").trim());						
-						numFormatted = String.format("%03d", num + 1);		
-						nouCodi = "SVM " + numFormatted + "/" + yearInString;	
-					}else{
-						nouCodi = "CA " + informe.getActuacio().getReferencia();	
-					}
+					num = Integer.valueOf(actualCode.split("/")[0].replace("OBM", "").trim());
+					numFormatted = String.format("%03d", num + 1);		
+					nouCodi = "OBM " + numFormatted + "/" + yearInString;						
+				} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("srv")) {					
+					num = Integer.valueOf(actualCode.split("/")[0].replace("SVM", "").trim());						
+					numFormatted = String.format("%03d", num + 1);		
+					nouCodi = "SVM " + numFormatted + "/" + yearInString;						
 				} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("submi")) {
-					if (informe.getPropostaInformeSeleccionada().isContracte()) {
-						num = Integer.valueOf(actualCode.split("/")[0].replace("SBM", "").trim());
-						numFormatted = String.format("%03d", num + 1);		
-						nouCodi = "SBM " + numFormatted + "/" + yearInString;	
-					}else{
-						nouCodi = "CA " + informe.getActuacio().getReferencia();		
-					}
+					num = Integer.valueOf(actualCode.split("/")[0].replace("SBM", "").trim());
+					numFormatted = String.format("%03d", num + 1);		
+					nouCodi = "SBM " + numFormatted + "/" + yearInString;	
 				}
 			} else {
 				num = Integer.valueOf(actualCode.split("/")[0].trim());
@@ -352,24 +328,11 @@ public class ExpedientCore {
 		} else {
 			if (informe.getPropostaInformeSeleccionada().getPbase() < importObraMajor) {
 				if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("obr")) {				
-					if (informe.getPropostaInformeSeleccionada().isContracte()) {							
-						nouCodi = "OBM 001/" + yearInString;	
-					}else{
-						nouCodi = "CA " + informe.getActuacio().getReferencia();			
-					}	
+					nouCodi = "OBM 001/" + yearInString;					
 				} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("srv")) {
-					if (informe.getPropostaInformeSeleccionada().isContracte()) {
-						;		
-						nouCodi = "SVM 001/" + yearInString;	
-					}else{
-						nouCodi = "CA " + informe.getActuacio().getReferencia();	
-					}
+					nouCodi = "SVM 001/" + yearInString;					
 				} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("submi")) {
-					if (informe.getPropostaInformeSeleccionada().isContracte()) {							
-						nouCodi = "SBM 001/" + yearInString;	
-					}else{
-						nouCodi = "CA " + informe.getActuacio().getReferencia();			
-					}
+					nouCodi = "SBM 001/" + yearInString;					
 				}
 			} else {				
 				nouCodi = "001/" + yearInString;

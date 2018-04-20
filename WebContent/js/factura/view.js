@@ -38,7 +38,7 @@ $(document).ready(function() {
 	        type: "POST",
 	        url: "anularFactura",
 	        dataType: "json",
-	        data: {"idFactura": $(this).data('idfactura')},
+	        data: {"idFactura": $(this).data('idfactura'), "motiu": $('#motiuAnulacio').val()},
 	        //if received a response from the server
 	        success: function( data, textStatus, jqXHR) {
 	            //our country code was correct so we have some information to display

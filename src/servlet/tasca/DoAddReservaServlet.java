@@ -81,17 +81,9 @@ public class DoAddReservaServlet extends HttpServlet {
 	   				.getRequestDispatcher("/WEB-INF/views/actuacio/tascaView.jsp");
 	   		dispatcher.forward(request, response);
 	   	}// If everything nice. Redirect to the product listing page.            
-	   	else {	   		
-	   		if (idInforme.contains("-MOD-")) {
-	   			response.sendRedirect(request.getContextPath() + "/CrearDocument?tipus=financeraPAObres&idIncidencia=" + idIncidencia + "&idActuacio=" + idActuacio + "&idInforme=" + idInforme);  		 		
-	   		} else {
-	   			if (informe.getExpcontratacio().getExpContratacio().equals("-1") || !informe.getExpcontratacio().getContracte().equals("major")){
-					response.sendRedirect(request.getContextPath() + "/CrearDocument?tipus=financeraPAObres&idIncidencia=" + idIncidencia + "&idActuacio=" + idActuacio + "&idInforme=" + idInforme);  		
-				} else {
-					response.sendRedirect(request.getContextPath() + "/CrearDocument?tipus=financeraMajor&idIncidencia=" + idIncidencia + "&idActuacio=" + idActuacio + "&idInforme=" + idInforme);  		
-				}
-	   		}	   		
-	   	}
+	   	else {	
+	   		response.sendRedirect(request.getContextPath() + "/CrearDocument?tipus=financeraMajor&idIncidencia=" + idIncidencia + "&idActuacio=" + idActuacio + "&idInforme=" + idInforme);  		
+		}
 	}
 
 	/**

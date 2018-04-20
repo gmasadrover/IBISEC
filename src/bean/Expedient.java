@@ -9,7 +9,6 @@ public class Expedient {
 	private String idInforme;
 	private String expContratacio;
 	private Date dataCreacio;
-	private Date dataPublicacioBOIB;
 	private Date dataPublicacioPerfilContratant;
 	private Date dataLimitPresentacio;
 	private Date dataAdjudicacio;
@@ -38,20 +37,6 @@ public class Expedient {
 		this.expContratacio = expContratacio;
 	}
 
-	public Date getDataPublicacioBOIB() {
-		return dataPublicacioBOIB;
-	}
-	
-	public String getDataPublicacioBOIBString() {
-		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
-		String dataString = "";
-		if (this.dataPublicacioBOIB != null) dataString = df.format(this.dataPublicacioBOIB);
-		return dataString;
-	}	
-	
-	public void setDataPublicacioBOIB(Date dataPublicacioBOIB) {
-		this.dataPublicacioBOIB = dataPublicacioBOIB;
-	}
 	public Date getDataLimitPresentacio() {
 		return dataLimitPresentacio;
 	}

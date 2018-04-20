@@ -51,7 +51,7 @@
 				                	<option value="dipso">Disposició Judicial</option>
 				                	<option value="propis">Propis IBISEC</option>
 				                	<option value="advoc">Advocacia</option>
-				                	<option value="altres">Altres</option>									                						                                	
+				                	<option value="citnoperso">Citats no personats</option>									                						                                	
 				                </select>
                                 <input type="hidden" name="referencia" value="${tramitacio.idTramitacio}">
                                 <input type="hidden" name="procediment" value="${procediment}">
@@ -60,44 +60,78 @@
                		</div>                		
 			    	<div class="row">			    				    				    		
 		            	<div class="col-md-6">	 
-		                	<div class="form-group">    
+		                	<%-- <div class="form-group">    
 	                        	<label class="col-xs-3 control-label">Termini</label>
 	                       		<input class="col-xs-6" name="termini" value="${tramitacio.termini}">
 		                    </div> 
 		                  	<div class="form-group">
 								<label class="col-xs-3 control-label">Quantia</label>
 								<input class="col-xs-6" name="quantia" value="${tramitacio.quantia}">						
-							</div>
+							</div> --%>
 							<div class="form-group">
-                	 			<label class="col-xs-3 control-label">Data pagament</label>
+                	 			<label class="col-xs-3 control-label">Data Document</label>
                                 <div class="input-group col-xs-6 date datepicker">
-								  	<input type="text" class="form-control" name="dataPagament" value="${tramitacio.getDataPagamentString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+								  	<input type="text" class="form-control" name="dataDocument" value="${tramitacio.getDataPagamentString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>
                 	 		</div>  		                        		                    
 						</div>
 	                    <div class="col-md-6"> 		 
 	                    	<div class="form-group">
-                	 			<label class="col-xs-3 control-label">Data</label>
+                	 			<label class="col-xs-3 control-label">Data Registre</label>
                                 <div class="input-group col-xs-6 date datepicker">
-								  	<input type="text" class="form-control" name="data" value="${tramitacio.getDataString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+								  	<input type="text" class="form-control" name="dataRegistre" value="${tramitacio.getDataRegistreString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>
                 	 		</div>                   	 
-                            <div class="form-group">
+                          <%--   <div class="form-group">
 								<label class="col-xs-3 control-label">Recurs</label>
 								<input class="col-xs-6" name="recurs" value="${tramitacio.recurs}">						
 							</div>	
 							<div class="form-group">
 								<label class="col-xs-3 control-label">Sentència</label>
 								<input class="col-xs-6" name="sentencia" value="${tramitacio.sentencia}">						
-							</div>	                                                                         	
+							</div>	    --%>                                                                      	
 	                    </div>	
+                	</div>
+                	<div class="row">
+                		<div class="form-group">  			
+                           	<label class="col-xs-2 control-label">Descripcio</label>
+                           	<textarea class="col-xs-8" name="descripcio" rows="3">${tramitacio.descripcio}</textarea>
+                        </div>
+                	</div>	
+                	<div class="row">
+                		<div class="form-group">
+                			<label class="col-xs-2 control-label">Pendent tercers</label> 
+	                		<div class="checkbox">
+		                        <label>
+		                          	<input name="pendentTercers" type="checkbox" ${tramitacio.pendentTercers ? 'checked' : ''}>
+		                        </label>
+		                	</div> 
+		                </div>
+                	</div>
+                	<div class="row">
+                		<div class="form-group">
+                			<label class="col-xs-2 control-label">Pendent provisió</label> 
+	                		<div class="checkbox">
+		                        <label>
+		                          	<input name="pendentProvisio" type="checkbox" ${tramitacio.pendentProvisio ? 'checked' : ''}>
+		                        </label>
+		                	</div> 
+		                </div>
                 	</div>
                 	<div class="row">
                 		<div class="form-group">  			
                            	<label class="col-xs-2 control-label">Notes</label>
                            	<textarea class="col-xs-8" name="notes" rows="3">${tramitacio.notes}</textarea>
                         </div>
-                	</div>					                	
+                	</div>	
+                	<div class="row">
+						<div class="form-group">
+							<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+                            <div class="col-xs-5">   
+                                <input type="file" class="btn" name="file" multiple/><br/>
+							</div> 									  						
+         				</div> 							
+	            	</div> 							                	
                 	<div class="row">
                 		<div class="form-group">
 					        <div class="col-xs-offset-9 col-xs-9">

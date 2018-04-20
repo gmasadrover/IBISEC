@@ -7,6 +7,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import bean.User;
 import bean.ControlPage.SectionPage;
 import core.ControlPageCore;
+import core.JudicialCore;
 import core.RegistreCore;
 import core.UsuariCore;
 import utils.MyUtils;
@@ -48,9 +50,12 @@ public class CreateSortidaServlet extends HttpServlet {
         }else{	       
 	        try {
 	        	String idIncidencia = request.getParameter("idIncidencia");
+	        	String idInforme = request.getParameter("idInf");
+	        	request.setAttribute("llistaProcediment", JudicialCore.getProcediments(conn, "-1", "-1"));
 	        	request.setAttribute("idIncidencia", idIncidencia);
+	        	request.setAttribute("idInforme", idInforme);
 				request.setAttribute("nouCodi", RegistreCore.getNewCode(conn, "S"));
-			} catch (SQLException e) {
+			} catch (SQLException | NamingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

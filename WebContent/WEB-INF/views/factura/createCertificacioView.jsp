@@ -43,7 +43,7 @@
                 
     			<div class="row">
                     <div class="col-md-12">
-						<form class="form-horizontal" method="POST" action="doCreateCertificacio">
+						<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="doCreateCertificacio">
 		    				<div class="form-group">
                                 <label class="col-xs-3 control-label">id Certificació</label>
                                 <div class="col-xs-3">
@@ -67,7 +67,7 @@
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">Import</label>
                                 <div class="col-xs-3">
-                                	<input class="form-control" name="import" id="import" placeholder="0000.00" value="${valorOferta}">
+                                	<input class="form-control" name="import" id="import" placeholder="0000.00" value="${valorRestantCertificar}">
                                 </div>
                             </div>	     
                             <div class="form-group">
@@ -79,13 +79,13 @@
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">Data entrada</label>
                                 <div class="input-group date col-xs-3 datepicker">
-								  	<input type="text" class="form-control" name="dataEntrada" value="${data}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+								  	<input type="text" class="form-control" name="dataEntrada" value="${data}" required><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>
                             </div>	
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">Data certificació</label>
                                 <div class="input-group date col-xs-3 datepicker">
-								  	<input type="text" class="form-control" name="dataFactura" value="${data}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+								  	<input type="text" class="form-control" name="dataFactura" value="${data}" required><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>
                             </div>
                             <div class="form-group">
@@ -117,6 +117,12 @@
                                 	<textarea class="form-control" name="notes" placeholder="anotacions" rows="3"></textarea>
                                 </div>
                             </div>	
+                            <div class="form-group">
+                            	<label class="col-xs-3 control-label">Adjuntar certificació:</label>
+	                            <div class="col-xs-5">   
+	                                <input type="file" class="btn" name="file" /><br/>
+								</div> 	
+							</div>
 		    				<br>
 						    <div class="form-group">
 						        <div class="col-xs-offset-3 col-xs-9">

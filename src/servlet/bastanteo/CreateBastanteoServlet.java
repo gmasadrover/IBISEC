@@ -50,6 +50,7 @@ public class CreateBastanteoServlet extends HttpServlet {
  	   		List<Empresa> empresesList = new ArrayList<Empresa>();
  	   		try {
 				empresesList = EmpresaCore.getEmpreses(conn);
+				empresesList.addAll(EmpresaCore.getEmpresesUTE(conn));
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

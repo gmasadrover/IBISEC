@@ -14,6 +14,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import bean.Actuacio;
+import bean.InformeActuacio;
 import bean.Oferta;
 import utils.Fitxers;
 import utils.Fitxers.Fitxer;
@@ -133,22 +134,6 @@ public class OfertaCore {
 		ResultSet rs = pstm.executeQuery();		
 		while (rs.next()) {
 			Oferta oferta = initOferta(conn, rs, false);
-			ofertes.add(oferta);
-		}
-		return ofertes;
-	}
-	
-	public static List<Oferta> findOfertesEmpresa(Connection conn, String cif) throws SQLException, NamingException {
-		List<Oferta> ofertes = new ArrayList<Oferta>();
-		String sql = "SELECT idoferta, idactuacio, cifempresa, pbase, iva, plic, termini, seleccionada, descalificada, comentari, usucre, datacre, usuaprovacio, dataaprovacio, idinforme, usucapvalidacio, datacapvalidacio, capdobres"
-					+ " FROM public.tbl_empresaoferta"
-					+ " WHERE cifempresa = ? ;";
-		
-		PreparedStatement pstm = conn.prepareStatement(sql);	 
-		pstm.setString(1, cif);		
-		ResultSet rs = pstm.executeQuery();		
-		while (rs.next()) {
-			Oferta oferta = initOferta(conn, rs, true);
 			ofertes.add(oferta);
 		}
 		return ofertes;

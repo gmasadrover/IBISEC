@@ -21,11 +21,11 @@
                 <div class="row">
                     <div class="col-md-12">
                         <h1 class="page-header">
-                            Factures Conformades<small></small>
+                            Factures per comptabilitzar<small></small>
                         </h1>
                         <ol class="breadcrumb">
                             <li class="active">
-                                <i class="fa fa-dashboard"></i> Factures Conformades
+                                <i class="fa fa-dashboard"></i> Factures per comptabilitzar
                             </li>
                             <li class="active">
                                 <i class="fa fa-table"></i> Llistat
@@ -49,7 +49,7 @@
 				
                 <div class="row">
                     <div class="col-md-12">
-                        <h2>Factures Conformades pend.</h2>
+                        <h2>Factures per comptabilitzar</h2>
                         <div class="table-responsive">                        
                             <table class="table table-striped table-bordered filerTable">
                                 <thead>
@@ -97,7 +97,7 @@
 								            	<td>${factura.usuariConformador.getNomCompletReal()}</td>
 								            	<td>${factura.dataConformacio}</td>
 								            	<td>${factura.getDataConformacioString()}</td>
-								            	<td>${factura.informe.codiPartida}</td>
+								            	<td>${factura.informe.assignacioCredit.partida.codi}</td>
 								            	<td>${factura.notes}</td>	 
 								            	<td>${factura.actuacio.centre.getNomComplet()}</td>    
 								            	<td>${factura.actuacio.dataCreacio}</td> 

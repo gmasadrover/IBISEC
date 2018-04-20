@@ -55,7 +55,7 @@
 		<label>Tècnic:</label> ${informePrevi.usuari.getNomComplet()}
 	</p>
 	<p>
-		<label>Proposta tècnica: ${estatActuacio}</label> ${ofertaSeleccionada.comentari} 
+		<label>Motivació adjudicació:</label> ${ofertaSeleccionada.comentari} 
 	</p>
 	<c:if test="${informePrevi.propostaTecnica.ruta != null && esCap}">
 		<div class="separator"></div>												        	
@@ -68,7 +68,7 @@
 				<input type="hidden" name="idInforme" value="${informePrevi.idInf}">																	
 		       	<c:if test="${informePrevi.propostaTecnica.ruta != null}">
 					<div class="col-md-12">	
-		               	<p>Proposta Tècnica signada:</p>													                  	
+		               	<p>Proposta Tècnica:</p>													                  	
 		           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.propostaTecnica.getEncodedRuta()}">
 							${informePrevi.propostaTecnica.nom}
 						</a>																			
@@ -90,10 +90,5 @@
 	    		</div>
 	  		</form>	
 	  	</div>	
-	</c:if>
-	<c:if test="${!esCap}">
-	<p>
-		<label>Vistiplau:</label> ${ofertaSeleccionada.usuariCapValidacio.getNomComplet()} - ${ofertaSeleccionada.getDataCapValidacioString()}
-	</p>
-	</c:if>
+	</c:if>	
 </div>

@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import bean.Judicial;
+import bean.Judicial.Tramitacio;
 import bean.User;
 import bean.ControlPage.SectionPage;
 import core.BastanteosCore;
@@ -53,11 +54,15 @@ public class JudicialListServlet extends HttpServlet {
 		} else {
 			String errorString = "";
 			List<Judicial> procedimentsList = new ArrayList<Judicial>();
+			List<Judicial> tramitacionsPendentsTercersList = new ArrayList<Judicial>();
+			List<Judicial> tramitacionsPendentsProvisioList = new ArrayList<Judicial>();
 			String filtrar = request.getParameter("filtrar");
 			List<String> anysList = new ArrayList<String>();
 			String estat = "obert";
 			String yearInString = request.getParameter("any");
 			boolean canCreateProcediment = false;
+			boolean canViewPendentsTercers = false;
+			boolean canViewPendentsProvisio = false;
 			try {
 				if (filtrar != null) {	
 					estat = request.getParameter("estat");	
@@ -65,8 +70,12 @@ public class JudicialListServlet extends HttpServlet {
 					yearInString = "-1";
 				}
 				anysList = JudicialCore.getAnysProcediment(conn);
-				procedimentsList = JudicialCore.getProcediments(conn, estat, yearInString);			
+				procedimentsList = JudicialCore.getProcediments(conn, estat, yearInString);		
+				tramitacionsPendentsTercersList = JudicialCore.ProcedimentsAmbtramitacionsPendentsTercersList(conn);
+				tramitacionsPendentsProvisioList = JudicialCore.ProcedimentsAmbtramitacionsPendentsProvisioList(conn);
 				canCreateProcediment = UsuariCore.hasPermision(conn, usuari, SectionPage.judicials_modificar);
+				canViewPendentsTercers = UsuariCore.hasPermision(conn, usuari, SectionPage.judicials_modificar);
+				canViewPendentsProvisio = usuari.getDepartament().equals("juridica") || (usuari.getRol().contains("CAP") && usuari.getDepartament().equals("comptabilitat"));
 			} catch (SQLException | NamingException e) {
 				e.printStackTrace();
 				errorString = e.getMessage();
@@ -75,10 +84,14 @@ public class JudicialListServlet extends HttpServlet {
 			// Store info in request attribute, before forward to views
 			request.setAttribute("errorString", errorString);
 			request.setAttribute("canCreateProcediment", canCreateProcediment);
+			request.setAttribute("canViewPendentsTercers", canViewPendentsTercers);
+			request.setAttribute("canViewPendentsProvisio", canViewPendentsProvisio);
 			request.setAttribute("estatFilter", estat);
 			request.setAttribute("anysList", anysList);
 			request.setAttribute("anyFilter", yearInString);
 			request.setAttribute("procedimentsList", procedimentsList);
+			request.setAttribute("tramitacionsPendentsTercersList", tramitacionsPendentsTercersList);
+			request.setAttribute("tramitacionsPendentsProvisioList", tramitacionsPendentsProvisioList);
 			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"judicials"));
 			// Forward to /WEB-INF/views/homeView.jsp
 			// (Users can not access directly into JSP pages placed in WEB-INF)

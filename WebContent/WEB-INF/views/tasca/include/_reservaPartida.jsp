@@ -65,7 +65,7 @@
 		</p>	
 		<div class="row col-md-12">
 			<c:forEach items="${informePrevi.adjunts}" var="arxiu" >
-				<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.nom}</a>
+				<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
 				<br>
 			</c:forEach>					            		
 		</div>
@@ -79,7 +79,7 @@
 			<label>Notes:</label> ${informePrevi.notes}
 		</p>
 		<p>
-			<label>Partida:</label> ${informePrevi.partida}
+			<label>Partida:</label> ${informePrevi.assignacioCredit.partida.codi}
 		</p>
 	</div>
  </div>

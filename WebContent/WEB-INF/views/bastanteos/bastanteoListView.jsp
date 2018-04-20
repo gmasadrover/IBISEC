@@ -21,11 +21,11 @@
                 <div class="row">
                     <div class="col-md-12">
                         <h1 class="page-header">
-                            Bastanteos <small>Bastanteos</small>
+                            Validacions
                         </h1>
                         <ol class="breadcrumb">
                             <li class="active">
-                                <i class="fa fa-dashboard"></i> Bastanteos
+                                <i class="fa fa-dashboard"></i> Validacions
                             </li>
                             <li class="active">
                                 <i class="fa fa-table"></i> Llistat
@@ -61,50 +61,36 @@
 				<div class="row">					
 					<div class="form-group">	
 					  	<div class="col-md-offset-9 col-md-3">
-					    	<a href="nouBastanteo" class="loadingButton btn btn-primary"  data-msg="nou bastanteo...">Crear nou bastanteo</a>
+					    	<a href="nouBastanteo" class="loadingButton btn btn-primary"  data-msg="nova validacio...">Crear nova validació</a>
 						</div>
 					</div>	
 				</div>	       		
                 <!-- /.row -->
                 <div class="row">
                     <div class="col-md-12">
-                        <h2>Bastanteos</h2>
+                        <h2>Validacions</h2>
                         <div class="table-responsive">                        
                             <table class="table table-striped table-bordered filerTable">
                                 <thead>
                                     <tr>
                                         <th>Ref</th>
-                                        <th>Data bastanteo</th>
-                                        <th>Data bastanteo</th>
-                                        <th>Empresa</th>
-                                        <th>Tipo escritura</th>
+                                        <th>Data validació</th>
+                                        <th>Data validació</th>
+                                        <th>Empresa</th>                                       
                                         <th>Persona facultada</th>
-                                        <th>Càrrec</th>
-                                        <th>Data escritura</th>
-                                        <th>Data escritura</th>
-                                        <th>Nº Protocol</th>
-                                        <th>Notari i col·legi</th>
-                                        <th>Procedència</th>
-                                        <th>Destí</th>
+                                        <th>Càrrec</th>                                       
                                         <th>Any</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${bastanteosList}" var="bastanteo" >
 							          	<tr>							          	
-							           		<td><a href="bastanteo?ref=${bastanteo.ref}" class="loadingButton"  data-msg="obrint bastanteo...">${bastanteo.ref}</a></td>
+							           		<td><a href="bastanteo?ref=${bastanteo.ref}" class="loadingButton"  data-msg="obrint validació...">${bastanteo.ref}</a></td>
 							           		<td>${bastanteo.getDatabastanteoString()}</td>
 							            	<td>${bastanteo.databastanteo}</td>
 							            	<td><a href="empresa?cif=${bastanteo.empresa.cif}" class="loadingButton"  data-msg="obrint empresa...">${bastanteo.empresa.name} (${bastanteo.empresa.cif})</a></td>
-							            	<td>${bastanteo.escritura}</td>
 							            	<td>${bastanteo.personaFacultada}</td>
 							            	<td>${bastanteo.carrec}</td>
-							            	<td>${bastanteo.getDataEscrituraString()}</td>
-							            	<td>${bastanteo.dataEscritura}</td>
-							            	<td>${bastanteo.numProtocol}</td>
-							            	<td>${bastanteo.notari}</td>
-							            	<td>${bastanteo.procedencia}</td>
-							            	<td>${bastanteo.desti}</td>
 							            	<td>${bastanteo.anyBastanteo}</td>
 							          	</tr>
 							       	</c:forEach>                                	

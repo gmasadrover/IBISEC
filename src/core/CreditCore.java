@@ -96,6 +96,34 @@ public class CreditCore {
 		pstm.executeUpdate();
 	}
 	
+	public static void updatePartida(Connection conn, Partida partida) throws SQLException {
+		String sql = "UPDATE public.tbl_partides SET nom = ?, import = ?, tipus = ?, datacre=localtimestamp"
+				+ " WHERE codi = ?"; 
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setString(1, partida.getNom());
+		pstm.setDouble(2, Double.valueOf(partida.getTotalPartida()));
+		pstm.setString(3, partida.getTipus());
+		pstm.setString(4, partida.getCodi());
+		pstm.executeUpdate();
+	}
+	
+
+	public static void obrirPartida(Connection conn, String idPartida) throws SQLException {
+		String sql = "UPDATE public.tbl_partides SET activa = true, datacre=localtimestamp"
+				+ " WHERE codi = ?"; 
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setString(1, idPartida);
+		pstm.executeUpdate();
+	}
+	
+	public static void tancarPartida(Connection conn, String idPartida) throws SQLException {
+		String sql = "UPDATE public.tbl_partides SET activa = false, datacre=localtimestamp"
+				+ " WHERE codi = ?"; 
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setString(1, idPartida);
+		pstm.executeUpdate();
+	}
+	
 	public static Partida getPartida(Connection conn, String codi) throws SQLException {
 		 
 		String sql = "SELECT codi, nom, import, tipus, activa, usucre, datacre"
@@ -148,18 +176,33 @@ public class CreditCore {
 		return list;
 	}
 	
-	public static String getPartidaInforme(Connection conn, String idInforme) throws SQLException {
-		String idPartida = "";
-		String sql = "SELECT p.nom AS nom"
-					+ " FROM public.tbl_assignacionscredit a LEFT JOIN public.tbl_partides p ON a.idpartida=p.codi"
+	public static AssignacioCredit getPartidaInforme(Connection conn, String idInforme) throws SQLException {
+		AssignacioCredit assignacio = new AssignacioCredit();;
+		String sql = "SELECT idassignacio, idactuacio, idinf, reserva, usureserva, datareserva, assignacio, usuassignacio, dataassignacio, comentari, usucre, datacre, idpartida, valorpa, valorpd, bei, feder"
+					+ " FROM public.tbl_assignacionscredit"
 					+ " WHERE idinf = ?";
 		PreparedStatement pstm = conn.prepareStatement(sql);		 
 		pstm.setString(1, idInforme);
 		ResultSet rs = pstm.executeQuery();
-		while (rs.next()) {
-			if (rs.getString("nom") != null) idPartida = rs.getString("nom");
+		if (rs.next()) {
+			assignacio.setIdAssignacio(rs.getString("idassignacio"));
+			assignacio.setIdInforme(idInforme);
+			assignacio.setReserva(rs.getBoolean("reserva"));
+			assignacio.setUsuReserva(UsuariCore.findUsuariByID(conn, rs.getInt("usureserva")));
+			assignacio.setDatareserva(rs.getTimestamp("datareserva"));
+			assignacio.setAssignacio(rs.getBoolean("assignacio"));
+			assignacio.setUsuAssignacio(UsuariCore.findUsuariByID(conn, rs.getInt("usuassignacio")));
+			assignacio.setDataAssignacio(rs.getTimestamp("dataassignacio"));
+			assignacio.setComentari(rs.getString("comentari"));
+			assignacio.setUsuCre(UsuariCore.findUsuariByID(conn, rs.getInt("usucre")));
+			assignacio.setDataCre(rs.getTimestamp("datacre"));
+			assignacio.setPartida(CreditCore.getPartida(conn, rs.getString("idpartida")));
+			assignacio.setValorPA(rs.getDouble("valorpa"));
+			assignacio.setValorPD(rs.getDouble("valorpd"));
+			assignacio.setBei(rs.getBoolean("bei"));
+			assignacio.setFeder(rs.getBoolean("feder"));
 		}
-		return idPartida;
+		return assignacio;
 	}
 	
 	public static String getCodiPartidaInforme(Connection conn, String idInforme) throws SQLException {
@@ -230,19 +273,28 @@ public class CreditCore {
 		return newCode;
 	}
 
-	public static List<AssignacioCredit> findAssignacionsPartida(Connection conn, String codi) throws SQLException, NamingException {
+	public static List<AssignacioCredit> findAssignacionsPartida(Connection conn, String codi, String estat) throws SQLException, NamingException {
 		List<AssignacioCredit> assignacionsList = new ArrayList<AssignacioCredit>();
 		String sql = "SELECT idassignacio, idactuacio, idinf, reserva, usureserva, datareserva, assignacio, usuassignacio,"
-					+ " dataassignacio, comentari, usucre, datacre, idpartida, valorpa, valorpd"
+					+ " dataassignacio, comentari, usucre, datacre, idpartida, valorpa, valorpd, bei, feder"
 					+ " FROM public.tbl_assignacionscredit"
-					+ " WHERE idpartida=?;";		 
+					+ " WHERE idpartida=?";		 
+		if (estat != null && estat.equals("reservat")) {
+			sql += " AND reserva=true AND assignacio=false";
+		}else if(estat != null && estat.equals("contractat")) {
+			sql += " AND assignacio=true";
+		}else if(estat != null && estat.equals("pagat")) {
+			sql += " AND assignacio=true";
+		}
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setString(1, codi);
 		ResultSet rs = pstm.executeQuery();
 		while (rs.next()) {
+			InformeActuacio informe = InformeCore.getInformePrevi(conn, rs.getString("idinf"), false);
 			AssignacioCredit assignacio = new AssignacioCredit();
 			assignacio.setIdAssignacio(rs.getString("idassignacio"));
-			assignacio.setInforme(InformeCore.getInformePrevi(conn, rs.getString("idinf"), false));
+			assignacio.setIdInforme(rs.getString("idinf"));
+			assignacio.setInforme(informe);
 			assignacio.setReserva(rs.getBoolean("reserva"));
 			assignacio.setUsuReserva(UsuariCore.findUsuariByID(conn, rs.getInt("usureserva")));
 			assignacio.setDatareserva(rs.getTimestamp("datareserva"));
@@ -252,18 +304,26 @@ public class CreditCore {
 			assignacio.setComentari(rs.getString("comentari"));
 			assignacio.setUsuCre(UsuariCore.findUsuariByID(conn, rs.getInt("usucre")));
 			assignacio.setDataCre(rs.getTimestamp("datacre"));
-			assignacio.setIdPartida(rs.getString("idpartida"));
+			assignacio.setPartida(CreditCore.getPartida(conn, rs.getString("idpartida")));
 			assignacio.setValorPA(rs.getDouble("valorpa"));
 			assignacio.setValorPD(rs.getDouble("valorpd"));
-			assignacionsList.add(assignacio);
+			assignacio.setBei(rs.getBoolean("bei"));
+			assignacio.setFeder(rs.getBoolean("feder"));
+			if(estat != null && estat.equals("pagat") && informe.getTotalFacturat() > 0) {
+				assignacionsList.add(assignacio);
+			} else if(estat != null && estat.equals("contractat") && informe.getTotalFacturat() >= 0 && informe.getTotalFacturat() < rs.getDouble("valorpd")) {
+				assignacionsList.add(assignacio);
+			} else if(estat == null || (!estat.equals("contractat") && !estat.equals("pagat"))) {
+				assignacionsList.add(assignacio);
+			}
 		}
 		return assignacionsList;
 	}
 	
-	public static List<AssignacioCredit> findAssignacions(Connection conn, String idPartida, String idCentre, Date dataIni, Date dataFi) throws SQLException, NamingException {
+	public static List<AssignacioCredit> findAssignacions(Connection conn, String idPartida, String idCentre, Date dataIni, Date dataFi, boolean bei, boolean feder) throws SQLException, NamingException {
 		List<AssignacioCredit> assignacionsList = new ArrayList<AssignacioCredit>();
 		String sql = "SELECT idassignacio, idactuacio, idinf, reserva, usureserva, datareserva, assignacio, usuassignacio,"
-					+ " dataassignacio, comentari, ass.usucre AS usucre, ass.datacre AS datacre, idpartida, valorpa, valorpd"
+					+ " dataassignacio, comentari, ass.usucre AS usucre, ass.datacre AS datacre, idpartida, valorpa, valorpd, bei, feder"
 					+ " FROM public.tbl_assignacionscredit ass LEFT JOIN public.tbl_actuacio ac ON ass.idactuacio = ac.id";	 
 		PreparedStatement pstm = null;
 		boolean primeraCondicio = true;
@@ -294,8 +354,24 @@ public class CreditCore {
 				primeraCondicio = false;
 				sql += " WHERE idcentre = ?";
 			} else {
-				sql += " and idcentre = ?";
+				sql += " AND idcentre = ?";
 			}			
+		}
+		if (bei) {
+			if (primeraCondicio) {
+				primeraCondicio = false;
+				sql += " WHERE bei = " + bei;
+			} else {
+				sql += " AND bei = " + bei;
+			}
+		}
+		if (feder) {
+			if (primeraCondicio) {
+				primeraCondicio = false;
+				sql += " WHERE feder = " + feder;
+			} else {
+				sql += " AND feder = " + feder;
+			}
 		}
 		
 		pstm = conn.prepareStatement(sql);
@@ -322,6 +398,7 @@ public class CreditCore {
 		while (rs.next()) {			
 			assignacio = new AssignacioCredit();
 			assignacio.setIdAssignacio(rs.getString("idassignacio"));
+			assignacio.setIdInforme(rs.getString("idinf"));
 			assignacio.setInforme(InformeCore.getInformePrevi(conn, rs.getString("idinf"), false));
 			assignacio.setReserva(rs.getBoolean("reserva"));
 			assignacio.setUsuReserva(UsuariCore.findUsuariByID(conn, rs.getInt("usureserva")));
@@ -332,9 +409,11 @@ public class CreditCore {
 			assignacio.setComentari(rs.getString("comentari"));
 			assignacio.setUsuCre(UsuariCore.findUsuariByID(conn, rs.getInt("usucre")));
 			assignacio.setDataCre(rs.getTimestamp("datacre"));
-			assignacio.setIdPartida(rs.getString("idpartida"));
+			assignacio.setPartida(CreditCore.getPartida(conn, rs.getString("idpartida")));
 			assignacio.setValorPA(rs.getDouble("valorpa"));
 			assignacio.setValorPD(rs.getDouble("valorpd"));
+			assignacio.setBei(rs.getBoolean("bei"));
+			assignacio.setFeder(rs.getBoolean("feder"));
 			assignacionsList.add(assignacio);			
 		}
 		return assignacionsList;
@@ -359,7 +438,8 @@ public class CreditCore {
 			pstm.setDouble(8, valor);
 			pstm.executeUpdate();
 		} else {
-			if (getPartidaInforme(conn, idInforme).isEmpty()) {		
+			AssignacioCredit partida = getPartidaInforme(conn, idInforme);
+			if (partida.getIdAssignacio() == null || partida.getIdAssignacio().isEmpty()) {	
 				sql = "INSERT INTO public.tbl_assignacionscredit(idassignacio, idactuacio, idinf, reserva, usureserva, datareserva, assignacio, comentari, usucre, datacre, idpartida, valorpa)"
 							+ " VALUES (?, ?, ?, true, ?, localtimestamp, false, ?, ?, localtimestamp, ?, ?);";
 				
@@ -374,7 +454,7 @@ public class CreditCore {
 				pstm.setString(7, idPartida);
 				pstm.setDouble(8, valor);
 				pstm.executeUpdate();
-			} else {
+			} else {	
 				sql = "UPDATE public.tbl_assignacionscredit"
 					+ " SET datareserva=localtimestamp, comentari=?, idpartida=?, valorpa=?"
 					+ " WHERE idinf = ?;";
@@ -392,6 +472,18 @@ public class CreditCore {
 			pstm.setString(1, idInforme);	
 			pstm.executeUpdate();
 		}
+	}
+	
+	public static void modificarAssignacio(Connection conn, AssignacioCredit assignacio) throws SQLException {
+		String sql = "UPDATE public.tbl_assignacionscredit"
+				+ " SET bei=?, feder=?"
+				+ " WHERE idinf = ?;";
+	
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setBoolean(1, assignacio.isBei());
+		pstm.setBoolean(2, assignacio.isFeder());
+		pstm.setString(3, assignacio.getIdInforme());
+		pstm.executeUpdate();
 	}
 	
 	public static void assignar(Connection conn, String idInforme, double valor) throws SQLException {

@@ -37,7 +37,8 @@
 				
 				<div class="row">
 					<div class="col-md-12">
-						<form class="form-horizontal" method="POST" action="certificacions">	
+						<form class="form-horizontal" method="POST" action="certificacions">
+							<input type="hidden" id="idCentreSelected" value="${idCentre}" />	
 							<div class="form-group">					
 							  	<div class="col-md-offset-1 col-md-4">
 							  		<label>Data certificació</label>
@@ -46,6 +47,16 @@
 									    <div class="input-group-addon">fins</div>
 									    <input type="text" class="form-control" name="dataFi" value="${dataFi}">
 									</div>                                
+							  	</div>	
+							  	<div class="col-md-3">
+								    <div class="col-md-12">
+								      	<label>Filtrar per centre</label>
+								      	<div>
+		                              		<select class="form-control selectpicker" name="idCentre" data-live-search="true" id="centresList">
+		                               			<option value="-1">Tots els centres</option>
+		                             		</select>
+		                           		</div>
+								    </div>						    
 							  	</div>			  				  				 
 							  	<div class="col-md-2">
 							    	<input type="submit" class="btn btn-primary margin_top30 loadingButton"  data-msg="Aplicant filtres..." name="filtrar" value="Aplicar Filtres">
@@ -85,7 +96,8 @@
                                         <th>data PD</th>
                                         <th>data aut No Format</th>
                                         <th>data aut</th>
-                                        <th>despesa prevista</th>                               
+                                        <th>despesa prevista</th>    
+                                        <th>Certificació</th>                               
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -103,7 +115,7 @@
 							            	<td>${certificacio.usuariConformador.getNomCompletReal()}</td>
 							            	<td>${certificacio.dataConformacio}</td>
 							            	<td>${certificacio.getDataConformacioString()}</td>
-							            	<td>${certificacio.informe.codiPartida}</td>	 
+							            	<td>${certificacio.informe.assignacioCredit.partida.codi}</td>	 
 							            	<td>${certificacio.notes}</td>	 
 							            	<td>${certificacio.actuacio.centre.getNomComplet()}</td>    
 							            	<td>${certificacio.actuacio.dataCreacio}</td> 
@@ -114,7 +126,8 @@
 							            	<td>${certificacio.informe.getDataPDString()}</td>      
 							            	<td>${certificacio.informe.dataAprovacio}</td> 
 							            	<td>${certificacio.informe.getDataAprovacioString()}</td>      
-							            	<td>${certificacio.informe.ofertaSeleccionada.getPlicFormat()}</td>       	
+							            	<td>${certificacio.informe.ofertaSeleccionada.getPlicFormat()}</td>
+							            	<td><a target="_blanck" href="downloadFichero?ruta=${certificacio.arxiu.getEncodedRuta()}">${certificacio.arxiu.nom}</a></td>      	
 							          	</tr>
 							       	</c:forEach>                                	
                                 </tbody>

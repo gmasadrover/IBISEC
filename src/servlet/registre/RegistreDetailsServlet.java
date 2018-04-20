@@ -13,10 +13,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import bean.Judicial;
 import bean.Registre;
 import bean.User;
 import bean.ControlPage.SectionPage;
 import core.ControlPageCore;
+import core.JudicialCore;
 import core.RegistreCore;
 import core.TascaCore;
 import core.UsuariCore;
@@ -55,7 +57,7 @@ public class RegistreDetailsServlet extends HttpServlet {
 			   String from = request.getParameter("from");
 			   int idTasca = -1;					  
 		       String errorString = null;
-		       
+		       String numAutosProcediment = "";
 		       Registre registre = new Registre();
 		       try {
 		    	   registre = RegistreCore.findRegistre(conn, tipus, referencia);			
@@ -63,7 +65,11 @@ public class RegistreDetailsServlet extends HttpServlet {
 		    		   idTasca = Integer.parseInt(request.getParameter("idTasca"));
 		    		   TascaCore.llegirNotificacio(conn, idTasca);
 		    	   }
-		       } catch (SQLException e) {
+		    	   if (registre.getTipus().equals("Procediment judicial")) {
+		    		   Judicial judicial = JudicialCore.findProcediment(conn, registre.getIdIncidencies());
+		    		   numAutosProcediment = judicial.getNumAutos();
+		    	   }
+		       } catch (SQLException | NamingException e) {
 		           e.printStackTrace();
 		           errorString = e.getMessage();
 		       }
@@ -80,6 +86,7 @@ public class RegistreDetailsServlet extends HttpServlet {
 		       request.setAttribute("errorString", errorString);
 		       request.setAttribute("registre", registre);
 		       request.setAttribute("tipus", tipus);
+		       request.setAttribute("numAutosProcediment", numAutosProcediment);
 		       request.setAttribute("canViewPersonal", UsuariCore.hasPermision(conn, usuari, SectionPage.personal));
 		       request.setAttribute("canCreateRegistre", UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_crear));
 		       request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Registre"));

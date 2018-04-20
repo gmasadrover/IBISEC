@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileUploadException;
 
 import bean.Bastanteo;
+import bean.Bastanteo.Escritura;
 import core.BastanteosCore;
 import core.EmpresaCore;
 import utils.Fitxers;
@@ -52,24 +53,24 @@ public class DoCreateBastanteoServlet extends HttpServlet {
        	
        	String ref = "";
        	Bastanteo bastanteo = new Bastanteo();
+      	Escritura escritura = new Bastanteo().new Escritura();
        	String errorString = null;
        	SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
        	try {
 			if (multipartParams.getParametres().get("dataBastanteo") != null && ! multipartParams.getParametres().get("dataBastanteo").isEmpty()) {
 				bastanteo.setDatabastanteo(formatter.parse(multipartParams.getParametres().get("dataBastanteo")));
 			}
-			bastanteo.setEmpresa(EmpresaCore.findEmpresa(conn, multipartParams.getParametres().get("llistaEmpreses")));
-			bastanteo.setEscritura(multipartParams.getParametres().get("escritura"));
+			bastanteo.setEmpresa(EmpresaCore.findEmpresa(conn, multipartParams.getParametres().get("llistaEmpreses")));			
 			bastanteo.setPersonaFacultada(multipartParams.getParametres().get("personaFacultada"));
-			bastanteo.setCarrec(multipartParams.getParametres().get("carrec"));
-			if (multipartParams.getParametres().get("dataEscritura") != null && ! multipartParams.getParametres().get("dataEscritura").isEmpty()) {
-				bastanteo.setDataEscritura(formatter.parse(multipartParams.getParametres().get("dataEscritura")));
-			}
-			bastanteo.setNumProtocol(multipartParams.getParametres().get("nProtocol"));
-			bastanteo.setNotari(multipartParams.getParametres().get("notari"));
-			bastanteo.setProcedencia(multipartParams.getParametres().get("procedencia"));
-			bastanteo.setDesti(multipartParams.getParametres().get("desti"));
+			bastanteo.setCarrec(multipartParams.getParametres().get("carrec"));		
 			ref = BastanteosCore.nouBastanteo(conn, bastanteo);
+			escritura.setEscritura(multipartParams.getParametres().get("escritura"));
+			if (multipartParams.getParametres().get("dataEscritura") != null && ! multipartParams.getParametres().get("dataEscritura").isEmpty()) {
+				escritura.setDataEscritura(formatter.parse(multipartParams.getParametres().get("dataEscritura")));
+			}
+			escritura.setNumProtocol(multipartParams.getParametres().get("nProtocol"));	
+			escritura.setNotari(multipartParams.getParametres().get("notari"));
+			BastanteosCore.novaEscritura(conn, escritura, ref);
 		} catch (ParseException | SQLException | NamingException e) {
 			errorString = e.toString();
 		}

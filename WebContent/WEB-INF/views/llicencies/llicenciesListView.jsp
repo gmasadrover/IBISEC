@@ -89,8 +89,8 @@
                                         <th>Sol·licitud</th>
                                         <th>Concesió</th>
                                         <th>Concesió</th>
-                                        <th>Pagada</th>
-                                        <th>Pagada</th>                                        
+                                        <th>Pagada Taxa</th>
+                                        <th>Pagada Taxa</th>                                        
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -105,8 +105,8 @@
 							            	<td>${informellicencia.getDataPeticioString()}</td>
 							            	<td>${informe.llicencia.concesio}</td>
 							            	<td>${informe.llicencia.getDataConcesioString()}</td>
-							            	<td>${informe.llicencia.pagament}</td>
-							            	<td>${informe.llicencia.getDataPagamentString()}</td>
+							            	<td>${informe.llicencia.pagamentTaxa}</td>
+							            	<td>${informe.llicencia.getDataPagamentTaxaString()}</td>
 							          	</tr>
 							       	</c:forEach>                                	
                                 </tbody>

@@ -251,12 +251,12 @@
 					    		<div class="row panel-body">					    		
 									<c:forEach items="${arxius.arxiusRegistre}" var="arxiu" >
 					            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
-											${arxiu.seccio} - ${arxiu.nom}
+											${arxiu.seccio} - ${arxiu.getDataString()} - ${arxiu.nom}
 										</a><br>
 									</c:forEach>	
 									<c:forEach items="${arxius.arxiusAltres}" var="arxiu" >
 					            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
-											${arxiu.seccio} - ${arxiu.nom}
+											${arxiu.seccio} - ${arxiu.getDataString()} - ${arxiu.nom}
 										</a><br>
 									</c:forEach>	
 								</div>

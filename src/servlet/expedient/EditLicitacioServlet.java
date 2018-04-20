@@ -67,6 +67,10 @@ public class EditLicitacioServlet extends HttpServlet {
 					refExp = ExpedientCore.crearExpedient(conn, informePrevi, importObraMajor, true, "");
 				}	        	
 	            expedient = ExpedientCore.findExpedient(conn, refExp);
+	            if (expedient == null || expedient.getExpContratacio() == null || expedient.getExpContratacio().isEmpty()) {
+	            	refExp = ExpedientCore.crearExpedient(conn, informePrevi, importObraMajor, true, refExp);
+	            	expedient = ExpedientCore.findExpedient(conn, refExp);
+	            }
 	            informePrevi = InformeCore.getInformePrevi(conn, expedient.getIdInforme(), true);	            
 	            empresesList = EmpresaCore.getEmpreses(conn);
 	            empresesList.addAll(EmpresaCore.getEmpresesUTE(conn));

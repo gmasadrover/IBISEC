@@ -20,9 +20,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import bean.Actuacio;
 import bean.Incidencia;
+import bean.Judicial;
 import bean.Registre;
 import core.ActuacioCore;
 import core.IncidenciaCore;
+import core.JudicialCore;
 import core.RegistreCore;
 import core.TascaCore;
 import core.UsuariCore;
@@ -56,11 +58,17 @@ public class DoCreateSortidaServlet extends HttpServlet {
 	    String[] idCentres = null;
 	    String contingut = request.getParameter("contingut");
 	    String idIncidencies = "";
+	    String idInformes = "";
+	    String refPro = "";
+	    String numAutos = "";
 	    List<String> idIncidenciesList = new ArrayList<String>();
+	    List<String> idInformesList = new ArrayList<String>();
 	    if (request.getParameter("idIncidenciaSeleccionada") != null && request.getParameter("idIncidenciaSeleccionada") != "") {	    	
 	    	try {
 	    		idIncidencies =  request.getParameter("idIncidenciaSeleccionada");
 		    	idIncidenciesList.add( request.getParameter("idIncidenciaSeleccionada"));
+		    	idInformes =  request.getParameter("idInformeSeleccionat");
+		    	idInformesList.add( request.getParameter("idInformeSeleccionat"));
 	    		idCentres = new String[] {IncidenciaCore.findIncidencia(conn,idIncidencies).getIdCentre()};
 	    		idCentresSeleccionats = IncidenciaCore.findIncidencia(conn,idIncidencies).getIdCentre();
 			} catch (SQLException e) {
@@ -74,21 +82,48 @@ public class DoCreateSortidaServlet extends HttpServlet {
 	    		idIncidencies = "";
  		        for(int i=0; i<idCentres.length; i++) { 		
  		        	idCentresSeleccionats += idCentres[i] + "#";
- 		        	try {
- 		        		if (!"-1".equals(idCentres[i])) {
-	 		        		if (!"-1".equals(request.getParameter("incidenciesList" + idCentres[i]))) {
-	 		        			Actuacio actuacio = ActuacioCore.findActuacio(conn, request.getParameter("incidenciesList" + idCentres[i]));
-	 		        			idIncidenciesList.add(actuacio.getIdIncidencia());
-			 		        	idIncidencies =  actuacio.getIdIncidencia() + "#";
-							} else {
-								idIncidenciesList.add(request.getParameter("incidenciesList" + idCentres[i]));
-			 		        	idIncidencies = request.getParameter("incidenciesList" + idCentres[i]) + "#";
-							}
- 		        		}
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}	
+ 		        	if (!tipus.equals("Procediment judicial")) {
+	 		        	try {
+	 		        		if (!"-1".equals(idCentres[i])) {
+		 		        		if (!"-1".equals(request.getParameter("incidenciesList" + idCentres[i]))) {
+		 		        			Actuacio actuacio = ActuacioCore.findActuacio(conn, request.getParameter("incidenciesList" + idCentres[i]));
+		 		        			idIncidenciesList.add(actuacio.getIdIncidencia());
+				 		        	idIncidencies =  actuacio.getIdIncidencia() + "#";
+								} else {
+									idIncidenciesList.add(request.getParameter("incidenciesList" + idCentres[i]));
+				 		        	idIncidencies = request.getParameter("incidenciesList" + idCentres[i]) + "#";
+								}
+	 		        		}
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}	
+ 		        	} else if(tipus.equals("Procediment judicial")) {
+ 			    		if (request.getParameter("idProcediment").equals("-2")) {	
+ 			    			numAutos = request.getParameter("numautos");
+ 			    			Judicial judicial = new Judicial();
+ 			    			judicial.setNumAutos(request.getParameter("numautos"));
+ 			    			judicial.setJutjat(request.getParameter("jutjat"));
+ 			    			judicial.setEstat("obert");
+ 			    			try {
+ 			    				refPro = JudicialCore.nouProcediement(conn, judicial, "", null);
+ 							} catch (SQLException e) {
+ 								// TODO Auto-generated catch block
+ 								e.printStackTrace();
+ 							}
+ 			    		} else {
+ 			    			refPro = request.getParameter("idProcediment");
+ 							try {
+ 								Judicial judicial = JudicialCore.findProcediment(conn, refPro);
+ 								numAutos = judicial.getNumAutos();
+ 							} catch (SQLException | NamingException e) {
+ 								// TODO Auto-generated catch block
+ 								e.printStackTrace();
+ 							}
+ 			    			
+ 			    		}	
+ 			    		idIncidencies = refPro;
+ 			    	} 		 
  		        }
 	    	}
 	    }
@@ -104,7 +139,7 @@ public class DoCreateSortidaServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-	    Registre registre = new Registre(referencia, peticio, tipus, remitent, contingut, idIncidencies, idCentresSeleccionats, idUsuari, new Date());
+	    Registre registre = new Registre(referencia, peticio, tipus, remitent, contingut, idIncidencies, idInformes, idCentresSeleccionats, idUsuari, new Date());
 	    
 	    String errorString = null;
 	 	      
@@ -132,6 +167,12 @@ public class DoCreateSortidaServlet extends HttpServlet {
 		   				referenciesIncidencies += idIncidencia + "#";
 	   				}
 	   			}	 
+	   			//Si procediment cream tasca
+	   			if(tipus.equals("Procediment judicial")) {	   				
+	   				int usuariTasca = UsuariCore.finCap(conn, "juridica").getIdUsuari();
+	   				TascaCore.novaTasca(conn, "judicial", usuariTasca, idUsuari, "-1", "-1", "S'ha registrat un document de sortida al procediment " + numAutos, "Nova documentació procediment", refPro, null);
+	   				referenciesIncidencies = refPro;
+	   			}
 	   			//Actualitzam referÃ¨ncies registres
 	   			RegistreCore.actualitzarIdIncidencia(conn, "S", referencia, referenciesIncidencies);
 	   		} catch (SQLException | NamingException e) {

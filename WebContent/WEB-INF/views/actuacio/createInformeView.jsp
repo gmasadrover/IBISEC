@@ -46,6 +46,14 @@
 		    			<form class="form-horizontal" method="POST" action="DoCreateInformeManual">
 		    				<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
 		    				<div class="form-group">
+		    					<label class="col-xs-2 control-label">Generar expedient</label> 
+		                		<div class="checkbox">
+			                        <label>
+			                          	<input name="newExpedient" type="checkbox">
+			                        </label>
+			                	</div> 
+                            </div> 
+		    				<div class="form-group">
 		    					<div class="col-md-3">
 	                                <label class="control-label">Tècnic</label>
 	                                <div class="">
@@ -110,17 +118,7 @@
 						                	<option value="comun">Comunicació prèvia</option>
 						                </select>
 						           	</div>
-						        </div>
-						        <div class="visibleContracte">			
-						           	<div class="col-md-3">
-						      	 		<label>Formalització contracte</label>
-						      	 		<input type="hidden" id="formContractePrev" value="" >
-						                <select class="form-control selectpicker" name="formContracte" id="formContracte">
-						                	<option value="si">Si</option>
-						                	<option value="no">No</option>
-						                </select>
-						      		</div>	
-						      	</div>										                       																
+						        </div>						        						                       																
 							</div>								
 							<div class="form-group">
 								<div class="col-md-6">

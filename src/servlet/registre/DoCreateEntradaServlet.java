@@ -2,6 +2,7 @@ package servlet.registre;
 
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.net.Authenticator.RequestorType;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -20,9 +21,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import bean.Actuacio;
 import bean.Incidencia;
+import bean.Judicial;
 import bean.Registre;
 import core.ActuacioCore;
 import core.IncidenciaCore;
+import core.JudicialCore;
 import core.RegistreCore;
 import core.TascaCore;
 import core.UsuariCore;
@@ -57,11 +60,17 @@ public class DoCreateEntradaServlet extends HttpServlet {
 	    String[] idCentres = null;
 	    String contingut = request.getParameter("contingut");
 	    String idIncidencies = "";
+	    String idInformes = "";
+	    String refPro = "";
+	    String numAutos = "";
 	    List<String> idIncidenciesList = new ArrayList<String>();
+	    List<String> idInformesList = new ArrayList<String>();
 	    if (request.getParameter("idIncidenciaSeleccionada") != null && request.getParameter("idIncidenciaSeleccionada") != "") {
 	    	try {
 	    		idIncidencies = request.getParameter("idIncidenciaSeleccionada");
+	    		idInformes = request.getParameter("idInformeSeleccionat");
 	    		idIncidenciesList.add(request.getParameter("idIncidenciaSeleccionada"));
+	    		idInformesList.add(request.getParameter("idInformeSeleccionat"));
 	    		idCentres = new String[] {IncidenciaCore.findIncidencia(conn,idIncidencies).getIdCentre()};
 	    		idCentresSeleccionats = IncidenciaCore.findIncidencia(conn,idIncidencies).getIdCentre();
 			} catch (SQLException e) {
@@ -70,30 +79,57 @@ public class DoCreateEntradaServlet extends HttpServlet {
 			}
 	    } else {
 	    	idCentres = request.getParameterValues("idCentre");
-	    	if (idCentres != null && !tipus.equals("Procediment judicial")) {
+	    	if (idCentres != null) {
 	    		idCentresSeleccionats = "";
 	    		idIncidencies = "";
+	    		idInformes = "";
  		        for(int i=0; i<idCentres.length; i++) { 		
  		        	idCentresSeleccionats += idCentres[i] + "#";
- 		        	try {
- 		        		if (!"-1".equals(idCentres[i])) {
-	 		        		if (!"-1".equals(request.getParameter("incidenciesList" + idCentres[i])) && !"-2".equals(request.getParameter("incidenciesList" + idCentres[i]))) { 		        			
-								Actuacio actuacio = ActuacioCore.findActuacio(conn, request.getParameter("incidenciesList" + idCentres[i]));							
-								idIncidenciesList.add(actuacio.getIdIncidencia());
-			 		        	idIncidencies =  actuacio.getIdIncidencia() + "#";
-	 		        		} else {
-	 		        			idIncidenciesList.add(request.getParameter("incidenciesList" + idCentres[i]));
-			 		        	idIncidencies =  request.getParameter("incidenciesList" + idCentres[i]) + "#";
+ 		        	if (!tipus.equals("Procediment judicial")) {
+	 		        	try {
+	 		        		if (!"-1".equals(idCentres[i])) {
+		 		        		if (!"-1".equals(request.getParameter("incidenciesList" + idCentres[i])) && !"-2".equals(request.getParameter("incidenciesList" + idCentres[i]))) { 		        			
+									Actuacio actuacio = ActuacioCore.findActuacio(conn, request.getParameter("incidenciesList" + idCentres[i]));							
+									idIncidenciesList.add(actuacio.getIdIncidencia());
+				 		        	idIncidencies =  actuacio.getIdIncidencia() + "#";
+				 		        	idInformes = request.getParameter("expedientsList" + idCentres[i]) + "#";
+		 		        		} else {
+		 		        			idIncidenciesList.add(request.getParameter("incidenciesList" + idCentres[i]));
+				 		        	idIncidencies =  request.getParameter("incidenciesList" + idCentres[i]) + "#";
+				 		        	idInformes = request.getParameter("expedientsList" + idCentres[i]) + "#";
+		 		        		}
 	 		        		}
- 		        		}
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
- 		        	
- 		        }
-	    	} else if(tipus.equals("Procediment judicial")) {
-	    		idCentresSeleccionats = request.getParameter("idProcediment");
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+ 		        	} else if(tipus.equals("Procediment judicial")) {
+ 			    		if (request.getParameter("idProcediment").equals("-2")) {	
+ 			    			numAutos = request.getParameter("numautos");
+ 			    			Judicial judicial = new Judicial();
+ 			    			judicial.setNumAutos(request.getParameter("numautos"));
+ 			    			judicial.setJutjat(request.getParameter("jutjat"));
+ 			    			judicial.setEstat("obert");
+ 			    			try {
+ 			    				refPro = JudicialCore.nouProcediement(conn, judicial, "", null);
+ 							} catch (SQLException e) {
+ 								// TODO Auto-generated catch block
+ 								e.printStackTrace();
+ 							}
+ 			    		} else {
+ 			    			refPro = request.getParameter("idProcediment");
+ 							try {
+ 								Judicial judicial = JudicialCore.findProcediment(conn, refPro);
+ 								numAutos = judicial.getNumAutos();
+ 							} catch (SQLException | NamingException e) {
+ 								// TODO Auto-generated catch block
+ 								e.printStackTrace();
+ 							}
+ 			    			
+ 			    		}	
+ 			    		idIncidencies = refPro;
+ 			    	} 		        	
+ 		        }	    	
 	    	}
 	    }
 	    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -108,7 +144,7 @@ public class DoCreateEntradaServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-	    Registre registre = new Registre(referencia, peticio, tipus, remitent, contingut, idIncidencies, idCentresSeleccionats, idUsuari, new Date());
+	    Registre registre = new Registre(referencia, peticio, tipus, remitent, contingut, idIncidencies, idInformes, idCentresSeleccionats, idUsuari, new Date());
 	    
 	    String errorString = null;
 	 	      
@@ -128,23 +164,32 @@ public class DoCreateEntradaServlet extends HttpServlet {
 				   		    incidencia.setDescripcio(contingut);
 				   		    incidencia.setSolicitant(remitent);
 				   		    IncidenciaCore.novaIncidencia(conn, incidencia);			   			
-			   			} else { //Cream notificació a gerència
+			   			} 
+		   				else { //Cream notificació a gerència
 			   				String idIncidencia = idIncidenciesList.get(i);
 			   				if (idIncidencia == null) idIncidencia = "-1";
-			   				int idNovaTasca = TascaCore.idNovaTasca(conn);
+			   				/*int idNovaTasca = TascaCore.idNovaTasca(conn);
 			   				String assumpte = "<a href='registre?from=notificacio&idTasca=" + idNovaTasca + "&tipus=E&referencia=" + registre.getId() + "'>Nova entrada registre: " + registre.getId() + "</a>";
-			   				TascaCore.novaTasca(conn, "notificacio", 1, idUsuari, "", idIncidencia, "", assumpte, "", null);
+			   				TascaCore.novaTasca(conn, "notificacio", 1, idUsuari, "", idIncidencia, "", assumpte, "", null);*/
 			   				referenciesIncidencies += idIncidencia + "#";
 			   			}	
-	   				} else {
+	   				} 
+	   				else {
 	   					String idIncidencia = "-1";
-		   				int idNovaTasca = TascaCore.idNovaTasca(conn);
+		   				/*int idNovaTasca = TascaCore.idNovaTasca(conn);
 		   				String assumpte = "<a href='registre?from=notificacio&idTasca=" + idNovaTasca + "&tipus=E&referencia=" + registre.getId() + "'>Nova entrada registre: " + registre.getId() + "</a>";
-		   				TascaCore.novaTasca(conn, "notificacio", 1, idUsuari, "", idIncidencia, "", assumpte, "", null);
+		   				TascaCore.novaTasca(conn, "notificacio", 1, idUsuari, "", idIncidencia, "", assumpte, "", null);*/
 		   				referenciesIncidencies += idIncidencia + "#";
 	   				}
 	   			}	 
-	   			//Actualitzam referÃ¨ncies registres
+	   			
+	   			//Si procediment cream tasca
+	   			if(tipus.equals("Procediment judicial")) {	   				
+	   				int usuariTasca = UsuariCore.finCap(conn, "juridica").getIdUsuari();
+	   				TascaCore.novaTasca(conn, "judicial", usuariTasca, idUsuari, "-1", "-1", "S'ha registrat un document nou al procediment " + numAutos, "Nova documentació procediment", refPro, null);
+	   				referenciesIncidencies = refPro;
+	   			}
+	   			//Actualitzam referències registres
 	   			RegistreCore.actualitzarIdIncidencia(conn, "E", referencia, referenciesIncidencies);
 	   		} catch (SQLException | NamingException e) {
 	  			e.printStackTrace();

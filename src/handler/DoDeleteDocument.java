@@ -47,7 +47,8 @@ public class DoDeleteDocument extends HttpServlet {
         response.setHeader("Access-Control-Allow-Headers", "Content-Type");
         response.setHeader("Access-Control-Max-Age", "86400");
  
-        JsonObject myObj = new JsonObject();      
+        JsonObject myObj = new JsonObject();   
+        System.out.println("eliminar: " + request.getParameter("ruta"));
 		Fitxers.eliminarFitxer(request.getParameter("ruta"));
 		myObj.addProperty("success", true);	
 		

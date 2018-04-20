@@ -10,15 +10,19 @@ import utils.Fitxers.Fitxer;
 public class Judicial {
 	public class Tramitacio {
 		private String numstcia;
-		private Date data;
-		private double quantia;
+		private Date dataDocument;
+		private String quantia;
 		private String recurs;
-		private Date datapagament;
+		private Date dataRegistre;
 		private String sentencia;
 		private String tipus;
 		private String notes;
+		private String descripcio;
 		private int idTramitacio;
 		private String termini;
+		private boolean pendentTercers;
+		private boolean pendentProvisio;
+		private String codiProcediment;
 		private List<Fitxer> documentsList;
 		public Tramitacio() {
 			
@@ -29,22 +33,22 @@ public class Judicial {
 		public void setNumstcia(String numstcia) {
 			this.numstcia = numstcia;
 		}
-		public Date getData() {
-			return data;
+		public Date getDataDocument() {
+			return dataDocument;
 		}
-		public String getDataString() {
+		public String getDataDocumentString() {
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
 			String dataString = "";
-			if (this.data != null) dataString = df.format(this.data);
+			if (this.dataDocument != null) dataString = df.format(this.dataDocument);
 			return dataString;
 		}
-		public void setData(Date data) {
-			this.data = data;
+		public void setDataDocument(Date dataDocument) {
+			this.dataDocument = dataDocument;
 		}
-		public double getQuantia() {
+		public String getQuantia() {
 			return quantia;
 		}
-		public void setQuantia(double quantia) {
+		public void setQuantia(String quantia) {
 			this.quantia = quantia;
 		}
 		public String getRecurs() {
@@ -53,17 +57,17 @@ public class Judicial {
 		public void setRecurs(String recurs) {
 			this.recurs = recurs;
 		}
-		public Date getDatapagament() {
-			return datapagament;
+		public Date getDataRegistre() {
+			return dataRegistre;
 		}
-		public String getDataPagamentString() {
+		public String getDataRegistreString() {
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
 			String dataString = "";
-			if (this.datapagament != null) dataString = df.format(this.datapagament);
+			if (this.dataRegistre != null) dataString = df.format(this.dataRegistre);
 			return dataString;
 		}
-		public void setDatapagament(Date datapagament) {
-			this.datapagament = datapagament;
+		public void setDataRegistre(Date dataRegistre) {
+			this.dataRegistre = dataRegistre;
 		}
 		public String getSentencia() {
 			return sentencia;
@@ -78,7 +82,7 @@ public class Judicial {
 			if ("dipso".equals(this.tipus)) return "Disposició Judicial";
 			if ("propis".equals(this.tipus)) return "Propis IBISEC";
 			if ("advoc".equals(this.tipus)) return "Advocacia";
-			if ("altres".equals(this.tipus)) return "Altres";
+			if ("citnoperso".equals(this.tipus)) return "Citats no personats";
 			return "";
 		}
 		public void setTipus(String tipus) {
@@ -108,6 +112,30 @@ public class Judicial {
 		public void setTermini(String termini) {
 			this.termini = termini;
 		}
+		public boolean isPendentTercers() {
+			return pendentTercers;
+		}
+		public void setPendentTercers(boolean pendentTercers) {
+			this.pendentTercers = pendentTercers;
+		}
+		public String getCodiProcediment() {
+			return codiProcediment;
+		}
+		public void setCodiProcediment(String codiProcediment) {
+			this.codiProcediment = codiProcediment;
+		}
+		public String getDescripcio() {
+			return descripcio;
+		}
+		public void setDescripcio(String descripcio) {
+			this.descripcio = descripcio;
+		}
+		public boolean isPendentProvisio() {
+			return pendentProvisio;
+		}
+		public void setPendentProvisio(boolean pendentProvisio) {
+			this.pendentProvisio = pendentProvisio;
+		}
 		
 	}
 	private String referencia;
@@ -120,6 +148,11 @@ public class Judicial {
 	private String estat;
 	private String notes;
 	private String anyProcediment;
+	private Judicial segonaInstancia;
+	private Judicial altresRecursosObert;
+	private Judicial execucio;
+	private Judicial recursExecucio;
+	private Judicial mesuresCautelars;
 	private List<Tramitacio> tramitacionsList;
 	private List<Fitxer> documentsIniciList;
 	private List<Fitxer> documentsComunicacioList;
@@ -203,5 +236,35 @@ public class Judicial {
 	}
 	public void setDocumentsComunicacioList(List<Fitxer> documentsComunicacioList) {
 		this.documentsComunicacioList = documentsComunicacioList;
+	}
+	public Judicial getSegonaInstancia() {
+		return segonaInstancia;
+	}
+	public void setSegonaInstancia(Judicial segonaInstancia) {
+		this.segonaInstancia = segonaInstancia;
+	}
+	public Judicial getAltresRecursosObert() {
+		return altresRecursosObert;
+	}
+	public void setAltresRecursosObert(Judicial altresRecursosObert) {
+		this.altresRecursosObert = altresRecursosObert;
+	}
+	public Judicial getExecucio() {
+		return execucio;
+	}
+	public void setExecucio(Judicial execucio) {
+		this.execucio = execucio;
+	}
+	public Judicial getRecursExecucio() {
+		return recursExecucio;
+	}
+	public void setRecursExecucio(Judicial recursExecucio) {
+		this.recursExecucio = recursExecucio;
+	}
+	public Judicial getMesuresCautelars() {
+		return mesuresCautelars;
+	}
+	public void setMesuresCautelars(Judicial mesuresCautelars) {
+		this.mesuresCautelars = mesuresCautelars;
 	}
 }

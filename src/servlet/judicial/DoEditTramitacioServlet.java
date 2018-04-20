@@ -60,23 +60,25 @@ public class DoEditTramitacioServlet extends HttpServlet {
        	try {
        		tramitacio.setNumstcia(multipartParams.getParametres().get("numautos"));
        		tramitacio.setIdTramitacio(idTramitacio);
-       		tramitacio.setSentencia(multipartParams.getParametres().get("sentencia"));
-			if (multipartParams.getParametres().get("data") != null && ! multipartParams.getParametres().get("data").isEmpty()) {
-				tramitacio.setData(formatter.parse(multipartParams.getParametres().get("data")));
+       		//tramitacio.setSentencia(multipartParams.getParametres().get("sentencia"));
+			if (multipartParams.getParametres().get("dataDocument") != null && ! multipartParams.getParametres().get("dataDocument").isEmpty()) {
+				tramitacio.setDataDocument(formatter.parse(multipartParams.getParametres().get("dataDocument")));
 			}
-			tramitacio.setQuantia(Double.parseDouble(multipartParams.getParametres().get("quantia")));
-			tramitacio.setRecurs(multipartParams.getParametres().get("recurs"));
-			if (multipartParams.getParametres().get("dataPagament") != null && ! multipartParams.getParametres().get("dataPagament").isEmpty()) {
-				tramitacio.setDatapagament(formatter.parse(multipartParams.getParametres().get("dataPagament")));
+			//tramitacio.setQuantia(multipartParams.getParametres().get("quantia"));
+			//tramitacio.setRecurs(multipartParams.getParametres().get("recurs"));
+			if (multipartParams.getParametres().get("dataRegistre") != null && ! multipartParams.getParametres().get("dataRegistre").isEmpty()) {
+				tramitacio.setDataRegistre(formatter.parse(multipartParams.getParametres().get("dataRegistre")));
 			}
+			tramitacio.setDescripcio(multipartParams.getParametres().get("descripcio"));
+			tramitacio.setPendentTercers(multipartParams.getParametres().get("pendentTercers") != null);
+			tramitacio.setPendentProvisio(multipartParams.getParametres().get("pendentProvisio") != null);			
 			tramitacio.setTipus(multipartParams.getParametres().get("llistatTipus"));
 			tramitacio.setNotes(multipartParams.getParametres().get("notes"));
-			tramitacio.setTermini(multipartParams.getParametres().get("termini"));
+			//tramitacio.setTermini(multipartParams.getParametres().get("termini"));
 			JudicialCore.modificarTramitacio(conn, tramitacio);
 			JudicialCore.guardarFitxerTramitacio(multipartParams.getFitxers(), refPro, idTramitacio);
-			
 			//Cream tasca si hi ha termini
-			if (!multipartParams.getParametres().get("termini").equals("") && !multipartParams.getParametres().get("termini").equals(multipartParams.getParametres().get("terminiOriginal"))) if (tramitacio.getTermini() != "") TascaCore.novaTasca(conn, "judicial", usuari.getIdUsuari(), usuari.getIdUsuari(), "-1", "-1", "S'ha afegit el termini de: " + tramitacio.getTermini(), "Nou termini procediment", refPro, null);
+			if (multipartParams.getParametres().get("termini") != null && !multipartParams.getParametres().get("termini").equals("") && !multipartParams.getParametres().get("termini").equals(multipartParams.getParametres().get("terminiOriginal"))) if (tramitacio.getTermini() != "") TascaCore.novaTasca(conn, "judicial", usuari.getIdUsuari(), usuari.getIdUsuari(), "-1", "-1", "S'ha afegit el termini de: " + tramitacio.getTermini(), "Nou termini procediment", refPro, null);
 			
 		} catch (SQLException | ParseException | NamingException e) {
 			errorString = e.toString();

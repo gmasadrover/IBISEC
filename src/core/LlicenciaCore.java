@@ -18,7 +18,7 @@ import utils.Fitxers;
 import utils.Fitxers.Fitxer;
 
 public class LlicenciaCore {
-	static final String SQL_CAMPS = "codi, expcontratacio, tipus, taxa, observacio, datapagada, importatib, ico, datasolicitud, dataconcesio";
+	static final String SQL_CAMPS = "codi, expcontratacio, tipus, taxa, observacio, datapagadataxa, datapagadaico, importatib, ico, datasolicitud, dataconcesio";
 	
 	private static Llicencia initLlicencia(Connection conn, ResultSet rs) throws SQLException, NamingException{
 		Llicencia llicencia = new Llicencia();
@@ -30,7 +30,8 @@ public class LlicenciaCore {
 		llicencia.setObservacio(rs.getString("observacio"));
 		llicencia.setPeticio(rs.getTimestamp("datasolicitud"));
 		llicencia.setConcesio(rs.getTimestamp("dataconcesio"));
-		llicencia.setPagament(rs.getTimestamp("datapagada"));
+		llicencia.setPagamentTaxa(rs.getTimestamp("datapagadataxa"));
+		llicencia.setPagamentICO(rs.getTimestamp("datapagadaico"));
 		llicencia.setArxius(getArxius(rs.getString("codi")));
 		return llicencia;
 	}
@@ -110,41 +111,48 @@ public class LlicenciaCore {
 	
 	public static void updateLlicencia(Connection conn, Llicencia llicencia) throws SQLException {
 		String sql = "UPDATE public.tbl_llicencia"
-					+ " SET taxa=?, observacio=?, datapagada=?, ico=?, datasolicitud=?, dataconcesio=?"
+					+ " SET taxa=?, observacio=?, datapagadataxa=?, datapagadaico=?, ico=?, datasolicitud=?, dataconcesio=?"
 					+ " WHERE codi = ?";	
 		PreparedStatement pstm;
 		pstm = conn.prepareStatement(sql);	
 		pstm.setDouble(1, llicencia.getTaxa());
 		pstm.setString(2, llicencia.getObservacio());
-		if (llicencia.getPagament() != null) {
-			pstm.setDate(3, new java.sql.Date(llicencia.getPagament().getTime()));
+		if (llicencia.getPagamentTaxa() != null) {
+			pstm.setDate(3, new java.sql.Date(llicencia.getPagamentTaxa().getTime()));
 		} else {
 			pstm.setDate(3, null);
 		}
-		pstm.setDouble(4, llicencia.getIco());
-		if (llicencia.getPeticio() != null) {
-			pstm.setDate(5, new java.sql.Date(llicencia.getPeticio().getTime()));
+		if (llicencia.getPagamentICO() != null) {
+			pstm.setDate(4, new java.sql.Date(llicencia.getPagamentICO().getTime()));
 		} else {
-			pstm.setDate(5, null);
+			pstm.setDate(4, null);
 		}
-		if (llicencia.getConcesio() != null) {
-			pstm.setDate(6, new java.sql.Date(llicencia.getConcesio().getTime()));
+		pstm.setDouble(5, llicencia.getIco());
+		if (llicencia.getPeticio() != null) {
+			pstm.setDate(6, new java.sql.Date(llicencia.getPeticio().getTime()));
 		} else {
 			pstm.setDate(6, null);
 		}
-		pstm.setString(7, llicencia.getCodi());
+		if (llicencia.getConcesio() != null) {
+			pstm.setDate(7, new java.sql.Date(llicencia.getConcesio().getTime()));
+		} else {
+			pstm.setDate(7, null);
+		}
+		pstm.setString(8, llicencia.getCodi());
 		pstm.executeUpdate();
 	}
 	
-	public static void novaLlicencia(Connection conn, String expContractacio, String tipus) throws SQLException {
+	public static String novaLlicencia(Connection conn, String expContractacio, String tipus) throws SQLException {
 		String sql = "INSERT INTO public.tbl_llicencia(codi, expcontratacio, tipus, datacre)"
 					+ " VALUES (?, ?, ?, localtimestamp);";
 		PreparedStatement pstm;
+		String codi = getNouCodi(conn);
 		pstm = conn.prepareStatement(sql);	
-		pstm.setString(1, getNouCodi(conn));
+		pstm.setString(1, codi);
 		pstm.setString(2, expContractacio);
 		pstm.setString(3, tipus);
 		pstm.executeUpdate();
+		return codi;
 	}
 	
 	private static String getNouCodi(Connection conn) throws SQLException {

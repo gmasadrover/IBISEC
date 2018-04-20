@@ -50,12 +50,15 @@ public class PartidaDetailsServlet extends HttpServlet {
 			response.sendRedirect(request.getContextPath() + "/");	 	
 		}else{		   
 			String codi = request.getParameter("codi");
+			String estat = request.getParameter("estat");
 			String errorString = null;
 			Partida partida = new Partida();	
 			List<AssignacioCredit> llistaAssignacions = new ArrayList<AssignacioCredit>();
+			boolean canEditPartida = false;
 	       	try {
 	       		partida = CreditCore.getPartida(conn,codi);	  
-	       		llistaAssignacions = CreditCore.findAssignacionsPartida(conn, codi);
+	       		llistaAssignacions = CreditCore.findAssignacionsPartida(conn, codi, estat);
+	       		canEditPartida = UsuariCore.hasPermision(conn, usuari, SectionPage.partides_crear);
 	       	} catch (SQLException | NamingException e) {
 	       		e.printStackTrace();
 	       		errorString = e.getMessage();
@@ -63,6 +66,7 @@ public class PartidaDetailsServlet extends HttpServlet {
 	  
 	       	// Store info in request attribute, before forward to views
 	       	request.setAttribute("errorString", errorString);
+	       	request.setAttribute("canEditPartida", canEditPartida);
 	       	request.setAttribute("partida", partida);	    
 	       	request.setAttribute("llistaAssignacions", llistaAssignacions);
 	       	request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "Partides"));

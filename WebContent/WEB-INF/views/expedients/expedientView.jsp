@@ -39,7 +39,7 @@
 					    <div class="panel-heading">
 					        <div class="row">
 					    		<div class="col-md-6">
-					    			id actuació: <a href="actuacionsDetalls?ref=${actuacio.referencia}" class="loadingButton"  data-msg="obrint actuació...">${actuacio.referencia}</a>
+					    			Anar a l'actuació: <a href="actuacionsDetalls?ref=${actuacio.referencia}&exp=${informePrevi.idInf}" class="loadingButton"  data-msg="obrint actuació...">${actuacio.referencia}</a>
 					    		</div>
 					    		<div class="col-md-6">
 					    			Centre: ${actuacio.centre.getNomComplet()}
@@ -65,35 +65,8 @@
 		                <div class="col-md-12">  
 	                        <c:set var="ofertes" scope="request" value="${informePrevi.llistaOfertes}"></c:set>
 	    					<c:set var="ofertaSeleccionada" scope="request" value="${informePrevi.ofertaSeleccionada}"></c:set>
-			    			<div class="tabbable">
-		                    	<ul class="nav nav-tabs">
-								   	<li class='active'><a data-toggle="tab" href="#informe">Informe</a></li>
-								   	<li><a data-toggle="tab" href="#licitacio">Licitació</a></li>							   											    
-								    <li><a data-toggle="tab" href="#execucio">Execució</a></li>	
-								    <li><a data-toggle="tab" href="#garantia">Garantia</a></li>						   
-							 	</ul>
-							 	<div class="tab-content">
-									<div id="informe" class="tab-pane fade in active">	
-										<div class="col-md-12 bordertab">
-											<jsp:include page="../expedients/include/_resumInforme.jsp"></jsp:include>
-										</div>
-									</div>
-									<div id="licitacio" class="tab-pane fade">
-										<div class="col-md-12 bordertab">
-											<jsp:include page="../expedients/include/_resumLicitacio.jsp"></jsp:include>
-										</div>
-									</div>
-									<div id="execucio" class="tab-pane fade">
-										<div class="col-md-12 bordertab">
-											<jsp:include page="../expedients/include/_resumExecucio.jsp"></jsp:include>       
-										</div>
-									</div>
-									<div id="garantia" class="tab-pane fade">
-										<div class="col-md-12 bordertab">
-										</div>
-									</div>
-								</div>							
-							</div>	
+			    			<c:set var="informePrevi" value="${informePrevi}" scope="request"/>				      				
+					   		<jsp:include page="../expedients/include/_expedientView.jsp"></jsp:include>
 		                </div>
 	            	</div>            	
 				</c:if>

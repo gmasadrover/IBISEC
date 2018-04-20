@@ -43,7 +43,6 @@ public class DoAddHistoricServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	
 		Connection conn = MyUtils.getStoredConnection(request);
-		
 		Fitxers.formParameters multipartParams = new Fitxers.formParameters();
 		try {
 			multipartParams = Fitxers.getParamsFromMultipartForm(request);
@@ -66,6 +65,11 @@ public class DoAddHistoricServlet extends HttpServlet {
 	    String tipus = "generic";
 	   	//Registrar comentari;	   
 	   	try {
+	   		if (reasignar != null) {
+	   			comentari = comentari + "<br>" + "Es reassigna la tasca";
+	   		}else if (tancar != null) {
+	   			comentari = comentari + "<br>" + "Es tanca la tasca";
+	   		}
 			idComentari = TascaCore.nouHistoric(conn, idTasca, comentari, Usuari.getIdUsuari());
 			tasca = TascaCore.findTascaId(conn, Integer.parseInt(idTasca), Usuari.getIdUsuari());
 			tipus = tasca.getTipus();
@@ -76,7 +80,7 @@ public class DoAddHistoricServlet extends HttpServlet {
 		}
 	   	//Guardar adjunts
 	   	try {
-			Fitxers.guardarFitxer(multipartParams.getFitxers(), idIncidencia, idActuacio, "Tasca", idTasca, idComentari, "", "");
+			Fitxers.guardarFitxer(multipartParams.getFitxers(), idIncidencia, idActuacio, "Tasca", idTasca, "", "", "");
 		} catch (NamingException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -92,19 +96,54 @@ public class DoAddHistoricServlet extends HttpServlet {
 	   	}// If everything nice. Redirect to the product listing page.            
 	   	else {
 	   		if (reasignar != null) { //reassignem la incid�ncia
-	   			String idUsuariNou = multipartParams.getParametres().get("idUsuari");
+	   			String idUsuariNou = multipartParams.getParametres().get("idUsuari");	
+	   			if (idUsuariNou.equals("-1") ) {
+	   				idUsuariNou = String.valueOf(Usuari.getIdUsuari());		
+	   			}
 	   			try {
-	   				if (NumberUtils.isNumber(idUsuariNou)) {
-	   					if (tasca.getTipus().equals("facturaConformada")) {
-	   						User usuariNou = UsuariCore.findUsuariByID(conn, Integer.parseInt(idUsuariNou));
-	   						if (!usuariNou.getRol().contains("CONTA")) {
-	   							tipus = "conformarFactura";
-	   						}
-	   					}
-	   					TascaCore.reasignar(conn, Integer.parseInt(idUsuariNou), Integer.parseInt(idTasca), tipus);
-	   				} else {	   					
-	   					TascaCore.reasignar(conn, UsuariCore.finCap(conn, idUsuariNou).getIdUsuari(),  Integer.parseInt(idTasca), tipus);
+	   				if (!NumberUtils.isNumber(idUsuariNou)) {
+	   					idUsuariNou =  String.valueOf(UsuariCore.finCap(conn, idUsuariNou).getIdUsuari());
 	   				}
+	   				User usuariNou = UsuariCore.findUsuariByID(conn, Integer.parseInt(idUsuariNou));
+   					if (tasca.getTipus().equals("facturaConformada")) {
+   						if (!usuariNou.getRol().contains("CONTA")) {
+   							tipus = "conformarFactura";
+   						}
+   					} else if(tasca.getTipus().equals("solInfPrev")) {
+   						if (!Usuari.getDepartament().equals("gerencia")) { //Si no es gerencia	   							
+   							if(usuariNou.getDepartament().equals("gerencia")) { //Si va a gerencia
+   								tipus = "infPrev";
+   							}else if(usuariNou.getRol().contains("CAP")) { //Si va a cap
+	   							tipus = "vistInfPrev";
+	   						}
+   						}	   						
+   					} else if(tasca.getTipus().equals("vistInfPrev")) {
+   						if(usuariNou.getDepartament().equals("gerencia")) { //Si va a gerencia
+							tipus = "infPrev";
+						}else if(!usuariNou.getRol().contains("CAP")) { //Si va tecnic
+   							tipus = "solInfPrev";
+   						}
+   					} else if(tasca.getTipus().equals("infPrev")) {
+   						if(!usuariNou.getDepartament().equals("gerencia")) { //Si no va a gerencia
+   							tipus = "solInfPrev";
+   						}
+   					} else if(tasca.getTipus().equals("doctecnica")) {
+   						if (!Usuari.getDepartament().equals("gerencia")) { //Si no es gerencia	   							
+   							if(usuariNou.getRol().contains("CAP")) { //Si va a cap
+	   							tipus = "vistDocTecnica";
+	   						}
+   						}	 
+   					} else if(tasca.getTipus().equals("vistDocTecnica")) {
+   						if(!usuariNou.getRol().contains("CAP")) { //Si va tecnic
+   							tipus = "doctecnica";
+   						}
+   					} else if(tasca.getTipus().equals("docprelicitacio")) {
+   						if(!usuariNou.getDepartament().equals("gerencia") && !usuariNou.getDepartament().equals("juridica")) { //Si no va a gerencia ni juridica
+   							tipus = "doctecnica";
+   						}
+   					}
+   					TascaCore.reasignar(conn, Integer.parseInt(idUsuariNou), Integer.parseInt(idTasca), tipus);
+	   				
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

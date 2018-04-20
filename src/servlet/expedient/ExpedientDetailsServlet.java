@@ -55,6 +55,7 @@ public class ExpedientDetailsServlet extends HttpServlet {
 	       Incidencia incidencia = new Incidencia();
 	       Llicencia llicencia = new Llicencia();
 	       Boolean canModificar = false;
+	       String informeSeleccionat = "";
 	       try {
 	    	   expedient = ExpedientCore.findExpedient(conn, referencia);
 	    	   informePrevi = InformeCore.getInformePrevi(conn, expedient.getIdInforme(), true);
@@ -71,6 +72,7 @@ public class ExpedientDetailsServlet extends HttpServlet {
 	       // Store info in request attribute, before forward to views
 	       request.setAttribute("errorString", errorString);
 	       request.setAttribute("expedient", expedient);
+	       request.setAttribute("informeSeleccionat", informePrevi.getIdInf());
 	       request.setAttribute("informePrevi", informePrevi);
 	       request.setAttribute("llicencia", llicencia);
 	       request.setAttribute("actuacio", actuacio);

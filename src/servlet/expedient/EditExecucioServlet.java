@@ -59,7 +59,7 @@ public class EditExecucioServlet extends HttpServlet {
 					refExp = ExpedientCore.crearExpedient(conn, informe, importObraMajor, true, "");
 				}
 	            expedient = ExpedientCore.findExpedient(conn, refExp);	    
-	            if (expedient.getExpContratacio() == null || expedient.getExpContratacio().isEmpty()) {
+	            if (expedient == null || expedient.getExpContratacio() == null || expedient.getExpContratacio().isEmpty()) {
 	            	refExp = ExpedientCore.crearExpedient(conn, informe, importObraMajor, true, refExp);
 	            }
 	        } catch (SQLException | NamingException e) {

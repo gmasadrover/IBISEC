@@ -49,12 +49,14 @@ public class CreateEntradaServlet extends HttpServlet {
     		response.sendRedirect(request.getContextPath() + "/");	
  	   	}else{ 	 
  	   		String idIncidencia = request.getParameter("idIncidencia");
+ 	   		String idInforme = request.getParameter("idInf");
 	        try {
 	        	if (request.getParameter("ref") != null) {
 	        		
 	        	}
 	        	request.setAttribute("llistaProcediment", JudicialCore.getProcediments(conn, "-1", "-1"));
 	        	request.setAttribute("idIncidencia", idIncidencia);
+	        	request.setAttribute("idInforme", idInforme);
 				request.setAttribute("nouCodi", RegistreCore.getNewCode(conn, "E"));
 			} catch (SQLException | NamingException e) {
 				// TODO Auto-generated catch block

@@ -43,7 +43,7 @@
                 
     			<div class="row">
                     <div class="col-md-12">
-						<form class="form-horizontal" method="POST" action="doEditCertificacio">
+						<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="doEditCertificacio">
 		    				<div class="form-group">
                                 <label class="col-xs-3 control-label">id certificació</label>
                                 <div class="col-xs-3">
@@ -79,13 +79,13 @@
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">Data entrada</label>
                                 <div class="input-group date col-xs-3 datepicker">
-								  	<input type="text" class="form-control" name="dataEntrada" value="${certificacio.getDataEntradaString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+								  	<input type="text" class="form-control" name="dataEntrada" value="${certificacio.getDataEntradaString()}" required><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>
                             </div>	
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">Data certificació</label>
                                 <div class="input-group date col-xs-3 datepicker">
-								  	<input type="text" class="form-control" name="dataFactura" value="${certificacio.getDataFacturaString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+								  	<input type="text" class="form-control" name="dataFactura" value="${certificacio.getDataFacturaString()}" required><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>
                             </div>
                             <div class="form-group">
@@ -129,6 +129,19 @@
                                 	<textarea class="form-control" name="notes" placeholder="anotacions" rows="3">${certificacio.notes}</textarea>
                                 </div>
                             </div>	
+		    				<div class="form-group">						       	
+				    			<div class="col-md-12">
+				    				<label class="col-xs-3 control-label">Certificació</label> 
+				    				<div class="col-xs-3">
+										<a target="_blanck" href="downloadFichero?ruta=${certificacio.arxiu.getEncodedRuta()}">${certificacio.arxiu.nom}</a>
+										<c:if test="${certificacio.arxiu.ruta != null && certificacio.arxiu.ruta != ''}">
+											<span data-ruta="${certificacio.arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+										</c:if>
+										<br>									
+					           			<input type="file" class="btn uploadImage" name="file" /><br/>	
+				           			</div>															 		
+				    			</div>
+				      		</div>	                           
 		    				<br>
 						    <div class="form-group">
 						        <div class="col-xs-offset-3 col-xs-9">

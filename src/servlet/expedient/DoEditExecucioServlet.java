@@ -45,10 +45,7 @@ public class DoEditExecucioServlet extends HttpServlet {
        	String errorString = null;
        	SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
        	try {
-			expedient.setExpContratacio(refExp);
-			if (multipartParams.getParametres().get("dataBOIB") != null && ! multipartParams.getParametres().get("dataBOIB").isEmpty()) {
-				expedient.setDataPublicacioBOIB(formatter.parse(multipartParams.getParametres().get("dataBOIB")));
-			}
+			expedient.setExpContratacio(refExp);			
 			if (multipartParams.getParametres().get("dataPerfilContratant") != null && ! multipartParams.getParametres().get("dataPerfilContratant").isEmpty()) {
 				expedient.setDataPublicacioPerfilContratant(formatter.parse(multipartParams.getParametres().get("dataPerfilContratant")));
 			}			

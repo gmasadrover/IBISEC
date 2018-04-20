@@ -15,11 +15,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import bean.Empresa;
+import bean.InformeActuacio;
 import bean.Oferta;
 import bean.User;
+import bean.Bastanteo;
 import bean.ControlPage.SectionPage;
+import core.BastanteosCore;
 import core.ControlPageCore;
 import core.EmpresaCore;
+import core.InformeCore;
 import core.OfertaCore;
 import core.UsuariCore;
 import utils.MyUtils;
@@ -53,12 +57,14 @@ public class EmpresaViewServlet extends HttpServlet {
 			String cif = request.getParameter("cif");
 	 
 	        Empresa empresa = null;
-	        List<Oferta> empresaOfertes = new ArrayList<Oferta>();
+	        List<InformeActuacio> informesEmpresa = new ArrayList<InformeActuacio>();
+	        List<Bastanteo> validacions = new ArrayList<Bastanteo>();
 	        String errorString = null;
 	 
 	        try {
 	            empresa = EmpresaCore.findEmpresa(conn, cif);	   
-	            empresaOfertes = OfertaCore.findOfertesEmpresa(conn, cif);
+	            informesEmpresa = InformeCore.getInformesEmpresa(conn, cif);
+	            validacions = BastanteosCore.findBastanteosEmpresa(conn, cif);
 	        } catch (SQLException | NamingException e) {
 	            e.printStackTrace();
 	            errorString = e.getMessage();
@@ -75,8 +81,9 @@ public class EmpresaViewServlet extends HttpServlet {
 	 
 	        // Store errorString in request attribute, before forward to views.
 	        request.setAttribute("errorString", errorString);
-	        request.setAttribute("empresaOfertes", empresaOfertes);
+	        request.setAttribute("informesEmpresa", informesEmpresa);
 	        request.setAttribute("empresa", empresa);
+	        request.setAttribute("validacions", validacions);
 	        request.setAttribute("canModificar", UsuariCore.hasPermision(conn, usuari, SectionPage.empreses_crear));
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Empreses"));
 	        

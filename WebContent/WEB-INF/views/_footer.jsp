@@ -1,5 +1,5 @@
 <footer class="text-center footer">
-	<p>v0.3.<%=application.getInitParameter("datakey")%></p>
+	<p>v0.5.<%=application.getInitParameter("datakey")%></p>
 	<p>Institut Balear d'Infraestructures i Serveis Educatius (IBISEC)</p>	
 	<p>Domini <a href="http://ibisec.caib.es">http://ibisec.caib.es</a></p>
 </footer>

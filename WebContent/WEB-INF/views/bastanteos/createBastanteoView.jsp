@@ -20,11 +20,11 @@
                 <div class="row">
                     <div class="col-md-12">
                         <h1 class="page-header">
-                            Bastanteo <small>Crear</small>
+                            Validacions <small>Crear</small>
                         </h1>
                         <ol class="breadcrumb">
                             <li class="active">
-                                <i class="fa fa-dashboard"></i> Bastanteo
+                                <i class="fa fa-dashboard"></i> Validació
                             </li>
                             <li class="active">
                                 <i class="fa fa-table"></i> Crear
@@ -41,18 +41,18 @@
                	 </div>
                 <!-- /.row -->
                	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="doCreateBastanteo">                		
-               		<h2 class="margin_bottom30">Nou Bastanteo</h2>                		              		
+               		<h2 class="margin_bottom30">Nova Validació</h2>                		              		
 		    		<div class="row">			    				    				    		
 	                    <div class="col-md-6">	  
 	                    	<div class="form-group">
-                                <label class="col-xs-3 control-label">Data bastanteo</label>
+                                <label class="col-xs-3 control-label">Data validació</label>
                                 <div class="input-group date col-xs-6 datepicker">
 								  	<input type="text" class="form-control" name="dataBastanteo" value="${bastanteo.getDatabastanteoString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>
                             </div>
                             <div class="form-group">    
-                            	<label class="col-xs-3 control-label">Escritura</label>
-                            	<textarea class="col-xs-6" name="escritura" placeholder="escritura" rows="3">${bastanteo.escritura}</textarea>
+                            	<label class="col-xs-3 control-label">Objecte Escriptura</label>
+                            	<textarea class="col-xs-6" name="escritura" placeholder="escritura" rows="3">${bastanteo.escrituresList.get(0).escritura}</textarea>
 	                        </div>
 	                        <div class="form-group">  
                             	<label class="col-xs-3 control-label">Càrrec</label>
@@ -61,11 +61,7 @@
 	                        <div class="form-group">
 								<label class="col-xs-3 control-label">Num Protocol</label>
 								<input class="col-xs-6" name="nProtocol" value="${bastanteo.numProtocol}">						
-							</div>	
-							<div class="form-group">
-								<label class="col-xs-3 control-label">Procedència</label>
-								<input class="col-xs-6" name="procedencia" value="${bastanteo.procedencia}">						
-							</div>	
+							</div>
 	                    </div>
 	                    <div class="col-md-6"> 
 	                    	 <div class="form-group">  
@@ -77,30 +73,26 @@
 				                   	</c:forEach>	
 				                </select>	
 							</div> 
-							<div class="form-group">  
-                            	<label class="col-xs-3 control-label">Persona facultada</label>
-                            	<textarea class="col-xs-6" name="personaFacultada" placeholder="persona Facultada" rows="3">${bastanteo.personaFacultada}</textarea>
-	                        </div> 
-	                        <div class="form-group">
+							<div class="form-group">
                                 <label class="col-xs-3 control-label">Data escritura</label>
                                 <div class="input-group date col-xs-6 datepicker">
 								  	<input type="text" class="form-control" name="dataEscritura" value="${bastanteo.getDataEscrituraString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>
                             </div>   
+							<div class="form-group">  
+                            	<label class="col-xs-3 control-label">Persona facultada</label>
+                            	<textarea class="col-xs-6" name="personaFacultada" placeholder="persona Facultada" rows="3">${bastanteo.personaFacultada}</textarea>
+	                        </div> 	                        
                             <div class="form-group">
 								<label class="col-xs-3 control-label">Notari</label>
 								<input class="col-xs-6" name="notari" value="${bastanteo.notari}">						
-							</div>	
-							<div class="form-group">
-								<label class="col-xs-3 control-label">Destí</label>
-								<input class="" name="desti" value="${bastanteo.desti}">						
-							</div>	                                                                         	
+							</div>                                                                         	
 	                    </div>	
                 	</div>
                 	<div class="row">
                 		<div class="form-group">
 					        <div class="col-xs-offset-9 col-xs-9">
-					            <input type="submit" class="btn btn-primary" value="Crear bastanteo">							            
+					            <input type="submit" class="btn btn-primary" value="Crear validació">							            
 					        </div>
 					    </div> 
                 	</div>
@@ -110,8 +102,8 @@
     		<!-- /.container-fluid -->
 		</div>
 		<!-- /#page-wrapper -->
-	</div>
-	<script src="js/bastanteos/modificar.js?<%=application.getInitParameter("datakey")%>"></script>
+	</div>	
     <jsp:include page="../_footer.jsp"></jsp:include>
+    <script src="js/bastanteos/modificar.js?<%=application.getInitParameter("datakey")%>"></script>
 </body>
 </html>

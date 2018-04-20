@@ -1,4 +1,8 @@
-$(document).ready(function() {
+$(document).ready(function() {	
+	$('#prioritatList option[value="' + $('#prioritatActual').val() + '"]').attr('selected', 'selected');	
+	$('#tipusTascaList option[value="' + $('#tipusTascaPrevi').val() + '"]').attr('selected', 'selected');	
+	$('.selectpicker').selectpicker('refresh');		
+	
 	//funcionalitat seguiment tasca
 	$('#seguiment').on('change', function(){
 		$.ajax({
@@ -101,11 +105,29 @@ $(document).ready(function() {
 	        }  
 	    });
 	});
+	
+	$('#marcarInformeAcabat').on('click', function(){
+		$.ajax({
+	        type: "POST",
+	        url: "DoMarcarInformeAcabat",
+	        dataType: "json",
+	        data: {"idInforme": $(this).data('idinforme')},
+	        //if received a response from the server
+	        success: function( data, textStatus, jqXHR) {
+	            //our country code was correct so we have some information to display
+	        	location.reload();      
+	        },        
+	        //If there was no resonse from the server
+	        error: function(jqXHR, textStatus, errorThrown){
+	             console.log("Something really bad happened " + jqXHR.responseText);
+	        }  
+	    });
+	});
 });
 
 function initInformePrevi() {
 		$('#tipusContracte option[value="' + $('#tipusContractePrev').val() + '"]').attr('selected', 'selected');	
-		$('#formContracte option[value="' + $('#formContractePrev').val() + '"]').attr('selected', 'selected');
+		$('#llistaUsuaris option[value="' + $('#tecnicPrevi').val() + '"]').attr('selected', 'selected');	
 		if ($('#tipusContractePrev').val() != 'obr' && $('#tipusContractePrev').val() != '') {
 			$('.visibleObres').addClass('hidden');
 		}

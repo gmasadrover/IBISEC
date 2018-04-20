@@ -34,7 +34,7 @@
                     </div>
                 </div>
 	       		<div class="row">
-					<form class="form-horizontal" method="POST" action="llistats">						
+					<%-- <form class="form-horizontal" method="POST" action="llistats">						
 						<div class="form-group">				
 							<input type="hidden" id="tipusSelected" value="${tipusFilter}" />
 							<input type="hidden" id="estatSelected" value="${estatFilter}" />
@@ -100,14 +100,14 @@
 						<div class="form-group">
 							
 						</div>						
-					</form>
+					</form> --%>
 				</div>	       		
-				<div class="row">
+				<%-- <div class="row">
 					<div class="col-md-offset-9 col-md-3">
 				    	<a href='llistats?viewType=full&filtrar=filtrar&estat=${estatFilter}&tipus=${tipusFilter}${filterWithOutDate ? "&filterWithOutDate=on" : ""}&dataInici=${dataInici}&dataFi=${dataFi}${filterWithOutDateExec ? "&filterWithOutDateExec=on" : ""}&dataIniciExec=${dataIniciExec}&dataFiExec=${dataFiExec}'>Veure a pantalla completa</a>
 					</div>
-				</div>
-				<div class="row"  style="height:500px">
+				</div> --%>
+				<div class="row"  style="height:700px">
 					<div class="col-md-12" style="height:100%">
 			       		<div class="informacioCentres hidden">
 			       			<c:forEach items="${centresList}" var="centre" >

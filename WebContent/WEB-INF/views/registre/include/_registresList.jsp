@@ -65,7 +65,18 @@
 										<c:when test="${idIncidencia == '-1' || idIncidencia == '-2'}">												        
 										</c:when>    
 										<c:otherwise>
-											<a href="incidenciaDetalls?ref=${idIncidencia}" class="loadingButton"  data-msg="obrint incidència...">${idIncidencia}</a></br>										        
+											<c:choose>
+		                        				<c:when test="${registre.tipus == 'Procediment judicial'}">
+		                        					<c:forEach items="${registre.getIdIncidenciesList()}" var="idIncidencia" >
+			                        			 		<a href="procediment?ref=${idIncidencia}" class="loadingButton"  data-msg="obrint procediment...">${idIncidencia}</a></br>
+			                        			 	</c:forEach>   
+		                        				</c:when>
+		                        				<c:otherwise>
+				                        			<c:forEach items="${registre.getIdIncidenciesList()}" var="idIncidencia" >
+			                        			 		<a href="incidenciaDetalls?ref=${idIncidencia}" class="loadingButton"  data-msg="obrint incidència...">${idIncidencia}</a></br>
+			                        			 	</c:forEach>     
+		                        				</c:otherwise>
+		                        			</c:choose>									        
 					  					</c:otherwise>
 									</c:choose>	
 								</c:forEach> 

@@ -147,7 +147,7 @@
 				                	<div class="row">
 				                		<label class="col-xs-2 control-label">Document:</label>
 				                		<c:forEach items="${empresa.documentsEscrituraList}" var="arxiu" >
-						            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.nom}</a>
+						            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
 											<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
 											<br>
 										</c:forEach>	
@@ -283,7 +283,8 @@
 				                                <th>Data</th>
 				                                <th>Validacio</th>
 				                                <th>Organ validació</th>
-				                                <th>Documentació</th>					                                        							                                       
+				                                <th>Documentació</th>	
+				                               	<th>Control</th>				                                        							                                       
 				                            </tr>
 				                        </thead>
 				                        <tbody>
@@ -299,6 +300,7 @@
 								            	<td>${administrador.getDataValidacioString()}</td>
 								            	<td>${administrador.entitatValidacio}</td>
 								            	<td><a target="_blanck" href="downloadFichero?ruta=${administrador.documentAdministrador.getEncodedRuta()}">${administrador.documentAdministrador.nom}</a></td>
+								            	<td></td>
 								            </tr>
 							       		</c:forEach>						                                	                              	
 				                        </tbody>

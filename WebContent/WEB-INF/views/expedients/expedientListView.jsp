@@ -139,18 +139,35 @@
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${informesList}" var="informe" >
-							          	<tr class=${informe.expcontratacio.anulat ? "danger" : ""}>							          	
-							           		<td><a href="expedient?ref=${informe.expcontratacio.expContratacio}" class="loadingButton"  data-msg="obrint expedient...">${informe.expcontratacio.expContratacio}</a></td>
+							          	<tr class=${informe.expcontratacio.anulat ? "danger" : informe.llistaModificacions.size() > 0 ? "warning" : "success"}>							          	
+							           		<td>
+							           			<c:choose>
+							           				<c:when test="${informe.expcontratacio.expContratacio != '-1'}">
+							           					<a href="actuacionsDetalls?ref=${informe.actuacio.referencia}&exp=${informe.idInf}" class="loadingButton"  data-msg="obrint expedient...">${informe.expcontratacio.expContratacio}</a></td>
+							           				</c:when>
+							           				<c:otherwise>
+							           					<a href="actuacionsDetalls?ref=${informe.actuacio.referencia}&exp=${informe.idInf}" class="loadingButton"  data-msg="obrint expedient...">${informe.idInf}</a></td>
+							           				</c:otherwise>
+							           			 </c:choose>
 							           		<td>${informe.expcontratacio.dataCreacio}</td>
 							            	<td>${informe.actuacio.centre.getNomComplet()}</td>
 							            	<td>${informe.getPropostaInformeSeleccionada().objecte}</td>
-							            	<td>${informe.expcontratacio.getDataPublicacioBOIBString()}</td>
-							            	<td>${informe.expcontratacio.dataPublicacioBOIB}</td>
+							            	<td>${informe.getPublicacioBOIBString()}</td>
+							            	<td>${informe.publicacioBOIB}</td>
 							            	<td>${informe.getPropostaInformeSeleccionada().getPlicFormat()}</td>
 							            	<td>${informe.expcontratacio.getDataAdjudicacioString()}</td>
 							            	<td>${informe.expcontratacio.dataAdjudicacio}</td>
 							            	<td>${informe.getOfertaSeleccionada().nomEmpresa}</td>
-							            	<td>${informe.getOfertaSeleccionada().getPlicFormat()}</td>
+							            	<td>
+							            		<c:choose>
+								            		<c:when test="${informe.llistaModificacions.size() > 0}">
+								            			<a href="modificacions?exp=${informe.expcontratacio.expContratacio}">${informe.getOfertaSeleccionada().getPlicFormat()} *</a>
+								            		</c:when>
+								            		<c:otherwise>
+								            			${informe.getOfertaSeleccionada().getPlicFormat()}
+								            		</c:otherwise>
+							            		</c:choose>
+							            	</td>
 							            	<td>${informe.expcontratacio.getDataFirmaString()}</td>
 							            	<td>${informe.expcontratacio.dataFormalitzacioContracte}</td>
 							            	<td>${informe.expcontratacio.getDataIniciObratring()}</td>

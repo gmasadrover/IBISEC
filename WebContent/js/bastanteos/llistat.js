@@ -32,13 +32,6 @@ $(document).ready(function() {
     		null,
     		null,  
     		null,
-    		null,  
-    		{"iDataSort": 8},
-    		{"bVisible": false},
-    		null,    		
-    		null,
-    		null,
-    		null,
     		null
 		]
 	});

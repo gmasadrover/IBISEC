@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -21,31 +22,38 @@ import utils.Fitxers.Fitxer;
 
 public class TascaCore {
 	
-	private static Tasca initTasca(Connection conn, ResultSet rs) throws SQLException, NamingException {
+	private static Tasca initTasca(Connection conn, ResultSet rs, boolean complet) throws SQLException, NamingException {
 		Tasca tasca = new Tasca();
 		tasca.setIdTasca(rs.getInt("idtasca"));		
 		tasca.setUsuari(UsuariCore.findUsuariByID(conn,rs.getInt("idusuari")));
 		tasca.setDepartament(rs.getString("departament"));
-		tasca.setActuacio(ActuacioCore.findActuacio(conn,  rs.getString("idactuacio")));
-		tasca.setIncidencia(IncidenciaCore.findIncidencia(conn, rs.getString("idincidencia")));
+		if (!rs.getString("idactuacio").equals("-1")) tasca.setActuacio(ActuacioCore.findActuacio(conn,  rs.getString("idactuacio")));
+		if (complet && !rs.getString("idincidencia").equals("-1")) tasca.setIncidencia(IncidenciaCore.findIncidencia(conn, rs.getString("idincidencia")));
 		tasca.setActiva(rs.getBoolean("activa"));
 		tasca.setDescripcio(rs.getString("descripcio"));
 		tasca.setTipus(rs.getString("tipus"));
 		tasca.setDataCreacio(TascaCore.findInici(conn, rs.getInt("idtasca")));
 		tasca.setIdinforme(rs.getString("idinforme"));
-		if (NumberUtils.isNumber(rs.getString("idinforme")) || rs.getString("idinforme").contains("-INF-")) {
-			tasca.setInforme(InformeCore.getInformePrevi(conn, rs.getString("idinforme"), false));
-		} else if (rs.getString("idinforme").contains("-MOD-")) {
-			tasca.setInforme(InformeCore.getMoficacioInforme(conn, rs.getString("idinforme")));
-		}
+		tasca.setIdinformeOriginal(rs.getString("idinforme"));
+		tasca.setPrioritat(rs.getInt("prioritat"));		
+		if (rs.getString("idinforme") != null) {
+			if (NumberUtils.isNumber(rs.getString("idinforme")) || rs.getString("idinforme").contains("-INF-")) {
+				tasca.setInforme(InformeCore.getInformePrevi(conn, rs.getString("idinforme"), false));
+			} else if (rs.getString("idinforme").contains("-MOD-")) {
+				InformeActuacio informe = InformeCore.getMoficacioInforme(conn, rs.getString("idinforme"));
+				tasca.setInforme(informe);
+				tasca.setIdinformeOriginal(informe.getIdInfOriginal());
+			}
+		}		
 		tasca.setLlegida(rs.getBoolean("llegida"));		
 		tasca.setPrimerComentari(findHistorial(conn, rs.getInt("idtasca"), rs.getString("idincidencia"), rs.getString("idactuacio")).get(0).getComentari());
 		tasca.setDarreraModificacio(findDarreraModificacioHistorial(conn, rs.getInt("idtasca"), rs.getString("idincidencia"), rs.getString("idactuacio")));
+		tasca.setDocuments(getDocuments(rs.getString("idtasca"), rs.getString("idincidencia"), rs.getString("idactuacio")));
 		return tasca;		
 	}
 	
 	public static Tasca findTascaId(Connection conn, int idTasca, int idUsuari) throws SQLException, NamingException {
-		String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament"
+		String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament, prioritat"
 					+ " FROM public.tbl_tasques"
 					+ " WHERE idtasca = ?";	 
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 
@@ -53,31 +61,114 @@ public class TascaCore {
 		 ResultSet rs = pstm.executeQuery();
 		 Tasca tasca = new Tasca();
 		 if (rs.next()) {
-			 tasca = initTasca(conn, rs);
+			 tasca = initTasca(conn, rs, true);
 			 tasca.setSeguiment(isSeguiment(conn,tasca.getIdTasca(), idUsuari));
 			 if (tasca.getActuacio() != null) tasca.setSeguimentActuacio(ActuacioCore.isSeguimentActuacio(conn,tasca.getActuacio().getReferencia(), idUsuari));
 		 }		
 	     return tasca;
 	}
 	
-	public static List<Tasca> llistaTasquesUsuari(Connection conn, int idUsuari, boolean withTancades) throws SQLException, NamingException {
-		 String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament"
-				 	+ " FROM public.tbl_tasques"
-				 	+ " WHERE idusuari = ? AND tipus NOT LIKE '%notificacio%'";	 
-		 if (! withTancades) sql += " AND activa = true";
-		 PreparedStatement pstm = conn.prepareStatement(sql);	 
-		 pstm.setInt(1, idUsuari);		
-		 ResultSet rs = pstm.executeQuery();
-		 List<Tasca> list = new ArrayList<Tasca>();
-		 while (rs.next()) {
-			 Tasca tasca = initTasca(conn, rs);
-			 list.add(tasca);
-		 }
-	     return list;
+	public static void assignarPrioritat(Connection conn, int idTasca, int prioritat) throws SQLException {
+		String sql = "UPDATE public.tbl_tasques"
+				+ " SET prioritat=?"
+				+ " WHERE idtasca=?";
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setInt(1, prioritat);	
+		pstm.setInt(2, idTasca);
+		pstm.executeUpdate();
+	}
+	
+	public static List<List<Tasca>> llistaTasquesUsuari(Connection conn, int idUsuari, String area, boolean withTancades) throws SQLException, NamingException {
+		String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament, prioritat"
+				 	+ " FROM public.tbl_tasques";
+		if (idUsuari > -1) {
+			sql  += " WHERE idusuari = ? AND tipus NOT LIKE '%notificacio%'";
+		} else if (area != null) {
+			sql  += " WHERE departament = ? AND tipus NOT LIKE '%notificacio%'";
+		} else {
+			sql  += " WHERE tipus NOT LIKE '%notificacio%'";
+		}				 	
+		if (! withTancades) sql += " AND activa = true";
+		PreparedStatement pstm = conn.prepareStatement(sql);	 
+		if (idUsuari > -1) {
+			pstm.setInt(1, idUsuari);
+		} else if (area != null) {
+			pstm.setString(1, area);
+		}			
+		ResultSet rs = pstm.executeQuery();
+		List<List<Tasca>> list = new ArrayList<List<Tasca>>();
+		List<Tasca> infPrevList = new ArrayList<Tasca>();
+		List<Tasca> solInfPrevList = new ArrayList<Tasca>();
+		List<Tasca> vistInfPrevList = new ArrayList<Tasca>();
+        List<Tasca> redacDocTecnicaList = new ArrayList<Tasca>();
+        List<Tasca> vistDocTecnicaList = new ArrayList<Tasca>();        
+        List<Tasca> sigDocExpList = new ArrayList<Tasca>();
+        List<Tasca> propAdjList = new ArrayList<Tasca>();
+        List<Tasca> resAdjList = new ArrayList<Tasca>();
+        List<Tasca> redContracteList = new ArrayList<Tasca>();
+        List<Tasca> resCreditList = new ArrayList<Tasca>();
+        List<Tasca> altresList = new ArrayList<Tasca>();  
+        List<Tasca> docPreLicitacioList = new ArrayList<Tasca>();
+        List<Tasca> judicialList = new ArrayList<Tasca>();
+        List<Tasca> conformarFacturaList = new ArrayList<Tasca>();    
+        List<Tasca> revisarCertificacioList = new ArrayList<Tasca>();
+        List<Tasca> contractesList = new ArrayList<Tasca>();
+		while (rs.next()) {			
+			if (rs.getString("tipus").equals("infPrev")) { // 0
+				infPrevList.add(initTasca(conn, rs, false));
+			} else if (rs.getString("tipus").equals("solInfPrev")) { // 1
+				solInfPrevList.add(initTasca(conn, rs, false));
+			} else if (rs.getString("tipus").equals("vistInfPrev")) { // 2
+				vistInfPrevList.add(initTasca(conn, rs, false));
+			} else if (rs.getString("tipus").equals("doctecnica")) { // 3
+				redacDocTecnicaList.add(initTasca(conn, rs, false));
+			} else if (rs.getString("tipus").equals("vistDocTecnica")) { // 4
+				vistDocTecnicaList.add(initTasca(conn, rs, false));
+			} else if (rs.getString("tipus").equals("autoritzacioActuacio")) { // 5
+				sigDocExpList.add(initTasca(conn, rs, false));
+			} else if (rs.getString("tipus").equals("liciMenor")) { // 6
+				propAdjList.add(initTasca(conn, rs, false));
+			} else if (rs.getString("tipus").equals("autoritzacioDespesa") || rs.getString("tipus").equals("autoritzacioModificacio")) { // 7
+				resAdjList.add(initTasca(conn, rs, false));
+			} else if (rs.getString("tipus").equals("doctecnica")) { // 8
+				redContracteList.add(initTasca(conn, rs, false));
+			} else if (rs.getString("tipus").equals("resPartida") || rs.getString("tipus").equals("resPartidaModificacio")) { // 9
+				resCreditList.add(initTasca(conn, rs, false));
+			} else if (rs.getString("tipus").equals("docprelicitacio") || rs.getString("tipus").equals("certificatCreditGerencia") || rs.getString("tipus").equals("preLicitacio")) { // 10
+				docPreLicitacioList.add(initTasca(conn, rs, false));			
+			} else if (rs.getString("tipus").equals("judicial")) { // 11
+				judicialList.add(initTasca(conn, rs, false));
+			} else if (rs.getString("tipus").equals("conformarFactura")) { // 12
+				conformarFacturaList.add(initTasca(conn, rs, false));
+			} else if (rs.getString("tipus").equals("revisarCertificacio") || rs.getString("tipus").equals("firmaCertificacio") || rs.getString("tipus").equals("certificacioFirmada")) { // 13
+				revisarCertificacioList.add(initTasca(conn, rs, false));
+			} else if (rs.getString("tipus").equals("contracte")) {
+				contractesList.add(initTasca(conn, rs, false)); // 14
+			}else {
+				altresList.add(initTasca(conn, rs, false)); // 15
+			}
+		}		
+		list.add(infPrevList); // 0
+        list.add(solInfPrevList); // 1
+        list.add(vistInfPrevList); // 2
+        list.add(redacDocTecnicaList); // 3
+        list.add(vistDocTecnicaList);  // 4
+        list.add(sigDocExpList); // 5
+        list.add(propAdjList); // 6
+        list.add(resAdjList);  // 7
+        list.add(redContracteList);  // 8
+        list.add(resCreditList); // 9
+        list.add(docPreLicitacioList);  // 10
+        list.add(judicialList);  // 11
+        list.add(conformarFacturaList); // 12
+        list.add(revisarCertificacioList); // 13
+        list.add(contractesList);  // 14 
+        list.add(altresList);  // 15 
+	  	return list;
     }
 	
 	public static List<Tasca> llistaTasquesSeguiment(Connection conn, int idUsuari) throws SQLException, NamingException {
-		String sql = "SELECT t.idtasca AS idtasca, t.idusuari AS idusuari, t.idactuacio AS idactuacio, t.idincidencia AS idincidencia, t.descripcio AS descripcio, t.tipus AS tipus, t.activa AS activa, t.idinforme AS idinforme, t.llegida AS llegida, t.departament AS departament"
+		String sql = "SELECT t.idtasca AS idtasca, t.idusuari AS idusuari, t.idactuacio AS idactuacio, t.idincidencia AS idincidencia, t.descripcio AS descripcio, t.tipus AS tipus, t.activa AS activa, t.idinforme AS idinforme, t.llegida AS llegida, t.departament AS departament, t.prioritat AS prioritat"
 					+ " FROM public.tbl_seguiments s LEFT JOIN public.tbl_tasques t ON s.idtasca = t.idtasca"
 					+ " WHERE s.idusuari = ? AND tipus NOT LIKE '%notificacio%'";
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
@@ -85,14 +176,14 @@ public class TascaCore {
 		ResultSet rs = pstm.executeQuery();
 		List<Tasca> list = new ArrayList<Tasca>();
 		while (rs.next()) {
-			Tasca tasca = initTasca(conn, rs);
+			Tasca tasca = initTasca(conn, rs, false);
 			list.add(tasca);
 		}
 	    return list;
 	}
 	
 	public static List<Tasca> llistaNotificacionsUsuari(Connection conn, int idUsuari) throws SQLException, NamingException {
-		 String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament"
+		 String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament, prioritat"
 				 	+ " FROM public.tbl_tasques"
 				 	+ " WHERE idusuari = ? AND activa = true AND tipus LIKE '%notificacio%'";	 
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 
@@ -100,7 +191,7 @@ public class TascaCore {
 		 ResultSet rs = pstm.executeQuery();
 		 List<Tasca> list = new ArrayList<Tasca>();
 		 while (rs.next()) {
-			 Tasca tasca = initTasca(conn, rs);
+			 Tasca tasca = initTasca(conn, rs, false);
 			 list.add(tasca);
 		 }
 	     return list;
@@ -130,54 +221,24 @@ public class TascaCore {
 		return notificacions;
 	}
 	
-	public static List<Tasca> llistaTasquesArea(Connection conn, String area, boolean withTancades) throws SQLException, NamingException {
-		String sql = "SELECT t.idtasca, t.idusuari, t.idactuacio, t.descripcio, t.tipus, t.activa, t.idincidencia, t.idinforme, t.llegida, t.departament"
-				 	+ " FROM public.tbl_tasques t"
-				 	+ " WHERE t.departament = ? AND tipus NOT LIKE '%notificacio%'";
-		 if (! withTancades) sql += " AND t.activa = true";
-		 PreparedStatement pstm = conn.prepareStatement(sql);	 
-		 pstm.setString(1, area);		
-		 ResultSet rs = pstm.executeQuery();
-		 List<Tasca> list = new ArrayList<Tasca>();
-		 while (rs.next()) {
-			 Tasca tasca = initTasca(conn, rs);
-			 list.add(tasca);
-		 }
-	     return list;
-   }
-	
-	public static List<Tasca> llistaTotesTasques(Connection conn, boolean withTancades) throws SQLException, NamingException {
-		String sql = "SELECT t.idtasca, t.idusuari, t.idactuacio, t.descripcio, t.tipus, t.activa, t.idincidencia, t.idinforme, t.llegida, t.departament"
-				 	+ " FROM public.tbl_tasques t"
-				 	+ " WHERE tipus NOT LIKE '%notificacio%'";
-		 if (! withTancades) sql += " AND activa = true";
-		 PreparedStatement pstm = conn.prepareStatement(sql);	 	
-		 ResultSet rs = pstm.executeQuery();
-		 List<Tasca> list = new ArrayList<Tasca>();
-		 while (rs.next()) {
-			 Tasca tasca = initTasca(conn, rs);
-			 list.add(tasca);
-		 }
-	     return list;
-   }
-	
-	public static List<Tasca> findTasquesActuacio(Connection conn, String referencia) throws SQLException, NamingException {
-		 String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament"
+	public static List<Tasca> findTasquesActuacio(Connection conn, String referencia, boolean withCancelades) throws SQLException, NamingException {
+		 String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament, prioritat"
 				 	+ " FROM public.tbl_tasques"
 				 	+ " WHERE idactuacio = ? AND tipus NOT LIKE '%notificacio%'";	 
+		 if (!withCancelades) sql += " AND activa = true";
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 
 		 pstm.setString(1, referencia);		
 		 ResultSet rs = pstm.executeQuery();
 		 List<Tasca> list = new ArrayList<Tasca>();
 		 while (rs.next()) {
-			 Tasca tasca = initTasca(conn, rs);
+			 Tasca tasca = initTasca(conn, rs, false);
 			 list.add(tasca);
 		 }
 	     return list;
 	}
 	
 	public static List<Tasca> findNotificacionsActuacio(Connection conn, String referencia) throws SQLException, NamingException {
-		 String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament"
+		 String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament, prioritat"
 				 	+ " FROM public.tbl_tasques"
 				 	+ " WHERE idactuacio = ? AND tipus LIKE '%notificacio%'";	 
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 
@@ -185,14 +246,14 @@ public class TascaCore {
 		 ResultSet rs = pstm.executeQuery();
 		 List<Tasca> list = new ArrayList<Tasca>();
 		 while (rs.next()) {
-			 Tasca tasca = initTasca(conn, rs);
+			 Tasca tasca = initTasca(conn, rs, false);
 			 list.add(tasca);
 		 }
 	     return list;
 	}
 	
 	public static List<Tasca> findTasquesIncidencia(Connection conn, String referencia) throws SQLException, NamingException {
-		 String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament"
+		 String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament, prioritat"
 				 	+ " FROM public.tbl_tasques"
 				 	+ " WHERE idincidencia = ? AND tipus NOT LIKE '%notificacio%'";	 
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 
@@ -200,14 +261,14 @@ public class TascaCore {
 		 ResultSet rs = pstm.executeQuery();
 		 List<Tasca> list = new ArrayList<Tasca>();
 		 while (rs.next()) {
-			 Tasca tasca = initTasca(conn, rs);
+			 Tasca tasca = initTasca(conn, rs, false);
 			 list.add(tasca);
 		 }
 	     return list;
 	}
 	
 	public static List<Tasca> findNotificacionsIncidencia(Connection conn, String referencia) throws SQLException, NamingException {
-		 String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament"
+		 String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament, prioritat"
 				 	+ " FROM public.tbl_tasques"
 				 	+ " WHERE idincidencia = ? AND tipus LIKE '%notificacio%'";	 
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 
@@ -215,14 +276,15 @@ public class TascaCore {
 		 ResultSet rs = pstm.executeQuery();
 		 List<Tasca> list = new ArrayList<Tasca>();
 		 while (rs.next()) {
-			 Tasca tasca = initTasca(conn, rs);
+			 System.out.println(rs.getString("idtasca"));
+			 Tasca tasca = initTasca(conn, rs, false);
 			 list.add(tasca);
 		 }
 	     return list;
 	}
 	
 	public static List<Tasca> findTasquesJudicial(Connection conn, String referencia) throws SQLException, NamingException {
-		 String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament"
+		 String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament, prioritat"
 				 	+ " FROM public.tbl_tasques"
 				 	+ " WHERE idinforme = ?";	 
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 
@@ -230,22 +292,40 @@ public class TascaCore {
 		 ResultSet rs = pstm.executeQuery();
 		 List<Tasca> list = new ArrayList<Tasca>();
 		 while (rs.next()) {
-			 Tasca tasca = initTasca(conn, rs);
+			 Tasca tasca = initTasca(conn, rs, false);
 			 list.add(tasca);
 		 }
 	     return list;
 	}
 	
 	public static Tasca findTascaVacances(Connection conn, int idSolicitud) throws SQLException, NamingException {
-		 String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament"
+		 String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament, prioritat"
 				 	+ " FROM public.tbl_tasques"
 				 	+ " WHERE tipus = 'vacances' AND activa = true AND idinforme = ?" ;	 
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 
 		 pstm.setString(1, Integer.toString(idSolicitud));		
 		 ResultSet rs = pstm.executeQuery();
 		 Tasca tasca = new Tasca();
-		 if (rs.next()) tasca = initTasca(conn, rs);
+		 if (rs.next()) tasca = initTasca(conn, rs, false);
 	     return tasca;
+	}
+	
+	public static List<Tasca> findTasquesInforme(Connection conn, String idInforme, boolean withCancelades) throws SQLException, NamingException {
+		String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament, prioritat"
+			 	+ " FROM public.tbl_tasques"
+			 	+ " WHERE idinforme = ?";	
+		 if (!withCancelades) {
+			 sql += " AND activa = true";
+		 }
+		 PreparedStatement pstm = conn.prepareStatement(sql);	 
+		 pstm.setString(1, idInforme);		
+		 ResultSet rs = pstm.executeQuery();
+		 List<Tasca> list = new ArrayList<Tasca>();
+		 while (rs.next()) {
+			 Tasca tasca = initTasca(conn, rs, false);
+			 list.add(tasca);
+		 }
+	     return list;
 	}
 	
 	public static Date findInici(Connection conn, int idTasca) throws SQLException{
@@ -280,7 +360,7 @@ public class TascaCore {
 			historic.setIdHistoric(rs.getInt("idhistoric"));
 			historic.setIdTasca(idTasca);
 			historic.setUsuari(UsuariCore.findUsuariByID(conn, rs.getInt("idusuari")));
-			historic.setAdjunts(utils.Fitxers.ObtenirFitxers(idIncidencia, idActuacio, "Tasca", String.valueOf(idTasca), rs.getString("idhistoric")));
+			if (!idIncidencia.equals("-1")) historic.setAdjunts(utils.Fitxers.ObtenirFitxers(idIncidencia, idActuacio, "Tasca", String.valueOf(idTasca), rs.getString("idhistoric")));
 			list.add(historic);
 		}
 	    return list;
@@ -305,13 +385,13 @@ public class TascaCore {
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		int idNovaTasca = idNovaTasca(conn);
 		
-		if ("infPrev".equals(tipus)) {
+		if ("solInfPrev".equals(tipus)) {
 			assumpte = "Sol·licitud informe previ";
 		} else if("resPartida".equals(tipus)) {	
 			assumpte = "Sol·licitud reserva partida";
 			comentari = "Sol·licitud reserva partida";
 		} else if("liciMenor".equals(tipus)) {
-			assumpte = "Licitació contracte menor";
+			assumpte = "Proposta d'adjudicació";
 			comentari ="1. Recerca de pressupostos";			
 		} else if("liciMajor".equals(tipus)) {
 			assumpte = "Licitació contracte major";
@@ -331,7 +411,7 @@ public class TascaCore {
 		//Registrar comentari 1
 		String idComentari = nouHistoric(conn, Integer.toString(idNovaTasca), comentari, idUsuariComentari);
 		try {
-			Fitxers.guardarFitxer(adjunts, idIncidencia, idActuacio, "Tasca", Integer.toString(idNovaTasca), idComentari, "", "");
+			Fitxers.guardarFitxer(adjunts, idIncidencia, idActuacio, "Tasca", Integer.toString(idNovaTasca), "", "", "");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -349,14 +429,14 @@ public class TascaCore {
 			pstm = conn.prepareStatement(sql);	 
 			int idNovaTasca = idNovaTasca(conn);
 			
-			if ("infPrev".equals(tipus)) {
+			if ("solInfPrev".equals(tipus)) {
 				assumpte = "Sol·licitud informe previ";
 			} else if("resPartida".equals(tipus)) {	
 				assumpte = "Sol·licitud reserva partida";
 				comentari = "Sol·licitud reserva partida";
 			} else if("liciMenor".equals(tipus)) {
 				InformeActuacio informePrevi = InformeCore.getInformesActuacio(conn, idActuacio).get(0);
-				assumpte = "Licitació contracte menor";
+				assumpte = "Proposta d'adjudicació";
 				comentari ="1. Recerca de pressupostos";
 				if (informePrevi.getPropostaInformeSeleccionada().isLlicencia()) comentari += "<br> 2. Sol·licitud de llicència o autorització urbanística corresponent";
 			} else if("liciMajor".equals(tipus)) {
@@ -382,6 +462,17 @@ public class TascaCore {
 		nouHistoric(conn, idNovesTasques, comentari, idUsuariComentari);
 	}
 	
+	public static void actualitzarInforme(Connection conn, int idTasca, String idInforme) throws SQLException {
+		String sql = "UPDATE public.tbl_tasques"
+				+ " SET idinforme = ?"
+				+ " WHERE idtasca=?;";
+		PreparedStatement pstm = conn.prepareStatement(sql);	 
+		pstm = conn.prepareStatement(sql);	 
+		pstm.setString(1, idInforme);
+		pstm.setInt(2, idTasca);
+		pstm.executeUpdate();
+	}
+	
 	public static String nouHistoric(Connection conn, String idTasca, String comentari, int idUsuari) throws SQLException {
 		String sql = "INSERT INTO public.tbl_historial(idhistoric, idtasca, comentari, idusuari, data)"
 					+ " VALUES (?, ?, ?, ?,localtimestamp);";		 
@@ -398,7 +489,7 @@ public class TascaCore {
 	
 	public static void reasignar(Connection conn, int idUsuari, int idTasca, String tipus) throws SQLException{
 		String sql = "UPDATE public.tbl_tasques"
-					+ " SET idusuari=?, departament =?, tipus = ?"
+					+ " SET idusuari=?, departament =?, tipus = ?, llegida = false"
 					+ " WHERE idtasca=?;";
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		pstm = conn.prepareStatement(sql);	 
@@ -417,6 +508,28 @@ public class TascaCore {
 		pstm = conn.prepareStatement(sql);	 
 		pstm.setInt(1, idTasca);
 		pstm.executeUpdate();
+	}
+	
+	public static void eliminarTasca(Connection conn, String idTasca) throws SQLException {
+		String sql = "DELETE FROM public.tbl_tasques"
+				+ " WHERE idtasca=?;";
+		PreparedStatement pstm = conn.prepareStatement(sql);	 
+		pstm = conn.prepareStatement(sql);	 
+		pstm.setInt(1, Integer.parseInt(idTasca));
+		pstm.executeUpdate();
+		
+		sql = "DELETE FROM public.tbl_historial"
+				+ " WHERE idtasca=?;";
+		pstm = conn.prepareStatement(sql);	 
+		pstm = conn.prepareStatement(sql);	 
+		pstm.setString(1, idTasca);
+		pstm.executeUpdate();	
+	}
+	
+	public static List<Fitxer> getDocuments(String idTasca, String idIncidencia, String idActuacio) throws NamingException {
+		List<Fitxer> adjunts = new ArrayList<Fitxer>();
+		adjunts = utils.Fitxers.ObtenirFitxers(idIncidencia, idActuacio, "Tasca", idTasca, "");
+		return adjunts;
 	}
 	
 	public static int idNovaTasca(Connection conn) throws SQLException{
@@ -481,5 +594,19 @@ public class TascaCore {
 		ResultSet rs = pstm.executeQuery();
 		if (rs.next()) seguint = true;
 		return seguint;
+	}
+	
+	public static boolean haveNewTasca(Connection conn, int idUsuari) throws SQLException{
+		boolean newTasca = false;
+		String sql = "SELECT idtasca"
+					+ " FROM public.tbl_tasques" 
+					+ " WHERE idusuari = ? AND activa=true AND llegida = false AND tipus != 'notificacio';";
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setInt(1, idUsuari);
+		ResultSet rs = pstm.executeQuery();
+		if (rs.next()) {
+			//newTasca = true;		
+		}
+		return newTasca;
 	}
 }

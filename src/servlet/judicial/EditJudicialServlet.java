@@ -52,19 +52,21 @@ public class EditJudicialServlet extends HttpServlet {
     	Connection conn = MyUtils.getStoredConnection(request);
     	if (MyUtils.getLoginedUser(request.getSession()) == null){
  		   response.sendRedirect(request.getContextPath() + "/");
-    	}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.judicials_modificar)) {
+    	}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.judicials_list)) {
     		response.sendRedirect(request.getContextPath() + "/");	 
  	   	}else{
 			String ref = request.getParameter("ref");
-	        Judicial procediement = new Judicial();
+	        Judicial procediment = new Judicial();
 	        String errorString = null;	      
 	        List<Tasca> tasquesList = new ArrayList<Tasca>();
 	        List<Registre> entrades = new ArrayList<Registre>();
+	        List<Registre> sortides = new ArrayList<Registre>();
 	        boolean canModificarProcediment = false;
 	        try {
-	        	procediement = JudicialCore.findProcediment(conn, ref);
+	        	procediment = JudicialCore.findProcediment(conn, ref);
 	        	tasquesList = TascaCore.findTasquesJudicial(conn, ref);
-	        	entrades = RegistreCore.searchEntrades(conn, ref, null, null);
+	        	entrades = RegistreCore.searchEntradesIncidencia(conn, ref);
+	        	sortides = RegistreCore.searchSortidesIncidencia(conn, ref);
 	        	canModificarProcediment = UsuariCore.hasPermision(conn, usuari, SectionPage.judicials_modificar);
 	        } catch (SQLException | NamingException e) {
 	            e.printStackTrace();
@@ -73,17 +75,19 @@ public class EditJudicialServlet extends HttpServlet {
 	        // If no error.
 	        // The product does not exist to edit.
 	        // Redirect to productList page.
-	        if (errorString != null || procediement.getReferencia() == null) {
-	            response.sendRedirect(request.getServletPath() + "/judicials");
+	        if (errorString != null || procediment.getReferencia() == null) {
+	        	System.out.println(errorString);
+	            response.sendRedirect("/judicials");
 	            return;
 	        }
 	 
 	        // Store errorString in request attribute, before forward to views.
 	        request.setAttribute("canModificarProcediment", canModificarProcediment);
 	        request.setAttribute("entrades", entrades);
+	        request.setAttribute("sortides", sortides);
 	        request.setAttribute("tasquesList", tasquesList);
 	        request.setAttribute("errorString", errorString);
-	        request.setAttribute("procediment", procediement);
+	        request.setAttribute("procediment", procediment);
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"judicials"));
 	        
 	        RequestDispatcher dispatcher = request.getServletContext()

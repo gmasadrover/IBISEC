@@ -15,6 +15,7 @@ public class Registre {
 	private String contingut;
 	private String idIncidencies;
 	private String idActuacions;
+	private String idInforme;
 	private String idCentres;
 	private String nomCentres;
 	private int idUsuari;
@@ -25,13 +26,14 @@ public class Registre {
 		 
 	}
  
-	public Registre(String id, Date data, String tipus, String remdes, String contingut, String idIncidencies, String idCentres, int idUsuari, Date usuMod) {
+	public Registre(String id, Date data, String tipus, String remdes, String contingut, String idIncidencies, String idInformes, String idCentres, int idUsuari, Date usuMod) {
 		this.setId(id);
 		this.setData(data);
 		this.setTipus(tipus);
 		this.setRemDes(remdes);
 		this.setContingut(contingut);
 		this.setIdIncidencies(idIncidencies);
+		this.setIdInforme(idInformes);
 		this.setIdCentres(idCentres);
 		this.setIdUsuari(idUsuari);
 		this.setUsuMod(usuMod);		
@@ -203,5 +205,31 @@ public class Registre {
 	public void setActiu(boolean actiu) {
 		this.actiu = actiu;
 	}
+
+	public String getIdInforme() {
+		return idInforme;
+	}
+
+	public void setIdInforme(String idInforme) {
+		this.idInforme = idInforme;
+	}
 	
+	public List<String> getIdInformeList() {
+		List<String> list = new ArrayList<String>();
+		if (this.idInforme != null && !this.idInforme.isEmpty()) {
+			for (String idInforme: this.idInforme.split("#")) {
+				list.add(idInforme);
+			}
+		}
+		return list;
+	}
+	
+	public String getIdInformeString(){
+		String list = "";
+		for (String idInforme: this.idInforme.split("#")) {
+			list += idInforme + "</br>";
+		}
+		return list;
+	}
+
 }

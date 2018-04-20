@@ -59,8 +59,12 @@ public class AnularFacturaServlet extends HttpServlet {
         JsonObject myObj = new JsonObject();      
         Connection conn = MyUtils.getStoredConnection(request);
 		String idFactura = request.getParameter("idFactura");
+		String motiu = request.getParameter("motiu");
 		try {
-			FacturaCore.anular(conn, idFactura);
+			FacturaCore.anular(conn, idFactura, motiu);
+			int idUsuari = UsuariCore.findUsuarisByRol(conn, "CAP,CONTA").get(0).getIdUsuari();
+			User Usuari = MyUtils.getLoginedUser(request.getSession());	
+			TascaCore.novaTasca(conn, "generic", idUsuari, Usuari.getIdUsuari(), "", "", "S'ha anul·lat la factura <a target='_blank' href='facturaDetalls?ref=" + idFactura + "'>" + idFactura + "</a><br>Motiu: " + motiu, "Factura anul·lada", "-1", null);
 		} catch (SQLException | NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

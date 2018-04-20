@@ -24,7 +24,7 @@ import utils.Fitxers.Fitxer;
 public class FacturaCore {
 	static final String SQL_CAMPS = "idfactura, idinforme, idactuacio, nifproveidor, datafactura, concepte, import, tipusfactura,"
 									+ " nombrefactura, dataentrada, usuconformador, dataconformador, notes, usucre, datacre,"
-									+ " dataenviatconformador, dataenviatcomptabilitat, datadescarregadafactura, anulada";
+									+ " dataenviatconformador, dataenviatcomptabilitat, datadescarregadafactura, anulada, motiuanulada";
 	
 	static final String SQL_CAMPS_CERT = "idcertificacio, idinforme, idactuacio, nifproveidor, datacertificacio, concepte, import,"
 									+ " nombrecertificacio, dataentrada, usuconformador, dataconformador, notes, usucre, datacre,"
@@ -50,8 +50,10 @@ public class FacturaCore {
 		factura.setDataEnviatComptabilitat(rs.getTimestamp("dataenviatcomptabilitat"));
 		factura.setUsuariCreador(UsuariCore.findUsuariByID(conn, rs.getInt("usucre")));
 		factura.setArxiu(getArxiu(ActuacioCore.findActuacio(conn, rs.getString("idactuacio")).getIdIncidencia(), rs.getString("idactuacio"), rs.getString("idinforme"), rs.getString("nifproveidor"), rs.getString("idfactura")));
+		factura.setAltres(getArxiusAltres(ActuacioCore.findActuacio(conn, rs.getString("idactuacio")).getIdIncidencia(), rs.getString("idactuacio"), rs.getString("idinforme"), rs.getString("nifproveidor"), rs.getString("idfactura")));
 		factura.setDataDescarregadaConformada(rs.getTimestamp("datadescarregadafactura"));
 		factura.setAnulada(rs.getBoolean("anulada"));
+		factura.setMotiuAnulada(rs.getString("motiuanulada"));
 		return factura;
 	}	
 	
@@ -73,11 +75,80 @@ public class FacturaCore {
 		factura.setDataEnviatConformador(rs.getTimestamp("dataenviatconformador"));
 		factura.setDataEnviatComptabilitat(rs.getTimestamp("dataenviatcomptabilitat"));
 		factura.setUsuariCreador(UsuariCore.findUsuariByID(conn, rs.getInt("usucre")));
+		factura.setArxiu(getArxiuCertificacio(ActuacioCore.findActuacio(conn, rs.getString("idactuacio")).getIdIncidencia(), rs.getString("idactuacio"), rs.getString("idinforme"), rs.getString("nifproveidor"), rs.getString("idcertificacio")));
+		factura.setAltres(getArxiusAltres(ActuacioCore.findActuacio(conn, rs.getString("idactuacio")).getIdIncidencia(), rs.getString("idactuacio"), rs.getString("idinforme"), rs.getString("nifproveidor"), rs.getString("idcertificacio")));
+		
 		return factura;
 	}	
 	
-	public static void saveArxiu(String idIncidencia, String idActuacio, String idInforme, String cifEmpresa, String idFactura, List<Fitxer> fitxers, Connection conn) throws NamingException, SQLException {
+	public static void saveArxiuCertificacio(String idIncidencia, String idActuacio, String idInforme, String cifEmpresa, String idCertificacio, List<Fitxer> fitxers, Connection conn) throws NamingException, SQLException {
 		if (!fitxers.isEmpty()) {
+			Factura certificacio = FacturaCore.getCertificacio(conn, idCertificacio);
+			String fileName = "";
+			String nomProveidor = "";
+			// Crear directoris si no existeixen
+			 // Get the base naming context
+		    Context env = (Context)new InitialContext().lookup("java:comp/env");
+		    // Get a single value
+			String ruta =  (String)env.lookup("ruta_base");
+			File tmpFile =  new File(ruta + "/documents/" + idIncidencia);
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio");
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe");
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme);
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses");
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + cifEmpresa);
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + cifEmpresa + "/Certificacions");
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + cifEmpresa + "/Certificacions/" + idCertificacio);
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			fileName = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + cifEmpresa + "/Certificacions/" + idCertificacio + "/";
+	        for(int i=0;i<fitxers.size();i++){		        	
+	            Fitxer fitxer = (Fitxer) fitxers.get(i);	            
+	            if (fitxer.getFitxer().getName() != "") {	
+	            	if (certificacio.getNomProveidor() != null) {
+	            		nomProveidor = certificacio.getNomProveidor().replace("/"," ");
+	            	} else {
+	            		nomProveidor = certificacio.getIdProveidor();
+	            	}
+	            	File archivo_server = new File(fileName  + "/" + nomProveidor + "-" + certificacio.getNombreFactura().replace("/"," ") + "-" + certificacio.getDataEntradaString().replace("/","") + ".pdf");
+	               	try {
+	               		fitxer.getFitxer().write(archivo_server);
+	           		} catch (Exception e) {
+	           			e.printStackTrace();
+	           		}
+	            } 
+	        }
+		}
+	}
+	
+	public static void saveArxiu(String idIncidencia, String idActuacio, String idInforme, String cifEmpresa, String idFactura, List<Fitxer> fitxers, Connection conn) throws NamingException, SQLException {
+		if (fitxers != null && fitxers.size() > 0) {
 			Factura factura = FacturaCore.getFactura(conn, idFactura);
 			String fileName = "";
 			String nomProveidor = "";
@@ -125,7 +196,7 @@ public class FacturaCore {
 			fileName = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + cifEmpresa + "/Factures/" + idFactura + "/";
 	        for(int i=0;i<fitxers.size();i++){		        	
 	            Fitxer fitxer = (Fitxer) fitxers.get(i);	            
-	            if (fitxer.getFitxer().getName() != "") {	
+	            if (fitxer.getFitxer() != null && fitxer.getFitxer().getName() != "") {	
 	            	if (factura.getNomProveidor() != null) {
 	            		nomProveidor = factura.getNomProveidor().replace("/"," ");
 	            	} else {
@@ -142,6 +213,80 @@ public class FacturaCore {
 		}
 	}
 	
+	public static void saveArxiuAltres(String idIncidencia, String idActuacio, String idInforme, String cifEmpresa, String idFactura, List<Fitxer> fitxers, Connection conn) throws NamingException, SQLException {
+		if (fitxers != null && fitxers.size() > 0) {
+			String fileName = "";
+			// Crear directoris si no existeixen
+			 // Get the base naming context
+		    Context env = (Context)new InitialContext().lookup("java:comp/env");
+		    // Get a single value
+			String ruta =  (String)env.lookup("ruta_base");
+			File tmpFile =  new File(ruta + "/documents/" + idIncidencia);
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio");
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio);
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe");
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme);
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses");
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + cifEmpresa);
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + cifEmpresa + "/Factures");
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + cifEmpresa + "/Factures/" + idFactura);
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			tmpFile = new File(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + cifEmpresa + "/Factures/" + idFactura + "/Altres");
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			fileName = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + cifEmpresa + "/Factures/" + idFactura + "/Altres/";
+	        for(int i=0;i<fitxers.size();i++){		        	
+	            Fitxer fitxer = (Fitxer) fitxers.get(i);	            
+	            if (fitxer.getFitxer().getName() != "") {		            	
+	            	File archivo_server = new File(fileName  + "/" + fitxer.getFitxer().getName());
+	               	try {
+	               		fitxer.getFitxer().write(archivo_server);
+	           		} catch (Exception e) {
+	           			e.printStackTrace();
+	           		}
+	            } 
+	        }
+		}
+	}
+	
+	public static Fitxer getArxiuCertificacio(String idIncidencia, String idActuacio, String idInforme, String cifEmpresa, String idCertificacio) throws NamingException {
+		Fitxer factura = new Fitxer();
+		// Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		if (idIncidencia == null) idIncidencia = "-1";
+		factura =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + cifEmpresa + "/Certificacions/" + idCertificacio + "/");
+		return factura;
+	}
+	
 	public static Fitxer getArxiu(String idIncidencia, String idActuacio, String idInforme, String cifEmpresa, String idFactura) throws NamingException {
 		Fitxer factura = new Fitxer();
 		// Get the base naming context
@@ -153,9 +298,20 @@ public class FacturaCore {
 		return factura;
 	}
 	
+	public static List<Fitxer> getArxiusAltres(String idIncidencia, String idActuacio, String idInforme, String cifEmpresa, String idFactura) throws NamingException {
+		List<Fitxer> altres = new ArrayList<Fitxer>();
+		// Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		if (idIncidencia == null) idIncidencia = "-1";
+		altres =  utils.Fitxers.ObtenirTotsFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + cifEmpresa + "/Factures/" + idFactura + "/Altres/", "altres");
+		return altres;
+	}
+	
 	public static void newFactura(Connection conn, Factura factura, int idUsuari) throws SQLException{
 		String sql = "INSERT INTO public.tbl_factures(" + SQL_CAMPS + ")"
-					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,localtimestamp, null, ?, ?, false)";
+					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,localtimestamp, null, ?, ?, false, null)";
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setString(1, factura.getIdFactura());
 		pstm.setString(2, factura.getIdInforme());
@@ -221,7 +377,7 @@ public class FacturaCore {
 		String sql = "UPDATE public.tbl_factures"
 					+ " SET idactuacio = ?, idinforme = ?, nifproveidor=?, datafactura=?,"
 					+ " concepte=?, import=?, tipusfactura=?, nombrefactura=?, dataentrada=?,"
-					+ " usuconformador=?, notes=?, dataconformador=?, dataenviatconformador=?, dataenviatcomptabilitat=?"
+					+ " usuconformador=?, notes=?, dataconformador=?, dataenviatconformador=?, dataenviatcomptabilitat=?, datadescarregadafactura=?"
 					+ " WHERE idfactura=?;";
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setString(1, factura.getIdActuacio());
@@ -241,7 +397,11 @@ public class FacturaCore {
 		} else {
 			 pstm.setDate(9, null);
 		}
-		pstm.setInt(10, factura.getUsuariConformador().getIdUsuari());
+		if (factura.getUsuariConformador() != null){
+			pstm.setInt(10, factura.getUsuariConformador().getIdUsuari());
+		} else {
+			pstm.setObject(10, null);
+		}		
 		pstm.setString(11, factura.getNotes());
 		if (factura.getDataConformacio() != null) {
 			pstm.setDate(12, new java.sql.Date(factura.getDataConformacio().getTime()));
@@ -258,7 +418,12 @@ public class FacturaCore {
 		} else {
 			 pstm.setDate(14, null);
 		}
-		pstm.setString(15, factura.getIdFactura());
+		if (factura.getDataDescarregadaConformada() != null) {
+			pstm.setDate(15, new java.sql.Date(factura.getDataDescarregadaConformada().getTime()));
+		} else {
+			 pstm.setDate(15, null);
+		}
+		pstm.setString(16, factura.getIdFactura());
 		pstm.executeUpdate();
 	}
 	
@@ -334,10 +499,10 @@ public class FacturaCore {
 	
 	public static List<Factura> getFacturesNoAssociades(Connection conn) throws SQLException, NamingException{
 		List<Factura> factures = new ArrayList<Factura>();
-		String CAMPS_FACTURA = "f.idfactura AS idfactura, f.idinforme AS idinforme, f.idactuacio AS idactuacio, f.nifproveidor AS nifproveidor, f.datafactura AS datafactura, f.concepte AS concepte, f.import AS import, f.tipusfactura AS tipusfactura, f.nombrefactura AS nombrefactura, f.dataentrada AS dataentrada, f.usuconformador AS usuconformador,  f.dataconformador AS dataconformador, f.notes AS notes, f.usucre AS usucre, f.datacre AS datacre, f.dataenviatconformador AS dataenviatconformador, f.dataenviatcomptabilitat AS dataenviatcomptabilitat, f.datadescarregadafactura AS datadescarregadafactura, f.anulada AS anulada";
+		String CAMPS_FACTURA = "f.idfactura AS idfactura, f.idinforme AS idinforme, f.idactuacio AS idactuacio, f.nifproveidor AS nifproveidor, f.datafactura AS datafactura, f.concepte AS concepte, f.import AS import, f.tipusfactura AS tipusfactura, f.nombrefactura AS nombrefactura, f.dataentrada AS dataentrada, f.usuconformador AS usuconformador,  f.dataconformador AS dataconformador, f.notes AS notes, f.usucre AS usucre, f.datacre AS datacre, f.dataenviatconformador AS dataenviatconformador, f.dataenviatcomptabilitat AS dataenviatcomptabilitat, f.datadescarregadafactura AS datadescarregadafactura, f.anulada AS anulada, f.motiuanulada AS motiuanulada";
 		String sql = "SELECT " + CAMPS_FACTURA
 		 		+ " FROM public.tbl_factures f LEFT JOIN public.tbl_informeactuacio i ON f.idinforme = i.idinf"
-		 		+ " WHERE i.idinf IS NULL";
+		 		+ " WHERE f.anulada = false AND f.dataenviatcomptabilitat IS NULL AND i.idinf IS NULL";
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		ResultSet rs = pstm.executeQuery();
 		while (rs.next()) {
@@ -348,7 +513,7 @@ public class FacturaCore {
 	
 	public static List<Factura> advancedSearchFactures(Connection conn, Date dataInici, Date dataFi, String estatFactura) throws SQLException, NamingException{
 		List<Factura> factures = new ArrayList<Factura>();
-		String CAMPS_FACTURA = "f.idfactura AS idfactura, f.idinforme AS idinforme, f.idactuacio AS idactuacio, f.nifproveidor AS proveidorfactura, f.datafactura AS datafactura, f.concepte AS concepte, f.import AS import, f.nombrefactura AS nombrefactura, f.dataentrada AS dataentrada, f.usuconformador AS usuconformador,  f.dataconformador AS dataconformador, f.dataenviatconformador AS dataenviatconformador, f.dataenviatcomptabilitat AS dataenviatcomptabilitat, f.datadescarregadafactura AS datadescarregadafactura, f.notes AS notesfactura";
+		String CAMPS_FACTURA = "f.idfactura AS idfactura, f.idinforme AS idinforme, f.idactuacio AS idactuacio, f.nifproveidor AS proveidorfactura, f.datafactura AS datafactura, f.concepte AS concepte, f.import AS import, f.nombrefactura AS nombrefactura, f.dataentrada AS dataentrada, f.usuconformador AS usuconformador,  f.dataconformador AS dataconformador, f.dataenviatconformador AS dataenviatconformador, f.dataenviatcomptabilitat AS dataenviatcomptabilitat, f.datadescarregadafactura AS datadescarregadafactura, f.notes AS notesfactura, f.anulada AS anulada, f.motiuanulada AS motiuanulada";
 		String CAMPS_INFORME = "i.usucre AS usuariinforme, i.datacre AS datacreacioinforme, i.usuaprovacio AS usuaprovacioinforme, i.dataaprovacio AS dataaprovacioinforme, i.notes AS notesinforme, i.tipo AS tipocontracte, i.expcontratacio AS expcontratacio, i.datapd AS datapd, i.tipopd AS tipopd";
 		String CAMPS_ACTUACIO = "a.descripcio AS descactuacio, a.usucre AS usucreactuacio, a.datacre AS datacreactuacio, a.dataaprovacio AS dataaprovacioactuacio, a.idcentre AS idcentre, a.notes AS notesactuacio";
 		String sql = "SELECT " + CAMPS_FACTURA + ", " + CAMPS_INFORME + ", " + CAMPS_ACTUACIO 
@@ -434,6 +599,8 @@ public class FacturaCore {
 			factura.setUsuariConformador(UsuariCore.findUsuariByID(conn, rs.getInt("usuconformador")));
 			factura.setDataConformacio(rs.getTimestamp("dataconformador"));
 			factura.setNotes(rs.getString("notesfactura"));
+			factura.setAnulada(rs.getBoolean("anulada"));
+			factura.setMotiuAnulada(rs.getString("motiuanulada"));
 			factura.setArxiu(FacturaCore.getArxiu(ActuacioCore.findActuacio(conn, rs.getString("idactuacio")).getIdIncidencia(), rs.getString("idactuacio"), rs.getString("idinforme"), rs.getString("proveidorfactura"), rs.getString("idfactura")));
 			informe = new InformeActuacio();
 			informe.setIdInf(rs.getString("idinforme"));	
@@ -441,7 +608,7 @@ public class FacturaCore {
 			informe.setUsuari(usuari);
 			informe.setDataCreacio(rs.getTimestamp("datacreacioinforme"));
 			informe.setPropostaInformeSeleccionada(InformeCore.getPropostaSeleccionada(conn, rs.getString("idinforme")));
-			informe.setCodiPartida(CreditCore.getCodiPartidaInforme(conn, rs.getString("idinforme")));	
+			informe.setAssignacioCredit(CreditCore.getPartidaInforme(conn, rs.getString("idinforme")));	
 			informe.setUsuariAprovacio(UsuariCore.findUsuariByID(conn, rs.getInt("usuaprovacioinforme")));
 			informe.setDataAprovacio(rs.getTimestamp("dataaprovacioinforme"));
 			informe.setNotes(rs.getString("notesinforme"));			
@@ -467,7 +634,7 @@ public class FacturaCore {
 		return factures;
 	}
 	
-	public static List<Factura> advancedSearchCertificacions(Connection conn, Date dataInici, Date dataFi) throws SQLException, NamingException{
+	public static List<Factura> advancedSearchCertificacions(Connection conn, Date dataInici, Date dataFi, String idCentre) throws SQLException, NamingException{
 		List<Factura> factures = new ArrayList<Factura>();
 		String CAMPS_FACTURA = "c.idcertificacio AS idcertificacio, c.idinforme AS idinforme, c.idactuacio AS idactuacio, c.nifproveidor AS proveidorcertificacio, c.datacertificacio AS datacertificacio, c.concepte AS concepte, c.import AS import, c.nombrecertificacio AS nombrecertificacio, c.dataentrada AS dataentrada, c.usuconformador AS usuconformador,  c.dataconformador AS dataconformador, c.notes AS notescertificacio";
 		String CAMPS_INFORME = "i.usucre AS usuariinforme, i.datacre AS datacreacioinforme, i.usuaprovacio AS usuaprovacioinforme, i.dataaprovacio AS dataaprovacioinforme, i.notes AS notesinforme, i.tipo AS tipocontracte, i.expcontratacio AS expcontratacio, i.datapd AS datapd, i.tipopd AS tipopd";
@@ -487,9 +654,17 @@ public class FacturaCore {
 				primeraCondicio = false;
 				sql += " WHERE datacertificacio <= ?";
 			} else {
-				sql += " and datacertificacio <= ?";
+				sql += " AND datacertificacio <= ?";
 			}			
-		}				
+		}	
+		if (idCentre != null && !idCentre.equals("-1")) {
+			if (primeraCondicio) {
+				primeraCondicio = false;
+				sql += " WHERE idcentre = ?";
+			} else {
+				sql += " AND idcentre = ?";
+			}			
+		}	
 		
 		PreparedStatement pstm = conn.prepareStatement(sql);	
 		int contVars = 1;
@@ -499,6 +674,10 @@ public class FacturaCore {
 		}
 		if (dataFi != null) {
 			pstm.setDate(contVars, new java.sql.Date(dataFi.getTime()));
+			contVars += 1;
+		}
+		if (idCentre != null && !idCentre.equals("-1")) {
+			pstm.setString(contVars,idCentre);
 			contVars += 1;
 		}
 		ResultSet rs = pstm.executeQuery();	
@@ -526,7 +705,7 @@ public class FacturaCore {
 			informe.setUsuari(usuari);
 			informe.setDataCreacio(rs.getTimestamp("datacreacioinforme"));
 			informe.setPropostaInformeSeleccionada(InformeCore.getPropostaSeleccionada(conn, rs.getString("idinforme")));
-			informe.setPartida(CreditCore.getPartidaInforme(conn, rs.getString("idinforme")));	
+			informe.setAssignacioCredit(CreditCore.getPartidaInforme(conn, rs.getString("idinforme")));	
 			informe.setUsuariAprovacio(UsuariCore.findUsuariByID(conn, rs.getInt("usuaprovacioinforme")));
 			informe.setDataAprovacio(rs.getTimestamp("dataaprovacioinforme"));
 			informe.setNotes(rs.getString("notesinforme"));			
@@ -670,23 +849,21 @@ public class FacturaCore {
 		pstm.executeUpdate();
 	}
 	
-	public static void anular(Connection conn, String idFactura) throws SQLException, NamingException {
+	public static void anular(Connection conn, String idFactura, String motiu) throws SQLException, NamingException {
 		String sql = "UPDATE  public.tbl_factures"
-				+ " SET anulada = true"
+				+ " SET anulada = true, motiuanulada = ?"
 		 		+ " WHERE idfactura = ?";	 
-		PreparedStatement pstm = conn.prepareStatement(sql);	 
-		pstm.setString(1, idFactura);
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setString(1, motiu);
+		pstm.setString(2, idFactura);
 		pstm.executeUpdate();
-		
-		Factura factura = getFactura(conn, idFactura);
-		if (factura.getArxiu() != null && factura.getArxiu().getRuta() != null) Fitxers.eliminarFitxer(factura.getArxiu().getRuta());
 	}
 	
 	public static List<Factura> getFacturesConformadesPend(Connection conn) throws SQLException, NamingException {
 		List<Factura> facturesList = new ArrayList<Factura>();
 		String sql = "SELECT " + SQL_CAMPS
 				+ " FROM public.tbl_factures"
-				+ " WHERE dataenviatcomptabilitat IS NOT NULL AND datadescarregadafactura IS NULL";	
+				+ " WHERE anulada = false AND dataenviatcomptabilitat IS NOT NULL AND datadescarregadafactura IS NULL";	
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		ResultSet rs = pstm.executeQuery();
 		while (rs.next()) {			

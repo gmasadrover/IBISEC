@@ -58,7 +58,10 @@
                         	<label>Data concesió: </label> ${llicencia.getDataConcesioString()}
                         </p>    
                         <p> 
-                        	<label>Data pagament: </label> ${llicencia.getDataPagamentString()}
+                        	<label>Data pagament Taxa: </label> ${llicencia.getDataPagamentTaxaString()}
+                        </p>  
+                        <p> 
+                        	<label>Data pagament ICO: </label> ${llicencia.getDataPagamentICOString()}
                         </p>       
                         <p> 
                         	<label>Observacions: </label> ${llicencia.observacio}
@@ -67,7 +70,7 @@
 	                        <c:forEach items="${llicencia.arxius}" var="arxiu" >
 								<div class="document">
 									<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
-										${arxiu.nom} - ${arxiu.getDataString()}
+										${arxiu.getDataString()} - ${arxiu.nom}
 									</a>
 									<c:if test="${arxiu.signat}">
 										<span class="glyphicon glyphicon-pencil signedFile"></span>

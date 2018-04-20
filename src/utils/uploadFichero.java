@@ -9,7 +9,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.filechooser.FileSystemView;
 
 import java.util.*;
 import org.apache.commons.fileupload.*;
@@ -17,14 +16,8 @@ import org.apache.commons.fileupload.disk.*;
 import org.apache.commons.fileupload.servlet.*;
 
 import com.itextpdf.text.pdf.*;
-import com.itextpdf.text.pdf.parser.PdfTextExtractor;
-
-import core.LoggerCore;
-import fr.opensagres.xdocreport.template.utils.TemplateUtils;
 
 import java.io.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 /**
  * Servlet implementation class uploadFichero
  */
@@ -56,8 +49,7 @@ public class uploadFichero extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String[] idIncidencies = null;
-		String idIncidencia = "";
+		String[] idIncidencies = null;	
 		String tipus = "";
 		String idTipus = "";
 		String fileName = "";
@@ -78,10 +70,7 @@ public class uploadFichero extends HttpServlet {
             			} else {
             				idIncidencies = item.getString().split("#");
             			}            			
-            			break;
-	            	case "idIncidencia":
-	        			idIncidencia = item.getString();	        			
-	        			break;      
+            			break;	            	
             		case "tipus": 
             			tipus = item.getString();            			
             			break;
@@ -133,62 +122,7 @@ public class uploadFichero extends HttpServlet {
 	    		        PdfReader reader = new PdfReader(ruta + "/documents/"+  fileName + "temp_" + arxiu.getName()); // input PDF
 	    		        PdfStamper stamper = new PdfStamper(reader,
 	    		          new FileOutputStream(ruta + "/documents/"+ fileName + arxiu.getName())); // output PDF
-	    		        BaseFont bf = BaseFont.createFont(
-	    		                BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED); // set font
-	    		        try {
-	
-	    		            // pageNumber = 1
-	    		            String textFromPage = PdfTextExtractor.getTextFromPage(reader, 1);
-	    		        } catch (IOException e) {
-	    		            e.printStackTrace();
-	    		        }
-	    		        
-	    		        
-	    		        AcroFields fields = stamper.getAcroFields();
-	    		        PRAcroForm form = reader.getAcroForm();
-	    		        if (form != null) {
-	    			        for (Iterator<?> it = form.getFields().iterator(); it.hasNext(); ) {
-	    						PRAcroForm.FieldInformation field = (PRAcroForm.FieldInformation) it.next();
-	    						String fieldValue = fields.getField(field.getName());
-	    						
-	    						if (fieldValue != null && !fieldValue.equals("")) {
-	    							
-	    						} else {
-	    							
-	    						}
-	    					}
-	    		        }
-	    		        
-	    		        //loop on pages (1-based)
-	    		        for (int i=1; i<=reader.getNumberOfPages(); i++){
-	
-	    		            // get object for writing over the existing content;
-	    		            // you can also use getUnderContent for writing in the bottom layer
-	    		           // PdfContentByte over = stamper.getOverContent(i);
-	
-	    		            // Data
-	//    		            DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");	
-	//    		    		String dataString = df.format(new Date());
-	//    		            over.beginText();
-	//    		            over.setFontAndSize(bf, 9);    // set font and size
-	//    		            over.setTextMatrix(445, 758);   // set x,y position (0,0 is at the bottom left)
-	//    		            over.showText(dataString);  // set text
-	//    		            over.endText();
-	//    		            
-	//    		            // Num entrada
-	//    		            over.beginText();
-	//    		            over.setFontAndSize(bf, 9);    // set font and size
-	//    		            over.setTextMatrix(445, 748);   // set x,y position (0,0 is at the bottom left)
-	//    		            over.showText(idTipus);  // set text
-	//    		            over.endText();
-	
-	    		            // draw a red circle
-	//    		            over.setRGBColorStroke(0xFF, 0x00, 0x00);
-	//    		            over.setLineWidth(5f);
-	//    		            over.ellipse(250, 450, 350, 550);
-	//    		            over.stroke();
-	    		        }
-	
+	    		          		        
 	    		        stamper.close();
 	    		        reader.close();
 	    		        //Delete Temp file

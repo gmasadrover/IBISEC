@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -264,6 +265,36 @@ public class EmpresaCore {
 	     return list;
      }	
 	 
+	 public static List<Empresa> getDespesaEmpreses(Connection conn, Date dataIni, Date dataFi) throws SQLException {
+		 String sql = "SELECT e.cif AS cif, e.nom AS nom, e.direccio AS direccio, e.ciutat AS ciutat, e.provincia AS provincia, e.email AS email, e.activa AS activa, SUM(o.pbase) AS pbase, SUM(o.plic) AS plic"
+				 	+ " FROM public.tbl_empresaoferta o"
+				 	+ " 	LEFT JOIN public.tbl_empreses e ON o.cifempresa = e.cif"
+				 	+ " 	LEFT JOIN public.tbl_informeactuacio i ON o.idinforme = i.idinf"
+				 	+ "		LEFT JOIN public.tbl_propostesinforme p ON p.idinf = i.idinf"
+				 	+ " WHERE o.seleccionada = true AND p.seleccionada = true AND i.dataaprovacio >= '09/03/2018' AND o.datacre >= ? AND o.datacre <= ? AND ((o.pbase < 15000 AND p.tipusobra != 'obr') OR (o.pbase < 40000 AND p.tipusobra = 'obr'))"  
+					+ " GROUP BY e.cif"
+				 	+ " ORDER BY e.cif";
+		 PreparedStatement pstm = conn.prepareStatement(sql);	 
+		 pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
+		 pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
+		 ResultSet rs = pstm.executeQuery();
+		 List<Empresa> list = new ArrayList<Empresa>();
+		 while (rs.next()) {
+			 Empresa empresa = new Empresa();
+			 empresa.setCif(rs.getString("cif"));
+			 empresa.setName(rs.getString("nom"));
+			 empresa.setDireccio(rs.getString("direccio"));
+			 empresa.setCiutat(rs.getString("ciutat"));
+			 empresa.setProvincia(rs.getString("provincia"));
+			 empresa.setEmail(rs.getString("email"));
+			 empresa.setActiva(rs.getBoolean("activa"));
+			 empresa.setTotalPbasePeriode(rs.getDouble("pbase"));
+			 empresa.setTotalPLicPeriode(rs.getDouble("plic"));
+			 list.add(empresa);
+		 }
+	     return list;
+  }	
+	 
 	 private static Empresa findSuccesora(Connection conn, String cif) throws SQLException, NamingException {
 		 Empresa succesora = new Empresa();
 		 String sql = "SELECT " + SQL_CAMPS
@@ -332,7 +363,7 @@ public class EmpresaCore {
 			 pstmInsert.setDate(4, null);
 		 }				
 		 pstmInsert.setInt(5, idUsuari);
-		 pstmInsert.setInt(6, administrador.getProtocolModificacio());
+		 pstmInsert.setString(6, administrador.getProtocolModificacio());
 		 pstmInsert.setString(7, administrador.getNotariModificacio());
 		 if (administrador.getDataModificacio() != null) {
 			 pstmInsert.setDate(8, new java.sql.Date(administrador.getDataModificacio().getTime()));
@@ -373,7 +404,7 @@ public class EmpresaCore {
 		 } else {
 			 pstm.setDate(4, null);
 		 }	
-		 pstm.setInt(5, administrador.getProtocolModificacio());
+		 pstm.setString(5, administrador.getProtocolModificacio());
 		 pstm.setString(6, administrador.getNotariModificacio());
 		 if (administrador.getDataModificacio() != null) {
 			 pstm.setDate(7, new java.sql.Date(administrador.getDataModificacio().getTime()));
@@ -406,7 +437,7 @@ public class EmpresaCore {
 			 administrador.setNom(rs.getString("nom"));
 			 administrador.setDni(rs.getString("dni"));
 			 administrador.setDataValidesaFins(rs.getTimestamp("validfins"));
-			 administrador.setProtocolModificacio(rs.getInt("protocolmod"));
+			 administrador.setProtocolModificacio(rs.getString("protocolmod"));
 			 administrador.setNotariModificacio(rs.getString("notarimod"));
 			 administrador.setDataModificacio(rs.getTimestamp("datamod"));
 			 administrador.setTipus(rs.getString("tipus"));
@@ -431,13 +462,34 @@ public class EmpresaCore {
 			 administrador.setNom(rs.getString("nom"));
 			 administrador.setDni(rs.getString("dni"));
 			 administrador.setDataValidesaFins(rs.getTimestamp("validfins"));
-			 administrador.setProtocolModificacio(rs.getInt("protocolmod"));
+			 administrador.setProtocolModificacio(rs.getString("protocolmod"));
 			 administrador.setNotariModificacio(rs.getString("notarimod"));
 			 administrador.setDataModificacio(rs.getTimestamp("datamod"));
 			 administrador.setTipus(rs.getString("tipus"));
 			 administrador.setDataValidacio(rs.getTimestamp("datavalidacio"));
 			 administrador.setEntitatValidacio(rs.getString("organvalidacio"));
 			 administrador.setDocumentAdministrador(getDocumentAdministrador(conn, cif, administrador.getDni()));
+			 administradorsList.add(administrador);
+		 }
+		 sql = "SELECT b.ref AS ref, b.databastanteo AS databastanteo, b.empresa AS empresa, b.personafacultada AS personafacultada, b.carrec AS carrec, b.anybastanteo AS anybastanteo, e.refescritura AS refescritura, e.escritura AS escritura, e.dataescritura AS dataescritura, e.nprotocol AS nprotocol, e.notari AS notari"
+					+ " FROM public.tbl_bastanteos b LEFT JOIN public.tbl_escritura e ON b.ref = e.refbastanteo"
+					+ " WHERE b.empresa = ?";
+	 
+		 pstm = conn.prepareStatement(sql);
+		 pstm.setString(1, cif);		
+		 rs = pstm.executeQuery();
+		 while (rs.next()) {
+			 administrador = new Empresa().new Administrador();
+			 administrador.setNom(rs.getString("personafacultada"));
+			 //administrador.setDni(rs.getString("dni"));
+			 //administrador.setDataValidesaFins(rs.getTimestamp("validfins"));
+			 administrador.setProtocolModificacio(rs.getString("nprotocol"));
+			 administrador.setNotariModificacio(rs.getString("notari"));
+			 administrador.setDataModificacio(rs.getTimestamp("dataescritura"));
+			 administrador.setTipus(rs.getString("escritura"));
+			 administrador.setDataValidacio(rs.getTimestamp("databastanteo"));
+			 administrador.setEntitatValidacio("ibisec");
+			 //administrador.setDocumentAdministrador(getDocumentAdministrador(conn, cif, administrador.getDni()));
 			 administradorsList.add(administrador);
 		 }
 		 return administradorsList;

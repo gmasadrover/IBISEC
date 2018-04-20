@@ -15,12 +15,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.fileupload.FileUploadException;
+
 import bean.Factura;
 import bean.InformeActuacio;
 import core.ActuacioCore;
 import core.FacturaCore;
 import core.InformeCore;
 import core.UsuariCore;
+import utils.Fitxers;
 import utils.MyUtils;
 
 /**
@@ -43,15 +46,22 @@ public class DoEditCertificacioServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Connection conn = MyUtils.getStoredConnection(request);		
-	    String idCertificacio = request.getParameter("idCertificacio");
-	    String idInforme = request.getParameter("idInforme");
-	    String idActuacio = request.getParameter("idActuacio");
-	    String idProveidor = request.getParameter("idEmpresa");	    
-	    String concepte = request.getParameter("concepte");	   
-	    double valor = Double.parseDouble(request.getParameter("import"));	  
-	    String nombreCertificacio = request.getParameter("nombre");
-	    int idUsuariConformador = Integer.parseInt(request.getParameter("idConformador"));
-	    String notes = request.getParameter("notes");
+		Fitxers.formParameters multipartParams = new Fitxers.formParameters();
+		try {
+			multipartParams = Fitxers.getParamsFromMultipartForm(request);
+		} catch (FileUploadException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    String idCertificacio = multipartParams.getParametres().get("idCertificacio");
+	    String idInforme = multipartParams.getParametres().get("idInforme");
+	    String idActuacio = multipartParams.getParametres().get("idActuacio");
+	    String idProveidor = multipartParams.getParametres().get("idEmpresa");	    
+	    String concepte = multipartParams.getParametres().get("concepte");	   
+	    double valor = Double.parseDouble(multipartParams.getParametres().get("import"));	  
+	    String nombreCertificacio = multipartParams.getParametres().get("nombre");
+	    int idUsuariConformador = Integer.parseInt(multipartParams.getParametres().get("idConformador"));
+	    String notes = multipartParams.getParametres().get("notes");
 	    
 	    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 	    Date dataCertificacio = null;
@@ -60,11 +70,11 @@ public class DoEditCertificacioServlet extends HttpServlet {
 	    Date dataConformada = null;
 	    Date dataPasadaComptabilitat = null;
 	    try {
-			if (request.getParameter("dataEntrada") != null && ! request.getParameter("dataEntrada").isEmpty()) dataEntrada = formatter.parse(request.getParameter("dataEntrada"));
-			if (request.getParameter("dataFactura") != null && ! request.getParameter("dataFactura").isEmpty()) dataCertificacio = formatter.parse(request.getParameter("dataFactura"));
-			if (request.getParameter("dataPasadaConformar") != null && ! request.getParameter("dataPasadaConformar").isEmpty()) dataPasadaConformar = formatter.parse(request.getParameter("dataPasadaConformar"));
-			if (request.getParameter("dataConformada") != null && ! request.getParameter("dataConformada").isEmpty()) dataConformada = formatter.parse(request.getParameter("dataConformada"));
-			if (request.getParameter("dataPasadaComptabilitat") != null && ! request.getParameter("dataPasadaComptabilitat").isEmpty()) dataPasadaComptabilitat = formatter.parse(request.getParameter("dataPasadaComptabilitat"));
+			if (multipartParams.getParametres().get("dataEntrada") != null && ! multipartParams.getParametres().get("dataEntrada").isEmpty()) dataEntrada = formatter.parse(multipartParams.getParametres().get("dataEntrada"));
+			if (multipartParams.getParametres().get("dataFactura") != null && ! multipartParams.getParametres().get("dataFactura").isEmpty()) dataCertificacio = formatter.parse(multipartParams.getParametres().get("dataFactura"));
+			if (multipartParams.getParametres().get("dataPasadaConformar") != null && ! multipartParams.getParametres().get("dataPasadaConformar").isEmpty()) dataPasadaConformar = formatter.parse(multipartParams.getParametres().get("dataPasadaConformar"));
+			if (multipartParams.getParametres().get("dataConformada") != null && ! multipartParams.getParametres().get("dataConformada").isEmpty()) dataConformada = formatter.parse(multipartParams.getParametres().get("dataConformada"));
+			if (multipartParams.getParametres().get("dataPasadaComptabilitat") != null && ! multipartParams.getParametres().get("dataPasadaComptabilitat").isEmpty()) dataPasadaComptabilitat = formatter.parse(multipartParams.getParametres().get("dataPasadaComptabilitat"));
 		} catch (ParseException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -91,8 +101,9 @@ public class DoEditCertificacioServlet extends HttpServlet {
 	   			certificacio.setDataEnviatConformador(dataPasadaConformar);
 	   			certificacio.setDataConformacio(dataConformada);
 	   			certificacio.setDataEnviatComptabilitat(dataPasadaComptabilitat);
-	   			FacturaCore.modificarCertificacio(conn, certificacio, idUsuari);	
-	   		} catch (SQLException e) {
+	   			FacturaCore.modificarCertificacio(conn, certificacio, idUsuari);
+	   			FacturaCore.saveArxiuCertificacio(ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia(), idActuacio, idInforme, idProveidor, idCertificacio, multipartParams.getFitxers(), conn);
+	   		} catch (SQLException | NamingException e) {
 	  			e.printStackTrace();
 	  			errorString = e.getMessage();
 	   		}

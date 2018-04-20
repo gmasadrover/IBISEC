@@ -80,9 +80,7 @@ public class DoCanvisActuacioServlet extends HttpServlet {
 				OfertaCore.aprovarOferta(conn, idInforme, Usuari.getIdUsuari());
 	   			CreditCore.assignar(conn, idInforme, OfertaCore.findOfertaSeleccionada(conn, idInforme).getPlic());
 	   			TascaCore.nouHistoric(conn, String.valueOf(idTasca), "Autorització generada", Usuari.getIdUsuari());
-	   			TascaCore.tancar(conn, idTasca);
-	   			
-	   			
+	   			TascaCore.tancar(conn, idTasca);	   			
 	   			if (idInforme.contains("-MOD-")) {
 	   				informe = InformeCore.getMoficacioInforme(conn, idInforme);
 	   				//Notificam la modificació al cap
@@ -95,16 +93,16 @@ public class DoCanvisActuacioServlet extends HttpServlet {
 	   				Fitxers.guardarFitxer(fitxers, idIncidencia, idActuacio, "", "", "", idInforme, "Autorització  Proposta despesa");
 	   				informe = InformeCore.getInformePrevi(conn, idInforme, false);
 	   				//Crear tasca redacció contracte
-		   			if (informe.getPropostaInformeSeleccionada().isContracte()) {
-		   				int usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariRedaccioContracte"));   		
-						TascaCore.novaTasca(conn, "generic", usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Redactar contracte per informe " + informe.getIdInf(), "Redacció contracte",informe.getIdInf(),null);
-		   			} else {
-		   				TascaCore.novaTasca(conn, "generic", informe.getUsuariCapValidacio().getIdUsuari(), Usuari.getIdUsuari(), idActuacio, idIncidencia, "S'ha aprovat la despesa per a l'informe: " + informe.getIdInf() + " <br>Podeu posar-vos amb l'empresa per a començar l'obra", "Aprovació proposta despesa",informe.getIdInf(),null);
-		   			}
+	   				InformeCore.modificarEstat(conn, idInforme, "execucio");
+	   				int usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariRedaccioContracte"));   	
+	   				if (informe.getExpcontratacio().getContracte().equals("major")) {
+	   					usuariTasca = UsuariCore.findUsuarisByRol(conn, "CAP,JUR").get(0).getIdUsuari();
+	   				} 
+					TascaCore.novaTasca(conn, "contracte", usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Redactar contracte per expedient " + informe.getExpcontratacio().getExpContratacio(), "Redacció contracte",informe.getIdInf(),null);
 		   			
 		   			//Nova tasca llicència
 	   				if (informe.getPropostaInformeSeleccionada().isLlicencia() && informe.getPropostaInformeSeleccionada().getTipusLlicencia().equals("comun")) {
-						int usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariLlicencies"));   		
+						usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariLlicencies"));   		
 						TascaCore.novaTasca(conn, "generic", usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Sol·licitar comunicació prèvia obra", "Sol·licitud comunicació prèvia",informe.getIdInf(),null);
 						LlicenciaCore.novaLlicencia(conn, informe.getExpcontratacio().getExpContratacio(), informe.getPropostaInformeSeleccionada().getTipusLlicencia());
 	   				}

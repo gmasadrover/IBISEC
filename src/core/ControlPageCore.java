@@ -1,7 +1,6 @@
 package core;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import bean.ControlPage.SectionPage;
 import bean.User;
@@ -11,6 +10,15 @@ public class ControlPageCore {
 		StringBuilder menu = new StringBuilder();
 		String active = "";
 		String collapse = "";
+		//Control
+		if (UsuariCore.hasPermision(conn, usuari, SectionPage.control)) {			
+			if (seccio.equals("Control")) active = "active"; 
+			menu.append("<li class='" + active + "'>");
+			menu.append("	<a href='control' class='loadingButton'  data-msg='Carregant control...'><i class='fa fa-fw fa-tasks'></i> Control</a>");
+			menu.append("</li>");
+			active = "";
+			collapse = "";
+		}
 		//Tasques
 		if (UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_list)) {			
 			if (seccio.equals("Tasques")) active = "active"; 
@@ -62,6 +70,15 @@ public class ControlPageCore {
 			active = "";
 			collapse = "";
 		}
+		//Projectes
+		if (UsuariCore.hasPermision(conn, usuari, SectionPage.projectes_list)) {			
+			if (seccio.equals("projectes")) active = "active"; 
+			menu.append("<li class='" + active + "'>");
+			menu.append("	<a href='projectes' class='loadingButton'  data-msg='Carregant projectes...'><i class='fa fa-fw fa-bookmark'></i> Projectes</a>");
+			menu.append("</li>");
+			active = "";
+			collapse = "";
+		}
 		//Actuacions Manuals
 		if (UsuariCore.hasPermision(conn, usuari, SectionPage.actuacio_manual)) {			
 			if (seccio.equals("ActuacionsManuals")) active = "active"; 
@@ -96,19 +113,25 @@ public class ControlPageCore {
 			collapse = "";
 		}
 		//Expedients
-		if (UsuariCore.hasPermision(conn, usuari, SectionPage.expedient_list)) {			
-			if (seccio.equals("expedients")) active = "active"; 
-			menu.append("<li class='" + active + "'>");
-			menu.append("	<a href='expedients' class='loadingButton'  data-msg='Carregant expedients...'><i class='fa fa-fw fa-list'></i> Expedients</a>");
-			menu.append("</li>");
-			active = "";
-			collapse = "";
-		}
-		//Bastanteos
-		if (UsuariCore.hasPermision(conn, usuari, SectionPage.bastanteos_list)) {			
-			if (seccio.equals("bastanteos")) active = "active"; 
-			menu.append("<li class='" + active + "'>");
-			menu.append("	<a href='bastanteos' class='loadingButton'  data-msg='Carregant bastanteos...'><i class='fa fa-fw fa-list'></i> Bastanteos</a>");
+		if (UsuariCore.hasPermision(conn, usuari, SectionPage.expedient_list)) {	
+			if (seccio.equals("expedients")) {
+				active = "active"; 
+				collapse = "in";
+			}
+			menu.append("<li class='"+ active + "'>");
+			menu.append("	<a href='javascript:;' data-toggle='collapse' data-target='#expedientMenu'><i class='fa fa-fw fa-suitcase'></i> Expedients<i class='fa fa-fw fa-caret-down'></i></a>");
+			menu.append("	<ul id='expedientMenu' class='nav nav-second-level collapse " + collapse + "'>");
+			if (UsuariCore.hasPermision(conn, usuari, SectionPage.expedient_list)) {
+				menu.append("		<li>");
+				menu.append("       	<a href='expedients' class='loadingButton'  data-msg='Carregant expedients...'>Expedients</a>");
+				menu.append("    	</li>");
+			}			
+			if (UsuariCore.hasPermision(conn, usuari, SectionPage.expedient_list)) {
+				menu.append("		<li>");
+				menu.append("       	<a href='modificats' class='loadingButton'  data-msg='Carregant modificats...'>Modificats</a>");
+				menu.append("    	</li>");
+			}			
+			menu.append("	</ul>");
 			menu.append("</li>");
 			active = "";
 			collapse = "";
@@ -132,10 +155,25 @@ public class ControlPageCore {
 			collapse = "";
 		}
 		//Centres
-		if (UsuariCore.hasPermision(conn, usuari, SectionPage.centres_list)) {			
-			if (seccio.equals("centres")) active = "active"; 
-			menu.append("<li class='" + active + "'>");
-			menu.append("	<a href='centres' class='loadingButton'  data-msg='Carregant centres...'><i class='fa fa-fw fa-university'></i> Centres</a>");
+		if (UsuariCore.hasPermision(conn, usuari, SectionPage.centres_list)) {				
+			if (seccio.equals("centres")) {
+				active = "active"; 
+				collapse = "in";
+			}
+			menu.append("<li class='"+ active + "'>");
+			menu.append("	<a href='javascript:;' data-toggle='collapse' data-target='#centresMenu'><i class='fa fa-fw fa-university'></i> Centres<i class='fa fa-fw fa-caret-down'></i></a>");
+			menu.append("	<ul id='centresMenu' class='nav nav-second-level collapse " + collapse + "'>");
+			if (UsuariCore.hasPermision(conn, usuari, SectionPage.centres_list)) {
+				menu.append("		<li>");
+				menu.append("       	<a href='centres' class='loadingButton'  data-msg='Carregant centres...'>Centres</a>");
+				menu.append("    	</li>");
+			}			
+			if (UsuariCore.hasPermision(conn, usuari, SectionPage.centres_crear)) {
+				menu.append("		<li>");
+				menu.append("       	<a href='crearCentre' class='loadingButton'  data-msg='Carregant formulari...'>Crear centre</a>");
+				menu.append("    	</li>");
+			}			
+			menu.append("	</ul>");
 			menu.append("</li>");
 			active = "";
 			collapse = "";
@@ -151,7 +189,12 @@ public class ControlPageCore {
 			menu.append("	<ul id='empresaMenu' class='nav nav-second-level collapse " + collapse + "'>");
 			if (UsuariCore.hasPermision(conn, usuari, SectionPage.empreses_list)) {
 				menu.append("		<li>");
-				menu.append("       	<a href='empresaList' class='loadingButton'  data-msg='Carregant empreses...'>Llista empreses creades</a>");
+				menu.append("       	<a href='empresaList' class='loadingButton'  data-msg='Carregant empreses...'>Empreses</a>");
+				menu.append("    	</li>");
+			}
+			if (UsuariCore.hasPermision(conn, usuari, SectionPage.empreses_list)) {
+				menu.append("		<li>");
+				menu.append("       	<a href='empresaDespesaList' class='loadingButton'  data-msg='Carregant empreses...'>Empreses Despesa</a>");
 				menu.append("    	</li>");
 			}
 			if (UsuariCore.hasPermision(conn, usuari, SectionPage.empreses_crear)) {
@@ -164,6 +207,11 @@ public class ControlPageCore {
 				menu.append("        	<a href='createUTE' class='loadingButton'  data-msg='Carregant formulari...'>Afegir UTE</a>");
 				menu.append("    	</li>");
 			}
+			if (UsuariCore.hasPermision(conn, usuari, SectionPage.bastanteos_list)) {
+				menu.append("		<li class='" + active + "'>");
+				menu.append("			<a href='bastanteos' class='loadingButton'  data-msg='Carregant validacions...'>Validacions</a>");
+				menu.append("		</li>");
+			}			
 			menu.append("	</ul>");
 			menu.append("</li>");
 			active = "";
@@ -191,7 +239,7 @@ public class ControlPageCore {
 				menu.append("        	<a href='importarFactures' class='loadingButton'  data-msg='Carregant formulari...'>Importar factures</a>");
 				menu.append("    	</li>");
 				menu.append("     	<li>");
-				menu.append("        	<a href='facturesConformadesPend' class='loadingButton'  data-msg='Carregant factures...'>Factures conformades noves</a>");
+				menu.append("        	<a href='facturesConformadesPend' class='loadingButton'  data-msg='Carregant factures...'>Factures per pagar noves</a>");
 				menu.append("    	</li>");
 			}
 			menu.append("	</ul>");

@@ -58,7 +58,7 @@
 	</p>	
 	<div class="row col-md-12">
 		<c:forEach items="${informePrevi.adjunts}" var="arxiu" >
-			<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.nom}</a>
+			<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
 			<br>
 		</c:forEach>					            		
 	</div>
@@ -72,7 +72,7 @@
 		<label>Notes:</label> ${informePrevi.notes}
 	</p>
 	<p>
-		<label>Partida:</label> ${informePrevi.partida}
+		<label>Partida:</label> ${informePrevi.assignacioCredit.partida.nom}
 	</p>
 </div>
 <div class="panel-body">
@@ -142,12 +142,12 @@
                         		<td><a target="_blanck" href="empresa?cif=${oferta.cifEmpresa}">${oferta.nomEmpresa} (${oferta.cifEmpresa})</a></td>
                         		<td>${oferta.nomEmpresa} (${oferta.cifEmpresa})</td>
                         		<td>${oferta.cifEmpresa}</td>
-                        		<td>${oferta.plic} €</td>
+                        		<td>${oferta.getPlicFormat()}</td>
                         		<td>${oferta.plic}</td>
                         		<td><a target="_blanck" href="downloadFichero?ruta=${oferta.presupost.getEncodedRuta()}">${oferta.presupost.nom}</a></td>
                         		<td>
                         			<input class="btn btn-danger btn-sm deleteOferta" data-idoferta="${oferta.idOferta}" type="button" value="Eliminar">
-                        			<c:if test="${canRealitzarPropostaTecnica}">
+                        			<c:if test="${canRealitzarPropostaTecnica && oferta.plic > 0}">
                         				<input class="btn btn-primary btn-sm ofertaSeleccionada" type="button" value="Seleccionar">
                         			</c:if>	                        			
                         		</td>
@@ -186,18 +186,6 @@
 	        	<div class="col-md-6">
 	            	<label>Termini d'execució definitiu</label>
 	             	<input name="termini" placeholder="1 mes" value="${informePrevi.ofertaSeleccionada.termini == '' ? informePrevi.propostaInformeSeleccionada.termini : informePrevi.ofertaSeleccionada.termini}" required>
-	        	</div>
-	       	</div>
-	       	<div class="form-group">
-	        	<div class="col-md-6">
-	            	<label>És necessari realitzar EBSS?</label>
-	             	<input type="checkbox" name="ebss" ${informePrevi.propostaInformeSeleccionada.ebss ? "checked" : ""}>
-	        	</div>
-	       	</div>
-	       	<div class="form-group">
-	        	<div class="col-md-6">
-	            	<label>És necessari realitzar coordinació?</label>
-	             	<input type="checkbox" name="coordinacio" ${informePrevi.propostaInformeSeleccionada.coordinacio ? "checked" : ""}>
 	        	</div>
 	       	</div>
 	       	<div class="form-group">

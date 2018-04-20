@@ -109,7 +109,7 @@
 				                	<div class="row">
 				                		<label class="col-xs-offset-1 col-xs-2 control-label">Escritura:</label>
 				                		<c:forEach items="${empresa.documentsEscrituraList}" var="arxiu" >
-						            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.nom}</a>
+						            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
 											<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
 											<br>
 										</c:forEach>	
@@ -155,18 +155,63 @@
 						                            </tr>
 						                        </thead>
 						                        <tbody>
-												<c:forEach items="${empresa.administradors}" var="administrador" >
-										          	<tr class="${administrador.isCaducat() ? 'danger' : '' }">							          	
-										           		<td>${administrador.nom}</td>
-										            	<td>${administrador.dni}</td>
-										            	<td>${administrador.tipus}</td>
-										            	<td>${administrador.getDataValidesaFinsString()}</td>
-										            	<td>${administrador.notariModificacio}</td>
-										            	<td>${administrador.protocolModificacio}</td>
-										            	<td>${administrador.getDataModificacioString()}</td>
-										            	<td>${administrador.getDataValidacioString()}</td>
-												        <td>${administrador.entitatValidacio}</td>
-												        <td><a target="_blanck" href="downloadFichero?ruta=${administrador.documentAdministrador.getEncodedRuta()}">${administrador.documentAdministrador.nom}</a></td>
+													<c:forEach items="${empresa.administradors}" var="administrador" >
+											          	<tr class="${administrador.isCaducat() ? 'danger' : '' }">							          	
+											           		<td>${administrador.nom}</td>
+											            	<td>${administrador.dni}</td>
+											            	<td>${administrador.tipus}</td>
+											            	<td>${administrador.getDataValidesaFinsString()}</td>
+											            	<td>${administrador.notariModificacio}</td>
+											            	<td>${administrador.protocolModificacio}</td>
+											            	<td>${administrador.getDataModificacioString()}</td>
+											            	<td>${administrador.getDataValidacioString()}</td>
+													        <td>${administrador.getEntitatValidacioString()}</td>
+													        <td><a target="_blanck" href="downloadFichero?ruta=${administrador.documentAdministrador.getEncodedRuta()}">${administrador.documentAdministrador.nom}</a></td>
+											            </tr>
+										       		</c:forEach>								                                	                              	
+						                        </tbody>
+						                    </table>
+						                </div>
+							    	</div>
+							    </div>
+							</div>
+						</div>
+						<%-- <div class="panel panel-default">
+	            		  	<div class="panel-heading">
+						    	<h4 class="panel-title">
+						        	<a data-toggle="collapse" data-parent="#accordion" href="#validacions">Validacions</a>
+						      	</h4>
+						    </div>
+						    <div id="validacions" class="panel-collapse collapse">					    	
+						      	<div class="panel-body">  
+				                	<div class="row">
+					                	<div class="table-responsive col-md-12">							                        
+						                    <table class="table table-striped table-bordered filerTable" id="validacionsTable">
+						                        <thead>
+						                            <tr>
+						                                <th>Ref</th>
+				                                        <th>Data validació</th>				                                                                 
+				                                        <th>Persona facultada</th>
+				                                        <th>Càrrec</th>                                       
+				                                        <th>Any</th>	                                        							                                       
+						                            </tr>
+						                        </thead>
+						                        <tbody>
+												<c:forEach items="${validacions}" var="bastanteo" >
+										          	<tr>							          	
+										           		<td>
+										           			<c:choose>
+										           				<c:when test="${canModificar}">
+										           					<a href="bastanteo?ref=${bastanteo.ref}" class="loadingButton"  data-msg="obrint validació...">${bastanteo.ref}</a></td>
+										           				</c:when>
+										           				<c:otherwise>
+										           					${bastanteo.ref}
+										           				</c:otherwise>
+										           			</c:choose>
+										           		<td>${bastanteo.getDatabastanteoString()}</td>
+										            	<td>${bastanteo.personaFacultada}</td>
+										            	<td>${bastanteo.carrec}</td>
+										            	<td>${bastanteo.anyBastanteo}</td>
 										            </tr>
 									       		</c:forEach>						                                	                              	
 						                        </tbody>
@@ -175,7 +220,7 @@
 							    	</div>
 							    </div>
 							</div>
-						</div>
+						</div> --%>
 					    <c:if test="${! empresa.isUte()}"> 
 					    	<div class="panel panel-default">
 		            		  	<div class="panel-heading">
@@ -418,27 +463,53 @@
 						    <div id="ofertes" class="panel-collapse collapse">					    	
 					      		<div class="panel-body">
 				                	<div class="row">	                		
-					                        <div class="col-xs-offset-2 col-md-7">	
+					                        <div class="col-md-10">	
 												<label>Ofertes</label>							                        
 								                <div class="table-responsive">							                        
 								                    <table class="table table-striped table-bordered filerTable" id="ofertesTable">
 								                        <thead>
 								                            <tr>
-								                                <th>Actuacio</th>
+								                                <th>Expedient</th>
+								                                <th>Actuació</th>
 								                                <th>Detalls</th>
 								                                <th>Centre</th>
 								                                <th>Valor</th>
-								                                <th>Data</th>				                                        							                                       
+								                                <th>Data</th>	
+								                                <th>Data</th>	
+								                                <th>Facturat</th>			                                        							                                       
 								                            </tr>
 								                        </thead>
 								                        <tbody>	
-									                        <c:forEach items="${empresaOfertes}" var="oferta" >
-													          	<tr class=${oferta.isSeleccionada() ? "success" : "warning"}>								          	
-													           		<td><a href="actuacionsDetalls?ref=${oferta.idActuacio}">${oferta.idActuacio}</a></td>
-													            	<td>${oferta.actuacio.descripcio}</td>
-													            	<td>${oferta.actuacio.centre.getNomComplet()}</td>
-													            	<td>${oferta.getPlicFormat()}</td>
-													            	<td>${oferta.getDataAprovacioString()}</td>
+									                        <c:forEach items="${informesEmpresa}" var="informe" >
+													          	<tr class=${informe.ofertaSeleccionada.cifEmpresa == empresa.cif ? "success" : "warning"}>								          	
+													           		<td><a href="actuacionsDetalls?ref=${informe.actuacio.referencia}&exp=${informe.idInf}">
+													           			<c:choose>
+													            			<c:when test="${informe.expcontratacio.expContratacio != '-1'}">
+													            				${informe.expcontratacio.expContratacio}
+													            			</c:when>
+													            			<c:otherwise>
+													            				${informe.idInf}
+													            			</c:otherwise>
+													            		</c:choose>
+													           			</a>
+													           		</td>
+													           		<td><a href="actuacionsDetalls?ref=${informe.actuacio.referencia}&exp=${informe.idInf}">${informe.actuacio.referencia}</a></td>
+													            	<td>${informe.actuacio.descripcio}</td>
+													            	<td>${informe.actuacio.centre.getNomComplet()}</td>
+													            	<c:choose>
+													            		<c:when test="${informe.ofertaSeleccionada.cifEmpresa == empresa.cif}">
+													            			<td>${informe.ofertaSeleccionada.getPlicFormat()}</td>
+															            	<td>${informe.ofertaSeleccionada.getDataAprovacioString()}</td>
+															            	<td>${informe.ofertaSeleccionada.getDataAprovacio()}</td>
+															            	<td>${informe.getTotalFacturatFormat()}</td>
+													            		</c:when>
+													            		<c:otherwise>
+													            			<td></td>
+															            	<td></td>
+															            	<td></td>
+															            	<td></td>
+													            		</c:otherwise>
+													            	</c:choose>
 													            </tr>
 												       		</c:forEach>							                                	                              	
 								                        </tbody>

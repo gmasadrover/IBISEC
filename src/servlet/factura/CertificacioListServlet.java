@@ -63,7 +63,8 @@ public class CertificacioListServlet extends HttpServlet {
 			String dataFiString = df.format(dataFi);	 
 			cal.add(Calendar.MONTH, -2);
 			Date dataInici = cal.getTime();
-			String dataIniciString = df.format(dataInici);				
+			String dataIniciString = df.format(dataInici);			
+			String idCentre = "-1";
 			try {
 				if (filtrar != null) {	
 					dataInici = null;
@@ -72,10 +73,10 @@ public class CertificacioListServlet extends HttpServlet {
 					dataIniciString = request.getParameter("dataInici");
 	    			if (!request.getParameter("dataFi").isEmpty()) dataFi = df.parse(request.getParameter("dataFi"));	    			
 	    			dataFiString = request.getParameter("dataFi");
-					
-	    			list = FacturaCore.advancedSearchCertificacions(conn, dataInici, dataFi);
+					idCentre = request.getParameter("idCentre");
+	    			list = FacturaCore.advancedSearchCertificacions(conn, dataInici, dataFi, idCentre);
 				} else {
-					list = FacturaCore.advancedSearchCertificacions(conn, dataInici, dataFi);
+					list = FacturaCore.advancedSearchCertificacions(conn, dataInici, dataFi, idCentre);
 				}
 				
 			} catch (SQLException | ParseException | NamingException e) {
@@ -88,6 +89,7 @@ public class CertificacioListServlet extends HttpServlet {
 			request.setAttribute("certificacionsList", list);
 			request.setAttribute("dataInici", dataIniciString);
 		    request.setAttribute("dataFi", dataFiString);
+		    request.setAttribute("idCentre", idCentre);
 			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Factures"));
 			// Forward to /WEB-INF/views/homeView.jsp
 			// (Users can not access directly into JSP pages placed in WEB-INF)

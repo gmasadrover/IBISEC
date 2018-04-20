@@ -1,6 +1,16 @@
 $(document).ready(function() {	
 	if ($('#estatSelected').val() != '') {		  		
 		$('#estatList option[value="' + $('#estatSelected').val() + '"]').attr('selected', 'selected');
+		if ($('#estatSelected').val() == 'obert') {
+			$('#procedimentObert').removeClass('hidden');
+			$('#procedimentExecucio').addClass('hidden');
+		} else if ($('#estatSelected').val() == 'execucio') {
+			$('#procedimentObert').addClass('hidden');
+			$('#procedimentExecucio').removeClass('hidden');
+		} else {
+			$('#procedimentExecucio').addClass('hidden');
+			$('#procedimentObert').addClass('hidden');
+		}
 	}
 	if ($('#estatList').size() > 0) {
 		$('#estatList').selectpicker('refresh');
@@ -11,7 +21,36 @@ $(document).ready(function() {
 	}
 	if ($('#llistatTipus').size() > 0) {
 		$('#llistatTipus').selectpicker('refresh');
-	}
+	}	
+	$('#estatList').on('change', function(){
+		if ($(this).val() == 'obert') {
+			$('#procedimentObert').removeClass('hidden');
+			$('#procedimentExecucio').addClass('hidden');
+		} else if ($(this).val() == 'execucio') {
+			$('#procedimentObert').addClass('hidden');
+			$('#procedimentExecucio').removeClass('hidden');
+		} else {
+			$('#procedimentExecucio').addClass('hidden');
+			$('#procedimentObert').addClass('hidden');
+		}
+	});
+	$('.deleteTramitacio').on('click', function(){
+		$.ajax({
+	        type: "POST",
+	        url: "DeleteTramitacio",
+	        dataType: "json",
+	        data: {"idtramitacio": $(this).data('ref')},
+	        //if received a response from the server
+	        success: function( data, textStatus, jqXHR) {
+	            //our country code was correct so we have some information to display
+	        	location.reload();      
+	        },        
+	        //If there was no resonse from the server
+	        error: function(jqXHR, textStatus, errorThrown){
+	             console.log("Something really bad happened " + jqXHR.responseText);
+	        }  
+	    });
+	});
 	
 	$('.filerTable.tasques').DataTable({
 		dom: 'Bfrtip',
@@ -38,15 +77,16 @@ $(document).ready(function() {
     		null,
     		null,
     		{"bVisible": false},
-    		null,
     		{"bVisible": false},
-    		{"iDataSort": 7},
+    		{"bVisible": false},
     		{"bVisible": false},
     		{"iDataSort": 9},
     		{"bVisible": false},
+    		{"iDataSort": 10},
     		{"bVisible": false},
     		{"bVisible": false},
-    		{"bVisible": false}
+    		{"bVisible": false},
+    		{"bVisible": false},
 		]
 	});	
 });	

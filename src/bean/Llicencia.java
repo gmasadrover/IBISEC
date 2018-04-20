@@ -16,7 +16,8 @@ public class Llicencia {
 	private String observacio;
 	private Date peticio;
 	private Date concesio;
-	private Date pagament;
+	private Date pagamentTaxa;
+	private Date pagamentICO;
 	private List<Fitxers.Fitxer> arxius;
 	
 	public Llicencia() {
@@ -83,21 +84,6 @@ public class Llicencia {
 		this.peticio = peticio;
 	}
 
-	public Date getPagament() {
-		return pagament;
-	}
-	
-	public String getDataPagamentString() {
-		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
-		String dataString = "";
-		if (this.pagament != null) dataString = df.format(this.pagament);
-		return dataString;
-	}
-
-	public void setPagament(Date pagamanent) {
-		this.pagament = pagamanent;
-	}
-
 	public Date getConcesio() {
 		return concesio;
 	}
@@ -135,5 +121,35 @@ public class Llicencia {
 
 	public void setArxius(List<Fitxers.Fitxer> arxius) {
 		this.arxius = arxius;
+	}
+
+	public Date getPagamentTaxa() {
+		return pagamentTaxa;
+	}
+
+	public String getDataPagamentTaxaString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+		String dataString = "";
+		if (this.pagamentTaxa != null) dataString = df.format(this.pagamentTaxa);
+		return dataString;
+	}
+	
+	public void setPagamentTaxa(Date pagamentTaxa) {
+		this.pagamentTaxa = pagamentTaxa;
+	}
+
+	public Date getPagamentICO() {
+		return pagamentICO;
+	}
+
+	public String getDataPagamentICOString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+		String dataString = "";
+		if (this.pagamentICO != null) dataString = df.format(this.pagamentICO);
+		return dataString;
+	}
+	
+	public void setPagamentICO(Date pagamentICO) {
+		this.pagamentICO = pagamentICO;
 	}
 }

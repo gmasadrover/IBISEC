@@ -111,8 +111,7 @@ $(document).ready(function() {
 			}
 			else {
 				$('#tipusLlicencia option[value="' + $('#tipusLlicenciaPrev').val() + '"]').attr('selected', 'selected');
-			}
-			$('#formContracte option[value="' + $('#formContractePrev').val() + '"]').attr('selected', 'selected');
+			}			
 		}
 	}
 	$('#llistaPartides option[value="' + $('#partidaPrev').val() + '"]').attr('selected', 'selected');	

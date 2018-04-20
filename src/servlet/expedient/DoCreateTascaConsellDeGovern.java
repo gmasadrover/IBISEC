@@ -62,8 +62,8 @@ public class DoCreateTascaConsellDeGovern extends HttpServlet {
 		try {
 			informe = InformeCore.getInformePrevi(conn, idInforme, false);
 			int idUsuari = UsuariCore.finCap(conn, "juridica").getIdUsuari();
-			String comentari = "Sol·licitud aprovació consell de govern expedient: " + informe.getExpcontratacio();			
-			TascaCore.novaTasca(conn, "consellDeGovern", idUsuari, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdInf(), comentari, "Sol·licitud aprovació consell de govern", idInforme, null);
+			String comentari = "Sol·licitud aprovació consell de govern expedient: " + informe.getExpcontratacio().getExpContratacio();			
+			TascaCore.novaTasca(conn, "consellDeGovern", idUsuari, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getActuacio().getIdIncidencia(), comentari, "Sol·licitud aprovació consell de govern", idInforme, null);
 		} catch (SQLException | NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

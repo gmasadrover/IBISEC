@@ -11,14 +11,13 @@ import javax.servlet.http.HttpSession;
 import bean.User;
 
 public class MyUtils {
-	public static final String ATT_NAME_CONNECTION = "ATTRIBUTE_FOR_CONNECTION";
-	 
+	public static final String ATT_NAME_CONNECTION = "ATTRIBUTE_FOR_CONNECTION";	 
 	private static final String ATT_NAME_USER_NAME = "ATTRIBUTE_FOR_STORE_USER_NAME_IN_COOKIE";
 	 
 	// Store Connection in request attribute.
 	// (Information stored only exist during requests)
 	public static void storeConnection(ServletRequest request, Connection conn) {
-		request.setAttribute(ATT_NAME_CONNECTION, conn);
+		request.setAttribute(ATT_NAME_CONNECTION, conn);		
 	}
 	 
 	// Get the Connection object has been stored in one attribute of the request.
@@ -30,7 +29,7 @@ public class MyUtils {
 	// Store user info in Session.
 	public static void storeLoginedUser(HttpSession session, User loginedUser) {
 		// On the JSP can access ${loginedUser}
-		session.setAttribute("loginedUser", loginedUser);
+		session.setAttribute("loginedUser", loginedUser);		
 	}
 	 
 	// Get the user information stored in the session.

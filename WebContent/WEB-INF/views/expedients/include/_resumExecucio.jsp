@@ -5,14 +5,14 @@
 <c:set var="language" value="${not empty param.language ? param.language : not empty language ? language : pageContext.request.locale}" scope="session" />
 <m:setLocale value="${language}" />
 <m:setBundle basename="i18n.base"/>		
-<c:if test="${informePrevi.autoritzacioPropostaDespesa.ruta != null || informePrevi.contracteSignat.ruta != null}">
+<c:if test="${informePrevi.autoritzacioPropostaDespesa.ruta != null || informePrevi.contracteSignat.ruta != null || informePrevi.llistaModificacions.size() > 0}">
 	<div class="panel panel-default">
     	<div class="panel-body">
         	<div class="tabbable">
                	<ul class="nav nav-tabs">
                		<c:set var="primera" value="true" scope="request"/>
                		<c:forEach items="${informePrevi.llistaModificacions}" var="propostaModificacio" >
-               			<li ${primera ? 'class="active"' : ''}><a data-toggle="tab" href="#propostaModificacio_${propostaModificacio.idInf}">Proposta modificacio ${propostaModificacio.idInf}</a></li>
+               			<li ${primera ? 'class="active"' : ''}><a data-toggle="tab" href="#propostaModificacio_${propostaModificacio.idInf}">Incidència ${propostaModificacio.idInf}</a></li>
                		 	<c:set var="primera" value="false" scope="request"/>	
                		</c:forEach>					   
  				</ul>
@@ -32,12 +32,13 @@
       	</div>
       	<div class="panel-body">
 			<div class="row panel-body">
-				<h4>Modificacions</h4>	
-            	<a href="modificarInforme?idInforme=${informePrevi.idInf}" class="btn btn-primary" role="button">Modificar informe</a>							                    				                       	
+				<h4>Incidències</h4>	
+            	<a href="modificarInforme?idInforme=${informePrevi.idInf}" class="btn btn-primary" role="button">Afegir incidència</a>							                    				                       	
         	</div>
     	</div>
 	</div>
 </c:if>
+<c:if test="${informePrevi.expcontratacio.contracte == 'major'}">
 <div class="panel panel-default">
 	<div class="panel-body">
 		<div class="row panel-body">
@@ -94,7 +95,7 @@
        		</div>															
 		</div>
  	</div>
-  	<c:if test="${informePrevi.ofertaSeleccionada != null && canCreateFactura}">
+  	<c:if test="${informePrevi.ofertaSeleccionada != null}">
     	<div class="panel-body">
 			<div class="row panel-body">	
             	<a href="registrarCertificacio?idInforme=${informePrevi.idInf}" class="btn btn-primary" role="button">Registrar certificació</a>							                    				                       	
@@ -103,6 +104,7 @@
    	</c:if>   
 </div>
 <br />
+</c:if>
 <div class="panel panel-default">
 	<div class="panel-body">
 		<div class="row panel-body">
@@ -168,70 +170,52 @@
    	</c:if>   
 </div>
 <br />
-<div class="col-md-6">
-	<p> 
-		<label>Expedient: </label> ${expedient.expContratacio}
- 	</p>
-    <p> 
-    	<label>Import licitació: </label> ${informePrevi.propostaInformeSeleccionada.getPlicFormat()}
-    </p>
-    <c:if test="${expedient.contracte=='major'}">
-	    <p> 
-	    	<label>Data publicació BOIB: </label> ${expedient.getDataPublicacioBOIBString()}
-	    </p>
-    </c:if> 
-    <p> 
-    	<label>Data publicació perfil contratant: </label> ${expedient.getDataPublicacioPerfilContratantString()}
-    </p>
-    <p> 
-    	<label>Adjudicatari: </label> <a href="empresa?cif=${informePrevi.ofertaSeleccionada.cifEmpresa}">${informePrevi.ofertaSeleccionada.nomEmpresa} (${informePrevi.ofertaSeleccionada.cifEmpresa})</a> 
-    </p>
-    <p> 
-    	<label>Termini d'execució: </label> ${informePrevi.ofertaSeleccionada.getTermini()}
-    </p>
-    <p> 
-    	<label>Data Inici obra: </label> ${expedient.getDataIniciObratring()}
-    </p>
-    <p> 
-    	<label>Duració de la garantia: </label> ${expedient.garantia}
-    </p>
-    <p> 
-    	<label>Data liquidació obra: </label> ${expedient.getDataLiquidacioString()}
-    </p> 
+<p>
+	<label>Altre documentació execució:</label>
+</p>	
+<div class="row col-md-12">
+	<c:forEach items="${informePrevi.documentsAltresExecucio}" var="arxiu" >
+		<div class="document">
+			<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
+			<c:if test="${arxiu.signat}">
+					<span class="glyphicon glyphicon-pencil signedFile"></span>
+			</c:if>
+			<c:if test="${canModificarExpedient && arxiu.ruta != null}">
+				<span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+			</c:if>
+			<br>
+			<div class="infoSign hidden">
+				<c:forEach items="${arxiu.firmesList}" var="firma" >
+					<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+					<br>
+				</c:forEach>
+			</div>
+		</div>
+	</c:forEach>
+	<br>					            		
 </div>
-<div class="col-md-6">
-    <c:if test="${llicencia.codi != null}">
-    <p> 
-    	<label>Llicència: </label> <a target="_blanck" href="llicencia?codi=${llicencia.codi}">${llicencia.codi}</a> 
-    </p>
-    </c:if>
-    <c:if test="${expedient.contracte=='major'}">
-    <p> 
-    	<label>Data límit presentació ofertes: </label> ${expedient.getDataLimitPresentacioString()}
-    </p>
-    </c:if> 
-    <p> 
-    	<label>Data adjudicació: </label> ${expedient.getDataAdjudicacioString()}
-    </p> 
-    <p> 
-    	<label>Import adjudicació: </label> ${informePrevi.ofertaSeleccionada.getPlicFormat()}
-    </p>
-    <p> 
-    	<label>Data Firma contracte: </label> ${expedient.getDataFirmaString()}
-    </p>
-    <p> 
-    	<label>Data Recepció obra: </label> ${expedient.getDataRecepcioString()}
-    </p>
-    <p> 
-    	<label>Data retorn garantia: </label> ${expedient.getDataRetornGarantiaString()}
-   </p> 
-</div>  
+<div class="row">            			
+	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadDocumentsAltresExecucio">
+		<div class="form-group">
+			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+            <div class="col-xs-5">   
+            	<input type="file" class="btn" name="file" multiple/><br/>
+			</div> 
+			<input type="hidden" name="idActuacio" value="${informePrevi.actuacio.referencia}">
+			<input type="hidden" name="idIncidencia" value="${informePrevi.actuacio.idIncidencia}">
+			<input type="hidden" name="idInforme" value="${informePrevi.idInf}">			    
+			<div class="col-xs-2"> 
+				<input type="submit" class="btn btn-primary" value="Pujar" />
+			</div>    						
+		</div>         				
+	</form>							
+</div>	
 <div class="row">
 	<div class="col-md-12">
 		<div class="row">
   			<c:if test="${canModificarExpedient}">
 				<div class="col-md-offset-9 col-md-2 margin_top30">
-					<a href="editExecucio?${informePrevi.expcontratacio.expContratacio != '-1'  ? 'ref=' += informePrevi.expcontratacio.expContratacio : 'idinf=' += informePrevi.idInf}" class="btn btn-primary" role="button">Modificar</a>
+					<a href="editExecucio?${informePrevi.expcontratacio.expContratacio != '-1'  ? 'ref=' += informePrevi.expcontratacio.expContratacio : 'idinf=' += informePrevi.idInf}" class="btn btn-primary" role="button">Editar</a>
 				</div>
 			</c:if>
     	</div>       

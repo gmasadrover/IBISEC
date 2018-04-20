@@ -33,6 +33,70 @@
                         </ol>
                     </div>
                 </div>
+                <c:if test="${canViewPendentsTercers}">
+	                <div class="row">
+	                    <div class="col-md-12">
+	                        <h2>Tramitacions pendent tercers</h2>
+	                        <div class="table-responsive">                        
+	                            <table class="table table-striped table-bordered filerTable pendents">
+	                                <thead>
+	                                    <tr>
+	                                        <th>Num Autos</th>
+	                                        <th>Estat</th>                                                                          
+	                                        <th>Data document</th>
+	                                        <th>Termini</th>
+	                                        <th>Descripcio</th>
+	                                    </tr>
+	                                </thead>
+	                                <tbody>
+	                                	<c:forEach items="${tramitacionsPendentsTercersList}" var="procediment" >
+								          	<tr>							          	
+								           		<td><a href="procediment?ref=${procediment.referencia}" class="loadingButton"  data-msg="obrint procediment...">${procediment.numAutos}</a></td>
+								           		<td>${procediment.estat}</td>	
+								           		<td>${procediment.getTramitacionsList()[0].getDataDocumentString()}</td>
+								           		<td>${procediment.getTramitacionsList()[0].termini}</td>
+								           		<td>${procediment.getTramitacionsList()[0].descripcio}</td>
+								          	</tr>
+								       	</c:forEach>                                	
+	                                </tbody>
+	                            </table>
+	                        </div>
+	                    </div>
+	                </div>
+                	<div class="margin_top30"></div>
+                </c:if>
+                <c:if test="${canViewPendentsProvisio}">
+	                <div class="row">
+	                    <div class="col-md-12">
+	                        <h2>Tramitacions pendent provisió</h2>
+	                        <div class="table-responsive">                        
+	                            <table class="table table-striped table-bordered filerTable pendents">
+	                                <thead>
+	                                    <tr>
+	                                        <th>Num Autos</th>
+	                                        <th>Estat</th>                                                                          
+	                                        <th>Data document</th>
+	                                        <th>Termini</th>
+	                                        <th>Descripcio</th>
+	                                    </tr>
+	                                </thead>
+	                                <tbody>
+	                                	<c:forEach items="${tramitacionsPendentsProvisioList}" var="procediment" >
+								          	<tr>							          	
+								           		<td><a href="procediment?ref=${procediment.referencia}" class="loadingButton"  data-msg="obrint procediment...">${procediment.numAutos}</a></td>
+								           		<td>${procediment.estat}</td>	
+								           		<td>${procediment.getTramitacionsList()[0].getDataDocumentString()}</td>
+								           		<td>${procediment.getTramitacionsList()[0].termini}</td>
+								           		<td>${procediment.getTramitacionsList()[0].descripcio}</td>
+								          	</tr>
+								       	</c:forEach>                                	
+	                                </tbody>
+	                            </table>
+	                        </div>
+	                    </div>
+	                </div>
+                	<div class="margin_top30"></div>
+                </c:if>
                 <div class="row">
 					<form class="form-horizontal" method="POST" action="judicials">						
 						<div class="form-group">				
@@ -85,7 +149,7 @@
                     <div class="col-md-12">
                         <h2>Procediments</h2>
                         <div class="table-responsive">                        
-                            <table class="table table-striped table-bordered filerTable">
+                            <table class="table table-striped table-bordered filerTable procediments">
                                 <thead>
                                     <tr>
                                         <th>Num Autos</th>

@@ -62,16 +62,8 @@ public class DoEditBastanteoServlet extends HttpServlet {
 				bastanteo.setDatabastanteo(formatter.parse(multipartParams.getParametres().get("dataBastanteo")));
 			}
 			bastanteo.setEmpresa(EmpresaCore.findEmpresa(conn, multipartParams.getParametres().get("llistaEmpreses")));
-			bastanteo.setEscritura(multipartParams.getParametres().get("escritura"));
 			bastanteo.setPersonaFacultada(multipartParams.getParametres().get("personaFacultada"));
 			bastanteo.setCarrec(multipartParams.getParametres().get("carrec"));
-			if (multipartParams.getParametres().get("dataEscritura") != null && ! multipartParams.getParametres().get("dataEscritura").isEmpty()) {
-				bastanteo.setDataEscritura(formatter.parse(multipartParams.getParametres().get("dataEscritura")));
-			}
-			bastanteo.setNumProtocol(multipartParams.getParametres().get("nProtocol"));
-			bastanteo.setNotari(multipartParams.getParametres().get("notari"));
-			bastanteo.setProcedencia(multipartParams.getParametres().get("procedencia"));
-			bastanteo.setDesti(multipartParams.getParametres().get("desti"));
 			BastanteosCore.modificarBastanteo(conn, bastanteo);
 		} catch (ParseException | SQLException | NamingException e) {
 			errorString = e.toString();

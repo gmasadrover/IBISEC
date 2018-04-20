@@ -44,9 +44,7 @@ public class CreateTascaServlet extends HttpServlet {
 		User usuari = MyUtils.getLoginedUser(request.getSession());
     	Connection conn = MyUtils.getStoredConnection(request);
 		if (usuari == null){
- 		   response.sendRedirect(request.getContextPath() + "/preLogin");
-		}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_crear)) {
-    		response.sendRedirect(request.getContextPath() + "/");	
+ 		   response.sendRedirect(request.getContextPath() + "/preLogin");		
  	   	}else{ 
 	        try {
 	        	String tipus = request.getParameter("tipus");
@@ -54,13 +52,20 @@ public class CreateTascaServlet extends HttpServlet {
 	        	request.setAttribute("idActuacio", request.getParameter("idActuacio"));
 	        	request.setAttribute("idIncidencia", ActuacioCore.findActuacio(conn, request.getParameter("idActuacio")).getIdIncidencia());
 	        	request.setAttribute("idProcediment", request.getParameter("idProcediment"));
+	        	request.setAttribute("idFactura", request.getParameter("idfact"));
+	        	request.setAttribute("idInforme", request.getParameter("idInf"));
 	        	request.setAttribute("tipus", tipus);
+	        	request.setAttribute("centre", request.getParameter("centre"));
 				request.setAttribute("nouCodi", TascaCore.idNovaTasca(conn));
-				if ("infPrev".equals(tipus)) {
+				boolean canReasignar = (!usuari.getDepartament().equals("obres") && !usuari.getDepartament().equals("instalacions")) || usuari.getRol().contains("CAP") || usuari.getRol().contains("MANUAL");
+				
+				if (("infPrev".equals(tipus) || "factura".equals(tipus)) && !usuari.getRol().contains("MANUAL") && !usuari.getRol().contains("CAP") && !usuari.getRol().contains("ADMIN")) {
 					llistaUsuaris = UsuariCore.findUsuarisByRol(conn, "CAP");
 				} else {
 					llistaUsuaris = UsuariCore.findUsuarisByRol(conn, "");
 				}
+				
+				request.setAttribute("canReasignar", canReasignar);
 				request.setAttribute("llistaUsuaris", llistaUsuaris);
 				request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Tasques"));
 			} catch (SQLException e) {

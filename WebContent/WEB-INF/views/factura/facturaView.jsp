@@ -40,12 +40,37 @@
                		</div>
                	 </div>               	 
                 <!-- /.row -->
-                <c:if test="${not empty factura}">                	                		
+                <c:if test="${not empty factura}">   
+                	<c:if test="${not empty informe && informe.idInf != null}">
+	               		<h2 class="margin_bottom30">Informació actuació</h2>               		
+			    		<div class="row">	
+			    			<div class="col-md-12">
+				    			<h3>Resum expedient</h3>
+				    			<p>
+									<label>Obejcte:</label> ${informe.propostaInformeSeleccionada.objecte}
+								</p>
+								<p>
+									<label>Total:</label> ${informe.ofertaSeleccionada.getPlicFormat()}
+								</p>
+								<p>
+									<label>Pagat:</label> ${informe.getTotalFacturatFormat()}
+								</p>
+			        		</div>
+	        			</div>
+	        		</c:if>	             	                		
                		<h2 class="margin_bottom30">Informació bàsica</h2>
+               		<div class="row margin_bottom30">
+                		<div class="col-md-3">
+	               			<c:if test="${canModificar}">
+								<a href="createTasca?tipus=factura&idfact=${factura.idFactura}" class="btn btn-primary" role="button">Crear Tasca</a>									
+							</c:if>
+						</div>	
+					</div>
                		<c:if test="${factura.anulada}">       
 	               		<div class="row">
 		                	<div class="col-md-12">
 		               			<p style="color: red;">Factura Anul·lada</p>
+		               			<p style="color: red;">Motiu: ${factura.motiuAnulada}</p>
 		               		</div>
 		               	</div>
 	               	</c:if>
@@ -122,6 +147,26 @@
 							</c:if>
 						</div>
 					</div>
+					<div class="row">
+						<div class="col-xs-offset-1 col-md-10">
+							<label>Altres:	</label>
+							<c:forEach items="${factura.altres}" var="arxiu" >
+								<div class="document">							    			
+									<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
+									<c:if test="${arxiu.signat}">
+										<span class="glyphicon glyphicon-pencil signedFile"></span>
+									</c:if>
+									<br>
+									<div class="infoSign hidden">
+										<c:forEach items="${arxiu.firmesList}" var="firma" >
+											<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+											<br>
+										</c:forEach>
+									</div>	
+									</div>
+							</c:forEach>	
+						</div>
+					</div>
                 	<div class="row">
                 		<div class="col-xs-offset-1 col-md-10 longText">
                 			<p> 
@@ -129,24 +174,49 @@
 	                        	${factura.notes}
                             </p>	                		
                         </div>
-                	</div>                   	
-                	<div class="row">
-                		<div class="col-md-4">
-	               			<c:if test="${canModificar}">
-								<a href="editFactura?ref=${factura.idFactura}" class="btn btn-primary" role="button">Modificar</a>									
-							</c:if>
-						</div>	
-						<div class="col-md-4">
-	               			<c:if test="${canModificar && factura.dataEnviatConformador == null && factura.dataConformacio == null}">
-								<a href="enviarAConformar?ref=${factura.idFactura}" class="btn btn-success" role="button">Enviar a conformar</a>									
-							</c:if>
-						</div>		
-						<div class="col-md-4">
-	               			<c:if test="${canModificar}">
-								<a id="anularFactura" data-idfactura="${factura.idFactura}" class="btn btn-danger" role="button">Anul·lar</a>									
-							</c:if>
-						</div>						
-                	</div>         	
+                	</div>     
+                	<c:if test="${!factura.anulada}">                	              	
+	                	<div class="row">
+	                		<div class="col-md-3">
+		               			<c:if test="${canModificar}">
+									<a href="editFactura?ref=${factura.idFactura}" class="btn btn-primary" role="button">Modificar</a>									
+								</c:if>
+							</div>	
+							<div class="col-md-3">
+		               			<c:if test="${canModificar && factura.dataEnviatComptabilitat == null}">
+									<a href="enviarAComptabilitat?ref=${factura.idFactura}" class="btn btn-warning" role="button">Enviar a comptabilitzar</a>									
+								</c:if>
+							</div>		
+							<div class="col-md-3">
+		               			<c:if test="${canModificar && factura.dataEnviatConformador == null && factura.dataConformacio == null}">
+									<a href="enviarAConformar?ref=${factura.idFactura}" class="btn btn-success" role="button">Enviar a conformar</a>									
+								</c:if>
+							</div>		
+							<div class="col-md-3">
+		               			<c:if test="${canModificar}">																	
+									<input class="btn btn-danger" data-toggle="modal" data-target="#myModal" value="Anul·lar">
+				        			<!-- Modal -->
+									<div id="myModal" class="modal fade" role="dialog">
+										<div class="modal-dialog">																	
+									    <!-- Modal content-->
+									    	<div class="modal-content">
+									      		<div class="modal-header">
+									        		<button type="button" class="close" data-dismiss="modal">&times;</button>
+									        		<h4 class="modal-title">Motiu anul·lació</h4>
+									      		</div>
+									      		<div class="modal-body">
+									        		<textarea id="motiuAnulacio" required></textarea>
+									      		</div>
+									      		<div class="modal-footer">
+									        		<a id="anularFactura" data-idfactura="${factura.idFactura}" class="btn btn-danger" role="button">Anul·lar</a>	
+									      		</div>
+								    		</div>																	
+									  	</div>
+									</div> 
+								</c:if>
+							</div>						
+	                	</div>
+	                </c:if>         	
                 </c:if>
                 <!-- /.row -->     
            	</div>

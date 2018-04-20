@@ -80,8 +80,11 @@
 		    					<input type="hidden" name="idActuacio" value="${idActuacio}">
 		    					<input type="hidden" name="idIncidencia" value="${idIncidencia}">
 		    					<input type="hidden" name="idProcediment" value="${idProcediment}">
+		    					<input type="hidden" name="idFactura" value="${idFactura}">
 		    					<input type="hidden" name="tipus" value="${tipus}">
+		    					<input type="hidden" name="idInforme" value="${idInforme}">
 		    					<input type="hidden" name="referencia" value="${nouCodi}">    
+		    					<input type="hidden" name="centre" value="${centre}">    
 		    					<input type="hidden" id="idCentreSelected" value="-1">                   
                             </div>                            
                             <c:choose>
@@ -108,8 +111,15 @@
 	                        </c:if>
 						    <div class="form-group">
                                 <label class="col-xs-3 control-label">Comentari</label>
-                                <div class="col-xs-3">
-                                	<textarea class="form-control" name="comentari" placeholder="comentari inter" rows="3">Revisar</textarea>
+                                <div class="col-xs-3">                                	
+                               		<c:choose>
+									    <c:when test="${tipus=='infPrev'}">
+									   		<textarea class="form-control" name="comentari" placeholder="comentari inter" rows="3">Realitzar informe</textarea>	
+									    </c:when>
+									    <c:otherwise>
+									       <textarea class="form-control" name="comentari" placeholder="comentari inter" rows="3">Revisar</textarea>	                            
+									    </c:otherwise>
+									</c:choose>                                 	
                                 </div>
                             </div>
                             <div class="form-group">
@@ -118,25 +128,28 @@
 	                                <input type="file" class="btn" name="file" multiple/><br/>
 								</div> 	
 							</div>
-                            <div class="form-group">
-                                <label class="col-xs-3  control-label">Asignar</label>
-                                <div class="col-xs-3">
-	                                <select class="form-control selectpicker" name="idUsuari" data-live-search="true" data-size="5" id="usuarisList">
-	                                	<c:forEach items="${llistaUsuaris}" var="usuari" >
-	                                		<option value='${usuari.idUsuari}'>${usuari.getNomCompletReal()}</option>	                                		
-	                                	</c:forEach>
-	                                	<c:if test="${tipus!='infPrev'}">
-		                                	<option data-divider="true"></option>
-	                                		<option value='gerencia'>Gerència</option>
-	                                		<option value='juridica'>Assessoria Jurídica</option>
-	                                		<option value='obres'>Obres , Projectes i Supervisió</option>
-	                                		<option value='comptabilitat'>Administració i comptabilitat</option>
-	                                		<option value='instalacions'>Instal·lacions i Manteniment</option>    
-	                                	</c:if>          	                                
-	                                </select>
-	                             </div>
-                            </div>                     	
-                            <br>
+							<c:if test="${canReasignar}">
+	                            <div class="form-group">
+	                                <label class="col-xs-3  control-label">Asignar</label>
+	                                <div class="col-xs-3">
+		                                <select class="form-control selectpicker" name="idUsuari" data-live-search="true" data-size="5" id="usuarisList">
+		                                	<option value='-1'>Seleccionar usuari</option>
+		                                	<c:forEach items="${llistaUsuaris}" var="usuari" >
+		                                		<option value='${usuari.idUsuari}'>${usuari.getNomCompletReal()}</option>	                                		
+		                                	</c:forEach>
+		                                	<c:if test="${tipus!='infPrev'}">
+			                                	<option data-divider="true"></option>
+		                                		<option value='gerencia'>Gerència</option>
+		                                		<option value='juridica'>Assessoria Jurídica</option>
+		                                		<option value='obres'>Obres , Projectes i Supervisió</option>
+		                                		<option value='comptabilitat'>Administració i comptabilitat</option>
+		                                		<option value='instalacions'>Instal·lacions i Manteniment</option>    
+		                                	</c:if>          	                                
+		                                </select>
+		                             </div>
+	                            </div>                     	
+	                            <br>
+	                        </c:if>
 						    <div class="form-group">
 						        <div class="col-xs-offset-3 col-xs-9">
 						            <input type="submit" class="btn btn-primary" value="Enviar">

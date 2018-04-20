@@ -9,7 +9,7 @@
     <div class="panel-heading">
         <div class="row">
     		<div class="col-md-6">
-    			id actuació: <a href="actuacionsDetalls?ref=${actuacio.referencia}" class="loadingButton"  data-msg="obrint actuació...">${actuacio.referencia}</a>
+    			Anar a l'actuació: <a href="actuacionsDetalls?ref=${actuacio.referencia}&exp=${tasca.idinformeOriginal}" class="loadingButton"  data-msg="obrint actuació...">${actuacio.referencia}</a>
     		</div>
     		<div class="col-md-6">
     			Centre: ${actuacio.centre.getNomComplet()}
@@ -18,7 +18,7 @@
     </div>
     <div class="panel-body">
         <p>${actuacio.descripcio}</p>
-        <a href="#" data-toggle="modal" data-target="#ModalDocuments">Veure documents</a>
+        <%-- <a href="#" data-toggle="modal" data-target="#ModalDocuments">Veure documents</a>
         <div id="ModalDocuments" class="modal fade" role="dialog">
 			<div class="modal-dialog">																	
 		    <!-- Modal content-->
@@ -29,13 +29,13 @@
 					</div>	
 	    		</div>																	
 		  	</div>
-		</div>
+		</div> --%>
     </div>
-    <div class="panel-footer">
-    	<div class="row">
+    <%--<div class="panel-footer">
+    	 <div class="row">
     		<div class="col-md-6">
     			Data Creació: ${actuacio.getDataCreacioString()}
     		</div>
-    	</div>
-    </div>
+    	</div> 
+    </div>--%>
 </div>

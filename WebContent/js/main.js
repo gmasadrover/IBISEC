@@ -2,14 +2,32 @@ $(document).ready(function() {
 	$('.datepicker').datepicker({
 	    language: "es"    	
 	});
-	loadCentres();
+	loadCentres();   
+	setInterval(function() {
+		$.ajax({
+	        type: "POST",
+	        url: "NewNotificacio",
+	        dataType: "json",
+	        //if received a response from the server
+	        success: function( data, textStatus, jqXHR) {
+	            //our country code was correct so we have some information to display
+	        	if (data.novesTasques) {
+	        		//prueba_notificacion();
+	        		alert('Hi ha noves tasques')
+	        	}	        	
+	        },        
+	        //If there was no resonse from the server
+	        error: function(jqXHR, textStatus, errorThrown){
+	             console.log("Something really bad happened " + jqXHR.responseText);
+	        }  
+	    });
+	}, 5 * 60 * 1000); // 60 * 1000 milsec
 	
 	$('.upload').on("click",function() { 
         var imgVal = $(this).parents('.form-horizontal').find('.uploadImage').val(); 
         if(imgVal=='') { 
             alert("S'ha d'adjuntar algun document"); 
             return false; 
-
         } else {
         	 return true; 
         }    
@@ -25,14 +43,18 @@ $(document).ready(function() {
 	$('.deleteFile').on('click', function(){
 		if(confirm("Segur que voleu eliminar aquest document?")) {
 			$.ajax({
-		        type: "POST",
+		        type: "GET",
 		        url: "DeleteDocument",
+		        async: false,
 		        dataType: "json",
 		        data: {"ruta": $(this).data('ruta')},
 		        //if received a response from the server
 		        success: function( data, textStatus, jqXHR) {
 		            //our country code was correct so we have some information to display
-		        	location.reload();      
+		        	setTimeout(function() {
+		        		location.reload();
+		        	}, 2000);
+		        	      
 		        },        
 		        //If there was no resonse from the server
 		        error: function(jqXHR, textStatus, errorThrown){
@@ -96,7 +118,26 @@ function loadCentres(){
         }  
     });
 }
-
+function prueba_notificacion() {
+	if (Notification) {
+		//if (Notification.permission !== "granted") {
+		//Notification.requestPermission()
+		//}
+		var title = "Notificació intranet"
+		var extra = {
+		icon: "favicon.png",
+		body: "Nova tasca"
+		}
+		var noti = new Notification( title, extra)
+		noti.onclick = {
+		// Al hacer click
+		}
+		noti.onclose = {
+		// Al cerrar
+		}
+		//setTimeout( function() { noti.close() }, 10000)
+	}
+}
 var waitingDialog = waitingDialog || (function ($) {
     'use strict';
 

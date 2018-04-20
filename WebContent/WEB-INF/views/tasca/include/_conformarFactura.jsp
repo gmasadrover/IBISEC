@@ -17,7 +17,7 @@
 		<label>Termini:</label> ${informePrevi.ofertaSeleccionada.termini}
 	</p>
 	<p>
-		<label>Tècnic:</label> ${informePrevi.ofertaSeleccionada.usuariCreacio.getNomComplet()}
+		<label>Tècnic:</label> ${informePrevi.usuari.getNomComplet()}
 	</p>
 	<p>
 		<label>Proposta tècnica:</label> ${informePrevi.ofertaSeleccionada.comentari} 

@@ -9,7 +9,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.naming.NamingException;
+
 import bean.Registre;
+import utils.Fitxers;
+import utils.Fitxers.Fitxer;
 
 public class RegistreCore {
 	
@@ -41,11 +45,11 @@ public class RegistreCore {
 	}
 	
 	public static void nouRegistre(Connection conn, String tipus, Registre registre) throws SQLException {
-		String sql = "INSERT INTO public.tbl_regentrada (id, data, tipus, remitent, contingut, idcentre, idincidencia, usucre, datacre, actiu)"
-					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, localtimestamp, true);";
+		String sql = "INSERT INTO public.tbl_regentrada (id, data, tipus, remitent, contingut, idcentre, idincidencia, usucre, datacre, actiu, idinforme)"
+					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, localtimestamp, true, ?);";
 		if (tipus == "S") {
-			sql = "INSERT INTO public.tbl_regsortida (id, data, tipus, destinatari, contingut, idcentre, idincidencia, usucre, datacre, actiu)"
-					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, localtimestamp, true);";
+			sql = "INSERT INTO public.tbl_regsortida (id, data, tipus, destinatari, contingut, idcentre, idincidencia, usucre, datacre, actiu, idinforme)"
+					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, localtimestamp, true, ?);";
 		}	
 		
 		PreparedStatement pstm = conn.prepareStatement(sql);
@@ -58,7 +62,7 @@ public class RegistreCore {
 		pstm.setString(6,  registre.getIdCentres());
 		pstm.setString(7, registre.getIdIncidencies());
 		pstm.setInt(8, registre.getIdUsuari());			
-				
+		pstm.setString(9, registre.getIdInforme());		
 		pstm.executeUpdate();
 	}
 	
@@ -304,4 +308,43 @@ public class RegistreCore {
 		return idActuacions;
 	}
 	
+	public static List<Fitxer> getArxiusAdjunts(Connection conn, String idincidencia, String idInforme, String tipus) throws SQLException, NamingException {
+		List<Fitxer> documentsAdjunts = new ArrayList<Fitxer>();
+		String sql = "SELECT id"
+				+ " FROM public.tbl_regentrada"
+				+ " WHERE tipus = ? AND idinforme LIKE '%" + idInforme + "%'";	
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setString(1, tipus);
+		ResultSet rs = pstm.executeQuery();
+		while (rs.next()) {
+			documentsAdjunts.addAll(Fitxers.ObtenirFitxers(idincidencia, "", "RegistreE", rs.getString("id"), ""));
+		}
+		return documentsAdjunts;
+	}
+	
+	public static List<Registre> getEntrades(Connection conn, String idInforme) throws SQLException {
+		List<Registre> registresList = new ArrayList<Registre>();
+		String sql = "SELECT id, data, tipus, remitent, contingut, idcentre, idincidencia, usucre, datacre, actiu"
+				+ " FROM public.tbl_regentrada"
+				+ " WHERE idinforme LIKE '%" + idInforme + "%'";	
+		PreparedStatement pstm = conn.prepareStatement(sql);		
+		ResultSet rs = pstm.executeQuery();
+		while (rs.next()) {
+			registresList.add(initRegistre(conn, rs, "E"));
+		}
+		return registresList;
+	}
+	
+	public static List<Registre> getSortides(Connection conn, String idInforme) throws SQLException {
+		List<Registre> registresList = new ArrayList<Registre>();
+		String sql = "SELECT id, data, tipus, destinatari, contingut, idcentre, idincidencia, usucre, datacre, actiu"
+				+ " FROM public.tbl_regsortida"
+				+ " WHERE idinforme LIKE '%" + idInforme + "%'";	
+		PreparedStatement pstm = conn.prepareStatement(sql);		
+		ResultSet rs = pstm.executeQuery();
+		while (rs.next()) {
+			registresList.add(initRegistre(conn, rs, "S"));
+		}
+		return registresList;
+	}
 }

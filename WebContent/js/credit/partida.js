@@ -1,4 +1,14 @@
 $(document).ready(function() {
+	$('#tipusPartidaList option[value="' + $('#tipusSelected').val() + '"]').attr('selected', 'selected');	
+	$('.selectpicker').selectpicker('refresh');		
+	$('#import').on('keyup', function(){
+		var pbase = $('#import').val().replace(',','.');
+		if ($.isNumeric(pbase)) {			
+			
+		} else {
+			$('#import').val('');
+		}
+	});
 	$('.filerTable').DataTable({
 		dom: 'Bfrtip',
         buttons: [ {

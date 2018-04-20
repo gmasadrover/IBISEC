@@ -31,6 +31,7 @@ import core.ControlPageCore;
 import core.CreditCore;
 import core.EmpresaCore;
 import core.FacturaCore;
+import core.IncidenciaCore;
 import core.InformeCore;
 import core.JudicialCore;
 import core.OfertaCore;
@@ -70,40 +71,52 @@ public class TascaDetailsServlet extends HttpServlet {
  	       Incidencia incidencia = new Incidencia();
  	       Tasca tasca = new Tasca();
  	       boolean esCap = false;
+ 	       boolean isGerencia = false;
  	       InformeActuacio informeActuacioPrevi = new InformeActuacio();
  	       InformeActuacio informeActuacioOriginal = new InformeActuacio();
  	       List<PropostaInforme> propostaInformeList = new ArrayList<PropostaInforme>();
  	       List<Historic> historial = new ArrayList<Historic>();
  	       List<Partida> partidesList = new ArrayList<Partida>();
  	       List<Empresa> empresesList = new ArrayList<Empresa>();
- 	       List<User> llistaUsuaris = new ArrayList<User>();
+ 	       List<User> llistaUsuaris = new ArrayList<User>(); 	    
  	       boolean canRealitzarTasca = false;
+ 	       boolean canModificarFactura = false;
+ 	       boolean canBorrarTasca = false;
+ 	       boolean areaJuridica = false;
  	       List<Oferta> ofertes = new ArrayList<Oferta>();
 	       Oferta ofertaSeleccionada = new Oferta();
 	       Factura factura = new Factura();
 	       Judicial procediment = new Judicial();
  	       try {
+ 	    	   canBorrarTasca = usuari.getRol().contains("ADMIN");
  	    	   tasca = TascaCore.findTascaId(conn, idTasca, usuari.getIdUsuari());
- 	    	   actuacio = tasca.getActuacio(); 	  
- 	    	   if (actuacio.getCentre() != null && actuacio.getCentre().getIdCentre() != null && actuacio.getCentre().getIdCentre().equals("9999PERSO") && !UsuariCore.hasPermision(conn, usuari, SectionPage.personal)) response.sendRedirect(request.getContextPath() + "/");
- 	    	   informes = InformeCore.getInformesActuacio(conn, actuacio.getReferencia());
+ 	    	   if (usuari.getIdUsuari() == tasca.getUsuari().getIdUsuari()) TascaCore.llegirNotificacio(conn, tasca.getIdTasca());
+ 	    	   actuacio = tasca.getActuacio();  	    	   
+ 	    	   if (actuacio != null) {
+ 	    		   if (actuacio.getCentre() != null && actuacio.getCentre().getIdCentre() != null && actuacio.getCentre().getIdCentre().equals("9999PERSO") && !UsuariCore.hasPermision(conn, usuari, SectionPage.personal)) response.sendRedirect(request.getContextPath() + "/");
+ 	 	    	   informes = InformeCore.getInformesActuacio(conn, actuacio.getReferencia());
+ 	 	    	   if (!actuacio.getReferencia().isEmpty()) {
+ 	 	    		  incidencia = IncidenciaCore.findIncidencia(conn, actuacio.getIdIncidencia());
+ 	 	    		  actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia()));
+ 	 	    		  historial = TascaCore.findHistorial(conn, idTasca, incidencia.getIdIncidencia(), actuacio.getReferencia());
+ 	 	    		  ofertes = OfertaCore.findOfertes(conn, tasca.getIdinforme());
+ 	 	    		  ofertaSeleccionada = OfertaCore.findOfertaSeleccionada(conn, tasca.getIdinforme());
+ 	 	    	   }else{
+ 	 	    		  historial = TascaCore.findHistorial(conn, idTasca, incidencia.getIdIncidencia(), "");
+ 	 	    	   } 	
+ 	    	   } else {
+ 	    		  historial = TascaCore.findHistorial(conn, idTasca, "-1", "");
+ 	    	   }
  	    	   incidencia = tasca.getIncidencia();
  	    	   llistaUsuaris = UsuariCore.findUsuarisByDepartament(conn, tasca.getDepartament());
  	    	   if (usuari.getRol().contains("CAP")) {
  	    		   llistaUsuaris = UsuariCore.llistaUsuaris(conn, true); 
  	    	   }
  	    	   canRealitzarTasca = usuari.getDepartament().equals(tasca.getDepartament()) || usuari.getRol().contains("ADMIN") || usuari.getRol().contains("MANUAL"); 
- 	    	   if (actuacio != null) {
- 	    		  actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia()));
- 	    		  historial = TascaCore.findHistorial(conn, idTasca, incidencia.getIdIncidencia(), actuacio.getReferencia());
- 	    		  ofertes = OfertaCore.findOfertes(conn, tasca.getIdinforme());
- 	    		  ofertaSeleccionada = OfertaCore.findOfertaSeleccionada(conn, tasca.getIdinforme());
- 	    	   }else{
- 	    		  historial = TascaCore.findHistorial(conn, idTasca, incidencia.getIdIncidencia(), "");
- 	    	   } 	    	  
  	    	   String tipusTasca = tasca.getTipus();
- 	    	   if ((tasca.getDepartament().equals(usuari.getDepartament()) && usuari.getRol().contains("CAP"))) esCap = true;
- 	    	   if ("infPrev".equals(tipusTasca)) { 	    		  
+ 	    	   if ((tasca.getDepartament().equals(usuari.getDepartament()) && usuari.getRol().contains("CAP")) || usuari.getRol().contains("MANUAL")) esCap = true;
+ 	    	   if (usuari.getRol().contains("GER") || usuari.getRol().contains("ADMIN")) isGerencia = true;
+ 	    	   if ("infPrev".equals(tipusTasca) || "solInfPrev".equals(tipusTasca) || "vistInfPrev".equals(tipusTasca)) { 	    		  
  	    		  informeActuacioPrevi = InformeCore.getInformeTasca(conn, idTasca);
  	    		  if (informeActuacioPrevi.getIdInf() != null) {
  	    			  propostaInformeList = informeActuacioPrevi.getLlistaPropostes();
@@ -112,6 +125,26 @@ public class TascaDetailsServlet extends HttpServlet {
 	 	    		  llistaUsuaris.clear();
 	 	    		  llistaUsuaris.add(UsuariCore.finCap(conn, tasca.getDepartament()));
  	    		  }
+ 	    	   }else if ("contracte".equals(tipusTasca)) {
+ 	    		  if (usuari.getRol().contains("CONTA")) {
+ 	    			  llistaUsuaris.clear();
+ 	    			  llistaUsuaris.addAll(UsuariCore.llistaUsuaris(conn, true));
+	    		  } 
+ 	    	   }else if ("doctecnica".equals(tipusTasca) || "vistDocTecnica".equals(tipusTasca)) { 
+ 	    		  String tascaInforme = tasca.getIdinforme();
+  	    		  informeActuacioPrevi = InformeCore.getInformePrevi(conn, tascaInforme, true);  	    		 
+  	    		  if (!esCap) {
+ 	 	    		  llistaUsuaris.clear();
+ 	 	    		  llistaUsuaris.add(UsuariCore.finCap(conn, tasca.getDepartament()));
+  	    		  }
+ 	    	  }else if ("docprelicitacio".equals(tipusTasca)) {
+ 	    		  areaJuridica = usuari.getRol().contains("JUR");
+ 	    		  informeActuacioPrevi = InformeCore.getInformePrevi(conn, tasca.getIdinforme(), true); 	    		  
+	    		  if (informeActuacioPrevi.getIdInf() != null) {
+	    			  propostaInformeList = informeActuacioPrevi.getLlistaPropostes();
+	    		  }
+	    		  llistaUsuaris.clear();
+	    		  llistaUsuaris.addAll(UsuariCore.llistaUsuaris(conn, true));
  	    	   }else if ("modificacio".equals(tipusTasca)) {
  	    		  informeActuacioPrevi = InformeCore.getModificacioTasca(conn, idTasca); 
  	    		  informeActuacioOriginal = InformeCore.getInformePrevi(conn, informeActuacioPrevi.getIdInfOriginal(), false);
@@ -158,6 +191,9 @@ public class TascaDetailsServlet extends HttpServlet {
  	    		  String tascaInforme = tasca.getIdinforme();
  	    		  informeActuacioPrevi = InformeCore.getInformePrevi(conn, tascaInforme, true); 	    		  
  	    		  partidesList = CreditCore.getPartides(conn, false);
+ 	    	   }else if ("preLicitacio".equals(tipusTasca) || "ratClassificacio".equals(tipusTasca)) {
+ 	    		  String tascaInforme = tasca.getIdinforme();
+ 	    		  informeActuacioPrevi = InformeCore.getInformePrevi(conn, tascaInforme, true); 	    
  	    	   }else if ("liciMenor".equals(tipusTasca)){ 
  	    		  String tascaInforme = tasca.getIdinforme(); 	    		
  	    		  informeActuacioPrevi = InformeCore.getInformePrevi(conn, tascaInforme, true);
@@ -175,17 +211,24 @@ public class TascaDetailsServlet extends HttpServlet {
  	    		   informeActuacioPrevi = InformeCore.getInformePrevi(conn, factura.getIdInforme(), true); 	 
  	    		   if (usuari.getRol().contains("CONTA")) {
  	    			   llistaUsuaris.clear();
- 	 	    		   llistaUsuaris.add(informeActuacioPrevi.getUsuari());
- 	 	    		   llistaUsuaris.add(UsuariCore.finCap(conn, tasca.getDepartament()));
+ 	    			   llistaUsuaris.addAll(UsuariCore.llistaUsuaris(conn, true));
  	    		   } 	    		   
  	    	   }else if ("facturaConformada".equals(tipusTasca)) {
 	    		   factura = FacturaCore.getFactura(conn, tasca.getIdinforme());
 	    		   informeActuacioPrevi = InformeCore.getInformePrevi(conn, factura.getIdInforme(), true); 	
-	    		   if (usuari.getRol().contains("CONTA")) {
+	    		   if (usuari.getRol().contains("CONTA") || usuari.getRol().contains("ADMIN")) {
+	    			   canModificarFactura = true;
  	    			   llistaUsuaris.clear();
- 	 	    		   llistaUsuaris.add(informeActuacioPrevi.getUsuari());
- 	 	    		   llistaUsuaris.add(UsuariCore.finCap(conn, tasca.getDepartament()));
+ 	 	    		   llistaUsuaris.addAll(UsuariCore.llistaUsuaris(conn, true));
  	    		   } 	
+ 	    	  }else if ("revisarCertificacio".equals(tipusTasca) || "firmaCertificacio".equals(tipusTasca) || "certificacioFirmada".equals(tipusTasca)) {
+	    		   factura = FacturaCore.getCertificacio(conn, tasca.getIdinforme());
+	    		   informeActuacioPrevi = InformeCore.getInformePrevi(conn, factura.getIdInforme(), true); 	
+	    		   if (usuari.getRol().contains("CONTA") || usuari.getRol().contains("ADMIN")) {
+	    			   canModificarFactura = true;
+	    			   llistaUsuaris.clear();
+	 	    		   llistaUsuaris.addAll(UsuariCore.llistaUsuaris(conn, true));
+	    		   }
 	    	   }else if("judicial".equals(tipusTasca)) {
 	    		   procediment = JudicialCore.findProcediment(conn, tasca.getIdinforme());
 	    	   }
@@ -205,6 +248,7 @@ public class TascaDetailsServlet extends HttpServlet {
  	       request.setAttribute("incidencia", incidencia);
  	       request.setAttribute("tasca", tasca);
  	       request.setAttribute("esCap", esCap);
+ 	       request.setAttribute("isGerencia", isGerencia);
  	       request.setAttribute("historial", historial);
  	       request.setAttribute("informePrevi", informeActuacioPrevi);
  	       request.setAttribute("informeActuacioOriginal", informeActuacioOriginal);
@@ -217,6 +261,10 @@ public class TascaDetailsServlet extends HttpServlet {
 	       request.setAttribute("factura", factura);
  	       request.setAttribute("canRealitzarTasca", canRealitzarTasca);
  	       request.setAttribute("canRealitzarPropostaTecnica", true);
+ 	       request.setAttribute("canModificarFactura", canModificarFactura);
+ 	       request.setAttribute("canBorrarTasca", canBorrarTasca);
+ 	       request.setAttribute("areaJuridica", areaJuridica);
+ 	       request.setAttribute("procediment", procediment);
  	       request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Tasques"));
  	       request.setAttribute("idUsuariLogg", usuari.getIdUsuari());
 

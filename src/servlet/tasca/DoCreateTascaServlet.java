@@ -17,9 +17,12 @@ import org.apache.commons.lang.math.NumberUtils;
 
 import bean.Actuacio;
 import bean.Incidencia;
+import bean.InformeActuacio;
+import bean.User;
 import core.ActuacioCore;
 import core.CentreCore;
 import core.IncidenciaCore;
+import core.InformeCore;
 import core.TascaCore;
 import core.UsuariCore;
 import utils.Fitxers;
@@ -65,8 +68,22 @@ public class DoCreateTascaServlet extends HttpServlet {
 	   	String usuari = multipartParams.getParametres().get("idUsuari");
 	   	String idCentre = multipartParams.getParametres().get("idCentre");
 	   	String idProcediment = multipartParams.getParametres().get("idProcediment");
+	   	String idFactura = multipartParams.getParametres().get("idFactura");
+	   	idInformePrevi = multipartParams.getParametres().get("idInforme");
 	   	String errorString = null;	   		   	
-	   	try {	   		
+	   	try {
+	   		if (usuari == null) {
+	   			usuari = String.valueOf(UsuariCore.finCap(conn, MyUtils.getLoginedUser(request.getSession()).getDepartament()).getIdUsuari());
+	   		}
+	   		if (usuari.equals("-1") ) {
+	   			usuari = String.valueOf(idUsuari);		
+   			}
+	   		int idUsuariTasca = -1;
+   			if (NumberUtils.isNumber(usuari)) {
+   				idUsuariTasca = Integer.parseInt(usuari);
+   			}else{
+   				idUsuariTasca = UsuariCore.finCap(conn, usuari).getIdUsuari();
+   			}	
    			if (tipus.equals("manual")) {
    				//Crear incidencia
    				Incidencia incidencia = new Incidencia();
@@ -88,30 +105,65 @@ public class DoCreateTascaServlet extends HttpServlet {
 		 	    ActuacioCore.novaActuacio(conn, actuacio);   				
    				
 		 	   tipus = "generic";
+   			} else if (tipus.equals("centre")) {
+   				//Crear incidencia
+   				idCentre = multipartParams.getParametres().get("centre");
+   				Incidencia incidencia = new Incidencia();
+   				idIncidencia = IncidenciaCore.getNewCode(conn);
+	   		    incidencia.setIdIncidencia(idIncidencia);
+	   		    incidencia.setIdCentre(idCentre);
+	   		    incidencia.setUsuCre(UsuariCore.findUsuariByID(conn, idUsuari));
+	   		    incidencia.setDescripcio(assumpte);
+	   		    IncidenciaCore.novaIncidencia(conn, incidencia);   				
+   				
+   				//Crear actuació
+	   		    Actuacio actuacio = new Actuacio();
+	   		    idActuacio = ActuacioCore.getNewCode(conn);
+		 	    actuacio.setReferencia(idActuacio);
+		 	    actuacio.setDescripcio(assumpte);
+		 	    actuacio.setCentre(CentreCore.findCentre(conn, idCentre, false));
+		 	    actuacio.setIdIncidencia(incidencia.getIdIncidencia());
+		 	    actuacio.setIdUsuariCreacio(idUsuari);
+		 	    ActuacioCore.novaActuacio(conn, actuacio);   				
+   				
+		 	    InformeActuacio informe = new InformeActuacio();
+		 	    informe.setIdTasca(idTasca);
+				informe.setIdIncidencia(idIncidencia);
+				informe.setActuacio(actuacio);
+				idInformePrevi = InformeCore.nouInforme(conn, informe, idUsuari);
+		 	    
+		 	    User user = UsuariCore.findUsuariByID(conn, idUsuariTasca);
+		 	    if (user.getRol().contains("GER")) {
+		 	    	 tipus = "infPrev";
+		 	    } else if (user.getRol().contains("CAP")) {
+		 	    	 tipus = "vistInfPrev";
+		 	    } else {
+		 	    	 tipus = "solInfPrev";
+		 	    }
+		 	   
    			} else if (idProcediment != null && !idProcediment.equals("")) {
    				idIncidencia = "-1";
    				idActuacio = "-1";
    				idInformePrevi = idProcediment;
+   			} else if (idFactura != null && !idFactura.equals("")) {
+   				idIncidencia = "-1";
+   				idActuacio = "-1";
+   				idInformePrevi = idFactura;
    			} else {
    				idIncidencia = multipartParams.getParametres().get("idIncidencia"); 
    		   		if (multipartParams.getParametres().get("idActuacio") != "") {
    					idActuacio = multipartParams.getParametres().get("idActuacio"); 
    					String modificacio = "Crear nova tasca";
    					if ("infPrev".equals(tipus)) {
-   						modificacio = "Sol·licitar proposta d'actuació";
+   						tipus = "solInfPrev";
+   						modificacio = "Sol·licitar informe prèvi";
    					} else if ("notificacio".equals(tipus)) {
    						modificacio = "Enviar nova notificació";
    					}
    					ActuacioCore.actualitzarActuacio(conn, idActuacio, modificacio);
    					idIncidencia = ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia();
    				}	
-   			}
-   			int idUsuariTasca = -1;
-   			if (NumberUtils.isNumber(usuari)) {
-   				idUsuariTasca = Integer.parseInt(usuari);
-   			}else{
-   				idUsuariTasca = UsuariCore.finCap(conn, usuari).getIdUsuari();
-   			}	
+   			}   			
    			idTasca = TascaCore.novaTasca(conn, tipus, idUsuariTasca, idUsuari, idActuacio, idIncidencia, comentari, assumpte, idInformePrevi, multipartParams.getFitxers());
    		} catch (SQLException | NamingException e) {
 			// TODO Auto-generated catch block

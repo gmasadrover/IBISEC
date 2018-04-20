@@ -43,18 +43,18 @@
 	                        		<div class="col-md-6">
 	                        			 ${actuacio.referencia} - ${actuacio.centre.getNomComplet()}
 	                        		</div>
-	                        		<div class="col-md-6">
+	                        		<%-- <div class="col-md-6">
 	                        			Darrera modificació: ${actuacio.modificacio} - ${actuacio.getDarreraModificacioString()}
-	                        		</div>
+	                        		</div> --%>
 	                        	</div>
 	                        </div>
 	                        <div class="panel-body">
 	                            <p>${actuacio.descripcio}</p>
 	                            <br />
-	                            <p>Notes: ${actuacio.notes}</p>
+	                            <p>${actuacio.notes}</p>
 	                        </div>
-	                        <div class="panel-footer">
-	                        	<div class="row">
+	                        <%--<div class="panel-footer">
+	                        	 <div class="row">
 	                        		<div class="col-md-3">
 	                        			Creació: ${actuacio.getDataCreacioString()}
 	                        		</div>
@@ -73,8 +73,8 @@
 	                        				Tancament: ${actuacio.getDataTancamentString()} ${actuacio.getMotiuTancament()}
 	                        			</c:if>
 	                        		</div>
-	                        	</div>
-	                        </div>
+	                        	</div> 
+	                        </div>--%>
 	                    </div>
 	                </div>
             	</div> 
@@ -131,7 +131,7 @@
 				        	</div>
 				        	<div class="col-md-2"> 
 					        	<c:if test="${actuacio.activa && canCreateInformePrevi}">					      			
-						      		<a href="createTasca?idActuacio=${actuacio.referencia}&tipus=infPrev" class="btn btn-primary right" role="button">Sol·licitar valoració econòmica ${informes.size() > 0 ? "nova" : ""}</a>
+						      		<a href="createTasca?idActuacio=${actuacio.referencia}&tipus=infPrev" class="btn btn-primary right" role="button">Sol·licitar informe</a>
 								</c:if> 
 							</div>   							                 			 
                  		</div>	                    		                       	
@@ -139,202 +139,156 @@
             	</div>
             	<div class="row">
             		<div class="col-md-12 panel-group" id="accordion">
-            		  <div class="panel panel-default">
-            		  	<div class="panel-heading">
-					      <h4 class="panel-title">
-					        <a data-toggle="collapse" data-parent="#accordion" href="#dadesTecniques">Expedient</a>
-					      </h4>
-					    </div>
-					    <div id="dadesTecniques" class="panel-collapse collapse in">					    	
-					      	<div class="panel-body">
-					      		<h4>Expedients d'actuació</h4>					      		
-					      		<div class="col-md-12 panel-group" id="accordionInformes">					      			
-					      			<c:forEach items="${informes}" var="informePrevi" >					      				
-					      				<div class="panel panel-default">
-						      				<div class="panel-heading">
-										      <h4 class="panel-title">
-										        <a data-toggle="collapse" data-parent="#accordionInformes" href="#expedient${informePrevi.idInf}">Expedient: ${informePrevi.expcontratacio.expContratacio != '-1' ? informePrevi.expcontratacio.expContratacio : informePrevi.idInf} - ${informePrevi.getEstatEconomic()} - ${informePrevi.getPropostaInformeSeleccionada().getTipusObraFormat()}</a>
-										      </h4>
-										    </div>
-										    <div id="expedient${informePrevi.idInf}" class="panel-collapse collapse ${(informePrevi.dataAprovacio == null && view == 'dadesT') || (informePrevi.dataAprovacio != null && view == 'dadesAprov') ? 'in' : ''}">
-										    	<div class="panel-body">					      		
-										    		<div class="row panel-body">
-											    		<div class="tabbable">
-									                    	<ul class="nav nav-tabs">
-															   	<li class='active'><a data-toggle="tab" href="#resum${informePrevi.idInf}">Resum</a></li>
-															   	<li><a data-toggle="tab" href="#informe${informePrevi.idInf}">Informe inicial</a></li>
-															   	<li><a data-toggle="tab" href="#licitacio${informePrevi.idInf}">Licitació</a></li>							   											    
-															    <li><a data-toggle="tab" href="#execucio${informePrevi.idInf}">Execució</a></li>	
-															    <li><a data-toggle="tab" href="#garantia${informePrevi.idInf}">Garantia</a></li>	
-															    <li><a data-toggle="tab" href="#urbanisme${informePrevi.idInf}">Autoritzacions Urb</a></li>						   
-														 	</ul>
-														 	<c:set var="informePrevi" value="${informePrevi}" scope="request"/>
-														  	<div class="tab-content">
-														  		<div id="resum${informePrevi.idInf}" class="tab-pane fade in active">
-														  			<div class="col-md-12 bordertab">
-														  				<jsp:include page="../expedients/include/_resumExpedient.jsp"></jsp:include>
-														  			</div>
-														  		</div>
-														  		<div id="informe${informePrevi.idInf}" class="tab-pane fade">
-														  		 	<div class="col-md-12 bordertab">
-														  		 		<jsp:include page="../expedients/include/_resumInforme.jsp"></jsp:include>
-														  		 	</div>
-														  		</div>
-														  		<div id="licitacio${informePrevi.idInf}" class="tab-pane fade">
-																	<div class="col-md-12 bordertab">
-																		<jsp:include page="../expedients/include/_resumLicitacio.jsp"></jsp:include>												    
-																	</div>
-																</div>
-																<div id="execucio${informePrevi.idInf}" class="tab-pane fade">
-																	<div class="col-md-12 bordertab">
-																		<jsp:include page="../expedients/include/_resumExecucio.jsp"></jsp:include>
-																	</div>
-																</div>
-																<div id="garantia${informePrevi.idInf}" class="tab-pane fade">
-																	<div class="col-md-12 bordertab">
-																		<jsp:include page="../expedients/include/_resumGarantia.jsp"></jsp:include>
-																	</div>
-																</div>
-																<div id="urbanisme${informePrevi.idInf}" class="tab-pane fade">
-																	<div class="col-md-12 bordertab">
-																		<jsp:include page="../expedients/include/_resumUrbanisme.jsp"></jsp:include>
-																	</div>
-																</div>
-														  	</div>
-														</div>
-													</div>
-												</div>
-											</div>
-					      				</div>
-					      			</c:forEach>
-					      		</div>	
-					      		<c:if test="${canModificarActuacio}">					      		
-					      			<a target="_blanck" class="btn btn-primary" href="newInforme?idActuacio=${actuacio.referencia}">Obrir nou Expedient</a>	
-					      		</c:if>			      		  					          	
-				    		</div>
-				    	</div>
-            		  </div>            		  
-					  <div class="panel panel-default">
-					    <div class="panel-heading">
-					      <h4 class="panel-title">
-					        <a data-toggle="collapse" data-parent="#accordion" href="#feines">Feines</a>
-					      </h4>
-					    </div>					    
-					    <div id="feines" class="panel-collapse collapse">	
-					    	<div class="panel-body">
-								<c:if test="${canCreateFeina}">
-							  		<div class="row margin_bottom10">
-							 			<div class="col-md-12 panel">
-											<a href="createFeina?idActuacio=${actuacio.referencia}" class="btn btn-primary loadingButton"  data-msg="obrint formulari..." role="button">Nova feina</a>
-										</div>
-									</div>
-							   	</c:if>
-								<div class="row panel-body">
-							      	<jsp:include page="../feina/include/_resumFeina.jsp"></jsp:include>
-							    </div>
-							 </div>
-						</div>
-					  </div>		  
-					  <div class="panel panel-default">
-					    <div class="panel-heading">
-					      <h4 class="panel-title">
-					        <a data-toggle="collapse" data-parent="#accordion" href="#tasques">Tasques</a>
-					      </h4>
-					    </div>
-					    <div id="tasques" class="panel-collapse collapse">	
-					      	<div class="panel-body">
-					      		<c:if test="${canCreateTasca}">
-						      		<div class="row margin_bottom10">
-							    		<div class="col-md-12 panel">
-											<a href="createTasca?idActuacio=${actuacio.referencia}&tipus=generic" class="btn btn-primary loadingButton"  data-msg="obrint formulari..." role="button">Nova tasca</a>
-										</div>
-						    		</div>
-						    	</c:if>
-					    		<div class="row panel-body">
-									<c:set var="tasquesList" value="${tasques}" scope="request"/>
-									<jsp:include page="../tasca/include/_tasquesList.jsp"></jsp:include>
-			                	</div>
-							</div>
-					    </div>
-					  </div>
-					  <div class="panel panel-default">
-						  <div class="panel-heading">
-						      <h4 class="panel-title">
-						        <a data-toggle="collapse" data-parent="#accordion" href="#entradesRegistre">Registre entrades</a>
-						      </h4>
-						    </div>
-						    <div id="entradesRegistre" class="panel-collapse collapse">
-						      	<div class="panel-body">
-						      		<c:if test="${canCreateRegistre}">
-							      		<div class="row margin_bottom10">
-								    		<div class="col-md-12 panel">
-												<a href="novaEntrada?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary loadingButton"  data-msg="obrint formulari..." role="button">Nova entrada</a>
-											</div>
-							    		</div>
-							    	</c:if>
-						    		<div class="row panel-body">					    		
-										<c:set var="registres" value="${entrades}" scope="request"/>
-										<c:set var="tipus" value="entrada" scope="request"/>
-                    					<jsp:include page="../registre/include/_registresList.jsp"></jsp:include>
-									</div>
-								</div>
-				    		</div>
-					</div>
-						  <div class="panel panel-default">
+        				<c:if test="${informes.size() > 0 || canModificarActuacio}">
+            		  		<div class="panel panel-default">
+            		  			<div class="panel-heading">
+					      			<h4 class="panel-title">
+							        	<a data-toggle="collapse" data-parent="#accordion" href="#dadesTecniques">Expedient</a>
+							      	</h4>
+					    		</div>
+					    		<div id="dadesTecniques" class="panel-collapse collapse in">					    	
+					      			<div class="panel-body">
+					      				<h4>Expedients</h4>					      		
+					      				<div class="col-md-12 panel-group" id="accordionInformes">					      			
+							      			<c:forEach items="${informes}" var="informePrevi" >	
+							      				<c:set var="informePrevi" value="${informePrevi}" scope="request"/>				      				
+							      				<jsp:include page="../expedients/include/_expedientView.jsp"></jsp:include>
+							      			</c:forEach>
+					      				</div>	
+							      		<c:if test="${canModificarActuacio}">					      		
+							      			<a target="_blanck" class="btn btn-primary" href="newInforme?idActuacio=${actuacio.referencia}">Obrir nou Expedient</a>	
+							      		</c:if>			      		  					          	
+				    				</div>
+				    			</div>
+            		  		</div>  
+            		  	</c:if>   
+           				<div class="panel panel-default">
 						    <div class="panel-heading">
-						      <h4 class="panel-title">
-						        <a data-toggle="collapse" data-parent="#accordion" href="#sortidesRegistre">Registre sortides</a>
-						      </h4>
+						      	<h4 class="panel-title">
+						        	<a data-toggle="collapse" data-parent="#accordion" href="#feines">Feines</a>
+						      	</h4>
+						    </div>					    
+						    <div id="feines" class="panel-collapse collapse">	
+						    	<div class="panel-body">
+									<c:if test="${canCreateFeina}">
+								  		<div class="row margin_bottom10">
+								 			<div class="col-md-12 panel">
+												<a href="createFeina?idActuacio=${actuacio.referencia}" class="btn btn-primary loadingButton"  data-msg="obrint formulari..." role="button">Nova feina</a>
+											</div>
+										</div>
+								   	</c:if>
+									<div class="row panel-body">
+								      	<jsp:include page="../feina/include/_resumFeina.jsp"></jsp:include>
+								    </div>
+								 </div>
+							</div>
+					  	</div> 		 
+           				<div class="panel panel-default">
+						    <div class="panel-heading">
+								<h4 class="panel-title">
+							    	<a data-toggle="collapse" data-parent="#accordion" href="#tasques">Tasques</a>
+							  	</h4>
 						    </div>
-						    <div id="sortidesRegistre" class="panel-collapse collapse">
+						    <div id="tasques" class="panel-collapse collapse">	
 						      	<div class="panel-body">
-						      		<c:if test="${canCreateRegistre}">
+						      		<c:if test="${canCreateTasca}">
 							      		<div class="row margin_bottom10">
 								    		<div class="col-md-12 panel">
-												<a href="novaSortida?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary loadingButton"  data-msg="obrint formulari..." role="button">Nova sortida</a>
+												<a href="createTasca?idActuacio=${actuacio.referencia}&tipus=generic" class="btn btn-primary loadingButton"  data-msg="obrint formulari..." role="button">Nova tasca</a>
 											</div>
 							    		</div>
 							    	</c:if>
-						    		<div class="row panel-body">	
-										<c:set var="registres" value="${sortides}" scope="request"/>
-										<c:set var="tipus" value="sortida" scope="request"/>
-                    					<jsp:include page="../registre/include/_registresList.jsp"></jsp:include>
+						    		<div class="row panel-body">
+										<c:set var="tasquesList" value="${tasques}" scope="request"/>
+										<c:set var="idInfActual" value="-1" scope="request"/>
+										<jsp:include page="../tasca/include/_tasquesListResum.jsp"></jsp:include>
+				                	</div>
+								</div>
+						    </div>
+					  	</div>	
+          					<div class="panel panel-default">
+           				  	<div class="panel-heading">
+								<h4 class="panel-title">
+							    	<a data-toggle="collapse" data-parent="#accordion" href="#registre">Registres</a>
+							  	</h4>
+						    </div>
+						    <div id="registre" class="panel-collapse collapse">
+						    	<div class="tabbable">
+					               	<ul class="nav nav-tabs">
+					               		<li class="active"><a data-toggle="tab" href="#entradesRegistre">Registre entrades</a></li>
+					               		<li><a data-toggle="tab" href="#sortidesRegistre">Registre sortides</a></li>
+					 				</ul>
+								  	<div class="tab-content">								  		
+								  		<div id="entradesRegistre" class="tab-pane fade in active">
+								  		 	<div class="col-md-12 bordertab">
+								  		 		<c:if test="${canCreateRegistre}">
+										      		<div class="row margin_bottom10">
+											    		<div class="col-md-12">
+															<a href="novaEntrada?idIncidencia=${incidencia.idIncidencia}&idInf=${incidencia.idIncidencia}" class="btn btn-primary loadingButton"  data-msg="obrint formulari..." role="button">Nova entrada</a>
+														</div>
+										    		</div>
+										    	</c:if>
+									    		<div class="row panel-body">					    		
+													<c:set var="registres" value="${entrades}" scope="request"/>
+													<c:set var="tipus" value="entrada" scope="request"/>
+			                    					<jsp:include page="../registre/include/_registresList.jsp"></jsp:include>
+												</div>
+										    </div>
+								  	 	</div>
+								  		<div id="sortidesRegistre" class="tab-pane fade">
+								  		 	<div class="col-md-12 bordertab">
+								  		 		<c:if test="${canCreateRegistre}">
+										      		<div class="row margin_bottom10">
+											    		<div class="col-md-12">
+															<a href="novaSortida?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary loadingButton"  data-msg="obrint formulari..." role="button">Nova sortida</a>
+														</div>
+										    		</div>
+										    	</c:if>
+									    		<div class="row panel-body">	
+													<c:set var="registres" value="${sortides}" scope="request"/>
+													<c:set var="tipus" value="sortida" scope="request"/>
+			                    					<jsp:include page="../registre/include/_registresList.jsp"></jsp:include>
+												</div>
+										    </div>
+								  		</div>
+					  				</div>
+								</div>
+				    		</div>
+			    		</div>	
+			    		<c:if test="${informes.size() == 0}">
+	           				<div class="panel panel-default">
+							    <div class="panel-heading">
+							      <h4 class="panel-title">
+							        <a data-toggle="collapse" data-parent="#accordion" href="#arxiusAdjunts">Arxius adjunts</a>
+							      </h4>
+							    </div>
+							    <div id="arxiusAdjunts" class="panel-collapse collapse">
+							      	<div class="panel-body">					      		
+							    		<div class="row panel-body">
+								    		<jsp:include page="include/_resumFitxers.jsp"></jsp:include>																
+										</div>
+										<div class="row">            			
+											<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadFichero">
+												<div class="form-group">
+													<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+						                            <div class="col-xs-5">   
+						                                <input type="file" class="btn" name="file" multiple/><br/>
+													</div> 											
+													<input type="hidden" name="idIncidencies" value="${incidencia.idIncidencia}">
+													<input type="hidden" name="tipus" value="Actuacio">
+													<input type="hidden" name="idTipus" value="${actuacio.referencia}">											
+													<input type="hidden" name="redirect" value="/actuacionsDetalls?ref=${actuacio.referencia}">				    
+													<div class="col-xs-2"> 
+						         						<input type="submit" class="btn btn-primary" value="Pujar" />
+						         					</div>    						
+						         				</div>         				
+											</form>							
+						            	</div>     
 									</div>
-								</div>
-					    	</div>
-						  </div>
-					  <div class="panel panel-default">
-					    <div class="panel-heading">
-					      <h4 class="panel-title">
-					        <a data-toggle="collapse" data-parent="#accordion" href="#arxiusAdjunts">Arxius adjunts</a>
-					      </h4>
-					    </div>
-					    <div id="arxiusAdjunts" class="panel-collapse collapse">
-					      	<div class="panel-body">					      		
-					    		<div class="row panel-body">
-						    		<jsp:include page="include/_resumFitxers.jsp"></jsp:include>																
-								</div>
-								<div class="row">            			
-									<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadFichero">
-										<div class="form-group">
-											<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-				                            <div class="col-xs-5">   
-				                                <input type="file" class="btn" name="file" multiple/><br/>
-											</div> 											
-											<input type="hidden" name="idIncidencies" value="${incidencia.idIncidencia}">
-											<input type="hidden" name="tipus" value="Actuacio">
-											<input type="hidden" name="idTipus" value="${actuacio.referencia}">											
-											<input type="hidden" name="redirect" value="/actuacionsDetalls?ref=${actuacio.referencia}">				    
-											<div class="col-xs-2"> 
-				         						<input type="submit" class="btn btn-primary" value="Pujar" />
-				         					</div>    						
-				         				</div>         				
-									</form>							
-				            	</div>     
-							</div>
-					    </div>
-					  </div>
-					</div>
+						    	</div>
+						  	</div>
+						</c:if>
+          			</div>     		
             	</div>       
 				</c:if>
             </div>

@@ -7,65 +7,99 @@
 <m:setBundle basename="i18n.base"/>		
 <h4>Informe inicial</h4>	
 <br />
-<p>
-	<label>Informe:</label> ${informePrevi.idInf}
-</p>
-<p>
-	<label>Expedient:</label> ${informePrevi.expcontratacio.expContratacio}
-</p>
-<p>
-	<label>Tècnic:</label> ${informePrevi.usuari.getNomComplet()}
-</p>
-<p>
-	<label>Data:</label> ${informePrevi.getDataCreacioString()}
-</p>
-<div class="col-md-12 panel-group" id="accordionPropostes${informePrevi.idInf}">
-	<div class="tabbable">
-       	<ul class="nav nav-tabs">
-       		<c:set var="numPA" value="1" scope="request" />	
-       		<c:forEach items="${informePrevi.llistaPropostes}" var="propostaActuacio" >
-       			<li ${propostaActuacio.seleccionada ? 'class="active"' : ''}><a data-toggle="tab" href="#propostaActuacio_${informePrevi.idInf}_${numPA}">Proposta actuació ${numPA}</a></li>
-       			<c:set var="numPA" value="${numPA + 1}" scope="request"/>
-       		</c:forEach>					   
-	 	</ul>
-	  	<div class="tab-content">
-	  		<c:set var="numPA" value="1" scope="request" />		
-	  		<c:forEach items="${informePrevi.llistaPropostes}" var="propostaActuacio" >  
-		  		<div id="propostaActuacio_${informePrevi.idInf}_${numPA}" class="tab-pane fade ${propostaActuacio.seleccionada ? 'in active' : ''}">
-		  		 	<div class="col-md-12 bordertab">
-		  		 		<c:set var="informePrevi" value="${informePrevi}" scope="request"/>
-			    		<c:set var="propostaActuacio" value="${propostaActuacio}" scope="request"/> 	
-				    	<jsp:include page="_resumProposta.jsp"></jsp:include>
-				    	<c:set var="numPA" value="${numPA + 1}" scope="request"/>						
-		  		 	</div>
-		  		 </div>
-	  		 </c:forEach>
-	  	</div>
+<div class="row">
+	<div class="col-md-4">
+		<p class="hidden">
+			<label>Informe:</label> ${informePrevi.idInf}
+		</p>
+		<p>
+			<label>Expedient:</label> ${informePrevi.expcontratacio.expContratacio}
+		</p>
 	</div>
-</div>														
-<p>
-	<label>Arxius adjunts:</label>
-</p>	
-<div class="row col-md-12">
-	<c:forEach items="${informePrevi.adjunts}" var="arxiu" >
-		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.nom}</a>
-		<br>
-	</c:forEach>					            		
+	<div class="col-md-4">
+		<p>
+			<label>Tècnic:</label> ${informePrevi.usuari.getNomComplet()}
+		</p>
+	</div>
+	<div class="col-md-4">
+		<p>
+			<label>Data:</label> ${informePrevi.getDataCreacioString()}
+		</p>
+	</div>
 </div>
-<p>			                     				
-	<label>Notes:</label> ${informePrevi.notes}
-</p>
+
+<c:set var="informePrevi" value="${informePrevi}" scope="request"/>
+<c:set var="propostaActuacio" value="${informePrevi.llistaPropostes[0]}" scope="request"/> 	
+<jsp:include page="_resumProposta.jsp"></jsp:include>						
+
+<c:if test="${informePrevi.adjunts.size() > 0}">										
+	<p>
+		<label>Arxius adjunts:</label>
+	</p>	
+	<div class="row col-md-12">
+		<c:forEach items="${informePrevi.adjunts}" var="arxiu" >
+			<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
+			<br>
+		</c:forEach>					            		
+	</div>
+</c:if>
+<c:if test="${informePrevi.informesPrevis.size() > 0}">										
+	<p>
+		<label>Informe tècnic:</label>
+	</p>	
+	<div class="row col-md-12">
+		<c:forEach items="${informePrevi.informesPrevis}" var="arxiu" >
+			<div class="document">
+				<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
+				<c:if test="${arxiu.signat}">
+						<span class="glyphicon glyphicon-pencil signedFile"></span>
+				</c:if>
+				<br>
+				<div class="infoSign hidden">
+					<c:forEach items="${arxiu.firmesList}" var="firma" >
+						<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+						<br>
+					</c:forEach>
+				</div>
+			</div>
+		</c:forEach>
+		<br>					            		
+	</div>
+</c:if>								
+<c:if test="${informePrevi.informeSupervisio.ruta != null}">
+	<p>
+		<div class="document">
+			<label>Informe supervisió:</label>										                  	
+          		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.informeSupervisio.getEncodedRuta()}">
+				${informePrevi.informeSupervisio.nom}
+			</a>	
+			<c:if test="${informePrevi.informeSupervisio.signat}">
+					<span class="glyphicon glyphicon-pencil signedFile"></span>
+			</c:if><br>
+			<div class="infoSign hidden">
+				<c:forEach items="${informePrevi.informeSupervisio.firmesList}" var="firma" >
+					<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+					<br>
+				</c:forEach>
+			</div>	
+		</div>																	
+	</p>	
+</c:if>	
+<c:if test="${informePrevi.notes != null && informePrevi.notes != ''}">	
+	<p>			                     				
+		<label>Notes:</label>${informePrevi.notes}
+	</p>
+</c:if>
 <c:if test="${informePrevi.propostaActuacio.ruta != null}">															
-            	<p>
-            		<div class="document">
-             		<label>Proposta d'actuació signada:	</label>											                  	
-          		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.propostaActuacio.getEncodedRuta()}">
+	<p>
+    	<div class="document">
+        	<label>Proposta d'actuació signada:	</label>											                  	
+         	<a target="_blanck" href="downloadFichero?ruta=${informePrevi.propostaActuacio.getEncodedRuta()}">
 				${informePrevi.propostaActuacio.nom}
 			</a>	
 			<c:if test="${informePrevi.propostaActuacio.signat}">
 					<span class="glyphicon glyphicon-pencil signedFile"></span>
 			</c:if>
-<%-- 																	<span data-ruta="${informePrevi.propostaActuacio.ruta}" class="glyphicon glyphicon-remove deleteFile"></span> --%>
 			<br>
 			<div class="infoSign hidden">
 				<c:forEach items="${informePrevi.propostaActuacio.firmesList}" var="firma" >
@@ -76,7 +110,7 @@
 		</div>																				
 	</p>	
 </c:if>	
-<c:if test="${informePrevi.propostaActuacio.ruta != null || informePrevi.usuariCapValidacio != null}">		
+<c:if test="${informePrevi.vistiplauPropostaActuacio.ruta != null || informePrevi.usuariCapValidacio != null}">		
 	<p>
 		<label>Comentari Cap:</label> ${informePrevi.comentariCap}
 	</p>
@@ -93,7 +127,6 @@
 				<c:if test="${informePrevi.vistiplauPropostaActuacio.signat}">
 					<span class="glyphicon glyphicon-pencil signedFile"></span>
 				</c:if>
-<%-- 																	<span data-ruta="${informePrevi.vistiplauPropostaActuacio.ruta}" class="glyphicon glyphicon-remove deleteFile"></span> --%>
 				<br>
 				<div class="infoSign hidden">
 					<c:forEach items="${informePrevi.vistiplauPropostaActuacio.firmesList}" var="firma" >
@@ -106,41 +139,38 @@
 	</c:if>	
 </c:if>
 <c:if test="${informePrevi.vistiplauPropostaActuacio.ruta != null || partida != ''}">
-	<p>
-		<label>Partida:</label>
-		<c:choose>
-			<c:when test="${informePrevi.dataRebujada != null}">
-				${informePrevi.partidaRebutjadaMotiu}
-			</c:when>
-			<c:otherwise>
-				<a target="_black" href="partidaDetalls?codi=${informePrevi.codiPartida}">${informePrevi.codiPartida} (${informePrevi.partida})</a>
-			</c:otherwise>
-		</c:choose> 
-	</p>
+	<div class="row">
+		<div class="col-md-4">
+			<p>
+				<label>Partida:</label>
+				<c:choose>
+					<c:when test="${informePrevi.dataRebujada != null}">
+						${informePrevi.partidaRebutjadaMotiu}
+					</c:when>
+					<c:otherwise>
+						<a target="_black" href="partidaDetalls?codi=${informePrevi.assignacioCredit.partida.codi}">${informePrevi.assignacioCredit.partida.codi} (${informePrevi.assignacioCredit.partida.nom})</a>
+					</c:otherwise>
+				</c:choose> 
+			</p>
+		</div>
+		<div class="col-md-4">
+		    <label class="left margin_right10">Afectat BEI</label> 
+		   	<div class="checkbox inline">
+		    	<label><input name="bei" type="checkbox" ${informePrevi.assignacioCredit.bei ? 'checked' : ''} disabled></label>
+		   	</div> 
+	   	</div>
+	   	<div class="col-md-4">
+		    <label class="left margin_right10">Afectat FEDER</label> 
+		 	<div class="checkbox inline">
+		     	<label><input name="feder" type="checkbox" ${informePrevi.assignacioCredit.feder ? 'checked' : ''} disabled></label>
+		  	</div>
+	  	</div>
+	</div>
 </c:if>
-<c:if test="${informePrevi.informeSupervisio.ruta != null}">
-	<p>
-		<div class="document">
-			<label>Informe supervisió / contractació:</label>										                  	
-          		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.informeSupervisio.getEncodedRuta()}">
-				${informePrevi.informeSupervisio.nom}
-			</a>	
-			<c:if test="${informePrevi.informeSupervisio.signat}">
-					<span class="glyphicon glyphicon-pencil signedFile"></span>
-			</c:if><br>
-			<div class="infoSign hidden">
-				<c:forEach items="${informePrevi.informeSupervisio.firmesList}" var="firma" >
-					<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-					<br>
-				</c:forEach>
-			</div>	
-		</div>																	
-	</p>	
-</c:if>	
 <c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.ruta != null}">
 	<p>
 		<div class="document">
-			<label>Autorització àrea econòmica signada:</label>										                  	
+			<label>Certificat d'existència de crèdit:</label>										                  	
           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.conformeAreaEconomivaPropostaActuacio.getEncodedRuta()}">
 				${informePrevi.conformeAreaEconomivaPropostaActuacio.nom}
 			</a>	
@@ -216,12 +246,103 @@
 		</div>
 	</p>
 </c:if>	
+<c:choose>
+	<c:when test="${expedient.contracte == 'major'}">
+		<c:if test="${informePrevi.documentBOIB.ruta != null}">
+			<p>
+				<div class="document">
+					<label>Document enviar BOIB:</label>										                  	
+			         		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.documentBOIB.getEncodedRuta()}">
+						${informePrevi.autoritzacioConseller.nom}
+					</a>	
+					<c:if test="${informePrevi.documentBOIB.signat}">
+							<span class="glyphicon glyphicon-pencil signedFile"></span>
+					</c:if>
+					<br>
+					<div class="infoSign hidden">
+						<c:forEach items="${informePrevi.documentBOIB.firmesList}" var="firma" >
+							<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+							<br>
+						</c:forEach>
+					</div>	
+				</div>
+			</p>
+		</c:if>	
+	</c:when>
+	<c:otherwise>
+		<c:if test="${informePrevi.correuInvitacio.ruta != null}">
+			<p>
+				<div class="document">
+					<label>Correu invitació licitació:</label>										                  	
+			         		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.correuInvitacio.getEncodedRuta()}">
+						${informePrevi.correuInvitacio.nom}
+					</a>	
+					<c:if test="${informePrevi.correuInvitacio.signat}">
+							<span class="glyphicon glyphicon-pencil signedFile"></span>
+					</c:if>
+					<br>
+					<div class="infoSign hidden">
+						<c:forEach items="${informePrevi.correuInvitacio.firmesList}" var="firma" >
+							<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+							<br>
+						</c:forEach>
+					</div>	
+				</div>
+			</p>
+		</c:if>
+	</c:otherwise>
+</c:choose>
+<div class="col-md-12 margin_top30 margin_bottom30">
+	<div class="form-group">
+		<a target="_blanck" href="crearTascaActuacioDerivada?idInforme=${informePrevi.idInf}" class="btn btn-success">Sol. actuació derivada</a>							            
+	</div>
+</div>	
+<p>
+	<label>Altre documentació prèvia:</label>
+</p>	
+<div class="row col-md-12">
+	<c:forEach items="${informePrevi.documentsAltresPrevis}" var="arxiu" >
+		<div class="document">
+			<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
+			<c:if test="${arxiu.signat}">
+					<span class="glyphicon glyphicon-pencil signedFile"></span>
+			</c:if>
+			<c:if test="${canModificarExpedient && arxiu.ruta != null}">
+				<span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+			</c:if>
+			<br>
+			<div class="infoSign hidden">
+				<c:forEach items="${arxiu.firmesList}" var="firma" >
+					<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+					<br>
+				</c:forEach>
+			</div>
+		</div>
+	</c:forEach>	
+	<br>					            		
+</div>
+<div class="row">            			
+	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadDocumentsAltresPrevis">
+		<div class="form-group">
+			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+            <div class="col-xs-5">   
+            	<input type="file" class="btn" name="file" multiple/><br/>
+			</div> 
+			<input type="hidden" name="idActuacio" value="${informePrevi.actuacio.referencia}">
+			<input type="hidden" name="idIncidencia" value="${informePrevi.actuacio.idIncidencia}">
+			<input type="hidden" name="idInforme" value="${informePrevi.idInf}">			    
+			<div class="col-xs-2"> 
+				<input type="submit" class="btn btn-primary" value="Pujar" />
+			</div>    						
+		</div>         				
+	</form>							
+</div> 
 <div class="row">
 	<div class="col-md-12">
 		<div class="row">
   			<c:if test="${canModificarExpedient}">
 				<div class="col-md-offset-7 col-md-2 margin_top30">
-					<a href="editInforme?${informePrevi.expcontratacio.expContratacio != '-1' ? 'ref=' += informePrevi.expcontratacio.expContratacio : 'idinf=' += informePrevi.idInf}&from=${redireccio}" class="btn btn-primary" role="button">Modificar</a>
+					<a href="editInforme?${informePrevi.expcontratacio.expContratacio != '-1' ? 'ref=' += informePrevi.expcontratacio.expContratacio : 'idinf=' += informePrevi.idInf}&from=${redireccio}" class="btn btn-primary" role="button">Editar</a>
 				</div>				
 				<c:if test="${!informePrevi.expcontratacio.isAnulat()}">
 					<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="anularExpedient">
@@ -230,10 +351,10 @@
                 		<input class="hidden" name="idInforme" value="${informePrevi.idInf}">
                 		<input class="hidden" name="redireccio" value="${redireccio}">
 						<div class="col-md-2 margin_top30">
-							<input class="btn btn-danger" data-toggle="modal" data-target="#myModalInforme" name="anular" value="Anul·lar">
+							<input class="btn btn-danger" data-toggle="modal" data-target="#myModalInforme${informePrevi.idInf}" name="anular" value="Anul·lar">
 						</div>
 	        			<!-- Modal -->
-						<div id="myModalInforme" class="modal fade" role="dialog">
+						<div id="myModalInforme${informePrevi.idInf}" class="modal fade" role="dialog">
 							<div class="modal-dialog">																	
 						    <!-- Modal content-->
 						    	<div class="modal-content">

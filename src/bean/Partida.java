@@ -79,6 +79,11 @@ public class Partida {
 	    return num.format(totalPartida) + '€';
 	}
 	
+	public String getTotalPartidaString(){
+		DecimalFormat num = new DecimalFormat("###0.00");
+	    return num.format(totalPartida);
+	}
+	
 	public void setTotalPartida(double totalPartida){		
 		this.totalPartida = totalPartida;
 	}

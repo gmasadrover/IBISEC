@@ -21,8 +21,7 @@ $(document).ready(function() {
 		}
 	});
 	$('#centresList option[value="-1"]').attr('selected', 'selected');	
-	$('.selectpicker').selectpicker('refresh');
-	
+	$('.selectpicker').selectpicker('refresh');	
 });
 
 function searchIncidencies(idCentre) {
@@ -98,10 +97,20 @@ function searchExpedients(idActuacio) {
             	$('#expedients').append(html);
         		$.each(data.llistatExpedients, function( key, data ) {
         			var refExt = '';
-        			if (data.expcontratacio.expContratacio != '-1') refExt = ' <b>(EXP ' + data.expcontratacio.expContratacio + ')</b> ';
-        			$('#expedientsList').append('<option value=' + data.idInf + '>' + data.idInf + refExt + '-' + data.propostaInformeSeleccionada.objecte + '</option>');
+        			if (data.expcontratacio.expContratacio != '-1') refExt = ' EXP ' + data.expcontratacio.expContratacio + ' ';
+        			if (data.ofertaSeleccionada != null) {
+        				$('#expedientsList').append('<option data-idactuacio="' + data.actuacio.referencia + '" data-idinf="' + data.idInf + '" data-objecte="' + data.propostaInformeSeleccionada.objecte + '" data-total="' + data.propostaInformeSeleccionada.plic + '" data-pagat="' + data.totalFacturat + '" value=' + data.idInf + '>' + refExt + '-' + data.propostaInformeSeleccionada.objecte + '</option>');
+        			}
         		});     
-        		$('.selectpicker').selectpicker('refresh');        		
+        		$('.selectpicker').selectpicker('refresh');      
+        		$('#expedientsList').on('change', function () {
+        			$('.infoExpedient').html('');
+        			$('.infoExpedient').append('<h3>Resum expedient</h3>');
+        			$('.infoExpedient').append('<span>' + $('#expedientsList option:selected').data('objecte') + '</span></br>');
+        			$('.infoExpedient').append('<span>Total: ' + $('#expedientsList option:selected').data('total') + '€</span></br>');
+        			$('.infoExpedient').append('<span>Pagat: ' + $('#expedientsList option:selected').data('pagat') + '€</span></br>');
+        			$('.infoExpedient').append('<span><a href="actuacionsDetalls?ref=' + $('#expedientsList option:selected').data('idactuacio') + '&exp=' + $('#expedientsList option:selected').data('idinf') + '" target="_blank">Anar a l\'actuació</a></span>');
+        		});
              }    
              $('#seleccionarInforme .loader').remove();
         },        

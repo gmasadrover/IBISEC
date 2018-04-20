@@ -54,7 +54,8 @@ public class ActuacioDetailsServlet extends HttpServlet {
    		response.sendRedirect(request.getContextPath() + "/");	 	
 	   }else{		   
 		   String referencia = request.getParameter("ref");
-		   String view = request.getParameter("view");		   
+		   String view = request.getParameter("view");		  
+		   String informeSeleccionat = request.getParameter("exp");
 	       String errorString = null;
 	       Actuacio actuacio = new Actuacio();	
 	       Incidencia incidencia = new Incidencia();
@@ -82,6 +83,8 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       boolean canCreateRegistre = false;
 	       boolean canModificarExpedient = false;
 	       boolean canModificarUrbanisme = false;
+	       boolean canModificarGarantia = false;
+	       boolean canModificarInstalacions = false;
 	       boolean canCreateFeina = false;
 	       try {
 	    	   actuacio = ActuacioCore.findActuacio(conn, referencia);
@@ -89,8 +92,7 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	    	   actuacio.setSeguiment(ActuacioCore.isSeguimentActuacio(conn, referencia, usuari.getIdUsuari()));
 	    	   incidencia = IncidenciaCore.findIncidencia(conn, actuacio.getIdIncidencia());
 	    	   actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia()));
-	    	   tasques = TascaCore.findTasquesActuacio(conn, referencia);	    
-	    	   notificacions = TascaCore.findNotificacionsActuacio(conn, referencia);	    	 
+	    	   tasques = TascaCore.findTasquesActuacio(conn, referencia, false); 
 	    	   informes = InformeCore.getInformesActuacio(conn, referencia);
 	    	   factures = FacturaCore.getFacturesActuacio(conn, referencia);  
 	    	   entrades = RegistreCore.searchEntradesIncidencia(conn, incidencia.getIdIncidencia());
@@ -104,6 +106,8 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	    	   canModificarExpedient = UsuariCore.hasPermision(conn, usuari, SectionPage.expedient_modificar);
 	    	   canCreateFeina = UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_crear);	
 	    	   canModificarUrbanisme = UsuariCore.hasPermision(conn, usuari, SectionPage.llicencia_modificar);
+	    	   canModificarGarantia = UsuariCore.hasPermision(conn, usuari, SectionPage.expedient_modificar);
+	    	   canModificarInstalacions = usuari.getDepartament().equals("instalacions") || usuari.getRol().contains("ADMIN");
 	       } catch (SQLException | NamingException e) {
 	           e.printStackTrace();
 	           errorString = e.getMessage();
@@ -111,6 +115,7 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       // Store info in request attribute, before forward to views
 	       request.setAttribute("errorString", errorString);
 	       request.setAttribute("view", view);
+	       request.setAttribute("informeSeleccionat", informeSeleccionat);
 	       request.setAttribute("actuacio", actuacio);
 	       request.setAttribute("incidencia", incidencia);
 	       request.setAttribute("tasques", tasques);
@@ -129,6 +134,8 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       request.setAttribute("canCreateFeina", canCreateFeina);	       
 	       request.setAttribute("canModificarExpedient", canModificarExpedient);
 	       request.setAttribute("canModificarUrbanisme", canModificarUrbanisme);
+	       request.setAttribute("canModificarGarantia", canModificarGarantia);
+	       request.setAttribute("canModificarInstalacions", canModificarInstalacions);
 	       request.setAttribute("redireccio", "actuacions");
 	       request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "Actuacions"));
 	       request.setAttribute("idUsuariLogg", usuari.getIdUsuari());

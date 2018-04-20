@@ -5,6 +5,7 @@ import java.util.Date;
 
 public class AssignacioCredit {
 	private String idAssignacio;	
+	private String idInforme;
 	private InformeActuacio informe;
 	private boolean reserva;
 	private User usuReserva;
@@ -15,9 +16,11 @@ public class AssignacioCredit {
 	private String comentari;
 	private User usuCre;
 	private Date dataCre;
-	private String idPartida;
+	private Partida partida;
 	private double valorPA;
 	private double valorPD;
+	private boolean feder;
+	private boolean bei;
 	  
 	public AssignacioCredit(){
 		
@@ -103,12 +106,12 @@ public class AssignacioCredit {
 		this.dataCre = dataCre;
 	}
 
-	public String getIdPartida() {
-		return idPartida;
+	public Partida getPartida() {
+		return partida;
 	}
 
-	public void setIdPartida(String idPartida) {
-		this.idPartida = idPartida;
+	public void setPartida(Partida partida) {
+		this.partida = partida;
 	}
 
 	public double getValorPA() {
@@ -135,6 +138,30 @@ public class AssignacioCredit {
 
 	public void setValorPD(double valorPD) {
 		this.valorPD = valorPD;
+	}
+
+	public boolean isFeder() {
+		return feder;
+	}
+
+	public void setFeder(boolean feder) {
+		this.feder = feder;
+	}
+
+	public boolean isBei() {
+		return bei;
+	}
+
+	public void setBei(boolean bei) {
+		this.bei = bei;
+	}
+
+	public String getIdInforme() {
+		return idInforme;
+	}
+
+	public void setIdInforme(String idInforme) {
+		this.idInforme = idInforme;
 	}
 
 	public InformeActuacio getInforme() {

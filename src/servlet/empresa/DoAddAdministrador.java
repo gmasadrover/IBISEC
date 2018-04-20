@@ -72,7 +72,7 @@ public class DoAddAdministrador extends HttpServlet {
 	    	administrador.setTipus(multipartParams.getParametres().get("tipusAdmin"));
 	    	if (! multipartParams.getParametres().get("validAdmin").isEmpty()) administrador.setDataValidesaFins(formatter.parse(multipartParams.getParametres().get("validAdmin")));
 	    	administrador.setNotariModificacio(multipartParams.getParametres().get("nomNotari"));
-	    	if (! multipartParams.getParametres().get("numProtocol").isEmpty()) administrador.setProtocolModificacio(Integer.parseInt(multipartParams.getParametres().get("numProtocol")));
+	    	if (! multipartParams.getParametres().get("numProtocol").isEmpty()) administrador.setProtocolModificacio(multipartParams.getParametres().get("numProtocol"));
 	    	if (! multipartParams.getParametres().get("dataAlta").isEmpty()) administrador.setDataModificacio(formatter.parse(multipartParams.getParametres().get("dataAlta")));
 	    	if (! multipartParams.getParametres().get("dataValidacio").isEmpty()) {
 	    		administrador.setDataValidacio(formatter.parse(multipartParams.getParametres().get("dataValidacio")));	    		

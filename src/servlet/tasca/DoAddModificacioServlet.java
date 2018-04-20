@@ -91,7 +91,8 @@ public class DoAddModificacioServlet extends HttpServlet {
 				TascaCore.reasignar(conn, 900, idTasca, tasca.getTipus());
 				TascaCore.tancar(conn, idTasca);
 				int idUsuari = UsuariCore.findUsuarisByRol(conn, "CAP,CONTA").get(0).getIdUsuari();
-				TascaCore.novaTasca(conn, "resPartidaModificacio", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Modificació informe " + idInforme, "Modificació informe " + idInforme, idModificacio, null);
+				InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme, false);
+				TascaCore.novaTasca(conn, "resPartidaModificacio", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), idModificacio, null);
 			} catch (SQLException | NamingException e) {
 				errorString = e.toString();
 				e.printStackTrace();

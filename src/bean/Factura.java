@@ -29,7 +29,9 @@ public class Factura {
 	private Date dataEnviatComptabilitat;
 	private Date dataDescarregadaConformada;
 	private Fitxer arxiu;
+	private List<Fitxer> altres;
 	private boolean anulada;
+	private String motiuAnulada;
 	
 	public Factura() {
 	
@@ -244,6 +246,22 @@ public class Factura {
 
 	public void setAnulada(boolean anulada) {
 		this.anulada = anulada;
+	}
+
+	public List<Fitxer> getAltres() {
+		return altres;
+	}
+
+	public void setAltres(List<Fitxer> altres) {
+		this.altres = altres;
+	}
+
+	public String getMotiuAnulada() {
+		return motiuAnulada;
+	}
+
+	public void setMotiuAnulada(String motiuAnulada) {
+		this.motiuAnulada = motiuAnulada;
 	}
 	
 }

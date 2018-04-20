@@ -89,5 +89,46 @@
      		</div>
     		</div>															     											    		
  		</form>	
-	</c:if>		
+	</c:if>	
+	<c:if test="${informePrevi.autoritzacioPropostaDespesa.ruta != null && actuacio.activa}">		
+		 <form class="form-horizontal" target="_blank" method="POST" enctype="multipart/form-data" action="DoCanvisActuacio" onsubmit="setTimeout(function () { window.location.reload(); }, 10)"> 	
+	     	<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
+			<input type="hidden" name="idIncidencia" value="${informePrevi.idIncidencia}">															
+			<input type="hidden" name="idInforme" value="${informePrevi.idInf}">
+			<input type="hidden" name="idTasca" value="${tasca.idTasca}">	
+			<div class="document">
+           		<label>Resolució d'adjudicació:</label>											                  	
+         			<a target="_blanck" href="downloadFichero?ruta=${informePrevi.autoritzacioPropostaDespesa.getEncodedRuta()}">
+					${informePrevi.autoritzacioPropostaDespesa.nom}
+				</a>	
+				<c:if test="${informePrevi.autoritzacioPropostaDespesa.signat}">
+					<span class="glyphicon glyphicon-pencil signedFile"></span>
+				</c:if>
+				<c:if test="${informePrevi.autoritzacioPropostaDespesa.ruta != null}">
+					<span data-ruta="${informePrevi.autoritzacioPropostaDespesa.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+				</c:if>
+				<br>
+				<div class="infoSign hidden">
+					<c:forEach items="${informePrevi.autoritzacioPropostaDespesa.firmesList}" var="firma" >
+						<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+						<br>
+					</c:forEach>
+				</div>	
+			</div>																
+			<div class="col-md-8">
+				<div class="row margin_top10">
+	    			<div class="col-md-12">
+	           			Pujar resolució d'adjudicació signada: <input type="file" class="btn uploadImage" name="informe" /><br/>																 		
+	    			</div>
+	    		</div>																													        			
+     		</div>	
+     		<div class="col-md-4">												        		
+    		<div class="row">
+        		<div class="col-md-12">															        																						 				
+			 		<input class="btn btn-success margin_top30 upload" type="submit" name="aprovarPD" value="Autorització adjudicació signada">
+			 	</div>
+     		</div>
+    		</div>															     											    		
+ 		</form>	
+	</c:if>	
 </div>

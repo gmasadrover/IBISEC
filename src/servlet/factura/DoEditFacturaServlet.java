@@ -100,14 +100,16 @@ public class DoEditFacturaServlet extends HttpServlet {
 	    
 	    int idUsuari = MyUtils.getLoginedUser(request.getSession()).getIdUsuari();
 	    Factura factura = new Factura();
-	    List<Fitxer> fitxers = multipartParams.getFitxers();
+	    List<Fitxer> fitxers = multipartParams.getFitxersByName().get("factura");
 	    if (idActuacio.equals("-1")) {
 	    	novaAsignacio = true;
 	    	idActuacio = multipartParams.getParametres().get("incidenciesList");
 	    	idInforme = multipartParams.getParametres().get("expedientsList");
 	    	try {
 				factura = FacturaCore.getFactura(conn, idFactura);	
-				fitxers.add(factura.getArxiu());				
+				List<Fitxer> fitxerFactura = new ArrayList<Fitxer>();
+				fitxerFactura.add(factura.getArxiu());
+				fitxers =  fitxerFactura;
 			} catch (SQLException | NamingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -128,18 +130,36 @@ public class DoEditFacturaServlet extends HttpServlet {
 	    factura.setNotes(notes);
 	    
 	    String errorString = null;	 	      
-		if (errorString == null) {
+		if (errorString == null && idActuacio != null && ! idActuacio.isEmpty() && !idActuacio.equals("-1") ) {
 	   		try {
 	   			factura.setUsuariConformador(UsuariCore.findUsuariByID(conn, idUsuariConformador));	   			
 	   			factura.setDataConformacio(dataConformada); 
+	   			factura.setDataEnviatComptabilitat(dataPasadaComptabilitat);	   			
 	   			FacturaCore.modificarFactura(conn, factura, idUsuari);		   			
-	   			//Tancar actuacio si es menor
+	   			//Tancar actuacio si es menor i tots els expedients estan facturats
 	   			if (dataPasadaComptabilitat!=null) {
-	   				InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme, false);
-	   				if (informe.getOfertaSeleccionada().getPlic() <= valor) ActuacioCore.tancar(conn, idActuacio, "facturat", idUsuari);
+	   				InformeActuacio informeActual = InformeCore.getInformePrevi(conn, idInforme, false);
+	   				boolean totFacturat = true;
+	   				if (informeActual.getOfertaSeleccionada().getPlic() > valor) {
+	   					totFacturat = false;	   				
+	   				} else {
+	   					InformeCore.modificarEstat(conn, idInforme, "garantia");
+	   					InformeCore.tancar(conn, idInforme);
+	   				}
+	   				if (totFacturat) {
+	   					List<InformeActuacio> informesList = InformeCore.getInformesActuacio(conn, idActuacio);
+		   				for (InformeActuacio informe : informesList) {
+		   					if (!informe.getIdInf().equals(idInforme) && !informe.getEstatEconomic().equals("Facturat")) {
+		   						totFacturat = false;
+		   					}
+		   				}
+	   				}
+	   				if (totFacturat) {
+	   					ActuacioCore.tancar(conn, idActuacio, "facturat", idUsuari);
+	   				}
 	   			}
 	   			
-	   			if (novaAsignacio) {
+	   			if (novaAsignacio && idActuacio != null && !idActuacio.isEmpty()) {
 	   				String idIncidencia = ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia();	   				
 	   				//modificar arxius
 				    Context env;
@@ -214,7 +234,8 @@ public class DoEditFacturaServlet extends HttpServlet {
 				    }
 	   			} else {
 	   				FacturaCore.saveArxiu(ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia(), idActuacio, idInforme, idProveidor, idFactura, fitxers, conn);
-		   		}
+	   				FacturaCore.saveArxiuAltres(ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia(), idActuacio, idInforme, idProveidor, idFactura, multipartParams.getFitxersByName().get("altres"), conn);
+	   			}
 	   		} catch (SQLException | NamingException e) {
 	  			e.printStackTrace();
 	  			errorString = e.getMessage();

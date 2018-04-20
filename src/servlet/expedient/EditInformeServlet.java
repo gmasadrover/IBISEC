@@ -62,15 +62,16 @@ public class EditInformeServlet extends HttpServlet {
 	        double importObraMajor = Double.parseDouble(getServletContext().getInitParameter("importObraMajor"));      
 	        InformeActuacio informePrevi = new InformeActuacio();
 	        try {
-	        	if (refExp == null || refExp.isEmpty()) {
+	        	/*if (refExp == null || refExp.isEmpty()) {
 	        		informePrevi = InformeCore.getInformePrevi(conn, idInf, false);
 					refExp = ExpedientCore.crearExpedient(conn, informePrevi, importObraMajor, true,"");
-				}
+				}*/
 	            expedient = ExpedientCore.findExpedient(conn, refExp);
-	            informePrevi = InformeCore.getInformePrevi(conn, expedient.getIdInforme(), true);
-	            if (expedient.getExpContratacio() == null || expedient.getExpContratacio().isEmpty()) {
+	           /* if (expedient == null || expedient.getExpContratacio() == null || expedient.getExpContratacio().isEmpty()) {
 	            	refExp = ExpedientCore.crearExpedient(conn, informePrevi, importObraMajor, true, refExp);
-	            }
+	            	expedient = ExpedientCore.findExpedient(conn, refExp);
+	            }*/	           
+	            informePrevi = InformeCore.getInformePrevi(conn, expedient.getIdInforme(), true);
 	            partidesList = CreditCore.getPartides(conn, false);
 	            llistaUsuaris = UsuariCore.llistaUsuaris(conn, true);
 	            llistaCaps = UsuariCore.findUsuarisByRol(conn, "CAP");

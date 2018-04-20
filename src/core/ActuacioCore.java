@@ -75,8 +75,7 @@ public class ActuacioCore {
 		 
 		String sql = "SELECT " + SQL_CAMPS
 					+ " FROM public.tbl_actuacio"
-					+ " WHERE id = ?";
-	 
+					+ " WHERE id = ?";	 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setString(1, referencia);		
 		ResultSet rs = pstm.executeQuery();
@@ -208,13 +207,13 @@ public class ActuacioCore {
 		String dataFiString = df.format(dataFi);	
 		if (estat != null && ! estat.equals("-1")) {	
 			if ("redaccio".equals(estat)) sql+= " AND a.datatancament IS NULL AND e.dataliquidacio IS NULL AND i.expcontratacio = ''"; 
-			if ("iniciExpedient".equals(estat)) sql+= " AND e.dataliquidacio IS NULL AND i.expcontratacio != '' AND e.databoib IS NULL AND e.dataadjudicacio IS NULL"; 
-			if ("publicat".equals(estat)) sql+= " AND e.dataliquidacio IS NULL AND e.databoib IS NOT NULL AND e.datalimitprsentacio >= '" + dataFiString + "' AND e.dataadjudicacio IS NULL"; 
-			if ("licitacio".equals(estat)) sql+= " AND e.dataliquidacio IS NULL AND e.databoib IS NOT NULL AND e.datalimitprsentacio < '" + dataFiString + "' AND e.dataadjudicacio IS NULL";
+			if ("iniciExpedient".equals(estat)) sql+= " AND e.dataliquidacio IS NULL AND i.expcontratacio != '' AND i.databoib IS NULL AND e.dataadjudicacio IS NULL"; 
+			if ("publicat".equals(estat)) sql+= " AND e.dataliquidacio IS NULL AND i.databoib IS NOT NULL AND e.datalimitprsentacio >= '" + dataFiString + "' AND e.dataadjudicacio IS NULL"; 
+			if ("licitacio".equals(estat)) sql+= " AND e.dataliquidacio IS NULL AND i.databoib IS NOT NULL AND e.datalimitprsentacio < '" + dataFiString + "' AND e.dataadjudicacio IS NULL";
 			if ("adjudicacio".equals(estat)) sql+= " AND e.dataliquidacio IS NULL AND e.dataadjudicacio IS NOT NULL AND e.dataformalitzaciocontracte IS NULL"; 	
-			if ("firmat".equals(estat)) sql+= " AND e.dataliquidacio IS NULL AND e.databoib > '01/01/2015' AND (e.datainiciexecucio IS NULL OR e.datainiciexecucio > localtimestamp) AND e.dataformalitzaciocontracte IS NOT NULL"; 	
-			if ("execucio".equals(estat)) sql+= " AND e.dataliquidacio IS NULL AND e.databoib > '01/01/2015' AND e.datainiciexecucio <= localtimestamp AND e.datarecepcio IS NULL"; 	
-			if ("garantia".equals(estat)) sql+= " AND e.dataliquidacio IS NULL AND e.databoib > '01/01/2015' AND e.datarecepcio IS NOT NULL AND e.dataretorngarantia < localtimestamp"; 	
+			if ("firmat".equals(estat)) sql+= " AND e.dataliquidacio IS NULL AND i.databoib > '01/01/2015' AND (e.datainiciexecucio IS NULL OR e.datainiciexecucio > localtimestamp) AND e.dataformalitzaciocontracte IS NOT NULL"; 	
+			if ("execucio".equals(estat)) sql+= " AND e.dataliquidacio IS NULL AND i.databoib > '01/01/2015' AND e.datainiciexecucio <= localtimestamp AND e.datarecepcio IS NULL"; 	
+			if ("garantia".equals(estat)) sql+= " AND e.dataliquidacio IS NULL AND i.databoib > '01/01/2015' AND e.datarecepcio IS NOT NULL AND e.dataretorngarantia < localtimestamp"; 	
 			if ("acabat".equals(estat)) sql+= " AND e.dataliquidacio IS NOT NULL"; 	
 		}
 		if (tipus != null &&  !tipus.isEmpty() && ! tipus.equals("-1")) {

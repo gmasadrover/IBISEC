@@ -23,23 +23,35 @@
   </error-page>
   <context-param>
     <param-name>datakey</param-name>
-    <param-value>171205_0512</param-value>
+    <param-value>180420_1040</param-value>
   </context-param>
   <context-param>
     <param-name>importObraMajor</param-name>
-    <param-value>50000</param-value>
+    <param-value>40000</param-value>
   </context-param>
   <context-param>
     <param-name>importServeiMajor</param-name>
-    <param-value>18000</param-value>
+    <param-value>15000</param-value>
   </context-param>
   <context-param>
     <param-name>importSubministramentMajor</param-name>
-    <param-value>18000</param-value>
+    <param-value>15000</param-value>
   </context-param>
   <context-param>
     <param-name>idUsuariRecercaPresuposts</param-name>
     <param-value>12</param-value>
+  </context-param>
+  <context-param>
+    <param-name>idUsuariFactures</param-name>
+    <param-value>12</param-value>
+  </context-param>
+  <context-param>
+    <param-name>idUsuariCertificacions</param-name>
+    <param-value>18</param-value>
+  </context-param>
+  <context-param>
+    <param-name>idUsuariOrdreInici</param-name>
+    <param-value>6</param-value>
   </context-param>
   <context-param>
     <param-name>idUsuariRedaccioContracte</param-name>

@@ -10,7 +10,7 @@
 		<h4>Informe inicial</h4>	
 		<br />
 		<p>
-			<label>Informe:</label> ${informePrevi.idInf}
+			<label>Informe:</label> ${informePrevi.expcontratacio.expContratacio}
 		</p>
 		<p>
 			<label>Tècnic:</label> ${informePrevi.usuari.getNomComplet()}
@@ -63,7 +63,7 @@
 		</p>	
 		<div class="row col-md-12">
 			<c:forEach items="${informePrevi.adjunts}" var="arxiu" >
-				<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.nom}</a>
+				<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
 				<br>
 			</c:forEach>					            		
 		</div>
@@ -77,75 +77,81 @@
 			<label>Notes:</label> ${informePrevi.notes}
 		</p>
 		<p>
-			<label>Partida:</label> ${informePrevi.partida}
+			<label>Partida:</label> ${informePrevi.assignacioCredit.partida.nom}
 		</p>
 	</div>
  </div>
  <c:if test="${canRealitzarTasca}">
 	<div class="panel-body">
-		
-   		<c:if test="${informePrevi.autoritzacioPropostaAutoritzacio.ruta != null}">	
-           	<div class="document">
-              		<label>Autorització proposta d'actuació signada:</label>											                  	
-           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.autoritzacioPropostaAutoritzacio.getEncodedRuta()}">
-					${informePrevi.autoritzacioPropostaAutoritzacio.nom}
-				</a>	
-				<c:if test="${informePrevi.autoritzacioPropostaAutoritzacio.signat}">
-						<span class="glyphicon glyphicon-pencil signedFile"></span>
-				</c:if>
-				<br>
-				<div class="infoSign hidden">
-					<c:forEach items="${informePrevi.autoritzacioPropostaAutoritzacio.firmesList}" var="firma" >
-						<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+     	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddPA">
+	     	<input type="hidden" name="document" value="autoritzacioPA">
+			<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
+			<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">															
+			<input type="hidden" name="idInforme" value="${informePrevi.idInf}">	
+			<input type="hidden" name="idTasca" value="${tasca.idTasca}">	
+			<c:if test="${!(informePrevi.expcontratacio.idInforme != null && informePrevi.expcontratacio.idInforme != '-1' && informePrevi.expcontratacio.contracte == 'major')}">
+	           	<div class="form-group">
+	           		<div class="col-md-12">
+			           	<div class="document">
+			              		<label>Memòria justificativa i Ordre d'inici:</label>											                  	
+			           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.memoriaOrdreInici.getEncodedRuta()}">
+								${informePrevi.memoriaOrdreInici.nom}
+							</a>	
+							<c:if test="${informePrevi.memoriaOrdreInici.signat}">
+									<span class="glyphicon glyphicon-pencil signedFile"></span>
+							</c:if>
+							<br>
+							<div class="infoSign hidden">
+								<c:forEach items="${informePrevi.memoriaOrdreInici.firmesList}" var="firma" >
+									<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+									<br>
+								</c:forEach>
+							</div>
+						</div>
+					</div>																
+					<div class="col-md-8">
+						<div class="row margin_top10">
+			    			<div class="col-md-12">
+			           			Pujar ordre d'inici signat: <input type="file" class="btn uploadImage" name="ordreInici" /><br/>																 		
+			    			</div>
+			    		</div>																													        			
+		      		</div>	
+	      		</div>
+	      	</c:if>
+      		<div class="form-group">
+      			<div class="col-md-12">
+		      		<div class="document">
+		              	<label>Certificat d'existència de credit:</label>											                  	
+		           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.conformeAreaEconomivaPropostaActuacio.getEncodedRuta()}">
+							${informePrevi.conformeAreaEconomivaPropostaActuacio.nom}
+						</a>	
+						<c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.signat}">
+								<span class="glyphicon glyphicon-pencil signedFile"></span>
+						</c:if>
 						<br>
-					</c:forEach>
-				</div>
-			</div>	
-		</c:if>	
-		<c:if test="${informePrevi.autoritzacioPropostaAutoritzacio.ruta == null}">			
-	     	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddPA">
-		     	<input type="hidden" name="document" value="autoritzacioPA">
-				<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
-				<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">															
-				<input type="hidden" name="idInforme" value="${informePrevi.idInf}">	
-				<input type="hidden" name="idTasca" value="${tasca.idTasca}">																		
+						<div class="infoSign hidden">
+							<c:forEach items="${informePrevi.conformeAreaEconomivaPropostaActuacio.firmesList}" var="firma" >
+								<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+								<br>
+							</c:forEach>
+						</div>
+					</div>	
+				</div>															
 				<div class="col-md-8">
 					<div class="row margin_top10">
 		    			<div class="col-md-12">
-		           			Pujar autorització proposta d'actuació signada: <input type="file" class="btn uploadImage" name="informe" /><br/>																 		
+		           			Pujar certificat d'existència de credit signat: <input type="file" class="btn uploadImage" name="certCredit" /><br/>																 		
 		    			</div>
 		    		</div>																													        			
 	      		</div>	
-	      		<div class="col-md-4">												        		
-		    		<div class="row">
-		        		<div class="col-md-12">															        																						 				
-					 		<input class="btn btn-success margin_top30 upload" type="submit" name="guardar" value="Enviar autorització signat">
-					 	</div>
-		     		</div>
-	     		</div>															     											    		
-	  		</form>	
-  		</c:if>	 
-		<div class="separator"></div>												        	
-		<div class="panel-body">	     																	
-	       	<c:if test="${informePrevi.autoritzacioPropostaAutoritzacio.ruta == null}">				        	
-				<div class="row">
-		    		<c:if test="${informePrevi.getDataAprovacio() == null and actuacio.isActiva()}">
-		            	<div class="col-md-12">		                    	
-	                    	<form class="form-horizontal" target="_blank" enctype="multipart/form-data" method="POST" action="DoCanvisActuacio" onsubmit="setTimeout(function () { window.location.reload(); }, 10)">
-	                    		<input class="hidden" name="idActuacio" value="${actuacio.referencia}">
-	                    		<input class="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">
-	                    		<input class="hidden" name="idInforme" value="${informePrevi.idInf}">
-	                    		<input type="hidden" name="idTasca" value="${tasca.idTasca}">
-	                    		<div class="form-group">
-                    				<div class="col-md-6">
-                    					<input class="btn btn-primary" type="submit" name="aprovarPA" value="Generar aprovació proposta d'actuació">
-                    				</div>																	               			 
-	                    		</div>	                    		                       	
-	                       	</form>		                       	
-	                   	</div>									            	
-		            </c:if>	
-	            </div>
-			</c:if>
-	  	</div>
+      		</div>
+      		<div class="col-md-4">												        		
+	    		<div class="row">
+	        		<div class="col-md-12">															        																						 				
+				 		<input class="btn btn-success margin_top30 upload" type="submit" name="guardar" value="Enviar autorització signada">
+				 	</div>
+	     		</div>
+     		</div>															     											    		
+  		</form>	  		
 	</div>
 </c:if>

@@ -37,12 +37,11 @@ public class DoLoginServlet extends HttpServlet {
         User user = null;
         boolean hasError = false;
         String errorString = null;
- 
+        Connection conn = MyUtils.getStoredConnection(request);
         if (userName == null || userName.length() == 0) {
             hasError = true;
             errorString = "Required username and password!";
         } else {
-            Connection conn = MyUtils.getStoredConnection(request);
             try {   
             	user = UsuariCore.findUsuari(conn, userName);
             	if (user == null) {
@@ -97,8 +96,14 @@ public class DoLoginServlet extends HttpServlet {
         // Store user information in Session
         // And redirect to userInfo page.
         else {
+        	try {
+				UsuariCore.darrerAcces(conn, user.getIdUsuari());
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             HttpSession session = request.getSession();
-            MyUtils.storeLoginedUser(session, user);            
+            MyUtils.storeLoginedUser(session, user);     
             // Redirect to userInfo page.
             response.sendRedirect(request.getContextPath() + "/tascaList");
         }

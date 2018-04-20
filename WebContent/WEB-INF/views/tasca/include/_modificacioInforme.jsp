@@ -85,7 +85,7 @@
 	</c:if>
  </div>
 
- <c:if test="${informePrevi.propostaTecnica.ruta != null}">
+
    	<div class="panel-body">
    		<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddModificacio">
    			<input type="hidden" name="document" value="autoritzacioCap">
@@ -121,4 +121,3 @@
 	  		</div>
    		</form>	
    	</div>															
-</c:if>

@@ -55,13 +55,7 @@
 	                    	</div>
                 		</div>                		
 			    		<div class="row">			    				    				    		
-		                    <div class="col-md-6">	  
-		                    	<div class="form-group">
-	                                <label class="col-xs-3 control-label">Data publicació BOIB</label>
-	                                <div class="input-group date col-xs-6 datepicker">
-									  	<input type="text" class="form-control" name="dataBOIB" value="${expedient.getDataPublicacioBOIBString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-									</div>
-	                            </div>	
+		                    <div class="col-md-6">
 	                            <div class="form-group">
 	                                <label class="col-xs-3 control-label">Data adjudicació</label>
 	                                <div class="input-group date col-xs-6 datepicker">

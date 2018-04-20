@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import utils.Fitxers.Fitxer;
+
 public class Tasca {
 	private int idTasca;
 	private User usuari;
@@ -15,12 +17,15 @@ public class Tasca {
 	private boolean activa;
 	private Date dataCreacio;
 	private String idinforme;
+	private String idinformeOriginal;
 	private InformeActuacio informe;
 	private boolean llegida;
 	private String primerComentari;
 	private Date darreraModificacio;
 	private String departament;
 	private boolean seguiment;
+	private int prioritat;
+	private List<Fitxer> documents;
 	
 	public Tasca() {
 
@@ -188,5 +193,29 @@ public class Tasca {
 
 	public void setInforme(InformeActuacio informe) {
 		this.informe = informe;
+	}
+
+	public int getPrioritat() {
+		return prioritat;
+	}
+
+	public void setPrioritat(int prioritat) {
+		this.prioritat = prioritat;
+	}
+
+	public String getIdinformeOriginal() {
+		return idinformeOriginal;
+	}
+
+	public void setIdinformeOriginal(String idinformeOriginal) {
+		this.idinformeOriginal = idinformeOriginal;
+	}
+
+	public List<Fitxer> getDocuments() {
+		return documents;
+	}
+
+	public void setDocuments(List<Fitxer> documents) {
+		this.documents = documents;
 	}
 }

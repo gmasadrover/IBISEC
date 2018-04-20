@@ -106,7 +106,7 @@ public class DoCreateFacturaServlet extends HttpServlet {
 	   			//Registram la factura
 	   			Date peticio = new Date();
 	   			peticio = formatter.parse(factura.getDataEntradaString());
-	   			Registre registre = new Registre(RegistreCore.getNewCode(conn, "E"), peticio, "E", EmpresaCore.findEmpresa(conn, idProveidor).getName(), "factura " + idFactura, actuacio.getIdIncidencia(), actuacio.getCentre().getIdCentre(), idUsuari, new Date());
+	   			Registre registre = new Registre(RegistreCore.getNewCode(conn, "E"), peticio, "E", EmpresaCore.findEmpresa(conn, idProveidor).getName(), "factura " + idFactura, actuacio.getIdIncidencia(), idInforme, actuacio.getCentre().getIdCentre(), idUsuari, new Date());
 	   			RegistreCore.nouRegistre(conn, "E", registre);
 	   		} catch (SQLException | NamingException | ParseException e) {
 	  			e.printStackTrace();

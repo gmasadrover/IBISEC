@@ -21,10 +21,12 @@ import javax.servlet.http.HttpServletResponse;
 import bean.Resultat;
 import bean.User;
 import bean.Centre;
+import bean.InformeActuacio;
 import bean.ControlPage.SectionPage;
 import core.ActuacioCore;
 import core.CentreCore;
 import core.ControlPageCore;
+import core.InformeCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
@@ -116,7 +118,6 @@ public class LlistatsListServlet extends HttpServlet {
 		    request.setAttribute("dataFiExec", dataFiExecString);
 			request.setAttribute("estatFilter", estat);
 			request.setAttribute("tipusFilter", tipus);
-			
 			request.setAttribute("errorString", errorString);
 			request.setAttribute("centresList", centres);
 			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Llistats"));

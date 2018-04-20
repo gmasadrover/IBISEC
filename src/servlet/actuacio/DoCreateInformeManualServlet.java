@@ -62,9 +62,9 @@ public class DoCreateInformeManualServlet extends HttpServlet {
 		    boolean llicencia = false;
 		    String reqLlicencia = request.getParameter("reqLlicencia");
 		    String tipusLlicencia = "";
-		    boolean contracte = false;
+		    boolean contracte = true;
 		    String errorString = null;	 
-		    
+		    boolean newExpedient = "on".equals(request.getParameter("newExpedient"));
 		    double pbase = 0;
 			double iva = 0;
 			double plic = 0;
@@ -86,8 +86,7 @@ public class DoCreateInformeManualServlet extends HttpServlet {
 				    proposta.setTipusObra(tipusObra);
 				    if (new String("obr").equals(tipusObra)) {
 				    	llicencia = new String("si").equals(reqLlicencia);	 	   
-						if (llicencia) tipusLlicencia = request.getParameter("tipusLlicencia") ;		
-						contracte = new String("si").equals(request.getParameter("formContracte"));
+						if (llicencia) tipusLlicencia = request.getParameter("tipusLlicencia") ;
 				    }	
 				    proposta.setLlicencia(llicencia);
 				    proposta.setTipusLlicencia(tipusLlicencia);
@@ -110,17 +109,18 @@ public class DoCreateInformeManualServlet extends HttpServlet {
 				    informe = InformeCore.getInformePrevi(conn, idinforme, false);
 				    InformeCore.seleccionarProposta(conn, informe.getLlistaPropostes().get(0).getIdProposta(), idinforme);
 				     
-				    //Cream expedient   				
-	   				double importMajor = Double.parseDouble(getServletContext().getInitParameter("importObraMajor"));
-	   				informe = InformeCore.getInformePrevi(conn, idinforme, false); //recuperam informe amb tota la informació actualitzada
-	   				if (informe.getPropostaInformeSeleccionada().getTipusObra().equals("srv")) {
-	   					importMajor = Double.parseDouble(getServletContext().getInitParameter("importServeiMajor"));
-	   				}else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("sub")) {
-	   					importMajor = Double.parseDouble(getServletContext().getInitParameter("importSubministramentMajor"));
-	   				}
-	   				String nouCodi = ExpedientCore.crearExpedient(conn, informe, importMajor, false, "");	   				
-	   				if (llicencia) LlicenciaCore.novaLlicencia(conn, nouCodi, tipusLlicencia);
-				    
+				    if(newExpedient) {
+					    //Cream expedient   				
+		   				double importMajor = Double.parseDouble(getServletContext().getInitParameter("importObraMajor"));
+		   				informe = InformeCore.getInformePrevi(conn, idinforme, false); //recuperam informe amb tota la informació actualitzada
+		   				if (informe.getPropostaInformeSeleccionada().getTipusObra().equals("srv")) {
+		   					importMajor = Double.parseDouble(getServletContext().getInitParameter("importServeiMajor"));
+		   				}else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("submi")) {
+		   					importMajor = Double.parseDouble(getServletContext().getInitParameter("importSubministramentMajor"));
+		   				}
+		   				String nouCodi = ExpedientCore.crearExpedient(conn, informe, importMajor, false, "");
+		   				if (llicencia) LlicenciaCore.novaLlicencia(conn, nouCodi, tipusLlicencia);
+				    }
 		   		} catch (SQLException | NamingException e) {
 		  			e.printStackTrace();
 		  			errorString = e.getMessage();

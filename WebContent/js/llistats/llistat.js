@@ -52,7 +52,7 @@ function loadInfoCentre(info){
 	var text = "";
 	$.ajax({
         type: "POST",
-        url: "LlistatActuacions",
+        url: "LlistatInformes",
         async: false,
         dataType: "json",
         data: {"idCentre": info.data('idcentre'), "filterWithOutDate" : $('#filterWithOutDate').is(':checked'), "dataPeticioIni": $('#dataInici').val(), "dataPeticioFi": $('#dataFi').val(), "filterWithOutDateExec": $('#filterWithOutDateExec').is(':checked'), "dataExecucioIni": $('#dataIniciExec').val(), "dataExecucioFi": $('#dataFiExec').val(), "estat":$('#estatList').val(), "tipus":$('#tipusList').val()},
@@ -61,8 +61,8 @@ function loadInfoCentre(info){
             //our country code was correct so we have some information to display
              if(data.success){
             	 text = '<h4>' + info.val() + '</h4>';            	
-            	 $.each(data.llistatActuacions, function( key, actuacio ) {
-            		 text += '<a href="actuacionsDetalls?ref=' + actuacio.referencia + '">EXP: ' + actuacio.informePrevi.expcontratacio + ' ' + actuacio.referencia + ' ' + actuacio.descripcio + '</a></br></br>';
+            	 $.each(data.llistatInformes, function( key, informe) {
+            		 text += '<a href="actuacionsDetalls?ref=' + informe.actuacio.referencia + '&exp=' + informe.idInf + '">EXP: ' + informe.expcontratacio.expContratacio + ' ' + informe.actuacio.referencia + ' ' + informe.actuacio.descripcio + ': ' + informe.propostaInformeSeleccionada.objecte + '</a></br></br>';
             	 });
              }             
         },        
