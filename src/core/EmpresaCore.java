@@ -271,7 +271,8 @@ public class EmpresaCore {
 				 	+ " 	LEFT JOIN public.tbl_empreses e ON o.cifempresa = e.cif"
 				 	+ " 	LEFT JOIN public.tbl_informeactuacio i ON o.idinforme = i.idinf"
 				 	+ "		LEFT JOIN public.tbl_propostesinforme p ON p.idinf = i.idinf"
-				 	+ " WHERE o.seleccionada = true AND p.seleccionada = true AND i.dataaprovacio >= '09/03/2018' AND o.datacre >= ? AND o.datacre <= ? AND ((o.pbase < 15000 AND p.tipusobra != 'obr') OR (o.pbase < 40000 AND p.tipusobra = 'obr'))"  
+				 	+ " 	LEFT JOIN public.tbl_expedient x ON x.expcontratacio = i.expcontratacio"
+				 	+ " WHERE x.anulat = false AND o.seleccionada = true AND p.seleccionada = true AND i.dataaprovacio >= '09/03/2018' AND o.datacre >= ? AND o.datacre <= ? AND ((o.pbase < 15000 AND p.tipusobra != 'obr') OR (o.pbase < 40000 AND p.tipusobra = 'obr'))"  
 					+ " GROUP BY e.cif"
 				 	+ " ORDER BY e.cif";
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 
@@ -380,7 +381,7 @@ public class EmpresaCore {
 		 pstmInsert.executeUpdate();		
 	 }
 	 
-	 public static void deleteAdministrador(Connection conn, String cif, String dniAdministrador) throws SQLException, NamingException {
+	 public static void deleteAdministrador(Connection conn, String cif, String dniAdministrador, int idUsuari) throws SQLException, NamingException {
 		 String sql = "DELETE FROM public.tbl_administradorsempresa"
 				 	+ " WHERE nifempresa = ? AND dni = ?";
 		 PreparedStatement pstm = conn.prepareStatement(sql); 
@@ -388,7 +389,7 @@ public class EmpresaCore {
 		 pstm.setString(2, dniAdministrador);
 		 pstm.executeUpdate();
 		 Fitxer documentAdministrador = getDocumentAdministrador(conn, cif, dniAdministrador);
-		 if (documentAdministrador.getRuta() != null && !documentAdministrador.getRuta().isEmpty())  Fitxers.eliminarFitxer(documentAdministrador.getRuta());
+		 if (documentAdministrador.getRuta() != null && !documentAdministrador.getRuta().isEmpty())  Fitxers.eliminarFitxer(conn, idUsuari, documentAdministrador.getRuta());
 	 }
 	 
 	 public static void updateAdministrador(Connection conn, String cif, String dniAdministrador, Administrador administrador) throws SQLException {
@@ -481,7 +482,7 @@ public class EmpresaCore {
 		 while (rs.next()) {
 			 administrador = new Empresa().new Administrador();
 			 administrador.setNom(rs.getString("personafacultada"));
-			 //administrador.setDni(rs.getString("dni"));
+			 administrador.setDni(rs.getString("ref"));
 			 //administrador.setDataValidesaFins(rs.getTimestamp("validfins"));
 			 administrador.setProtocolModificacio(rs.getString("nprotocol"));
 			 administrador.setNotariModificacio(rs.getString("notari"));
@@ -720,7 +721,7 @@ public class EmpresaCore {
 		 return fitxer;
 	 } 
 	 
-	 public static void guardarFitxer(List<Fitxer> fitxers, String cif, String cifAdministrador) throws NamingException{		
+	 public static void guardarFitxer(Connection conn, int idUsuari, List<Fitxer> fitxers, String cif, String cifAdministrador) throws NamingException{		
 			if (!fitxers.isEmpty()) {
 				String fileName = "";
 				// Crear directoris si no existeixen
@@ -828,6 +829,7 @@ public class EmpresaCore {
 		            	File archivo_server = new File(fileName + fitxer.getFitxer().getName());
 		               	try {
 		               		fitxer.getFitxer().write(archivo_server);
+		               		Fitxers.guardarRegistreFitxer(conn, fitxer.getFitxer().getName(), fileName + fitxer.getFitxer().getName(), idUsuari);
 		           		} catch (Exception e) {
 		           			e.printStackTrace();
 		           		}

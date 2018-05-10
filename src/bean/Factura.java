@@ -235,6 +235,13 @@ public class Factura {
 	public Date getDataDescarregadaConformada() {
 		return dataDescarregadaConformada;
 	}
+	
+	public String getDataDescarregadaConformadaString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+		String dataString = "";
+		if (this.dataDescarregadaConformada != null) dataString = df.format(this.dataDescarregadaConformada);
+		return dataString;
+	}
 
 	public void setDataDescarregadaConformada(Date dataDescarregadaConformada) {
 		this.dataDescarregadaConformada = dataDescarregadaConformada;

@@ -100,7 +100,7 @@
                                 	<input class="hidden" name="idUsuariInforme" id=idUsuariInforme value="${certificacio.usuariConformador.idUsuari}"> 
                                 	<select class="form-control selectpicker" data-live-search="true" data-size="10" name="idConformador" id="usuarisList">
 		                                <c:forEach items="${llistaUsuaris}" var="usuari" >
-	                                		<option value='${usuari.idUsuari}'>${usuari.getNomComplet()}</option>
+	                                		<option value='${usuari.idUsuari}'>${usuari.getNomCompletReal()}</option>
 	                                	</c:forEach>
                                 	</select>
                                 </div>

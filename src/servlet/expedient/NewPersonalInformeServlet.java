@@ -16,27 +16,25 @@ import javax.servlet.http.HttpServletResponse;
 
 import bean.Expedient;
 import bean.InformeActuacio;
-import bean.Partida;
 import bean.User;
 import bean.ControlPage.SectionPage;
 import core.ControlPageCore;
-import core.CreditCore;
 import core.ExpedientCore;
 import core.InformeCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
 /**
- * Servlet implementation class EditInformeServlet
+ * Servlet implementation class NewPersonalInformeServlet
  */
-@WebServlet("/editInforme")
-public class EditInformeServlet extends HttpServlet {
+@WebServlet("/newPersonalInforme")
+public class NewPersonalInformeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public EditInformeServlet() {
+    public NewPersonalInformeServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -49,54 +47,37 @@ public class EditInformeServlet extends HttpServlet {
     	Connection conn = MyUtils.getStoredConnection(request);
     	if (MyUtils.getLoginedUser(request.getSession()) == null){
  		   response.sendRedirect(request.getContextPath() + "/");
-    	}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.expedient_modificar)) {
+    	}else if (!usuari.getRol().contains("CAP") && !usuari.getRol().contains("ADMIN")) {
     		response.sendRedirect(request.getContextPath() + "/");	 
  	   	}else{
-			String refExp = request.getParameter("ref");
-			String idInf = request.getParameter("idinf");
-			Expedient expedient = new Expedient();
-	        List<Partida> partidesList = new ArrayList<Partida>();
+			String idInf = request.getParameter("idinf");	       
+	        String errorString = null;	          
+	        InformeActuacio informe = new InformeActuacio();
 	        List<User> llistaUsuaris = new ArrayList<User>();
-	        List<User> llistaCaps = new ArrayList<User>();
-	        String errorString = null;
-	        double importObraMajor = Double.parseDouble(getServletContext().getInitParameter("importObraMajor"));      
-	        InformeActuacio informePrevi = new InformeActuacio();
 	        try {
-	        	if (refExp == null || refExp.isEmpty()) {
-	        		informePrevi = InformeCore.getInformePrevi(conn, idInf, false);					
-				} else {
-					expedient = ExpedientCore.findExpedient(conn, refExp);
-					informePrevi = InformeCore.getInformePrevi(conn, expedient.getIdInforme(), true);
-				}
-	            partidesList = CreditCore.getPartides(conn, false);
-	            llistaUsuaris = UsuariCore.llistaUsuaris(conn, true);
-	            llistaCaps = UsuariCore.findUsuarisByRol(conn, "CAP");
+	        	informe = InformeCore.getInformePrevi(conn, idInf, false);		
+	        	llistaUsuaris = UsuariCore.llistaUsuaris(conn, true);
 	        } catch (SQLException | NamingException e) {
 	            e.printStackTrace();
 	            errorString = e.getMessage();
 	        }
-	 
-	         
 	        // If no error.
 	        // The product does not exist to edit.
 	        // Redirect to productList page.
-	        if (errorString != null && expedient == null) {
+	        if (errorString != null) {
 	            response.sendRedirect(request.getServletPath() + "/expedients");
 	            return;
 	        }
 	 
-	        // Store errorString in request attribute, before forward to views.
+	        // Store errorString in request attribute, before forward to views.	       
 	        request.setAttribute("errorString", errorString);
-	        request.setAttribute("partidesList", partidesList);
+	        request.setAttribute("informe", informe);
 	        request.setAttribute("llistaUsuaris", llistaUsuaris);
-	        request.setAttribute("llistaCaps", llistaCaps);
-	        request.setAttribute("expedient", expedient);
-	        request.setAttribute("informePrevi", informePrevi);
 	        request.setAttribute("redireccio", request.getParameter("from"));
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"expedients"));
 	        
 	        RequestDispatcher dispatcher = request.getServletContext()
-	                .getRequestDispatcher("/WEB-INF/views/expedients/editInformeView.jsp");
+	                .getRequestDispatcher("/WEB-INF/views/expedients/newPersonalInformeView.jsp");
 	        dispatcher.forward(request, response);
  	   	}
 	}

@@ -75,7 +75,7 @@ public class DoCreateTascaLicitacio extends HttpServlet {
 			}else{				 							
 				tipus = "liciMenor";
 			}
-			TascaCore.novaTasca(conn, tipus, usuariTasca, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "", "",informe.getIdInf(),null);
+			TascaCore.novaTasca(conn, tipus, usuariTasca, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "", "",informe.getIdInf(),null, request.getRemoteAddr(), "automatic");
 		} catch (SQLException | NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

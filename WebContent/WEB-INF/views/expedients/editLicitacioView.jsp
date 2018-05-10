@@ -289,6 +289,30 @@
 			   					<div class="col-md-6">
 			   						<h2>Avaluació de criteris</h2>
 			   					</div>	
+			   					<div class="col-md-12">
+			               			<label>Resolucions VAD:</label>		
+			               			<c:forEach items="${informePrevi.resolucioVAD}" var="arxiu" >	
+			               				<div class="document">								                  	
+						           			<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
+												${arxiu.getDataString()} - ${arxiu.nom}
+											</a>	
+											<c:if test="${arxiu.signat}">
+												<span class="glyphicon glyphicon-pencil signedFile"></span>
+											</c:if>
+											<c:if test="${arxiu.ruta != null}">
+												<span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+											</c:if>
+											<br>
+											<div class="infoSign hidden">
+												<c:forEach items="${arxiu.firmesList}" var="firma" >
+													<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+													<br>
+												</c:forEach>
+											</div>
+										</div>
+									</c:forEach>										
+									<input type="file" class="btn uploadImage" name="resoluciVAD" /><br/>	
+					       		</div>	
 					       		<div class="col-md-12">
 			               			<label>Ratificació classificació:</label>		
 			               			<c:forEach items="${informePrevi.ratificacioClassificacio}" var="arxiu" >	

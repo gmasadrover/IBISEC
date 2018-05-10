@@ -48,6 +48,7 @@ public class DoAprovarVacancesServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		String ipRemote = request.getRemoteAddr();
 		String comentari = request.getParameter("comentari");
 		String aprovar = request.getParameter("aprovar");
 		int idUsuariPersonal = Integer.parseInt(getServletContext().getInitParameter("idUsuariPersonal"));   
@@ -56,20 +57,20 @@ public class DoAprovarVacancesServlet extends HttpServlet {
 			if (reserva.getAutoritzacio() == null) {
 				if (aprovar != null) {
 					CalendarCore.aprovarAutoritzacioVacances(conn, idSolicitud);
-					TascaCore.nouHistoric(conn, Integer.toString(idTasca), "Sol·licitud aprovada", usuariLogetjat.getIdUsuari());	
+					TascaCore.nouHistoric(conn, Integer.toString(idTasca), "Sol·licitud aprovada", usuariLogetjat.getIdUsuari(), ipRemote, "automatic");	
 					TascaCore.reasignar(conn, idUsuariPersonal, idTasca, tasca.getTipus());
 				} else {
 					CalendarCore.rebutjarAutoritzacioVacances(conn, idSolicitud);
-					TascaCore.nouHistoric(conn, Integer.toString(idTasca), "Sol·licitud rebutjada <br> Motiu: " + comentari, usuariLogetjat.getIdUsuari());				
+					TascaCore.nouHistoric(conn, Integer.toString(idTasca), "<span class='missatgeAutomatic'>Sol·licitud rebutjada</span><br> Motiu: " + comentari, usuariLogetjat.getIdUsuari(), ipRemote, "manual");				
 					TascaCore.reasignar(conn, reserva.getIdUsuari(), idTasca, tasca.getTipus());
 				}				
 			} else if (reserva.getAutoritzacio() != null) {
 				if (aprovar != null) {
 					CalendarCore.aprovarVistiplauVacances(conn, idSolicitud);
-					TascaCore.nouHistoric(conn, Integer.toString(idTasca), "Vitiplau a la sol·licitud", usuariLogetjat.getIdUsuari());				
+					TascaCore.nouHistoric(conn, Integer.toString(idTasca), "Vitiplau a la sol·licitud", usuariLogetjat.getIdUsuari(), ipRemote, "automatic");				
 				} else {
 					CalendarCore.rebutjarVistiplauVacances(conn, idSolicitud);
-					TascaCore.nouHistoric(conn, Integer.toString(idTasca), "Vitiplau a la sol·licitud rebutjada <br> Motiu: " + comentari, usuariLogetjat.getIdUsuari());				
+					TascaCore.nouHistoric(conn, Integer.toString(idTasca), "<span class='missatgeAutomatic'>Vitiplau a la sol·licitud rebutjada</span><br> Motiu: " + comentari, usuariLogetjat.getIdUsuari(), ipRemote, "manual");				
 				}
 				TascaCore.reasignar(conn, reserva.getIdUsuari(), idTasca, tasca.getTipus());
 			}

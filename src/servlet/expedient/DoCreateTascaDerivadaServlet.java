@@ -112,7 +112,7 @@ public class DoCreateTascaDerivadaServlet extends HttpServlet {
 		    System.out.println(idInformePrevi);
 		    InformeCore.seleccionarProposta(conn, informe.getLlistaPropostes().get(0).getIdProposta(), idInformePrevi);	   
 		    informe = InformeCore.getInformePrevi(conn, idInformePrevi, false);
-		    Fitxers.guardarFitxer(multipartParams.getFitxers(), idIncidencia, idActuacio, "", "", "", idInformePrevi, "Informe Previ");
+		    Fitxers.guardarFitxer(conn, multipartParams.getFitxers(), idIncidencia, idActuacio, "", "", "", idInformePrevi, "Informe Previ", Usuari.getIdUsuari());
 		    
    			int idUsuariTasca = -1;
    			if (Usuari.getRol().contains("CAP")) {
@@ -121,7 +121,7 @@ public class DoCreateTascaDerivadaServlet extends HttpServlet {
    				idUsuariTasca = UsuariCore.finCap(conn, Usuari.getDepartament()).getIdUsuari();
    			}	
    			
-   			idTasca = TascaCore.novaTasca(conn, "docprelicitacio", idUsuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, comentari, assumpte, idInformePrevi, null);
+   			idTasca = TascaCore.novaTasca(conn, "docprelicitacio", idUsuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, comentari, assumpte, idInformePrevi, null, request.getRemoteAddr(), "manual");
    		} catch (SQLException | NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

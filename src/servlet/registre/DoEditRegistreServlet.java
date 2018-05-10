@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import bean.Actuacio;
 import bean.Registre;
+import bean.User;
 import core.ActuacioCore;
 import core.LoggerCore;
 import core.RegistreCore;
@@ -54,6 +55,7 @@ public class DoEditRegistreServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Connection conn = MyUtils.getStoredConnection(request);		
+		User usuari = MyUtils.getLoginedUser(request.getSession());
 	    String idRegistre = request.getParameter("idCodiRegistre");
 	    String entradaSortida = request.getParameter("entradaSortida");
 	    String remDes = request.getParameter("remitent");
@@ -161,7 +163,7 @@ public class DoEditRegistreServlet extends HttpServlet {
 		    	    outStream.close();
 
 		    	    //delete the original file
-		    	    Fitxers.eliminarFitxer(arxiu.getRuta());
+		    	    Fitxers.eliminarFitxer(conn, usuari.getIdUsuari(), arxiu.getRuta());
 			    }
 			    
 			} catch (ParseException | SQLException | NamingException e1) {

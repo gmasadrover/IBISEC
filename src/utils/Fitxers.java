@@ -10,10 +10,15 @@ import java.nio.file.attribute.FileTime;
 import java.security.GeneralSecurityException;
 import java.security.Security;
 import java.security.cert.X509Certificate;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Scanner;
@@ -46,6 +51,7 @@ import com.itextpdf.text.pdf.security.SignaturePermissions.FieldLock;
 
 import bean.Actuacio;
 import bean.Actuacio.ArxiusAdjunts;
+import bean.User;
 public class Fitxers {
 	
 	
@@ -77,6 +83,12 @@ public class Fitxers {
 		private List<infoFirma> firmesList;
 		private FileItem fitxer;
 		private FileTime data;
+		private int idRegistre;
+		private User usuari;
+		private Date dataPujada;
+		private Date dataEliminat;
+		private User usuariEliminat;
+		
 		
 		public Fitxer(){
 			this.signat = false;
@@ -164,6 +176,46 @@ public class Fitxers {
 
 		public void setNomCamp(String nomCamp) {
 			this.nomCamp = nomCamp;
+		}
+
+		public int getIdRegistre() {
+			return idRegistre;
+		}
+
+		public void setIdRegistre(int idRegistre) {
+			this.idRegistre = idRegistre;
+		}
+
+		public User getUsuari() {
+			return usuari;
+		}
+
+		public void setUsuari(User usuari) {
+			this.usuari = usuari;
+		}
+
+		public Date getDataPujada() {
+			return dataPujada;
+		}
+
+		public void setDataPujada(Date dataPujada) {
+			this.dataPujada = dataPujada;
+		}
+
+		public Date getDataEliminat() {
+			return dataEliminat;
+		}
+
+		public void setDataEliminat(Date dataEliminat) {
+			this.dataEliminat = dataEliminat;
+		}
+
+		public User getUsuariEliminat() {
+			return usuariEliminat;
+		}
+
+		public void setUsuariEliminat(User usuariEliminat) {
+			this.usuariEliminat = usuariEliminat;
 		}	
 		
 	}	
@@ -404,7 +456,42 @@ public class Fitxers {
         return perms;
 	}
 	
-	public static void guardarFitxer(List<Fitxer> fitxers, String idIncidencia, String idActuacio, String tipus, String idTipus, String idSubTipus, String idInforme, String docInforme) throws IOException, NamingException{		
+	private static int getIdRegistreDocument(Connection conn) throws SQLException {
+		int idRegistre = 0;
+		String sql = "SELECT idregistre " +
+					" FROM public.tbl_registredocuments" +
+					" ORDER BY idregistre DESC" +
+					" LIMIT 1";
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		ResultSet rs = pstm.executeQuery();
+		if (rs.next()) idRegistre = rs.getInt("idregistre") + 1;
+		return idRegistre;
+	}
+	
+	public static void guardarRegistreFitxer(Connection conn, String nomdocument, String ruta, int idUsuari) throws SQLException {
+		 String sqlInsert = "INSERT INTO public.tbl_registredocuments(idregistre, usuari, data, nomdocument, dataeliminacio, usuarieliminacio, rutadocument)"
+		 			+ " VALUES (?, ?, localtimestamp, ?, null, null, ?);";	 
+		 PreparedStatement pstmInsert = null; 			 
+		 pstmInsert = conn.prepareStatement(sqlInsert);	
+		 pstmInsert.setInt(1, getIdRegistreDocument(conn));
+		 pstmInsert.setInt(2, idUsuari);
+		 pstmInsert.setString(3, nomdocument);		
+		 pstmInsert.setString(4, ruta);		
+		 pstmInsert.executeUpdate();		
+	}
+	
+	public static void marcarDocumentEliminat(Connection conn, int idUsuari, String ruta) throws SQLException {
+		String sqlUpdate = "UPDATE public.tbl_registredocuments" + 
+							" SET dataeliminacio=localtimestamp, usuarieliminacio=?" +
+							" WHERE rutadocument=?;";
+		 PreparedStatement pstm = conn.prepareStatement(sqlUpdate);	
+		 pstm.setInt(1,idUsuari);
+		 pstm.setString(2, ruta);		
+		 System.out.println(pstm.toString());
+		 pstm.executeUpdate();	
+	}
+	
+	public static void guardarFitxer(Connection conn, List<Fitxer> fitxers, String idIncidencia, String idActuacio, String tipus, String idTipus, String idSubTipus, String idInforme, String docInforme, int idUsuari) throws IOException, NamingException{		
 		if (fitxers != null && !fitxers.isEmpty()) {
 			String fileName = "";
 			 // Get the base naming context
@@ -494,7 +581,8 @@ public class Fitxers {
 	            if (fitxer.getFitxer().getName() != "") {
 	            	File archivo_server = new File(fileName + fitxer.getFitxer().getName());	 
 	               	try {
-	               		fitxer.getFitxer().write(archivo_server);	               	
+	               		fitxer.getFitxer().write(archivo_server);	
+	               		Fitxers.guardarRegistreFitxer(conn, fitxer.getFitxer().getName(), fileName  + "/" + fitxer.getFitxer().getName(), idUsuari);
 	           		} catch (Exception e) {
 	           			e.printStackTrace();
 	           		}
@@ -503,13 +591,16 @@ public class Fitxers {
 		}
 	}
 	
-	public static void eliminarFitxer(String ruta) {
+	public static void eliminarFitxer(Connection conn, int idUsuari, String ruta) {
 		try {
 			File tmpFile = new File(ruta);
 			tmpFile = tmpFile.getCanonicalFile(); 
 			if (tmpFile.exists()) {
 				System.out.println("elimina: " + ruta);
-				if (tmpFile.delete()) System.out.println("eliminat");
+				if (tmpFile.delete()) {
+					Fitxers.marcarDocumentEliminat(conn, idUsuari, ruta);
+					System.out.println("eliminat");
+				}
 			}
 		} catch (Exception e) {
 			System.out.println(e.toString());

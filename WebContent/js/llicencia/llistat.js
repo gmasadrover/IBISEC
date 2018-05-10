@@ -31,18 +31,19 @@ $(document).ready(function() {
 	        }
         ],
         "order": [[ 0, "desc" ]],
-		"aoColumns": [
-			null,
+		"aoColumns": [			
     		null,    		
     		null,  
     		null,    		
     		null,  
     		{"bVisible": false},
-    		{"iDataSort": 6},
+    		{"iDataSort": 5},
     		{"bVisible": false},
-    		{"iDataSort": 8},
+    		{"iDataSort": 7},
     		{"bVisible": false},
-    		{"iDataSort": 10}
+    		{"iDataSort": 9},
+    		null,
+    		null
 		]
 	});
 });	

@@ -97,6 +97,9 @@
                             </p> 
                             <p> 
 	                        	<label>Data conformada: </label> ${factura.getDataConformacioString()}
+                            </p> 
+                            <p> 
+	                        	<label>Data descarregada comptabilitat: </label> ${factura.getDataDescarregadaConformadaString()}
                             </p>    	                            
 	                  	</div>
 		             	<div class="col-xs-offset-1 col-md-5">

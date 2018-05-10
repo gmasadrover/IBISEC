@@ -119,8 +119,9 @@ public class ImportFacturesHandler extends HttpServlet {
     			if (arxiu.getName().toUpperCase().contains("XML")) {
     				fileName = ruta + "/documents/-1/Actuacio/-1/informe/-1/Empreses/-1/Factures/-1/";
     				File archivo_server = new File(fileName + "temp_" + arxiu.getName());
-    				try {
+    				try {    					
 						arxiu.write(archivo_server);
+						Fitxers.guardarRegistreFitxer(conn, arxiu.getName(), fileName  + "temp_" + arxiu.getName(), Usuari.getIdUsuari());
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -151,11 +152,18 @@ public class ImportFacturesHandler extends HttpServlet {
 								factura.setNombreFactura(eElement.getElementsByTagName("InvoiceNumber").item(0).getTextContent());
 								factura.setConcepte(eElement.getElementsByTagName("ItemDescription").item(0).getTextContent());
 								factura.setDataFactura(formatter.parse(eElement.getElementsByTagName("IssueDate").item(0).getTextContent()));
+								
 								if (eElement.getElementsByTagName("AdditionalLineItemInformation").item(0) != null) factura.setNotes(eElement.getElementsByTagName("AdditionalLineItemInformation").item(0).getTextContent()); 	
 							}
 						}
-	            
-	            		factura.setDataEntrada(new Date());
+						nList = doc.getElementsByTagName("etsi:CompleteRevocationRefs");
+						for (int temp = 0; temp < nList.getLength(); temp++) {
+							Node nNode = nList.item(temp);						            
+							if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+								Element eElement = (Element) nNode;
+								factura.setDataEntrada(formatter.parse(eElement.getElementsByTagName("etsi:ProducedAt").item(0).getTextContent()));
+							}
+						}
 	   		            factura.setIdFactura(FacturaCore.getNewCode(conn));
 	   		            factura.setIdActuacio("-1");
 		         	    factura.setIdInforme("-1");
@@ -180,7 +188,7 @@ public class ImportFacturesHandler extends HttpServlet {
             	for (String infoFact: facturesImport){
             		if (infoFact.split(";")[0].equals(facturaPDF.getName().split("_")[0])) {
             			try {
-        					FacturaCore.saveArxiu("-1", "-1", "-1", infoFact.split(";")[1], infoFact.split(";")[2], new ArrayList<Fitxer>(Arrays.asList(fitxer)), conn);
+        					FacturaCore.saveArxiu("-1", "-1", "-1", infoFact.split(";")[1], infoFact.split(";")[2], new ArrayList<Fitxer>(Arrays.asList(fitxer)), conn, Usuari.getIdUsuari());
         				} catch (NamingException | SQLException e) {
         					// TODO Auto-generated catch block
         					e.printStackTrace();

@@ -19,6 +19,7 @@ import org.apache.commons.fileupload.FileUploadException;
 
 import bean.Actuacio;
 import bean.Factura;
+import bean.User;
 import core.ActuacioCore;
 import core.FacturaCore;
 import core.TascaCore;
@@ -53,6 +54,7 @@ public class DoCreateCertificacioServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		User Usuari = MyUtils.getLoginedUser(request.getSession());	   
 	    String idCertificacio = multipartParams.getParametres().get("idCertificacio");
 	    String idActuacio = multipartParams.getParametres().get("idActuacio");
 	    String idInforme = multipartParams.getParametres().get("idInforme");
@@ -96,10 +98,10 @@ public class DoCreateCertificacioServlet extends HttpServlet {
 	   			certificacio.setUsuariConformador(UsuariCore.findUsuariByID(conn, idUsuariConformador));
 	   			certificacio.setDataEnviatConformador(dataPasadaConformar);
 	   			FacturaCore.newCertificacio(conn, certificacio, idUsuari);	
-	   			FacturaCore.saveArxiuCertificacio(actuacio.getIdIncidencia(), idActuacio, idInforme, idProveidor, idCertificacio, multipartParams.getFitxers(), conn);
+	   			FacturaCore.saveArxiuCertificacio(actuacio.getIdIncidencia(), idActuacio, idInforme, idProveidor, idCertificacio, multipartParams.getFitxers(), conn, Usuari.getIdUsuari());
 	   			int usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariCertificacions")); 
 	   			if (usuariTasca != idUsuari) {
-	   				TascaCore.novaTasca(conn, "revisarCertificacio", usuariTasca, idUsuari, idActuacio, actuacio.getIdIncidencia(), "Nova certificació", "Nova certificació", idCertificacio, null);
+	   				TascaCore.novaTasca(conn, "revisarCertificacio", usuariTasca, idUsuari, idActuacio, actuacio.getIdIncidencia(), "Nova certificació", "Nova certificació", idCertificacio, null, request.getRemoteAddr(), "automatic");
 	   			}		    	
 	   		} catch (SQLException | NamingException e) {
 	  			e.printStackTrace();

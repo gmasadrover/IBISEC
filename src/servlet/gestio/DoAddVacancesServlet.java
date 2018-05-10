@@ -59,7 +59,7 @@ public class DoAddVacancesServlet extends HttpServlet {
    			if (CalendarCore.quedenDies(conn, idUsuari, vacances, tipus, dataInici, dataFi)) {
    				int idSolicitud = CalendarCore.reservarVacances(conn, idUsuari, tipus, dataInici, dataFi, motiu, usuariLogetjat.getDepartament());
    				int idUsuariCap = UsuariCore.finCap(conn, usuariLogetjat.getDepartament()).getIdUsuari();
-   				TascaCore.novaTasca(conn, "vacances", idUsuariCap, idUsuari, "", "", "Sol·licitud de " + tipus + " pel " + df.format(dataInici) + " al " +  df.format(dataFi), "Sol·licitud " + tipus, Integer.toString(idSolicitud), null);
+   				TascaCore.novaTasca(conn, "vacances", idUsuariCap, idUsuari, "", "", "Sol·licitud de " + tipus + " pel " + df.format(dataInici) + " al " +  df.format(dataFi), "Sol·licitud " + tipus, Integer.toString(idSolicitud), null, request.getRemoteAddr(), "automatic");
    			} else {
    				errorString = "No queden suficients dies per aquest període";
    			}   			   

@@ -80,8 +80,7 @@
                             <table class="table table-striped table-bordered filerTable">
                                 <thead>
                                     <tr>
-                                        <th>Codi</th>
-                                        <th>Expedient</th>
+                                    	<th>Expedient</th>
                                         <th>Descripció</th>
                                         <th>Centre</th>
                                         <th>Tipus</th>
@@ -90,23 +89,26 @@
                                         <th>Concesió</th>
                                         <th>Concesió</th>
                                         <th>Pagada Taxa</th>
-                                        <th>Pagada Taxa</th>                                        
+                                        <th>Pagada Taxa</th>  
+                                        <th>Taxa</th>
+                                        <th>ICO</th>                                      
                                     </tr>
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${informeList}" var="informe" >
-							          	<tr>							          	
-							           		<td><a href="llicencia?codi=${informe.llicencia.codi}" class="loadingButton"  data-msg="obrint llicència...">${informe.llicencia.codi}</a></td>
+							          	<tr>
 							           		<td><a href="actuacionsDetalls?ref=${informe.actuacio.referencia}" class="loadingButton"  data-msg="obrint expedient...">${informe.expcontratacio.expContratacio}</a></td>
 							           		<td>${informe.propostaInformeSeleccionada.objecte}</td>
 							           		<td>${informe.actuacio.centre.getNomComplet()}</td>
 							            	<td>${informe.llicencia.getTipusFormat()}</td>
 							            	<td>${informe.llicencia.peticio}</td>
-							            	<td>${informellicencia.getDataPeticioString()}</td>
+							            	<td>${informe.llicencia.getDataPeticioString()}</td>
 							            	<td>${informe.llicencia.concesio}</td>
 							            	<td>${informe.llicencia.getDataConcesioString()}</td>
 							            	<td>${informe.llicencia.pagamentTaxa}</td>
 							            	<td>${informe.llicencia.getDataPagamentTaxaString()}</td>
+							            	<td>${informe.llicencia.taxa}</td>
+							            	<td>${informe.llicencia.ico}</td>
 							          	</tr>
 							       	</c:forEach>                                	
                                 </tbody>

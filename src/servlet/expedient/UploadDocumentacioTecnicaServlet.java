@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileUploadException;
 
+import bean.User;
 import utils.Fitxers;
 import utils.MyUtils;
 
@@ -41,11 +42,13 @@ public class UploadDocumentacioTecnicaServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		Connection conn = MyUtils.getStoredConnection(request);	
+		User Usuari = MyUtils.getLoginedUser(request.getSession());	   
 		String idActuacio = multipartParams.getParametres().get("idActuacio");
 	    String idIncidencia = multipartParams.getParametres().get("idIncidencia");
 	    String idInforme = multipartParams.getParametres().get("idInforme"); 
 		try {
-			Fitxers.guardarFitxer(multipartParams.getFitxers(), idIncidencia, idActuacio, "", "", "", idInforme, "Documentació tècnica");
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxers(), idIncidencia, idActuacio, "", "", "", idInforme, "Documentació tècnica", Usuari.getIdUsuari());
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

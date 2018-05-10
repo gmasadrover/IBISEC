@@ -59,7 +59,7 @@ public class PartidaDetailsServlet extends HttpServlet {
 	       		partida = CreditCore.getPartida(conn,codi);	  
 	       		llistaAssignacions = CreditCore.findAssignacionsPartida(conn, codi, estat);
 	       		canEditPartida = UsuariCore.hasPermision(conn, usuari, SectionPage.partides_crear);
-	       	} catch (SQLException | NamingException e) {
+	       	} catch (SQLException | NamingException  e) {
 	       		e.printStackTrace();
 	       		errorString = e.getMessage();
 	       	}

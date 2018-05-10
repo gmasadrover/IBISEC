@@ -65,7 +65,7 @@ public class DoCreateTascaPreLicitacio extends HttpServlet {
 			informe = InformeCore.getInformePrevi(conn, idInforme, false);
 			ActuacioCore.actualitzarActuacio(conn, informe.getActuacio().getReferencia(), "Sol·licitud firma documents previs licitació");
 			int usuariTasca = UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari();
-			TascaCore.novaTasca(conn, "preLicitacio", usuariTasca, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "Sol·licitud firma documents previs licitació", "Previs Licitació",informe.getIdInf(),null);
+			TascaCore.novaTasca(conn, "preLicitacio", usuariTasca, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "Sol·licitud firma documents previs licitació", "Previs Licitació",informe.getIdInf(),null, request.getRemoteAddr(), "automatic");
 		} catch (SQLException | NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

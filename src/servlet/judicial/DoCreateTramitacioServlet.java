@@ -73,8 +73,8 @@ public class DoCreateTramitacioServlet extends HttpServlet {
 			tramitacio.setPendentTercers(multipartParams.getParametres().get("pendentTercers") != null);
 			tramitacio.setPendentProvisio(multipartParams.getParametres().get("pendentProvisio") != null);
 			tramitacio.setNotes(multipartParams.getParametres().get("notes"));
-			int idTramitacio = JudicialCore.novaTramitacio(conn, tramitacio, refPro, usuari.getIdUsuari());
-			JudicialCore.guardarFitxerTramitacio(multipartParams.getFitxers(), refPro, idTramitacio);
+			int idTramitacio = JudicialCore.novaTramitacio(conn, tramitacio, refPro, usuari.getIdUsuari(), request.getRemoteAddr());
+			JudicialCore.guardarFitxerTramitacio(conn, multipartParams.getFitxers(), refPro, idTramitacio, usuari.getIdUsuari());
 		} catch (SQLException | ParseException | NamingException e) {
 			errorString = e.toString();
 		}

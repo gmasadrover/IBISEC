@@ -164,7 +164,7 @@ public class DoCreateTascaServlet extends HttpServlet {
    					idIncidencia = ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia();
    				}	
    			}   			
-   			idTasca = TascaCore.novaTasca(conn, tipus, idUsuariTasca, idUsuari, idActuacio, idIncidencia, comentari, assumpte, idInformePrevi, multipartParams.getFitxers());
+   			idTasca = TascaCore.novaTasca(conn, tipus, idUsuariTasca, idUsuari, idActuacio, idIncidencia, comentari, assumpte, idInformePrevi, multipartParams.getFitxers(), request.getRemoteAddr(), "manual");
    		} catch (SQLException | NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

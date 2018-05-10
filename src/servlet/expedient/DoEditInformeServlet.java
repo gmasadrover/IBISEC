@@ -94,8 +94,8 @@ public class DoEditInformeServlet extends HttpServlet {
 		    } else {
 		    	InformeCore.modificarProposta(conn, proposta);
 		    }
-		    if (multipartParams.getFitxersByName().get("informe") != null) Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("informe")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "Informe Previ", "", "", idInforme, "");
-		    if (multipartParams.getFitxersByName().get("propostaActuacio") != null) Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("propostaActuacio")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Proposta actuació");
+		    if (multipartParams.getFitxersByName().get("informe") != null) Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("informe")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "Informe Previ", "", "", idInforme, "", Usuari.getIdUsuari());
+		    if (multipartParams.getFitxersByName().get("propostaActuacio") != null) Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("propostaActuacio")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Proposta actuació", Usuari.getIdUsuari());
 		    
 		    //Vistiplau cap
 		   /* Date dataVistiPlau = null;
@@ -108,7 +108,7 @@ public class DoEditInformeServlet extends HttpServlet {
 		    if (multipartParams.getFitxersByName().get("vistiplauProposta") != null) Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("vistiplauProposta")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Vistiplau cap");*/
 		    
 		    //Informe supervisió
-			if (multipartParams.getFitxersByName().get("informeSupervisio") != null) Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("informeSupervisio")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Informe Supervisió");
+			if (multipartParams.getFitxersByName().get("informeSupervisio") != null) Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("informeSupervisio")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Informe Supervisió", Usuari.getIdUsuari());
 		    
 			informe.setNotes(multipartParams.getParametres().get("notes"));
 			InformeCore.modificarNotes(conn, informe, multipartParams.getParametres().get("notes"));
@@ -119,7 +119,7 @@ public class DoEditInformeServlet extends HttpServlet {
     	    assignacio.setBei(multipartParams.getParametres().get("bei") != null);
     	    assignacio.setFeder(multipartParams.getParametres().get("feder") != null);    	 
     	    InformeCore.modificarPartida(conn, informe, multipartParams.getParametres().get("llistaPartides"), Usuari.getIdUsuari(), assignacio);    	     
-    	    if (multipartParams.getFitxersByName().get("conformeAreaEconomica") != null) Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("conformeAreaEconomica")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Conforme àrea financera");
+    	    if (multipartParams.getFitxersByName().get("conformeAreaEconomica") != null) Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("conformeAreaEconomica")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Conforme àrea financera", Usuari.getIdUsuari());
     	  
     	    //Autorització
     	    boolean aprovar = false;
@@ -128,7 +128,7 @@ public class DoEditInformeServlet extends HttpServlet {
     	    	aprovar = true;
     	    }
 			if (multipartParams.getFitxersByName().get("autoritzacioActuacio") != null) {
-				Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("autoritzacioActuacio")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Autorització Proposta d'actuació");
+				Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("autoritzacioActuacio")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Autorització Proposta d'actuació", Usuari.getIdUsuari());
 				aprovar = true;
 			}
 			if (aprovar) {
@@ -139,15 +139,15 @@ public class DoEditInformeServlet extends HttpServlet {
 			}
 			
 			//Autorització Consell de Govern
-			 if (multipartParams.getFitxersByName().get("autoritzacioConsellDeGovern") != null) Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("autoritzacioConsellDeGovern")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Autorització Consell De Govern");
+			 if (multipartParams.getFitxersByName().get("autoritzacioConsellDeGovern") != null) Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("autoritzacioConsellDeGovern")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Autorització Consell De Govern", Usuari.getIdUsuari());
 			//Autorització Conseller
-			 if (multipartParams.getFitxersByName().get("autoritzacioConseller") != null) Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("autoritzacioConseller")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Autorització Conseller");
+			 if (multipartParams.getFitxersByName().get("autoritzacioConseller") != null) Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("autoritzacioConseller")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Autorització Conseller", Usuari.getIdUsuari());
 			 
-			 if (multipartParams.getFitxersByName().get("documentBOIB") != null) Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("documentBOIB")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Document BOIB");
+			 if (multipartParams.getFitxersByName().get("documentBOIB") != null) Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("documentBOIB")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Document BOIB", Usuari.getIdUsuari());
 			 if (multipartParams.getParametres().get("dataPublicacioBOIB") != null && ! multipartParams.getParametres().get("dataPublicacioBOIB").isEmpty()) {
 					InformeCore.modificarDataPublicacioBOIB(conn, informe, formatter.parse(multipartParams.getParametres().get("dataPublicacioBOIB")));
 				}
-			 if (multipartParams.getFitxersByName().get("correuInvitacio") != null) Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("correuInvitacio")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Correu invitació");
+			 if (multipartParams.getFitxersByName().get("correuInvitacio") != null) Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("correuInvitacio")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Correu invitació", Usuari.getIdUsuari());
 			 
     	   
     	    if (!refExp.equals(refExpNou)) {

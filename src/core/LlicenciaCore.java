@@ -180,7 +180,7 @@ public class LlicenciaCore {
 		return code;
 	}
 	
-	public static void guardarArxiu(List<Fitxer> fitxers, String codi) throws NamingException {
+	public static void guardarArxiu(Connection conn, List<Fitxer> fitxers, String codi, int idUsuari) throws NamingException {
 		if (!fitxers.isEmpty()) {
 			String fileName = "";
 			// Crear directoris si no existeixen
@@ -203,6 +203,7 @@ public class LlicenciaCore {
 	            	File archivo_server = new File(fileName + fitxer.getFitxer().getName());
 	               	try {
 	               		fitxer.getFitxer().write(archivo_server);
+	               		Fitxers.guardarRegistreFitxer(conn, fitxer.getFitxer().getName(), fileName  + "/" + fitxer.getFitxer().getName(), idUsuari);
 	           		} catch (Exception e) {
 	           			e.printStackTrace();
 	           		}

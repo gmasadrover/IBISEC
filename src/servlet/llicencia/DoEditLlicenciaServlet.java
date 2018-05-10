@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileUploadException;
 
 import bean.Llicencia;
+import bean.User;
 import core.LlicenciaCore;
 import utils.Fitxers;
 import utils.MyUtils;
@@ -48,7 +49,7 @@ public class DoEditLlicenciaServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-       	
+		User Usuari = MyUtils.getLoginedUser(request.getSession());	   
        	String codi = multipartParams.getParametres().get("llicencia");
        	String from = multipartParams.getParametres().get("from");  
     	String idActuacio = multipartParams.getParametres().get("idActuacio");  
@@ -75,7 +76,7 @@ public class DoEditLlicenciaServlet extends HttpServlet {
 			}
 			
 			llicencia.setObservacio(multipartParams.getParametres().get("observacions"));
-			LlicenciaCore.guardarArxiu(multipartParams.getFitxers(), codi);
+			LlicenciaCore.guardarArxiu(conn, multipartParams.getFitxers(), codi, Usuari.getIdUsuari());
 			LlicenciaCore.updateLlicencia(conn, llicencia);
 		} catch (ParseException | SQLException | NamingException e) {
 			errorString = e.toString();

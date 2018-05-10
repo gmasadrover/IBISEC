@@ -20,6 +20,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import bean.Actuacio;
 import bean.Factura;
 import bean.Registre;
+import bean.User;
 import core.ActuacioCore;
 import core.EmpresaCore;
 import core.FacturaCore;
@@ -57,7 +58,7 @@ public class DoCreateFacturaServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+		User Usuari = MyUtils.getLoginedUser(request.getSession());	   
 	    String idFactura = multipartParams.getParametres().get("idFactura");
 	    String idActuacio = multipartParams.getParametres().get("idActuacio");
 	    String idInforme = multipartParams.getParametres().get("idInforme");
@@ -102,7 +103,7 @@ public class DoCreateFacturaServlet extends HttpServlet {
 	   			Actuacio actuacio = ActuacioCore.findActuacio(conn, idActuacio);
 	   			factura.setUsuariConformador(UsuariCore.findUsuariByID(conn, idUsuariConformador));
 	   			FacturaCore.newFactura(conn, factura, idUsuari);	
-	   			FacturaCore.saveArxiu(actuacio.getIdIncidencia(), idActuacio, idInforme, idProveidor, idFactura, multipartParams.getFitxers(), conn);
+	   			FacturaCore.saveArxiu(actuacio.getIdIncidencia(), idActuacio, idInforme, idProveidor, idFactura, multipartParams.getFitxers(), conn, Usuari.getIdUsuari());
 	   			//Registram la factura
 	   			Date peticio = new Date();
 	   			peticio = formatter.parse(factura.getDataEntradaString());

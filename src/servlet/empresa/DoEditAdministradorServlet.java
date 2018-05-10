@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileUploadException;
 
 import bean.Empresa;
+import bean.User;
 import bean.Empresa.Administrador;
 import core.EmpresaCore;
 import utils.Fitxers;
@@ -54,9 +55,10 @@ public class DoEditAdministradorServlet extends HttpServlet {
 		String cif = multipartParams.getParametres().get("cif");
 		String nifAdministrador = multipartParams.getParametres().get("dniAdmin");	
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+		User Usuari = MyUtils.getLoginedUser(request.getSession());	   
 		try {
 			if (eliminar != null) {
-				EmpresaCore.deleteAdministrador(conn, cif, nifAdministrador);
+				EmpresaCore.deleteAdministrador(conn, cif, nifAdministrador, Usuari.getIdUsuari());
 			}else if (modificar != null){
 				Administrador administrador = new Empresa().new Administrador();
 				administrador.setNom(multipartParams.getParametres().get("nomAdmin"));
@@ -71,7 +73,7 @@ public class DoEditAdministradorServlet extends HttpServlet {
 		    	} 
 		    	administrador.setEntitatValidacio(multipartParams.getParametres().get("organValidador"));
 		    	EmpresaCore.updateAdministrador(conn, cif, nifAdministrador, administrador);
-		    	EmpresaCore.guardarFitxer(multipartParams.getFitxers(), cif, nifAdministrador);
+		    	EmpresaCore.guardarFitxer(conn, Usuari.getIdUsuari(), multipartParams.getFitxers(), cif, nifAdministrador);
 			}
 		} catch (SQLException | NamingException | ParseException e) {
 			// TODO Auto-generated catch block

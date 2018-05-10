@@ -31,6 +31,7 @@ import bean.Actuacio;
 import bean.Factura;
 import bean.InformeActuacio;
 import bean.Registre;
+import bean.User;
 import core.ActuacioCore;
 import core.FacturaCore;
 import core.InformeCore;
@@ -69,7 +70,7 @@ public class DoEditFacturaServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+		User Usuari = MyUtils.getLoginedUser(request.getSession());	   
 	    String idFactura = multipartParams.getParametres().get("idFactura");
 	    String idInforme = multipartParams.getParametres().get("idInforme");
 	    String idActuacio = multipartParams.getParametres().get("idActuacio");
@@ -229,12 +230,12 @@ public class DoEditFacturaServlet extends HttpServlet {
 				    	    outStream.close();
 	
 				    	    //delete the original file
-				    	    Fitxers.eliminarFitxer(arxiu.getRuta());
+				    	    Fitxers.eliminarFitxer(conn, idUsuari, arxiu.getRuta());
 				    	}
 				    }
 	   			} else {
-	   				FacturaCore.saveArxiu(ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia(), idActuacio, idInforme, idProveidor, idFactura, fitxers, conn);
-	   				FacturaCore.saveArxiuAltres(ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia(), idActuacio, idInforme, idProveidor, idFactura, multipartParams.getFitxersByName().get("altres"), conn);
+	   				FacturaCore.saveArxiu(ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia(), idActuacio, idInforme, idProveidor, idFactura, fitxers, conn, Usuari.getIdUsuari());
+	   				FacturaCore.saveArxiuAltres(ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia(), idActuacio, idInforme, idProveidor, idFactura, multipartParams.getFitxersByName().get("altres"), conn, Usuari.getIdUsuari());
 	   			}
 	   		} catch (SQLException | NamingException e) {
 	  			e.printStackTrace();

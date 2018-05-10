@@ -47,7 +47,7 @@ public class DoEditEmpresaServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-       	
+		User Usuari = MyUtils.getLoginedUser(request.getSession());	   
 		String extincio = multipartParams.getParametres().get("extincio");
 		String succecio = multipartParams.getParametres().get("succecio");
 		
@@ -63,7 +63,7 @@ public class DoEditEmpresaServlet extends HttpServlet {
 				EmpresaCore.extincioEmpresa(conn, cif, motiuExtincio);
 				empresa.setCif(cif);
 				//Guardar adjunts
-			   	EmpresaCore.guardarFitxer(multipartParams.getFitxers(), empresa.getCif(), "");
+			   	EmpresaCore.guardarFitxer(conn, Usuari.getIdUsuari(), multipartParams.getFitxers(), empresa.getCif(), "");
 			} catch (SQLException | NamingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -74,7 +74,7 @@ public class DoEditEmpresaServlet extends HttpServlet {
 				EmpresaCore.addSuccesora(conn, cif, cifSuccesora);
 				empresa.setCif(cif);
 				//Guardar adjunts
-			   	EmpresaCore.guardarFitxer(multipartParams.getFitxers(), empresa.getCif(), "");
+			   	EmpresaCore.guardarFitxer(conn, Usuari.getIdUsuari(), multipartParams.getFitxers(), empresa.getCif(), "");
 			} catch (SQLException | NamingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -148,7 +148,7 @@ public class DoEditEmpresaServlet extends HttpServlet {
 				empresa.setRatioAP(ratioAP);			
 				
 				//Guardar adjunts
-			   	EmpresaCore.guardarFitxer(multipartParams.getFitxers(), empresa.getCif(), "");
+			   	EmpresaCore.guardarFitxer(conn, Usuari.getIdUsuari(), multipartParams.getFitxers(), empresa.getCif(), "");
 			    
 			} catch (ParseException | NamingException e1) {
 				e1.printStackTrace();

@@ -330,7 +330,7 @@
 									       	<div class="row">
 						                		<div class="form-group">
 											        <div class="col-md-12">
-											            <input id="createTascaReservaCredit" data-informe="${expedient.idInforme}" class="btn btn-success" value="Sol. reserva partida">							            
+											            <input id="createTascaReservaCredit" data-informe="${informePrevi.idInf}" class="btn btn-success" value="Sol. reserva partida">							            
 											        </div>
 											    </div> 
 						                	</div>
@@ -459,36 +459,38 @@
 					       	<c:when test="${expedient.contracte == 'major'}">
 						       	<div class="form-group">  
 									<div class="col-md-3">
-										<label>Data publicació BOIB / Perfil contractant</label>
+										<label>Data publicació</label>
 		                                <div class="input-group date datepicker">
 										  	<input type="text" class="form-control" name="dataPublicacioBOIB" value="${informePrevi.getPublicacioBOIBString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 										</div>
 									</div>
 								</div>
-						       	<div class="form-group">
-						       		<div class="col-md-12">
-						       			<div class="document">
-											<label>Document enviar BOIB:</label>										                  	
-								          		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.documentBOIB.getEncodedRuta()}">
-												${informePrevi.documentBOIB.nom}
-											</a>	
-											<c:if test="${informePrevi.documentBOIB.signat}">
-													<span class="glyphicon glyphicon-pencil signedFile"></span>
-											</c:if>
-											<c:if test="${informePrevi.documentBOIB.ruta != null}">
-												<span data-ruta="${informePrevi.documentBOIB.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
-											</c:if>
-											<br>
-											<div class="infoSign hidden">
-												<c:forEach items="${informePrevi.documentBOIB.firmesList}" var="firma" >
-													<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-													<br>
-												</c:forEach>
-											</div>	
-										</div>
-										<input type="file" class="btn uploadImage" name="documentBOIB" /><br/>	
-						       		</div>
-						       	</div>
+								<c:if test="${informePrevi.documentBOIB.ruta != null}">
+							       	<div class="form-group">
+							       		<div class="col-md-12">
+							       			<div class="document">
+												<label>Document enviar BOIB:</label>										                  	
+									          		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.documentBOIB.getEncodedRuta()}">
+													${informePrevi.documentBOIB.nom}
+												</a>	
+												<c:if test="${informePrevi.documentBOIB.signat}">
+														<span class="glyphicon glyphicon-pencil signedFile"></span>
+												</c:if>
+												<c:if test="${informePrevi.documentBOIB.ruta != null}">
+													<span data-ruta="${informePrevi.documentBOIB.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+												</c:if>
+												<br>
+												<div class="infoSign hidden">
+													<c:forEach items="${informePrevi.documentBOIB.firmesList}" var="firma" >
+														<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+														<br>
+													</c:forEach>
+												</div>	
+											</div>
+											<input type="file" class="btn uploadImage" name="documentBOIB" /><br/>	
+							       		</div>
+							       	</div>
+								</c:if>
 					       	</c:when>
 					       	<c:otherwise>
 					       		<div class="form-group">

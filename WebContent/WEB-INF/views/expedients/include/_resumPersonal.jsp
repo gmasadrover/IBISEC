@@ -15,19 +15,37 @@
 		            <th>Usuari</th>
 		            <th>Funció</th>		
 		            <th>Data alta</th>	 
-		            <th>Data baixa</th>	                                        
+		            <th>Data baixa</th>	   
+		            <th>Control</th>                                     
 		        </tr>
 		    </thead>
 		    <tbody>
 		    	<c:forEach items="${informePrevi.personal}" var="persona" >
 					<tr>	
-						<td>${persona.getPlicFormat()}</td>							          	
-						<td>${persona}</td>
-						<td>${persona}</td>
-						<td>${persona}</td>
+						<td>${persona.usuari.getNomCompletReal()}</td>							          	
+						<td>${persona.funcio}</td>
+						<td>${persona.getDataAltaString()}</td>
+						<td>${persona.getDataBaixaString()}</td>
+						<td>
+							<c:if test="${canModificarPersonal}">
+								<input class="btn btn-danger btn-sm deleteRelacioPersona" data-idrelacio="${persona.relacioID}" type="button" value="Baixa">
+	                   			<input class="btn btn-primary btn-sm modificarRelacioPersona" type="button" value="Modificar">
+                   			</c:if>	          
+						</td>
 		    		</tr>
 				</c:forEach>
 			</tbody>
 		</table>
-	</div>	
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="row">
+	  			<c:if test="${canModificarPersonal}">
+					<div class="col-md-offset-9 col-md-2 margin_top30">
+						<a href="newPersonalInforme?idinf=${informePrevi.idInf}&from=${redireccio}" class="btn btn-primary" role="button">Afegir</a>
+					</div>
+				</c:if>
+	    	</div>       
+		</div>
+	</div>
 </div>

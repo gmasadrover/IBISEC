@@ -84,14 +84,14 @@ public class OfertaCore {
 		return ofertaSeleccionada;
 	}
 	
-	public static void deleteOferta(Connection conn, String idOferta) throws SQLException, NamingException {
+	public static void deleteOferta(Connection conn, String idOferta, int idUsuari) throws SQLException, NamingException {
 		Oferta ofertaSeleccionada = findOfertaById(conn, idOferta);
 		String sql = "DELETE FROM public.tbl_empresaoferta"
 					+ " WHERE idoferta = ?";
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setString(1, idOferta);
 		pstm.executeUpdate();	
-		if (ofertaSeleccionada.getPresupost().getRuta() != null && !ofertaSeleccionada.getPresupost().getRuta().isEmpty()) Fitxers.eliminarFitxer(ofertaSeleccionada.getPresupost().getRuta());
+		if (ofertaSeleccionada.getPresupost().getRuta() != null && !ofertaSeleccionada.getPresupost().getRuta().isEmpty()) Fitxers.eliminarFitxer(conn, idUsuari, ofertaSeleccionada.getPresupost().getRuta());
 	}
 	
 	public static void seleccionarOferta(Connection conn, String idInforme, String idOferta, String termini, String comentari) throws SQLException {
@@ -222,7 +222,7 @@ public class OfertaCore {
 		return oferta;
 	}
 	
-	public static void guardarFitxer(List<Fitxer> fitxers, String idIncidencia, String idActuacio, String idInforme, String cifEmpresa, String tipusFitxer) throws NamingException{		
+	public static void guardarFitxer(Connection conn, List<Fitxer> fitxers, String idIncidencia, String idActuacio, String idInforme, String cifEmpresa, String tipusFitxer, int idUsuari) throws NamingException{		
 		if (!fitxers.isEmpty()) {
 			String fileName = "";
 			// Crear directoris si no existeixen
@@ -269,6 +269,7 @@ public class OfertaCore {
 	            	File archivo_server = new File(fileName + fitxer.getFitxer().getName());
 	               	try {
 	               		fitxer.getFitxer().write(archivo_server);
+	               		Fitxers.guardarRegistreFitxer(conn, fitxer.getFitxer().getName(), fileName  + "/" + fitxer.getFitxer().getName(), idUsuari);
 	           		} catch (Exception e) {
 	           			e.printStackTrace();
 	           		}

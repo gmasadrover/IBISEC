@@ -56,17 +56,7 @@
 			<div class="col-md-4">
 				<label>Plic:</label> ${informePrevi.propostaInformeSeleccionada.plic}€
 		   	</div>					  
-		</div>	
-		<p></p>
-		<p>
-			<label>Arxius ajunts:</label>
-		</p>	
-		<div class="row col-md-12">
-			<c:forEach items="${informePrevi.adjunts}" var="arxiu" >
-				<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
-				<br>
-			</c:forEach>					            		
-		</div>
+		</div>			
 		<p>			                     				
 			<label>Notes:</label> ${informePrevi.notes}
 		</p>
@@ -82,7 +72,30 @@
 			<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
 			<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">															
 			<input type="hidden" name="idInforme" value="${informePrevi.idInf}">	
-			<input type="hidden" name="idTasca" value="${tasca.idTasca}">			
+			<input type="hidden" name="idTasca" value="${tasca.idTasca}">	
+			<c:if test="${informePrevi.resolucioVAD.size() > 0 }">
+				<div class="col-md-12">
+              		<label>Resolució VAD:</label>	
+              		<c:forEach items="${informePrevi.resolucioVAD}" var="arxiu" >
+              			<div class="document">
+			           		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
+							${arxiu.getDataString()} - ${arxiu.nom}
+							</a>	
+							<c:if test="${arxiu.signat}">
+								<span class="glyphicon glyphicon-pencil signedFile"></span>
+							</c:if>
+							<br>
+							<div class="infoSign hidden">
+								<c:forEach items="${arxiu.firmesList}" var="firma" >
+									<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+									<br>
+								</c:forEach>
+							</div>
+						</div>
+					</c:forEach>
+					<input type="file" class="btn uploadImage" name="resolucioVAD" /><br/>	
+	       		</div>
+			</c:if>		
 			<c:if test="${informePrevi.ratificacioClassificacio.size() > 0}">			
 				<div class="col-md-12">
               		<label>Ratificació classificació:</label>	

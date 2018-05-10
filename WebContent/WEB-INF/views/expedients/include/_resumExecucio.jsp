@@ -5,7 +5,7 @@
 <c:set var="language" value="${not empty param.language ? param.language : not empty language ? language : pageContext.request.locale}" scope="session" />
 <m:setLocale value="${language}" />
 <m:setBundle basename="i18n.base"/>		
-<c:if test="${informePrevi.autoritzacioPropostaDespesa.ruta != null || informePrevi.contracteSignat.ruta != null || informePrevi.llistaModificacions.size() > 0}">
+<c:if test="${true || informePrevi.autoritzacioPropostaDespesa.ruta != null || informePrevi.contracteSignat.ruta != null || informePrevi.llistaModificacions.size() > 0}">
 	<div class="panel panel-default">
     	<div class="panel-body">
         	<div class="tabbable">

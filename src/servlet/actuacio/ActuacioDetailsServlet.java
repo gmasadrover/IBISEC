@@ -85,6 +85,7 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       boolean canModificarUrbanisme = false;
 	       boolean canModificarGarantia = false;
 	       boolean canModificarInstalacions = false;
+	       boolean canModificarPersonal = false;
 	       boolean canCreateFeina = false;
 	       try {
 	    	   actuacio = ActuacioCore.findActuacio(conn, referencia);
@@ -108,6 +109,7 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	    	   canModificarUrbanisme = UsuariCore.hasPermision(conn, usuari, SectionPage.llicencia_modificar);
 	    	   canModificarGarantia = UsuariCore.hasPermision(conn, usuari, SectionPage.expedient_modificar);
 	    	   canModificarInstalacions = usuari.getDepartament().equals("instalacions") || usuari.getRol().contains("ADMIN");
+	    	   canModificarPersonal = usuari.getRol().contains("CAP") || usuari.getRol().contains("ADMIN");
 	       } catch (SQLException | NamingException e) {
 	           e.printStackTrace();
 	           errorString = e.getMessage();
@@ -136,6 +138,7 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       request.setAttribute("canModificarUrbanisme", canModificarUrbanisme);
 	       request.setAttribute("canModificarGarantia", canModificarGarantia);
 	       request.setAttribute("canModificarInstalacions", canModificarInstalacions);
+	       request.setAttribute("canModificarPersonal", canModificarPersonal);
 	       request.setAttribute("redireccio", "actuacions");
 	       request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "Actuacions"));
 	       request.setAttribute("idUsuariLogg", usuari.getIdUsuari());

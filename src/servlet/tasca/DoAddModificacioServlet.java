@@ -60,7 +60,7 @@ public class DoAddModificacioServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+		String ipRemote = request.getRemoteAddr();
 		int idTasca = -1;
 		Tasca tasca = new Tasca();
 		String idActuacio = multipartParams.getParametres().get("idActuacio");
@@ -84,15 +84,15 @@ public class DoAddModificacioServlet extends HttpServlet {
 	    List<Fitxer> fitxers = multipartParams.getFitxers();
 	    if (!fitxers.isEmpty()) {
 	    	try {		
-		    	InformeCore.saveInformeModificacio(idIncidencia, idActuacio, idInforme, idModificacio, fitxers);
+		    	InformeCore.saveInformeModificacio(conn, idIncidencia, idActuacio, idInforme, idModificacio, fitxers, Usuari.getIdUsuari());
 		    	InformeCore.validacioCapInforme(conn, idModificacio, Usuari.getIdUsuari(), comentariCap, new Date());
-		    	TascaCore.nouHistoric(conn, String.valueOf(idTasca), "Informe aprovat", Usuari.getIdUsuari());
+		    	TascaCore.nouHistoric(conn, String.valueOf(idTasca), "Informe aprovat", Usuari.getIdUsuari(), ipRemote, "automatic");
 				ActuacioCore.actualitzarActuacio(conn, idActuacio, "Proposta modificació realitzada");
 				TascaCore.reasignar(conn, 900, idTasca, tasca.getTipus());
 				TascaCore.tancar(conn, idTasca);
 				int idUsuari = UsuariCore.findUsuarisByRol(conn, "CAP,CONTA").get(0).getIdUsuari();
 				InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme, false);
-				TascaCore.novaTasca(conn, "resPartidaModificacio", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), idModificacio, null);
+				TascaCore.novaTasca(conn, "resPartidaModificacio", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), idModificacio, null, ipRemote, "automatic");
 			} catch (SQLException | NamingException e) {
 				errorString = e.toString();
 				e.printStackTrace();

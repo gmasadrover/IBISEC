@@ -54,10 +54,9 @@
 										<div>
 			                                <select class="form-control selectpicker" name="estatFactura" id="estatFacturaList">
 			                                	<option value="-1">Tots</option>
-			                                	<option value="envConf">Enviada a conformar</option>
-			                                	<option value="confor">Conformada</option>
-			                                	<option value="envComt">Enviada a comptabilitat</option>
-			                                	<option value="comta">Penent arxivar</option>
+			                                	<option value="pendConf">Pendents de conformar</option>
+			                                	<option value="confor">Factures conformades</option>
+			                                	<option value="noDesc">Totes menys les descarregades</option>
 			                                </select>
 			                             </div>
 									</div>				    
@@ -89,6 +88,8 @@
                                         <th>Usuari Conformador</th>
                                         <th>Data Conformació No Format</th>
                                         <th>Data Conformació</th>
+                                        <th>Data Descarregada No Format</th>
+                                        <th>Data Descarregada</th>
                                         <th>Partida</th>
                                         <th>notes</th>   
                                         <th>Centre</th> 
@@ -119,6 +120,8 @@
 							            	<td>${factura.usuariConformador.getNomCompletReal()}</td>
 							            	<td>${factura.dataConformacio}</td>
 							            	<td>${factura.getDataConformacioString()}</td>
+							            	<td>${factura.getDataDescarregadaConformada()}</td>
+							            	<td>${factura.getDataDescarregadaConformadaString()}</td>
 							            	<td>${factura.informe.assignacioCredit.partida.codi}</td>
 							            	<td>${factura.notes}</td>	 
 							            	<td>${factura.actuacio.centre.getNomComplet()}</td>    

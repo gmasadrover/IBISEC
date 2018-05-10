@@ -65,7 +65,7 @@ public class DoCreateTascaAvaluacioCriteris extends HttpServlet {
 			informe = InformeCore.getInformePrevi(conn, idInforme, false);
 			ActuacioCore.actualitzarActuacio(conn, informe.getActuacio().getReferencia(), "Sol·licitud firma documents avaluació de criteris d'adjudicació");
 			int usuariTasca = UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari();
-			TascaCore.novaTasca(conn, "ratClassificacio", usuariTasca, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "Sol·licitud firma documents ratificació classificació", "Avaluació criteris",informe.getIdInf(),null);
+			TascaCore.novaTasca(conn, "ratClassificacio", usuariTasca, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "Sol·licitud firma documents ratificació classificació", "Avaluació criteris",informe.getIdInf(),null, request.getRemoteAddr(), "automatic");
 		} catch (SQLException | NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

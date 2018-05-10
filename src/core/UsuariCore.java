@@ -33,7 +33,13 @@ public class UsuariCore {
 	public static User finCap(Connection conn, String departament) throws SQLException {
 		String sql = "SELECT idusuari, nom, cognoms, rol, carreg, departament, nomusuari, password, alias, vacances, permisos, actiu"
 				+ " FROM public.tbl_usuaris"
-				+ " WHERE departament = ? AND rol LIKE '%CAP%'";
+				+ " WHERE departament = ?";
+				
+		if (departament.equals("gerencia")) {
+			sql += " AND rol LIKE '%GERENT%'";
+		} else {
+			sql += " AND rol LIKE '%CAP%'";
+		}
  
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setString(1, departament);

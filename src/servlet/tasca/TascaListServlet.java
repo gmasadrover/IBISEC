@@ -1,6 +1,7 @@
 package servlet.tasca;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -126,12 +127,11 @@ public class TascaListServlet extends HttpServlet {
 	        request.setAttribute("filterWithClosed", "on".equals(filterWithClosed));
 		    request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "Tasques"));
 		
-		    
-		    //InetAddress IP=InetAddress.getLocalHost();
-		    //LoggerCore.addLog("IP remote: " + request.getRemoteAddr(), usuari.getUsuari());
-		    //LoggerCore.addLog("IP of my system is := "+IP.getHostAddress(), usuari.getUsuari());
-		    //LoggerCore.addLog("USER: " + System.getProperty("user.name"), usuari.getUsuari());
-	        // Forward to /WEB-INF/views/productListView.jsp
+		   /* request.setAttribute("infoLog", "IP remote: " + request.getRemoteAddr() + "</br>remote host: " + request.getRemoteHost());
+		    System.out.println("IP remote: " + request.getRemoteAddr());
+		    System.out.println("remote host: " + request.getRemoteHost()); */
+	       
+		    // Forward to /WEB-INF/views/productListView.jsp
 	        RequestDispatcher dispatcher = request.getServletContext()
 					.getRequestDispatcher("/WEB-INF/views/tasca/tascaListView.jsp");
 	        dispatcher.forward(request, response);

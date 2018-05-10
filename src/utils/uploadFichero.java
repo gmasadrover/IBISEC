@@ -17,7 +17,10 @@ import org.apache.commons.fileupload.servlet.*;
 
 import com.itextpdf.text.pdf.*;
 
+import bean.User;
+
 import java.io.*;
+import java.sql.Connection;
 /**
  * Servlet implementation class uploadFichero
  */
@@ -49,6 +52,8 @@ public class uploadFichero extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		Connection conn = MyUtils.getStoredConnection(request);	
+		User Usuari = MyUtils.getLoginedUser(request.getSession());	   
 		String[] idIncidencies = null;	
 		String tipus = "";
 		String idTipus = "";
@@ -119,6 +124,7 @@ public class uploadFichero extends HttpServlet {
 	    	        /*y lo escribimos en el servido*/
 	    	        try {
 	    				arxiu.write(archivo_server);
+	    				Fitxers.guardarRegistreFitxer(conn, arxiu.getName(), ruta + "/documents/" + fileName + "temp_" + arxiu.getName(), Usuari.getIdUsuari());
 	    		        PdfReader reader = new PdfReader(ruta + "/documents/"+  fileName + "temp_" + arxiu.getName()); // input PDF
 	    		        PdfStamper stamper = new PdfStamper(reader,
 	    		          new FileOutputStream(ruta + "/documents/"+ fileName + arxiu.getName())); // output PDF

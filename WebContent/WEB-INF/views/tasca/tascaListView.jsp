@@ -16,7 +16,11 @@
        	<div id="page-wrapper">
 
             <div class="container-fluid">
-
+				<div class="row">
+                	<div class="col-md-12">
+                		${infoLog}
+                	</div>
+                </div>
                 <!-- Page Heading -->
                 <div class="row">
                     <div class="col-md-12">

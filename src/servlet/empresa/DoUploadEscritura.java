@@ -2,6 +2,7 @@ package servlet.empresa;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
 
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -14,9 +15,11 @@ import org.apache.commons.fileupload.FileUploadException;
 
 import com.google.gson.JsonObject;
 
+import bean.User;
 import core.EmpresaCore;
 import core.OfertaCore;
 import utils.Fitxers;
+import utils.MyUtils;
 
 /**
  * Servlet implementation class DoUploadEscritura
@@ -53,12 +56,13 @@ public class DoUploadEscritura extends HttpServlet {
         response.setHeader("Access-Control-Max-Age", "86400");
  
         JsonObject myObj = new JsonObject();      
-        
+        Connection conn = MyUtils.getStoredConnection(request);	
+		User Usuari = MyUtils.getLoginedUser(request.getSession());	   
         Fitxers.formParameters multipartParams = new Fitxers.formParameters();
 		try {
 			multipartParams = Fitxers.getParamsFromMultipartForm(request);
 			String cif = multipartParams.getParametres().get("cif");	   
-			EmpresaCore.guardarFitxer(multipartParams.getFitxers(), cif, "");
+			EmpresaCore.guardarFitxer(conn, Usuari.getIdUsuari(), multipartParams.getFitxers(), cif, "");
 		} catch (FileUploadException | NamingException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

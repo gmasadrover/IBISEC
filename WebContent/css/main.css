@@ -259,3 +259,17 @@ body{
 .inline{
 	margin-top: 0;
 }
+.ipRemote {
+	color: #d9edf7;
+}
+.automatic {
+	border-color:#ffe4b5;
+}
+.automatic .ipRemote {
+	color:#ffe4b5;
+}
+.automatic .panel-heading{
+    color: #800000;
+    background-color: #ffe4b5;
+    border-color: #ffe4b5;
+}

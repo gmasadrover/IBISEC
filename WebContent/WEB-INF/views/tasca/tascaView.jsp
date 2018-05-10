@@ -15,7 +15,7 @@
     	<jsp:include page="../_menu.jsp"></jsp:include>
        	<div id="page-wrapper">
             <div class="container-fluid">
-                <!-- Page Heading -->
+                <!-- Page Heading -->                
                 <div class="row">
                     <div class="col-md-12">
                         <h1 class="page-header">
@@ -113,9 +113,16 @@
                 <div class="row">
                     <div class="col-md-12"> 
                         <c:forEach items="${historial}" var="historic" >                        	
-                        	<div class="panel panel-info"> 
+                        	<div class="panel panel-info ${historic.tipus=='automatic' ? 'automatic' : ''}"> 
 	                         	<div class="panel-heading">
-	                         		<div class="">${historic.usuari.getNomComplet()} - ${historic.getDataString()}</div>
+	                         		<c:choose>
+	                         			<c:when test="${historic.tipus=='automatic'}">
+	                         				<span class="">Missatge automàtic - ${historic.getDataString()}</span> <span class="ipRemote">${historic.ipRemota}</span>
+	                         			</c:when>
+	                         			<c:otherwise>
+	                         				<span class="">${historic.usuari.getNomComplet()} - ${historic.getDataString()}</span> <span class="ipRemote">${historic.ipRemota}</span>
+	                         			</c:otherwise>
+	                         		</c:choose>	                         		
 	                         	</div>
 	                         	<div class="panel-body">
 	                         		<div class="row panel-body">${historic.comentari}</div>		
@@ -131,10 +138,19 @@
 							           		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
 												${arxiu.getDataString()} - ${arxiu.nom}
 											</a>
+											<c:if test="${arxiu.signat}">
+													<span class="glyphicon glyphicon-pencil signedFile"></span>
+											</c:if>
 											<c:if test="${esCap}">
 												<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
 											</c:if>
 											<br>
+											<div class="infoSign hidden">
+												<c:forEach items="${arxiu.firmesList}" var="firma" >
+													<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
+													<br>
+												</c:forEach>
+											</div>
 										</c:forEach>
 									</div>
 								</div>
@@ -217,66 +233,7 @@
 																</div>
 															</c:if>															
 														</form>
-													</div>
-													<%-- <c:if test="${propostesInformeList.size() > 0 && informePrevi.propostaActuacio.ruta == null}">
-														<div class="panel-body">
-															<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddPA">
-																<input type="hidden" name="document" value="paTecnic">
-																<input type="hidden" name="idInforme" value="${informePrevi.idInf}">
-																<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
-																<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">
-																<input type="hidden" name="idTasca" value="${tasca.idTasca}">	
-																<div class="col-md-8">
-																	<div class="row margin_top10">
-														    			<div class="col-md-12">
-														           			Pujar proposta d'actuació signada: <input type="file" class="btn uploadImage" name="informe" /><br/>																 		
-														    			</div>
-														    		</div>																													        			
-												        		</div>	
-												        		<div class="col-md-4">												        		
-														    		<div class="row">
-														        		<div class="col-md-12">															        																						 				
-																	 		<input class="btn btn-success margin_top30 upload" type="submit" name="guardar" value="Enviar proposta actuació signada">
-																	 	</div>
-														     		</div>
-													     		</div>
-											        		</form>
-											        	</div>
-													</c:if> --%>
-											        <!-- <div class="separator"></div>		 -->										        	
-										        	<%-- <c:if test="${informePrevi.propostaActuacio.ruta != null && esCap}">
-											        	<div class="panel-body">
-											        		<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddPA">
-											        			<input type="hidden" name="document" value="autoritzacioCap">
-																<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
-																<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">
-																<input type="hidden" name="idTasca" value="${tasca.idTasca}">
-																<input type="hidden" name="idInforme" value="${informePrevi.idInf}">																	
-													        	<c:if test="${informePrevi.vistiplauPropostaActuacio.ruta != null}">
-																	<div class="col-md-12">	
-													                	<p>Vistiplau proposta d'actuació signada:</p>													                  	
-													            		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.vistiplauPropostaActuacio.getEncodedRuta()}">
-																			${informePrevi.vistiplauPropostaActuacio.nom}
-																		</a>																			
-																	</div>
-																</c:if>																	
-																<div class="col-md-8">
-																	<div class="row margin_top10">
-														    			<div class="col-md-12">
-														           			Pujar Vistiplau proposta d'actuació signada: <input type="file" class="btn uploadImage" name="informe" /><br/>																 		
-														    			</div>
-														    		</div>																													        			
-												        		</div>	
-												        		<div class="col-md-4">												        		
-														    		<div class="row">
-														        		<div class="col-md-12">															        																						 				
-																	 		<input class="btn btn-success margin_top30 upload" type="submit" name="guardar" value="Enviar vistiplau signat">
-																	 	</div>
-														     		</div>
-													     		</div>
-											        		</form>	
-											        	</div>															
-													</c:if> --%>
+													</div>													
 												</c:if>
 											</c:when>
 											<c:when test="${tasca.tipus=='docprelicitacio'}">

@@ -118,8 +118,8 @@
                                         <th>Data Creacio</th>
                                         <th>Centre</th>
                                         <th>Descripció</th>
-                                        <th>Publicat BOIB</th>
-                                        <th>Publicat BOIB</th>
+                                        <th>Publicació</th>
+                                        <th>Publicació</th>
                                         <th>Preu licitació</th>
                                         <th>Adjudicació</th>
                                         <th>Adjudicació</th>

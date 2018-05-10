@@ -112,7 +112,7 @@ public class InformeActuacio {
 		
 		public String getTipusObraFormat() {
 			if ("obr".equals(this.tipusObra)) {
-				if (this.pbase > 50000) {
+				if (this.pbase > 40000) {
 					return "Obra Major";
 				} else {
 					return "Obra menor";
@@ -247,6 +247,7 @@ public class InformeActuacio {
 	}
 	
 	public class Personal {
+		private int relacioID;
 		private User usuari;
 		private String idInf;
 		private String funcio;
@@ -300,6 +301,12 @@ public class InformeActuacio {
 		}
 		public void setDataBaixa(Date dataBaixa) {
 			this.dataBaixa = dataBaixa;
+		}
+		public int getRelacioID() {
+			return relacioID;
+		}
+		public void setRelacioID(int relacioID) {
+			this.relacioID = relacioID;
 		}
 	}
 	
@@ -358,6 +365,7 @@ public class InformeActuacio {
 	private Fitxer declaracioUrgencia;
 	private Fitxer aprovacioEXPPlecsDespesa;
 	private Fitxer aprovacioDispoTerrenys;
+	private List<Fitxer> resolucioVAD;
 	private List<Fitxer> ratificacioClassificacio;
 	private Date publicacioBOIB;
 	private Fitxer documentBOIB;
@@ -372,6 +380,7 @@ public class InformeActuacio {
 	private String recursAdministratiu;
 	private List<Fitxers.Fitxer> documentsRecursosAdministratius;
 	private List<Fitxers.Fitxer> documentsIntalacioBaixaTensio;
+	private List<Fitxers.Fitxer> documentsIntalacioFotovoltaica;
 	private List<Fitxers.Fitxer> documentsIntalacioContraincendis;
 	private List<Fitxers.Fitxer> documentsCertificatEficienciaEnergetica;
 	private List<Fitxers.Fitxer> documentsIntalacioTermica;
@@ -1174,5 +1183,21 @@ public class InformeActuacio {
 
 	public void setDeclaracioUrgencia(Fitxer declaracioUrgencia) {
 		this.declaracioUrgencia = declaracioUrgencia;
+	}
+
+	public List<Fitxer> getResolucioVAD() {
+		return resolucioVAD;
+	}
+
+	public void setResolucioVAD(List<Fitxer> resolucioVAD) {
+		this.resolucioVAD = resolucioVAD;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsIntalacioFotovoltaica() {
+		return documentsIntalacioFotovoltaica;
+	}
+
+	public void setDocumentsIntalacioFotovoltaica(List<Fitxers.Fitxer> documentsIntalacioFotovoltaica) {
+		this.documentsIntalacioFotovoltaica = documentsIntalacioFotovoltaica;
 	}
 }

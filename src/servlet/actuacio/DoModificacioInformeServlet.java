@@ -3,6 +3,7 @@ package servlet.actuacio;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Date;
 
 import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
@@ -18,6 +19,7 @@ import bean.InformeActuacio;
 import bean.InformeActuacio.PropostaInforme;
 import bean.Oferta;
 import bean.User;
+import core.ActuacioCore;
 import core.InformeCore;
 import core.OfertaCore;
 import core.TascaCore;
@@ -96,10 +98,16 @@ public class DoModificacioInformeServlet extends HttpServlet {
 	  		ofertaProposta.setIdInforme(idModificacio);
 	  		ofertaProposta.setSeleccionada(true);
 	  		OfertaCore.novaOferta(conn, ofertaProposta, Usuari.getIdUsuari());
-	  		InformeCore.saveInformeModificacio(informe.getIdIncidencia(), informe.getActuacio().getReferencia(), idInforme, idModificacio, multipartParams.getFitxers());
-	  		//Cream tasca a Cap
-	  		TascaCore.novaTasca(conn, "modificacio", UsuariCore.finCap(conn, Usuari.getDepartament()).getIdUsuari(), Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "Sol·licitud modificació", "Modificació", idModificacio, null);
+	  		InformeCore.saveInformeModificacio(conn, informe.getIdIncidencia(), informe.getActuacio().getReferencia(), idInforme, idModificacio, multipartParams.getFitxers(), Usuari.getIdUsuari());
 	  		
+	  		if (Usuari.getRol().contains("CAP")) {
+	  			ActuacioCore.actualitzarActuacio(conn, informe.getActuacio().getReferencia(), "Proposta modificació realitzada");
+				int idUsuari = UsuariCore.findUsuarisByRol(conn, "CAP,CONTA").get(0).getIdUsuari();
+				TascaCore.novaTasca(conn, "resPartidaModificacio", idUsuari, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getActuacio().getIdIncidencia(), "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), idModificacio, null, request.getRemoteAddr(), "automatic");
+	  		} else {
+	  			//Cream tasca a Cap
+		  		TascaCore.novaTasca(conn, "modificacio", UsuariCore.finCap(conn, Usuari.getDepartament()).getIdUsuari(), Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "Sol·licitud modificació", "Modificació", idModificacio, null, request.getRemoteAddr(), "automatic");
+	  		}
 	   		/*;*/
 		} catch (SQLException | NamingException e) {
 			// TODO Auto-generated catch block

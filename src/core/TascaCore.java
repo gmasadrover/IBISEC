@@ -345,7 +345,7 @@ public class TascaCore {
 	}
 	
 	public static List<Historic> findHistorial(Connection conn, int idTasca, String idIncidencia, String idActuacio) throws SQLException, NamingException {
-		String sql = "SELECT idhistoric, comentari, idusuari, data"
+		String sql = "SELECT idhistoric, comentari, idusuari, data, ipremota, tipus"
 					+ " FROM public.tbl_historial"
 					+ " WHERE idtasca = ?"
 					+ " ORDER BY idhistoric ASC";	 
@@ -360,6 +360,8 @@ public class TascaCore {
 			historic.setIdHistoric(rs.getInt("idhistoric"));
 			historic.setIdTasca(idTasca);
 			historic.setUsuari(UsuariCore.findUsuariByID(conn, rs.getInt("idusuari")));
+			historic.setIpRemota(rs.getString("ipremota"));
+			historic.setTipus(rs.getString("tipus"));
 			if (!idIncidencia.equals("-1")) historic.setAdjunts(utils.Fitxers.ObtenirFitxers(idIncidencia, idActuacio, "Tasca", String.valueOf(idTasca), rs.getString("idhistoric")));
 			list.add(historic);
 		}
@@ -379,7 +381,7 @@ public class TascaCore {
 	    return data;
 	}
 	
-	public static int novaTasca(Connection conn, String tipus, int idUsuari, int idUsuariComentari, String idActuacio, String idIncidencia, String comentari, String assumpte, String idInformePrevi, List<Fitxer> adjunts) throws SQLException, NamingException {
+	public static int novaTasca(Connection conn, String tipus, int idUsuari, int idUsuariComentari, String idActuacio, String idIncidencia, String comentari, String assumpte, String idInformePrevi, List<Fitxer> adjunts, String ipRemota, String tipusHistorial) throws SQLException, NamingException {
 		String sql = "INSERT INTO public.tbl_tasques(idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament)"
 					+" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
@@ -390,12 +392,15 @@ public class TascaCore {
 		} else if("resPartida".equals(tipus)) {	
 			assumpte = "Sol·licitud reserva partida";
 			comentari = "Sol·licitud reserva partida";
+			tipusHistorial = "automatic";
 		} else if("liciMenor".equals(tipus)) {
 			assumpte = "Proposta d'adjudicació";
-			comentari ="1. Recerca de pressupostos";			
+			comentari ="1. Recerca de pressupostos";
+			tipusHistorial = "automatic";
 		} else if("liciMajor".equals(tipus)) {
 			assumpte = "Licitació contracte major";
-			comentari = "Iniciar procés licitació contracte major";			
+			comentari = "Iniciar procés licitació contracte major";		
+			tipusHistorial = "automatic";
 		}
 		pstm.setInt(1, idNovaTasca);
 		pstm.setInt(2, idUsuari);
@@ -409,9 +414,9 @@ public class TascaCore {
 		pstm.setString(10, UsuariCore.findUsuariByID(conn, idUsuari).getDepartament());			
 		pstm.executeUpdate();		
 		//Registrar comentari 1
-		String idComentari = nouHistoric(conn, Integer.toString(idNovaTasca), comentari, idUsuariComentari);
+		String idComentari = nouHistoric(conn, Integer.toString(idNovaTasca), comentari, idUsuariComentari, ipRemota, tipusHistorial);
 		try {
-			Fitxers.guardarFitxer(adjunts, idIncidencia, idActuacio, "Tasca", Integer.toString(idNovaTasca), "", "", "");
+			Fitxers.guardarFitxer(conn, adjunts, idIncidencia, idActuacio, "Tasca", Integer.toString(idNovaTasca), "", "", "", idUsuariComentari);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -419,7 +424,7 @@ public class TascaCore {
 		return idNovaTasca;
 	}
 	
-	public static void novaTasca(Connection conn, String tipus, String idUsuaris, int idUsuariComentari, String idActuacio, String idIncidencia, String comentari, String assumpte, String idInformePrevi) throws SQLException, NamingException {
+	public static void novaTasca(Connection conn, String tipus, String idUsuaris, int idUsuariComentari, String idActuacio, String idIncidencia, String comentari, String assumpte, String idInformePrevi, String ipRemota, String tipusHistorial) throws SQLException, NamingException {
 		String sql = "INSERT INTO public.tbl_tasques(idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament)"
 					+" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";		 
 		PreparedStatement pstm = null;
@@ -434,14 +439,17 @@ public class TascaCore {
 			} else if("resPartida".equals(tipus)) {	
 				assumpte = "Sol·licitud reserva partida";
 				comentari = "Sol·licitud reserva partida";
+				tipusHistorial = "automatic";
 			} else if("liciMenor".equals(tipus)) {
 				InformeActuacio informePrevi = InformeCore.getInformesActuacio(conn, idActuacio).get(0);
 				assumpte = "Proposta d'adjudicació";
 				comentari ="1. Recerca de pressupostos";
+				tipusHistorial = "automatic";
 				if (informePrevi.getPropostaInformeSeleccionada().isLlicencia()) comentari += "<br> 2. Sol·licitud de llicència o autorització urbanística corresponent";
 			} else if("liciMajor".equals(tipus)) {
 				assumpte = "Licitació contracte major";
-				comentari = "Iniciar procés licitació contracte major";			
+				comentari = "Iniciar procés licitació contracte major";		
+				tipusHistorial = "automatic";
 			}
 			pstm.setInt(1, idNovaTasca);
 			pstm.setInt(2, Integer.parseInt(usuarisList[i]));
@@ -459,7 +467,7 @@ public class TascaCore {
 		
 		
 		//Registrar comentari 1
-		nouHistoric(conn, idNovesTasques, comentari, idUsuariComentari);
+		nouHistoric(conn, idNovesTasques, comentari, idUsuariComentari, ipRemota, tipusHistorial);
 	}
 	
 	public static void actualitzarInforme(Connection conn, int idTasca, String idInforme) throws SQLException {
@@ -473,9 +481,9 @@ public class TascaCore {
 		pstm.executeUpdate();
 	}
 	
-	public static String nouHistoric(Connection conn, String idTasca, String comentari, int idUsuari) throws SQLException {
-		String sql = "INSERT INTO public.tbl_historial(idhistoric, idtasca, comentari, idusuari, data)"
-					+ " VALUES (?, ?, ?, ?,localtimestamp);";		 
+	public static String nouHistoric(Connection conn, String idTasca, String comentari, int idUsuari, String ipRemota, String tipus) throws SQLException {
+		String sql = "INSERT INTO public.tbl_historial(idhistoric, idtasca, comentari, idusuari, data, ipremota, tipus)"
+					+ " VALUES (?, ?, ?, ?,localtimestamp, ?, ?);";		 
 		PreparedStatement pstm = null; 
 		pstm = conn.prepareStatement(sql);	
 		int idNouHistoric = idNouHistoric(conn);
@@ -483,6 +491,8 @@ public class TascaCore {
 		pstm.setString(2, idTasca);
 		pstm.setString(3, comentari);
 		pstm.setInt(4, idUsuari);
+		pstm.setString(5, ipRemota);
+		pstm.setString(6, tipus);
 		pstm.executeUpdate();
 		return String.valueOf(idNouHistoric);
 	}
@@ -497,6 +507,17 @@ public class TascaCore {
 		pstm.setString(2, UsuariCore.findUsuariByID(conn, idUsuari).getDepartament());
 		pstm.setString(3, tipus);
 		pstm.setInt(4, idTasca);
+		pstm.executeUpdate();
+	}
+	
+	public static void modificarTipus(Connection conn, int idTasca, String tipus) throws SQLException{
+		String sql = "UPDATE public.tbl_tasques"
+					+ " SET tipus = ?"
+					+ " WHERE idtasca=?;";
+		PreparedStatement pstm = conn.prepareStatement(sql);	 
+		pstm = conn.prepareStatement(sql);	
+		pstm.setString(1, tipus);
+		pstm.setInt(2, idTasca);
 		pstm.executeUpdate();
 	}
 	

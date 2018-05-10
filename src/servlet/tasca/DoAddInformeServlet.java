@@ -65,6 +65,7 @@ public class DoAddInformeServlet extends HttpServlet {
 	    String idInformePrevi = multipartParams.getParametres().get("idInformePrevi");
 	    InformeActuacio informe = new InformeActuacio();
 		//Guardar adjunts
+	    String ipRemote = request.getRemoteAddr();
 		if (guardar != null) {
 			try {
 				System.out.println(idInformePrevi);
@@ -82,8 +83,8 @@ public class DoAddInformeServlet extends HttpServlet {
 		   			InformeCore.modificarInforme(conn, informe, Usuari.getIdUsuari());
 		   			msg = "S'ha modificat l'informe";	   		
 				}				
-				Fitxers.guardarFitxer(multipartParams.getFitxers(), idIncidencia, idActuacio, "", String.valueOf(idTasca), "", idInformePrevi, "Informe prèvi");
-				TascaCore.nouHistoric(conn, String.valueOf(idTasca), msg, Usuari.getIdUsuari());	
+				Fitxers.guardarFitxer(conn, multipartParams.getFitxers(), idIncidencia, idActuacio, "", String.valueOf(idTasca), "", idInformePrevi, "Informe prèvi", Usuari.getIdUsuari());
+				TascaCore.nouHistoric(conn, String.valueOf(idTasca), msg, Usuari.getIdUsuari(), ipRemote, "automatic");	
 		   		if (idActuacio != "") idIncidencia = String.valueOf(ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia());
 			} catch (NamingException | SQLException e) {
 				// TODO Auto-generated catch block
@@ -105,9 +106,8 @@ public class DoAddInformeServlet extends HttpServlet {
 				}
 				informe = InformeCore.getInformePrevi(conn, idInformePrevi, false);	
 				int prioritat = Integer.parseInt(multipartParams.getParametres().get("prioritatList"));	 				
-				String comentariGerencia = "Posar en marxa aquesta actuació </br>";
-				comentariGerencia = multipartParams.getParametres().get("comentariGerencia");
-				TascaCore.nouHistoric(conn, String.valueOf(idTasca), comentariGerencia, Usuari.getIdUsuari());	
+				String comentariGerencia = multipartParams.getParametres().get("comentariGerencia");
+				TascaCore.nouHistoric(conn, String.valueOf(idTasca), comentariGerencia, Usuari.getIdUsuari(), ipRemote, "manual");	
 				int usuariTasca = UsuariCore.finCap(conn, informe.getUsuari().getDepartament()).getIdUsuari();
 				TascaCore.reasignar(conn, usuariTasca, idTasca, "doctecnica");
 				TascaCore.assignarPrioritat(conn, idTasca, prioritat);

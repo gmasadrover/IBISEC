@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonObject;
 
+import bean.User;
 import core.OfertaCore;
 import utils.MyUtils;
 
@@ -55,10 +56,11 @@ public class DoDeleteOfertaServlet extends HttpServlet {
  
         JsonObject myObj = new JsonObject(); 
         
-		Connection conn = MyUtils.getStoredConnection(request);		
+		Connection conn = MyUtils.getStoredConnection(request);	
+		User usuari = MyUtils.getLoginedUser(request.getSession());
 		String idOferta = request.getParameter("idOferta");
 		try {
-			OfertaCore.deleteOferta(conn, idOferta);
+			OfertaCore.deleteOferta(conn, idOferta, usuari.getIdUsuari());
 		} catch (SQLException | NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

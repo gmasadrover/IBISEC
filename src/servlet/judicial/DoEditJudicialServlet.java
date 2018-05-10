@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileUploadException;
 
 import bean.Judicial;
+import bean.User;
 import core.JudicialCore;
 import utils.Fitxers;
 import utils.MyUtils;
@@ -46,7 +47,7 @@ public class DoEditJudicialServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-       	
+		User Usuari = MyUtils.getLoginedUser(request.getSession());	   
        	String ref = multipartParams.getParametres().get("referencia");
        	String refOriginal = multipartParams.getParametres().get("referenciaOriginal");
        	String tipus = multipartParams.getParametres().get("tipus"); 
@@ -104,7 +105,7 @@ public class DoEditJudicialServlet extends HttpServlet {
            				JudicialCore.modificarProcediment(conn, procediment);
            			}
            		}           		
-           		JudicialCore.guardarFitxer(multipartParams.getFitxers(), ref);
+           		JudicialCore.guardarFitxer(conn, multipartParams.getFitxers(), ref, Usuari.getIdUsuari());
            		procediment = JudicialCore.findProcediment(conn, refOriginal);
        		}
 		} catch (SQLException | NamingException e) {

@@ -79,7 +79,7 @@ public class DoAddAdministrador extends HttpServlet {
 	    	} 
 	    	administrador.setEntitatValidacio(multipartParams.getParametres().get("organValidador"));
 			EmpresaCore.addAdministrador(conn, cif, administrador, Usuari.getIdUsuari());
-			EmpresaCore.guardarFitxer(multipartParams.getFitxers(), cif, administrador.getDni());
+			EmpresaCore.guardarFitxer(conn, Usuari.getIdUsuari(), multipartParams.getFitxers(), cif, administrador.getDni());
 		} catch (FileUploadException | NamingException | ParseException | SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

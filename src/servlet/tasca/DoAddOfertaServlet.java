@@ -83,7 +83,7 @@ public class DoAddOfertaServlet extends HttpServlet {
 		}
 		//Guardar adjunts
 	   	try {
-			OfertaCore.guardarFitxer(multipartParams.getFitxers(), idIncidencia, idActuacio, idInforme, cifEmpresa, "Oferta");
+			OfertaCore.guardarFitxer(conn, multipartParams.getFitxers(), idIncidencia, idActuacio, idInforme, cifEmpresa, "Oferta", Usuari.getIdUsuari());
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

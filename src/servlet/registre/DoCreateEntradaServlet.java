@@ -186,7 +186,7 @@ public class DoCreateEntradaServlet extends HttpServlet {
 	   			//Si procediment cream tasca
 	   			if(tipus.equals("Procediment judicial")) {	   				
 	   				int usuariTasca = UsuariCore.finCap(conn, "juridica").getIdUsuari();
-	   				TascaCore.novaTasca(conn, "judicial", usuariTasca, idUsuari, "-1", "-1", "S'ha registrat un document nou al procediment " + numAutos, "Nova documentació procediment", refPro, null);
+	   				TascaCore.novaTasca(conn, "judicial", usuariTasca, idUsuari, "-1", "-1", "S'ha registrat un document nou al procediment " + numAutos, "Nova documentació procediment", refPro, null, request.getRemoteAddr(), "automatic");
 	   				referenciesIncidencies = refPro;
 	   			}
 	   			//Actualitzam referències registres

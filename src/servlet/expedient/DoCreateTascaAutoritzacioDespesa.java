@@ -66,7 +66,7 @@ public class DoCreateTascaAutoritzacioDespesa extends HttpServlet {
 			int idUsuari = UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari();			
 			String comentari = "Sol·licitud resolució adjudicació: " + informe.getExpcontratacio().getExpContratacio();	
 			String assumpte = "Resolució d'adjudicació";
-			TascaCore.novaTasca(conn, "autoritzacioDespesa", idUsuari, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getActuacio().getIdIncidencia(), comentari, assumpte, idInforme, null);
+			TascaCore.novaTasca(conn, "autoritzacioDespesa", idUsuari, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getActuacio().getIdIncidencia(), comentari, assumpte, idInforme, null, request.getRemoteAddr(), "automatic");
 		} catch (SQLException | NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

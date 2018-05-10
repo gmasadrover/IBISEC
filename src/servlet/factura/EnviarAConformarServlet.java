@@ -62,7 +62,7 @@ public class EnviarAConformarServlet extends HttpServlet {
 	   			factura = FacturaCore.getFactura(conn, idFactura);	   			
 	   			factura.setDataEnviatConformador(new Date());
 	   			FacturaCore.modificarFactura(conn, factura, idUsuari);
-	   			TascaCore.novaTasca(conn, "conformarFactura", factura.getUsuariConformador().getIdUsuari(), idUsuari, factura.getIdActuacio(), ActuacioCore.findActuacio(conn, factura.getIdActuacio()).getIdIncidencia(), "Conformar factura", "Conformar factura", idFactura, null);
+	   			TascaCore.novaTasca(conn, "conformarFactura", factura.getUsuariConformador().getIdUsuari(), idUsuari, factura.getIdActuacio(), ActuacioCore.findActuacio(conn, factura.getIdActuacio()).getIdIncidencia(), "Conformar factura", "Conformar factura", idFactura, null, request.getRemoteAddr(), "automatic");
 	   		} catch (SQLException | NamingException e) {
 	  			e.printStackTrace();
 	  			errorString = e.getMessage();

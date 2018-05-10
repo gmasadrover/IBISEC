@@ -275,7 +275,6 @@
 				                        <thead>
 				                            <tr>
 				                                <th>Nom</th>
-				                                <th>DNI</th>
 				                                <th>Tipus</th>
 				                                <th>Vàlid fins</th>
 				                                <th>Notari</th>
@@ -291,7 +290,6 @@
 										<c:forEach items="${empresa.administradors}" var="administrador" >
 								          	<tr class="${administrador.isCaducat() ? 'danger' : '' }">							          	
 								           		<td><a target="_blanck" href="editAdministrador?empresa=${empresa.cif}&administrador=${administrador.dni}">${administrador.nom}</a></td>
-								            	<td>${administrador.dni}</td>
 								            	<td>${administrador.tipus}</td>
 								            	<td>${administrador.getDataValidesaFinsString()}</td>
 								            	<td>${administrador.notariModificacio}</td>

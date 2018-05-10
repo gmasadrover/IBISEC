@@ -61,7 +61,7 @@ public class DeleteReservaVacancesServlet extends HttpServlet {
 			CalendarCore.eliminarVacances(conn, idSolicitud);
 			Tasca tasca = TascaCore.findTascaVacances(conn, idSolicitud);
 			int idTasca = tasca.getIdTasca();
-			TascaCore.nouHistoric(conn, Integer.toString(idTasca), "Sol·licitud cancelada", reserva.getIdUsuari());
+			TascaCore.nouHistoric(conn, Integer.toString(idTasca), "Sol·licitud cancelada", reserva.getIdUsuari(), request.getRemoteAddr(), "automatic");
 			TascaCore.tancar(conn, tasca.getIdTasca());
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block

@@ -66,11 +66,11 @@ public class DoAddHistoricServlet extends HttpServlet {
 	   	//Registrar comentari;	   
 	   	try {
 	   		if (reasignar != null) {
-	   			comentari = comentari + "<br>" + "Es reassigna la tasca";
+	   			comentari = comentari + "<br><span class='missatgeAutomatic'>Es reassigna la tasca</span>";
 	   		}else if (tancar != null) {
-	   			comentari = comentari + "<br>" + "Es tanca la tasca";
+	   			comentari = comentari + "<br><span class='missatgeAutomatic'>Es tanca la tasca</span>";
 	   		}
-			idComentari = TascaCore.nouHistoric(conn, idTasca, comentari, Usuari.getIdUsuari());
+			idComentari = TascaCore.nouHistoric(conn, idTasca, comentari, Usuari.getIdUsuari(), request.getRemoteAddr(), "manual");
 			tasca = TascaCore.findTascaId(conn, Integer.parseInt(idTasca), Usuari.getIdUsuari());
 			tipus = tasca.getTipus();
 		} catch (SQLException | NumberFormatException | NamingException e) {
@@ -80,7 +80,7 @@ public class DoAddHistoricServlet extends HttpServlet {
 		}
 	   	//Guardar adjunts
 	   	try {
-			Fitxers.guardarFitxer(multipartParams.getFitxers(), idIncidencia, idActuacio, "Tasca", idTasca, "", "", "");
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxers(), idIncidencia, idActuacio, "Tasca", idTasca, "", "", "", Usuari.getIdUsuari());
 		} catch (NamingException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

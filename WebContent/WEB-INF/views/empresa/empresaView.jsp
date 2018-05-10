@@ -480,8 +480,8 @@
 								                            </tr>
 								                        </thead>
 								                        <tbody>	
-									                        <c:forEach items="${informesEmpresa}" var="informe" >
-													          	<tr class=${informe.ofertaSeleccionada.cifEmpresa == empresa.cif ? "success" : "warning"}>								          	
+									                        <c:forEach items="${informesEmpresa}" var="informe" >									                        	
+													          	<tr class=${informe.expcontratacio != null && ! informe.expcontratacio.anulat ? informe.ofertaSeleccionada.cifEmpresa == empresa.cif ? "success" : "warning" : "danger"}>								          	
 													           		<td><a href="actuacionsDetalls?ref=${informe.actuacio.referencia}&exp=${informe.idInf}">
 													           			<c:choose>
 													            			<c:when test="${informe.expcontratacio.expContratacio != '-1'}">

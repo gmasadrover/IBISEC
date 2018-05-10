@@ -53,28 +53,6 @@
 	                            <br />
 	                            <p>${actuacio.notes}</p>
 	                        </div>
-	                        <%--<div class="panel-footer">
-	                        	 <div class="row">
-	                        		<div class="col-md-3">
-	                        			Creació: ${actuacio.getDataCreacioString()}
-	                        		</div>
-	                        		<div class="col-md-3">
-	                        			<c:if test="${actuacio.isPaAprovada()}">
-	                        				Aprovació PA: ${actuacio.getDataAprovarPaString()}
-	                        			</c:if>
-	                        		</div>
-	                        		<div class="col-md-3">
-	                        			<c:if test="${actuacio.isAprovada()}">
-	                        				Aprovació: ${actuacio.getDataAprovacioString()}
-	                        			</c:if>
-	                        		</div>
-	                        		<div class="col-md-3">
-	                        			<c:if test="${!actuacio.isActiva()}">
-	                        				Tancament: ${actuacio.getDataTancamentString()} ${actuacio.getMotiuTancament()}
-	                        			</c:if>
-	                        		</div>
-	                        	</div> 
-	                        </div>--%>
 	                    </div>
 	                </div>
             	</div> 

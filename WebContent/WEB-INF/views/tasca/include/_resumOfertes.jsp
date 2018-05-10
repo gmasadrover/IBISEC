@@ -6,7 +6,7 @@
 <m:setLocale value="${language}" />
 <m:setBundle basename="i18n.base"/>	
 <div class="panel-body">
-	<h4>Proposta de despesa</h4>
+	<h4>Proposta d'adjudicació</h4>
 	<div class="table-responsive">                        
 		<table class="table table-striped table-bordered">
 		    <thead>

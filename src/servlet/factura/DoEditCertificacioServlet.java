@@ -19,6 +19,7 @@ import org.apache.commons.fileupload.FileUploadException;
 
 import bean.Factura;
 import bean.InformeActuacio;
+import bean.User;
 import core.ActuacioCore;
 import core.FacturaCore;
 import core.InformeCore;
@@ -53,6 +54,7 @@ public class DoEditCertificacioServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		User Usuari = MyUtils.getLoginedUser(request.getSession());	   
 	    String idCertificacio = multipartParams.getParametres().get("idCertificacio");
 	    String idInforme = multipartParams.getParametres().get("idInforme");
 	    String idActuacio = multipartParams.getParametres().get("idActuacio");
@@ -102,7 +104,7 @@ public class DoEditCertificacioServlet extends HttpServlet {
 	   			certificacio.setDataConformacio(dataConformada);
 	   			certificacio.setDataEnviatComptabilitat(dataPasadaComptabilitat);
 	   			FacturaCore.modificarCertificacio(conn, certificacio, idUsuari);
-	   			FacturaCore.saveArxiuCertificacio(ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia(), idActuacio, idInforme, idProveidor, idCertificacio, multipartParams.getFitxers(), conn);
+	   			FacturaCore.saveArxiuCertificacio(ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia(), idActuacio, idInforme, idProveidor, idCertificacio, multipartParams.getFitxers(), conn, Usuari.getIdUsuari());
 	   		} catch (SQLException | NamingException e) {
 	  			e.printStackTrace();
 	  			errorString = e.getMessage();

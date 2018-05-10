@@ -152,6 +152,8 @@ public class TascaDetailsServlet extends HttpServlet {
 	 	    		  llistaUsuaris.clear();
 	 	    		  llistaUsuaris.add(UsuariCore.finCap(conn, tasca.getDepartament()));
  	    		  } 
+ 	    	   }else if ("ratClassificacio".equals(tipusTasca)) {
+ 	    		  informeActuacioPrevi = InformeCore.getInformePrevi(conn, tasca.getIdinforme(), true); 	    		  
  	    	   }else if ("autoritModificacio".equals(tipusTasca)){ 	  
  	    		  String tascaInforme = tasca.getIdinforme();
  	    		  informeActuacioPrevi = InformeCore.getMoficacioInforme(conn, tascaInforme); 	  
@@ -231,6 +233,9 @@ public class TascaDetailsServlet extends HttpServlet {
 	    		   }
 	    	   }else if("judicial".equals(tipusTasca)) {
 	    		   procediment = JudicialCore.findProcediment(conn, tasca.getIdinforme());
+	    	   }else if("factura".equals(tipusTasca)) {
+	    		   llistaUsuaris.clear();
+ 	    		   llistaUsuaris.addAll(UsuariCore.llistaUsuaris(conn, true));
 	    	   }
  	    	   
  	       } catch (SQLException | NamingException e) {

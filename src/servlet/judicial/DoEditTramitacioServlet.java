@@ -76,9 +76,9 @@ public class DoEditTramitacioServlet extends HttpServlet {
 			tramitacio.setNotes(multipartParams.getParametres().get("notes"));
 			//tramitacio.setTermini(multipartParams.getParametres().get("termini"));
 			JudicialCore.modificarTramitacio(conn, tramitacio);
-			JudicialCore.guardarFitxerTramitacio(multipartParams.getFitxers(), refPro, idTramitacio);
+			JudicialCore.guardarFitxerTramitacio(conn, multipartParams.getFitxers(), refPro, idTramitacio, usuari.getIdUsuari());
 			//Cream tasca si hi ha termini
-			if (multipartParams.getParametres().get("termini") != null && !multipartParams.getParametres().get("termini").equals("") && !multipartParams.getParametres().get("termini").equals(multipartParams.getParametres().get("terminiOriginal"))) if (tramitacio.getTermini() != "") TascaCore.novaTasca(conn, "judicial", usuari.getIdUsuari(), usuari.getIdUsuari(), "-1", "-1", "S'ha afegit el termini de: " + tramitacio.getTermini(), "Nou termini procediment", refPro, null);
+			if (multipartParams.getParametres().get("termini") != null && !multipartParams.getParametres().get("termini").equals("") && !multipartParams.getParametres().get("termini").equals(multipartParams.getParametres().get("terminiOriginal"))) if (tramitacio.getTermini() != "") TascaCore.novaTasca(conn, "judicial", usuari.getIdUsuari(), usuari.getIdUsuari(), "-1", "-1", "S'ha afegit el termini de: " + tramitacio.getTermini(), "Nou termini procediment", refPro, null, request.getRemoteAddr(), "automatic");
 			
 		} catch (SQLException | ParseException | NamingException e) {
 			errorString = e.toString();

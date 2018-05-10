@@ -56,7 +56,7 @@ public class DoCanvisActuacioServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+		String ipRemota = request.getRemoteAddr();
 		//Registrar actuació
 	    String idActuacio = multipartParams.getParametres().get("idActuacio");
 	    String idIncidencia = multipartParams.getParametres().get("idIncidencia");
@@ -79,18 +79,18 @@ public class DoCanvisActuacioServlet extends HttpServlet {
 				ActuacioCore.actualitzarActuacio(conn, idActuacio, "Autorització generada");
 				OfertaCore.aprovarOferta(conn, idInforme, Usuari.getIdUsuari());
 	   			CreditCore.assignar(conn, idInforme, OfertaCore.findOfertaSeleccionada(conn, idInforme).getPlic());
-	   			TascaCore.nouHistoric(conn, String.valueOf(idTasca), "Autorització generada", Usuari.getIdUsuari());
+	   			TascaCore.nouHistoric(conn, String.valueOf(idTasca), "Autorització generada", Usuari.getIdUsuari(), ipRemota, "automatic");
 	   			TascaCore.tancar(conn, idTasca);	   			
 	   			if (idInforme.contains("-MOD-")) {
 	   				informe = InformeCore.getMoficacioInforme(conn, idInforme);
 	   				//Notificam la modificació al cap
-	   				Fitxers.guardarFitxer(fitxers, informe.getActuacio().getIdIncidencia(), idActuacio, "", "", informe.getIdInfOriginal(), idInforme, "Autorització Despesa modificació");
-		    		TascaCore.nouHistoric(conn, String.valueOf(idTasca), "Autorització Proposta modificació", Usuari.getIdUsuari());			   		
+	   				Fitxers.guardarFitxer(conn, fitxers, informe.getActuacio().getIdIncidencia(), idActuacio, "", "", informe.getIdInfOriginal(), idInforme, "Autorització Despesa modificació", Usuari.getIdUsuari());
+		    		TascaCore.nouHistoric(conn, String.valueOf(idTasca), "Autorització Proposta modificació", Usuari.getIdUsuari(), ipRemota, "automatic");			   		
 			   		TascaCore.tancar(conn, idTasca);
 			   		CreditCore.assignar(conn, idInforme, informe.getOfertaSeleccionada().getPlic());
-			   		if (informe.getUsuari() != null) TascaCore.novaTasca(conn, "generic", informe.getUsuari().getIdUsuari(), Usuari.getIdUsuari(), idActuacio, idIncidencia, "S'ha aprovat la despesa de modificació per a l'informe: " + informe.getIdInfOriginal(), "Aprovació proposta despesa modificació",informe.getIdInf(),null);
+			   		if (informe.getUsuari() != null) TascaCore.novaTasca(conn, "generic", informe.getUsuari().getIdUsuari(), Usuari.getIdUsuari(), idActuacio, idIncidencia, "S'ha aprovat la despesa de modificació per a l'informe: " + informe.getIdInfOriginal(), "Aprovació proposta despesa modificació",informe.getIdInf(),null, ipRemota, "automatic");
 	   			} else {
-	   				Fitxers.guardarFitxer(fitxers, idIncidencia, idActuacio, "", "", "", idInforme, "Autorització  Proposta despesa");
+	   				Fitxers.guardarFitxer(conn, fitxers, idIncidencia, idActuacio, "", "", "", idInforme, "Autorització  Proposta despesa", Usuari.getIdUsuari());
 	   				informe = InformeCore.getInformePrevi(conn, idInforme, false);
 	   				//Crear tasca redacció contracte
 	   				InformeCore.modificarEstat(conn, idInforme, "execucio");
@@ -98,12 +98,12 @@ public class DoCanvisActuacioServlet extends HttpServlet {
 	   				if (informe.getExpcontratacio().getContracte().equals("major")) {
 	   					usuariTasca = UsuariCore.findUsuarisByRol(conn, "CAP,JUR").get(0).getIdUsuari();
 	   				} 
-					TascaCore.novaTasca(conn, "contracte", usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Redactar contracte per expedient " + informe.getExpcontratacio().getExpContratacio(), "Redacció contracte",informe.getIdInf(),null);
+					TascaCore.novaTasca(conn, "contracte", usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Redactar contracte per expedient " + informe.getExpcontratacio().getExpContratacio(), "Redacció contracte",informe.getIdInf(),null, ipRemota, "automatic");
 		   			
 		   			//Nova tasca llicència
-	   				if (informe.getPropostaInformeSeleccionada().isLlicencia() && informe.getPropostaInformeSeleccionada().getTipusLlicencia().equals("comun")) {
+	   				if (informe.getLlicencia() == null && informe.getPropostaInformeSeleccionada().isLlicencia() && informe.getPropostaInformeSeleccionada().getTipusLlicencia().equals("comun")) {
 						usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariLlicencies"));   		
-						TascaCore.novaTasca(conn, "generic", usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Sol·licitar comunicació prèvia obra", "Sol·licitud comunicació prèvia",informe.getIdInf(),null);
+						TascaCore.novaTasca(conn, "generic", usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Sol·licitar comunicació prèvia obra", "Sol·licitud comunicació prèvia",informe.getIdInf(),null, ipRemota, "automatic");
 						LlicenciaCore.novaLlicencia(conn, informe.getExpcontratacio().getExpContratacio(), informe.getPropostaInformeSeleccionada().getTipusLlicencia());
 	   				}
 	   			}

@@ -58,7 +58,7 @@
 		</div>
 	</div>	
 	<div class="row col-md-12">
-		<c:forEach items="${informePrevi.documentsIntalacioBaixaTensio}" var="arxiu" >
+		<c:forEach items="${informePrevi.documentsIntalacioFotovoltaica}" var="arxiu" >
 			<div class="document">
 				<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
 				<c:if test="${arxiu.signat}">

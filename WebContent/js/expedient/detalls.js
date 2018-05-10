@@ -40,4 +40,32 @@ $(document).ready(function() {
     		null
 		]
 	});
+	
+	$('.deleteRelacioPersona').on('click', function(){
+		var table = $('.filerTable').DataTable();
+		$(this).parents('tr').addClass('selected');
+		if (table.row('.selected').data() != undefined && $('#llistatOfertes input[value="' + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[4] + '"]').size() > 0) {
+			$('#llistatOfertes input[value="' + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[4] + '"]').remove();
+			if ($('#ofertaSeleccionadaNIF').val() == table.row('.selected').data()[2]) {
+				$('#ofertaSeleccionada').text('');  
+        		$('#ofertaSeleccionadaNIF').val('');  
+			}
+		}
+		table.row('.selected').remove().draw( false );
+		$.ajax({
+	        type: "POST",
+	        url: "DoDeleteOferta",
+	        dataType: "json",
+	        data: {"idOferta": $(this).data('idoferta')},
+	        //if received a response from the server
+	        success: function( data, textStatus, jqXHR) {
+	            //our country code was correct so we have some information to display
+	        	location.reload();      
+	        },        
+	        //If there was no resonse from the server
+	        error: function(jqXHR, textStatus, errorThrown){
+	             console.log("Something really bad happened " + jqXHR.responseText);
+	        }  
+	    });
+	});
 });

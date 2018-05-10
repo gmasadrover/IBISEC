@@ -50,15 +50,18 @@ public class DoCanvisTascaServlet extends HttpServlet {
 			e1.printStackTrace();
 		}
 		
-	    String idTasca = multipartParams.getParametres().get("idTasca");
-	   
+	    String idTasca = multipartParams.getParametres().get("idTasca");	   
 	    String tipus = multipartParams.getParametres().get("tipusTasca");
-	    User Usuari = MyUtils.getLoginedUser(request.getSession());	 
-	  
+	    String modificar= multipartParams.getParametres().get("modificar");
+	    User Usuari = MyUtils.getLoginedUser(request.getSession());	 	  
 	    String errorString = null;
 	  
 	    try {
-			TascaCore.reasignar(conn, Usuari.getIdUsuari(), Integer.parseInt(idTasca), tipus);
+	    	if (modificar != null) {
+	    		TascaCore.modificarTipus(conn, Integer.parseInt(idTasca), tipus);
+	    	} else {
+	    		TascaCore.reasignar(conn, Usuari.getIdUsuari(), Integer.parseInt(idTasca), tipus);
+	    	}
 		} catch (NumberFormatException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -2,6 +2,7 @@ package handler;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,7 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonObject;
 
+import bean.User;
 import utils.Fitxers;
+import utils.MyUtils;
 
 /**
  * Servlet implementation class DoDeleteDocument
@@ -46,10 +49,11 @@ public class DoDeleteDocument extends HttpServlet {
         response.setHeader("Access-Control-Allow-Methods", "POST");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type");
         response.setHeader("Access-Control-Max-Age", "86400");
- 
+        Connection conn = MyUtils.getStoredConnection(request);
+		User usuari = MyUtils.getLoginedUser(request.getSession());
         JsonObject myObj = new JsonObject();   
         System.out.println("eliminar: " + request.getParameter("ruta"));
-		Fitxers.eliminarFitxer(request.getParameter("ruta"));
+		Fitxers.eliminarFitxer(conn, usuari.getIdUsuari(), request.getParameter("ruta"));
 		myObj.addProperty("success", true);	
 		
         out.println(myObj.toString());

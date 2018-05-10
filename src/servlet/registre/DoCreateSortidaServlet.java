@@ -142,7 +142,7 @@ public class DoCreateSortidaServlet extends HttpServlet {
 	    Registre registre = new Registre(referencia, peticio, tipus, remitent, contingut, idIncidencies, idInformes, idCentresSeleccionats, idUsuari, new Date());
 	    
 	    String errorString = null;
-	 	      
+	 	String ipRemote = request.getRemoteAddr();
 	   	if (errorString == null) {
 	   		try {
 	   			RegistreCore.nouRegistre(conn, "S", registre);	
@@ -156,21 +156,21 @@ public class DoCreateSortidaServlet extends HttpServlet {
 			   				if (idIncidencia == null) idIncidencia = "-1";
 			   				int idNovaTasca = TascaCore.idNovaTasca(conn);
 			   				String assumpte = "<a href='registre?from=notificacio&idTasca=" + idNovaTasca + "&tipus=S&referencia=" + registre.getId() + "'>Nova sortida registre: " + registre.getId() + "</a>";
-			   				TascaCore.novaTasca(conn, "notificacio", 1, idUsuari, "", idIncidencia, "", assumpte, "", null);
+			   				TascaCore.novaTasca(conn, "notificacio", 1, idUsuari, "", idIncidencia, "", assumpte, "", null, ipRemote, "automatic");
 			   				referenciesIncidencies += idIncidencia + "#";
 			   			}	
 	   				} else {
 	   					String idIncidencia = "-1";
 		   				int idNovaTasca = TascaCore.idNovaTasca(conn);
 		   				String assumpte = "<a href='registre?from=notificacio&idTasca=" + idNovaTasca + "&tipus=S&referencia=" + registre.getId() + "'>Nova sortida registre: " + registre.getId() + "</a>";
-		   				TascaCore.novaTasca(conn, "notificacio", 1, idUsuari, "", idIncidencia, "", assumpte, "", null);
+		   				TascaCore.novaTasca(conn, "notificacio", 1, idUsuari, "", idIncidencia, "", assumpte, "", null, ipRemote, "automatic");
 		   				referenciesIncidencies += idIncidencia + "#";
 	   				}
 	   			}	 
 	   			//Si procediment cream tasca
 	   			if(tipus.equals("Procediment judicial")) {	   				
 	   				int usuariTasca = UsuariCore.finCap(conn, "juridica").getIdUsuari();
-	   				TascaCore.novaTasca(conn, "judicial", usuariTasca, idUsuari, "-1", "-1", "S'ha registrat un document de sortida al procediment " + numAutos, "Nova documentació procediment", refPro, null);
+	   				TascaCore.novaTasca(conn, "judicial", usuariTasca, idUsuari, "-1", "-1", "S'ha registrat un document de sortida al procediment " + numAutos, "Nova documentació procediment", refPro, null, ipRemote, "automatic");
 	   				referenciesIncidencies = refPro;
 	   			}
 	   			//Actualitzam referÃ¨ncies registres

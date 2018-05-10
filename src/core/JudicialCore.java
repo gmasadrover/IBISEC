@@ -89,7 +89,7 @@ public class JudicialCore {
 		return newCode;
 	}
 	
-	public static int novaTramitacio(Connection conn, Tramitacio tramitacio, String refJudicial, int idUsuari) throws SQLException, NamingException {
+	public static int novaTramitacio(Connection conn, Tramitacio tramitacio, String refJudicial, int idUsuari, String ipRemota) throws SQLException, NamingException {
 		int idTramitacio = getNewCodeTramitacio(conn);
 		String sql = "INSERT INTO public.tbl_tramitacions(" + SQL_CAMPS_TRAMITACIO + ")"
 					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -120,7 +120,7 @@ public class JudicialCore {
 		pstm.executeUpdate();
 		
 		//Cream tasca si hi ha termini
-		if (tramitacio.getTermini() != null && !tramitacio.getTermini().isEmpty()) TascaCore.novaTasca(conn, "judicial", idUsuari, idUsuari, "-1", "-1", "S'ha afegit el termini de: " + tramitacio.getTermini(), "Nou termini procediment", refJudicial, null);
+		if (tramitacio.getTermini() != null && !tramitacio.getTermini().isEmpty()) TascaCore.novaTasca(conn, "judicial", idUsuari, idUsuari, "-1", "-1", "S'ha afegit el termini de: " + tramitacio.getTermini(), "Nou termini procediment", refJudicial, null, ipRemota, "automatic");
 		return idTramitacio;
 	}
 	
@@ -273,7 +273,7 @@ public class JudicialCore {
 		pstm.executeUpdate();
 	}
 	
-	public static void guardarFitxer(List<Fitxer> fitxers, String refPro) throws NamingException {
+	public static void guardarFitxer(Connection conn, List<Fitxer> fitxers, String refPro, int idUsuari) throws NamingException {
 		if (!fitxers.isEmpty()) {
 			String fileName = "";
 			// Crear directoris si no existeixen
@@ -309,6 +309,7 @@ public class JudicialCore {
 	            	File archivo_server = new File(fileName + fitxer.getFitxer().getName());
 	               	try {
 	               		fitxer.getFitxer().write(archivo_server);
+	               		Fitxers.guardarRegistreFitxer(conn, fitxer.getFitxer().getName(), fileName  + "/" + fitxer.getFitxer().getName(), idUsuari);
 	           		} catch (Exception e) {
 	           			e.printStackTrace();
 	           		}
@@ -317,7 +318,7 @@ public class JudicialCore {
 		}
 	}
 		
-	public static void guardarFitxerTramitacio(List<Fitxer> fitxers, String refPro, int idTramitacio) throws NamingException {
+	public static void guardarFitxerTramitacio(Connection conn, List<Fitxer> fitxers, String refPro, int idTramitacio, int idUsuari) throws NamingException {
 		if (!fitxers.isEmpty()) {
 			String fileName = "";
 			// Crear directoris si no existeixen
@@ -344,6 +345,7 @@ public class JudicialCore {
 	            	File archivo_server = new File(fileName + fitxer.getFitxer().getName());
 	               	try {
 	               		fitxer.getFitxer().write(archivo_server);
+	               		Fitxers.guardarRegistreFitxer(conn, fitxer.getFitxer().getName(), fileName  + "/" + fitxer.getFitxer().getName(), idUsuari);
 	           		} catch (Exception e) {
 	           			e.printStackTrace();
 	           		}
@@ -479,7 +481,7 @@ public class JudicialCore {
 		return newCode;
 	}
 	
-	public static void eliminarTramitacio(Connection conn, String idTramitacio) throws SQLException {
+	public static void eliminarTramitacio(Connection conn, String idTramitacio, int idUsuari) throws SQLException {
 		String sql = "DELETE FROM public.tbl_tramitacions"
 					+ " WHERE idtramitacio = ?";
 		PreparedStatement pstm = conn.prepareStatement(sql);
@@ -489,7 +491,7 @@ public class JudicialCore {
 			Tramitacio tramitacio = findTramitacio(conn, idTramitacio);
 			if (tramitacio.getDocumentsList() != null ) {
 				for (Fitxer fitxer: tramitacio.getDocumentsList()) {
-					Fitxers.eliminarFitxer(fitxer.getRuta());
+					Fitxers.eliminarFitxer(conn, idUsuari, fitxer.getRuta());
 				}
 			}			
 		} catch (NamingException e) {

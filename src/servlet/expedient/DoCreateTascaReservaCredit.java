@@ -65,9 +65,9 @@ public class DoCreateTascaReservaCredit extends HttpServlet {
 			int usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariOrdreInici"));   	
 			if (informe.getExpcontratacio() != null && !informe.getExpcontratacio().getExpContratacio().equals("-1") && informe.getExpcontratacio().getContracte().equals("major")) {
 				usuariTasca = UsuariCore.findUsuarisByRol(conn, "CAP,CONTA").get(0).getIdUsuari();
-				TascaCore.novaTasca(conn, "resPartida", usuariTasca, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "", "", informe.getIdInf(), null);					
+				TascaCore.novaTasca(conn, "resPartida", usuariTasca, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "", "", informe.getIdInf(), null, request.getRemoteAddr(), "automatic");					
 			} else {
-				TascaCore.novaTasca(conn, "docprelicitacio", usuariTasca, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "Prepara documentació per a licitació expedient ", "Preparació documentació expedient",informe.getIdInf(),null);
+				TascaCore.novaTasca(conn, "docprelicitacio", usuariTasca, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "Prepara documentació per a licitació expedient ", "Preparació documentació expedient",informe.getIdInf(),null, request.getRemoteAddr(), "automatic");
 			}
 		} catch (SQLException | NamingException e) {
 			// TODO Auto-generated catch block

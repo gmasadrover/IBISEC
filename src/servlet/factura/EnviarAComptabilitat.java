@@ -62,7 +62,8 @@ public class EnviarAComptabilitat extends HttpServlet {
 	    String errorString = null;	 	      
 	   	if (errorString == null) {
 	   		try {
-	   			factura = FacturaCore.getFactura(conn, idFactura);		   			
+	   			factura = FacturaCore.getFactura(conn, idFactura);	
+	   			Date date = new Date();
 	   			if (factura.getDataConformacio() == null) {
 	   				System.out.println("entra");
 	   				Context env;
@@ -77,7 +78,7 @@ public class EnviarAComptabilitat extends HttpServlet {
 	   				System.out.println(factura.getArxiu().getRuta());
 	   				
 	    	        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-	    	        Date date = new Date();
+	    	       
 	    	        PdfReader reader = new PdfReader(factura.getArxiu().getRuta());
 	    	        PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(factura.getArxiu().getRuta().replace(".pdf", "AU.pdf")));
 	    	        BaseFont font = BaseFont.createFont(); // Helvetica, WinAnsiEncoding
@@ -93,10 +94,10 @@ public class EnviarAComptabilitat extends HttpServlet {
 	    	        }
 	    	        stamper.close();
 	    	        reader.close();
-	    	        Fitxers.eliminarFitxer(factura.getArxiu().getRuta());
-	   			}	
-	   			
-	   			factura.setDataEnviatComptabilitat(new Date());
+	    	        Fitxers.eliminarFitxer(conn, idUsuari, factura.getArxiu().getRuta());
+	   			}
+	   			factura.setDataEnviatComptabilitat(date);
+	   			factura.setDataConformacio(date);
 	   			FacturaCore.modificarFactura(conn, factura, idUsuari);
 	   		} catch (SQLException | NamingException | DocumentException e) {
 	  			e.printStackTrace();
