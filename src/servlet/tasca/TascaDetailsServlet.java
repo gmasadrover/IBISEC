@@ -3,7 +3,12 @@ package servlet.tasca;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.naming.NamingException;
@@ -23,6 +28,7 @@ import bean.Oferta;
 import bean.InformeActuacio;
 import bean.InformeActuacio.PropostaInforme;
 import bean.Judicial;
+import bean.Judicial.Tramitacio;
 import bean.Partida;
 import bean.Tasca;
 import bean.User;
@@ -87,17 +93,21 @@ public class TascaDetailsServlet extends HttpServlet {
 	       Oferta ofertaSeleccionada = new Oferta();
 	       Factura factura = new Factura();
 	       Judicial procediment = new Judicial();
+	       Tramitacio tramitacio = procediment.new Tramitacio();
+	       String totalAdjudicatEmpresa = "";
  	       try {
  	    	   canBorrarTasca = usuari.getRol().contains("ADMIN");
  	    	   tasca = TascaCore.findTascaId(conn, idTasca, usuari.getIdUsuari());
+ 	    	   incidencia = tasca.getIncidencia();
  	    	   if (usuari.getIdUsuari() == tasca.getUsuari().getIdUsuari()) TascaCore.llegirNotificacio(conn, tasca.getIdTasca());
+ 	    	   if (usuari.getIdUsuari()==4 && tasca.getUsuari().getIdUsuari()==1) TascaCore.llegirNotificacio(conn, tasca.getIdTasca());
  	    	   actuacio = tasca.getActuacio();  	    	   
  	    	   if (actuacio != null) {
  	    		   if (actuacio.getCentre() != null && actuacio.getCentre().getIdCentre() != null && actuacio.getCentre().getIdCentre().equals("9999PERSO") && !UsuariCore.hasPermision(conn, usuari, SectionPage.personal)) response.sendRedirect(request.getContextPath() + "/");
  	 	    	   informes = InformeCore.getInformesActuacio(conn, actuacio.getReferencia());
  	 	    	   if (!actuacio.getReferencia().isEmpty()) {
  	 	    		  incidencia = IncidenciaCore.findIncidencia(conn, actuacio.getIdIncidencia());
- 	 	    		  actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia()));
+ 	 	    		  //actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia()));
  	 	    		  historial = TascaCore.findHistorial(conn, idTasca, incidencia.getIdIncidencia(), actuacio.getReferencia());
  	 	    		  ofertes = OfertaCore.findOfertes(conn, tasca.getIdinforme());
  	 	    		  ofertaSeleccionada = OfertaCore.findOfertaSeleccionada(conn, tasca.getIdinforme());
@@ -106,8 +116,7 @@ public class TascaDetailsServlet extends HttpServlet {
  	 	    	   } 	
  	    	   } else {
  	    		  historial = TascaCore.findHistorial(conn, idTasca, "-1", "");
- 	    	   }
- 	    	   incidencia = tasca.getIncidencia();
+ 	    	   } 	    	  
  	    	   llistaUsuaris = UsuariCore.findUsuarisByDepartament(conn, tasca.getDepartament());
  	    	   if (usuari.getRol().contains("CAP")) {
  	    		   llistaUsuaris = UsuariCore.llistaUsuaris(conn, true); 
@@ -117,7 +126,7 @@ public class TascaDetailsServlet extends HttpServlet {
  	    	   if ((tasca.getDepartament().equals(usuari.getDepartament()) && usuari.getRol().contains("CAP")) || usuari.getRol().contains("MANUAL")) esCap = true;
  	    	   if (usuari.getRol().contains("GER") || usuari.getRol().contains("ADMIN")) isGerencia = true;
  	    	   if ("infPrev".equals(tipusTasca) || "solInfPrev".equals(tipusTasca) || "vistInfPrev".equals(tipusTasca)) { 	    		  
- 	    		  informeActuacioPrevi = InformeCore.getInformeTasca(conn, idTasca);
+ 	    		  informeActuacioPrevi = InformeCore.getInformePrevi(conn, tasca.getIdinforme(), true);
  	    		  if (informeActuacioPrevi.getIdInf() != null) {
  	    			  propostaInformeList = informeActuacioPrevi.getLlistaPropostes();
  	    		  }
@@ -132,11 +141,12 @@ public class TascaDetailsServlet extends HttpServlet {
 	    		  } 
  	    	   }else if ("doctecnica".equals(tipusTasca) || "vistDocTecnica".equals(tipusTasca)) { 
  	    		  String tascaInforme = tasca.getIdinforme();
-  	    		  informeActuacioPrevi = InformeCore.getInformePrevi(conn, tascaInforme, true);  	    		 
-  	    		  if (!esCap) {
- 	 	    		  llistaUsuaris.clear();
- 	 	    		  llistaUsuaris.add(UsuariCore.finCap(conn, tasca.getDepartament()));
-  	    		  }
+  	    		  informeActuacioPrevi = InformeCore.getInformePrevi(conn, tascaInforme, true);  
+  	    		  if (informeActuacioPrevi.getIdInf() != null) {
+	    			  propostaInformeList = informeActuacioPrevi.getLlistaPropostes();
+	    		  }
+  	    		  llistaUsuaris.clear();
+	    		  llistaUsuaris.addAll(UsuariCore.llistaUsuaris(conn, true));
  	    	  }else if ("docprelicitacio".equals(tipusTasca)) {
  	    		  areaJuridica = usuari.getRol().contains("JUR");
  	    		  informeActuacioPrevi = InformeCore.getInformePrevi(conn, tasca.getIdinforme(), true); 	    		  
@@ -145,7 +155,7 @@ public class TascaDetailsServlet extends HttpServlet {
 	    		  }
 	    		  llistaUsuaris.clear();
 	    		  llistaUsuaris.addAll(UsuariCore.llistaUsuaris(conn, true));
- 	    	   }else if ("modificacio".equals(tipusTasca)) {
+ 	    	   }else if ("modificacio".equals(tipusTasca) || "penalitzacio".equals(tipusTasca)) {
  	    		  informeActuacioPrevi = InformeCore.getModificacioTasca(conn, idTasca); 
  	    		  informeActuacioOriginal = InformeCore.getInformePrevi(conn, informeActuacioPrevi.getIdInfOriginal(), false);
  	    		  if (!esCap) {
@@ -202,7 +212,16 @@ public class TascaDetailsServlet extends HttpServlet {
  	    		  empresesList = EmpresaCore.getEmpreses(conn); 	    		  
  	    	   }else if ("autoritzacioDespesa".equals(tipusTasca)){ 	
  	    		  String tascaInforme = tasca.getIdinforme();
- 	    		  informeActuacioPrevi = InformeCore.getInformePrevi(conn, tascaInforme, true);  	    		  
+ 	    		  informeActuacioPrevi = InformeCore.getInformePrevi(conn, tascaInforme, true);
+ 	    		  Calendar cal = Calendar.getInstance(); 
+ 	    		  Date dataFi = cal.getTime();	
+ 	    		  dataFi = new Date(dataFi.getTime());
+ 	    		  cal.set(2018, 2, 9);
+ 	    		  Date dataIni = cal.getTime();	
+ 	    		  DecimalFormat num = new DecimalFormat("#,##0.00");
+ 	    		  if (informeActuacioPrevi.getOfertaSeleccionada() != null) {
+ 	    			 totalAdjudicatEmpresa = num.format(EmpresaCore.getDespesaEmpresa(conn, informeActuacioPrevi.getOfertaSeleccionada().getCifEmpresa(), dataIni, dataFi));
+ 	    		  } 	    		  
  	    	   }else if ("notificacio".equals(tipusTasca)) {
  	    		   TascaCore.llegirNotificacio(conn, tasca.getIdTasca());
  	    	   }else if ("vacances".equals(tipusTasca)) {
@@ -231,8 +250,10 @@ public class TascaDetailsServlet extends HttpServlet {
 	    			   llistaUsuaris.clear();
 	 	    		   llistaUsuaris.addAll(UsuariCore.llistaUsuaris(conn, true));
 	    		   }
-	    	   }else if("judicial".equals(tipusTasca)) {
-	    		   procediment = JudicialCore.findProcediment(conn, tasca.getIdinforme());
+	    	   }else if("judicial".equals(tipusTasca) || "pagamentJudicial".equals(tipusTasca)) {
+	    		   procediment = JudicialCore.findProcediment(conn, tasca.getIdinforme());	    
+	    		   tramitacio = JudicialCore.findTramitacio(conn, tasca.getIdActuacio());	
+	    		   tasca.setDocuments(TascaCore.getTascaDocuments(idTasca));
 	    	   }else if("factura".equals(tipusTasca)) {
 	    		   llistaUsuaris.clear();
  	    		   llistaUsuaris.addAll(UsuariCore.llistaUsuaris(conn, true));
@@ -270,6 +291,8 @@ public class TascaDetailsServlet extends HttpServlet {
  	       request.setAttribute("canBorrarTasca", canBorrarTasca);
  	       request.setAttribute("areaJuridica", areaJuridica);
  	       request.setAttribute("procediment", procediment);
+ 	       request.setAttribute("tramitacioJudicial", tramitacio);
+ 	       request.setAttribute("totalAdjudicatEmpresa", totalAdjudicatEmpresa);
  	       request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Tasques"));
  	       request.setAttribute("idUsuariLogg", usuari.getIdUsuari());
 

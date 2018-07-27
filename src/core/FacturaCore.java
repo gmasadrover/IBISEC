@@ -28,9 +28,9 @@ public class FacturaCore {
 	
 	static final String SQL_CAMPS_CERT = "idcertificacio, idinforme, idactuacio, nifproveidor, datacertificacio, concepte, import,"
 									+ " nombrecertificacio, dataentrada, usuconformador, dataconformador, notes, usucre, datacre,"
-									+ " dataenviatconformador, dataenviatcomptabilitat";
+									+ " dataenviatconformador, dataenviatcomptabilitat, anulada, motiuanulada";
 	
-	private static Factura initFactura(Connection conn, ResultSet rs) throws SQLException, NamingException{	
+	private static Factura initFactura(Connection conn, ResultSet rs, boolean ambDocuments) throws SQLException, NamingException{	
 		Factura factura = new Factura();
 		factura.setIdFactura(rs.getString("idfactura"));
 		factura.setIdInforme(rs.getString("idinforme"));	
@@ -49,7 +49,7 @@ public class FacturaCore {
 		factura.setDataEnviatConformador(rs.getTimestamp("dataenviatconformador"));
 		factura.setDataEnviatComptabilitat(rs.getTimestamp("dataenviatcomptabilitat"));
 		factura.setUsuariCreador(UsuariCore.findUsuariByID(conn, rs.getInt("usucre")));
-		factura.setArxiu(getArxiu(ActuacioCore.findActuacio(conn, rs.getString("idactuacio")).getIdIncidencia(), rs.getString("idactuacio"), rs.getString("idinforme"), rs.getString("nifproveidor"), rs.getString("idfactura")));
+		factura.setFactura(getArxiu(ActuacioCore.findActuacio(conn, rs.getString("idactuacio")).getIdIncidencia(), rs.getString("idactuacio"), rs.getString("idinforme"), rs.getString("nifproveidor"), rs.getString("idfactura"), false));
 		factura.setAltres(getArxiusAltres(ActuacioCore.findActuacio(conn, rs.getString("idactuacio")).getIdIncidencia(), rs.getString("idactuacio"), rs.getString("idinforme"), rs.getString("nifproveidor"), rs.getString("idfactura")));
 		factura.setDataDescarregadaConformada(rs.getTimestamp("datadescarregadafactura"));
 		factura.setAnulada(rs.getBoolean("anulada"));
@@ -57,7 +57,7 @@ public class FacturaCore {
 		return factura;
 	}	
 	
-	private static Factura initCertificacio(Connection conn, ResultSet rs) throws SQLException, NamingException{	
+	private static Factura initCertificacio(Connection conn, ResultSet rs, boolean readFirma) throws SQLException, NamingException{	
 		Factura factura = new Factura();
 		factura.setIdFactura(rs.getString("idcertificacio"));
 		factura.setIdInforme(rs.getString("idinforme"));	
@@ -75,9 +75,10 @@ public class FacturaCore {
 		factura.setDataEnviatConformador(rs.getTimestamp("dataenviatconformador"));
 		factura.setDataEnviatComptabilitat(rs.getTimestamp("dataenviatcomptabilitat"));
 		factura.setUsuariCreador(UsuariCore.findUsuariByID(conn, rs.getInt("usucre")));
-		factura.setArxiu(getArxiuCertificacio(ActuacioCore.findActuacio(conn, rs.getString("idactuacio")).getIdIncidencia(), rs.getString("idactuacio"), rs.getString("idinforme"), rs.getString("nifproveidor"), rs.getString("idcertificacio")));
+		factura.setCertificacions(getArxiuCertificacio(ActuacioCore.findActuacio(conn, rs.getString("idactuacio")).getIdIncidencia(), rs.getString("idactuacio"), rs.getString("idinforme"), rs.getString("nifproveidor"), rs.getString("idcertificacio"), readFirma));
 		factura.setAltres(getArxiusAltres(ActuacioCore.findActuacio(conn, rs.getString("idactuacio")).getIdIncidencia(), rs.getString("idactuacio"), rs.getString("idinforme"), rs.getString("nifproveidor"), rs.getString("idcertificacio")));
-		
+		factura.setAnulada(rs.getBoolean("anulada"));
+		factura.setMotiuAnulada(rs.getString("motiuanulada"));
 		return factura;
 	}	
 	
@@ -128,7 +129,9 @@ public class FacturaCore {
 				tmpFile.mkdir();
 			}
 			fileName = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + cifEmpresa + "/Certificacions/" + idCertificacio + "/";
-	        for(int i=0;i<fitxers.size();i++){		        	
+	        String noms = "";
+	        int num = 1;
+			for(int i=0;i<fitxers.size();i++){		        	
 	            Fitxer fitxer = (Fitxer) fitxers.get(i);	            
 	            if (fitxer.getFitxer().getName() != "") {	
 	            	if (certificacio.getNomProveidor() != null) {
@@ -136,15 +139,17 @@ public class FacturaCore {
 	            	} else {
 	            		nomProveidor = certificacio.getIdProveidor();
 	            	}
-	            	File archivo_server = new File(fileName  + "/" + nomProveidor + "-" + certificacio.getNombreFactura().replace("/"," ") + "-" + certificacio.getDataEntradaString().replace("/","") + ".pdf");
-	               	try {
-	               		fitxer.getFitxer().write(archivo_server);
-	               		Fitxers.guardarRegistreFitxer(conn, fitxer.getFitxer().getName(), fileName  + "/" + nomProveidor + "-" + certificacio.getNombreFactura().replace("/"," ") + "-" + certificacio.getDataEntradaString().replace("/","") + ".pdf", idUsuari);
+	            	File archivo_server = new File(fileName  + "/" + nomProveidor + "-" + certificacio.getNombreFactura().replace("/"," ") + "-" + certificacio.getDataEntradaString().replace("/","") + "_" + num + ".pdf");
+	               	noms += fitxer.getFitxer().getName() + "<br>";
+	               	num++;
+	            	try {
+	               		fitxer.getFitxer().write(archivo_server);	               		
 	           		} catch (Exception e) {
 	           			e.printStackTrace();
 	           		}
 	            } 
 	        }
+	        Fitxers.guardarRegistreFitxer(conn, noms, fileName  + "/" + nomProveidor + "-" + certificacio.getNombreFactura().replace("/"," ") + "-" + certificacio.getDataEntradaString().replace("/","") + ".pdf", idUsuari);
 		}
 	}
 	
@@ -279,25 +284,25 @@ public class FacturaCore {
 		}
 	}
 	
-	public static Fitxer getArxiuCertificacio(String idIncidencia, String idActuacio, String idInforme, String cifEmpresa, String idCertificacio) throws NamingException {
-		Fitxer factura = new Fitxer();
+	public static List<Fitxer> getArxiuCertificacio(String idIncidencia, String idActuacio, String idInforme, String cifEmpresa, String idCertificacio, boolean readFirma) throws NamingException {
+		List<Fitxer> factura = new ArrayList<Fitxer>();
 		// Get the base naming context
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
 		if (idIncidencia == null) idIncidencia = "-1";
-		factura =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + cifEmpresa + "/Certificacions/" + idCertificacio + "/");
+		factura =  utils.Fitxers.ObtenirTotsFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + cifEmpresa + "/Certificacions/" + idCertificacio + "/", "certificació");
 		return factura;
 	}
 	
-	public static Fitxer getArxiu(String idIncidencia, String idActuacio, String idInforme, String cifEmpresa, String idFactura) throws NamingException {
+	public static Fitxer getArxiu(String idIncidencia, String idActuacio, String idInforme, String cifEmpresa, String idFactura, boolean readFirma) throws NamingException {
 		Fitxer factura = new Fitxer();
 		// Get the base naming context
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
 		if (idIncidencia == null) idIncidencia = "-1";
-		factura =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + cifEmpresa + "/Factures/" + idFactura + "/");
+		factura =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + cifEmpresa + "/Factures/" + idFactura + "/", true);
 		return factura;
 	}
 	
@@ -349,7 +354,7 @@ public class FacturaCore {
 	
 	public static void newCertificacio(Connection conn, Factura certificacio, int idUsuari) throws SQLException{
 		String sql = "INSERT INTO public.tbl_certificacions(" + SQL_CAMPS_CERT + ")"
-					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,localtimestamp, localtimestamp, ?)";
+					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,localtimestamp, localtimestamp, ?, false, null)";
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setString(1, certificacio.getIdFactura());
 		pstm.setString(2, certificacio.getIdInforme());
@@ -481,7 +486,7 @@ public class FacturaCore {
 		pstm.setString(1, idFactura);
 		ResultSet rs = pstm.executeQuery();
 		if (rs.next()) {
-			factura = initFactura(conn, rs);
+			factura = initFactura(conn, rs, true);
 		}
 		return factura;
 	}
@@ -495,7 +500,7 @@ public class FacturaCore {
 		pstm.setString(1, idCertificacio);
 		ResultSet rs = pstm.executeQuery();
 		if (rs.next()) {
-			factura = initCertificacio(conn, rs);
+			factura = initCertificacio(conn, rs, true);
 		}
 		return factura;
 	}
@@ -509,7 +514,7 @@ public class FacturaCore {
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		ResultSet rs = pstm.executeQuery();
 		while (rs.next()) {
-			factures.add(initFactura(conn, rs));
+			factures.add(initFactura(conn, rs, false));
 		}
 		return factures;
 	}
@@ -599,7 +604,7 @@ public class FacturaCore {
 			factura.setNotes(rs.getString("notesfactura"));
 			factura.setAnulada(rs.getBoolean("anulada"));
 			factura.setMotiuAnulada(rs.getString("motiuanulada"));
-			factura.setArxiu(FacturaCore.getArxiu(ActuacioCore.findActuacio(conn, rs.getString("idactuacio")).getIdIncidencia(), rs.getString("idactuacio"), rs.getString("idinforme"), rs.getString("proveidorfactura"), rs.getString("idfactura")));
+			factura.setFactura(FacturaCore.getArxiu(ActuacioCore.findActuacio(conn, rs.getString("idactuacio")).getIdIncidencia(), rs.getString("idactuacio"), rs.getString("idinforme"), rs.getString("proveidorfactura"), rs.getString("idfactura"), false));
 			informe = new InformeActuacio();
 			informe.setIdInf(rs.getString("idinforme"));	
 			User usuari = UsuariCore.findUsuariByID(conn, rs.getInt("usuariinforme"));
@@ -634,7 +639,7 @@ public class FacturaCore {
 	
 	public static List<Factura> advancedSearchCertificacions(Connection conn, Date dataInici, Date dataFi, String idCentre) throws SQLException, NamingException{
 		List<Factura> factures = new ArrayList<Factura>();
-		String CAMPS_FACTURA = "c.idcertificacio AS idcertificacio, c.idinforme AS idinforme, c.idactuacio AS idactuacio, c.nifproveidor AS proveidorcertificacio, c.datacertificacio AS datacertificacio, c.concepte AS concepte, c.import AS import, c.nombrecertificacio AS nombrecertificacio, c.dataentrada AS dataentrada, c.usuconformador AS usuconformador,  c.dataconformador AS dataconformador, c.notes AS notescertificacio";
+		String CAMPS_FACTURA = "c.idcertificacio AS idcertificacio, c.idinforme AS idinforme, c.idactuacio AS idactuacio, c.nifproveidor AS proveidorcertificacio, c.datacertificacio AS datacertificacio, c.concepte AS concepte, c.import AS import, c.nombrecertificacio AS nombrecertificacio, c.dataentrada AS dataentrada, c.usuconformador AS usuconformador,  c.dataconformador AS dataconformador, c.notes AS notescertificacio, c.anulada AS anulada, c.motiuanulada AS motiuanulada";
 		String CAMPS_INFORME = "i.usucre AS usuariinforme, i.datacre AS datacreacioinforme, i.usuaprovacio AS usuaprovacioinforme, i.dataaprovacio AS dataaprovacioinforme, i.notes AS notesinforme, i.tipo AS tipocontracte, i.expcontratacio AS expcontratacio, i.datapd AS datapd, i.tipopd AS tipopd";
 		String CAMPS_ACTUACIO = "a.descripcio AS descactuacio, a.usucre AS usucreactuacio, a.datacre AS datacreactuacio, a.dataaprovacio AS dataaprovacioactuacio, a.idcentre AS idcentre, a.notes AS notesactuacio";
 		String sql = "SELECT " + CAMPS_FACTURA + ", " + CAMPS_INFORME + ", " + CAMPS_ACTUACIO 
@@ -696,7 +701,8 @@ public class FacturaCore {
 			factura.setUsuariConformador(UsuariCore.findUsuariByID(conn, rs.getInt("usuconformador")));
 			factura.setDataConformacio(rs.getTimestamp("dataconformador"));
 			factura.setNotes(rs.getString("notescertificacio"));
-			
+			factura.setAnulada(rs.getBoolean("anulada"));
+			factura.setMotiuAnulada(rs.getString("motiuanulada"));
 			informe = new InformeActuacio();
 			informe.setIdInf(rs.getString("idinforme"));	
 			User usuari = UsuariCore.findUsuariByID(conn, rs.getInt("usuariinforme"));
@@ -739,7 +745,7 @@ public class FacturaCore {
 		pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
 		ResultSet rs = pstm.executeQuery();		
 		while (rs.next()) {
-			factures.add(initFactura(conn, rs));
+			factures.add(initFactura(conn, rs, false));
 		}
 		return factures;
 	}
@@ -753,7 +759,7 @@ public class FacturaCore {
 		pstm.setString(1, idActuacio);
 		ResultSet rs = pstm.executeQuery();		
 		while (rs.next()) {
-			factures.add(initFactura(conn, rs));
+			factures.add(initFactura(conn, rs, false));
 		}
 		return factures;
 	}
@@ -767,7 +773,7 @@ public class FacturaCore {
 		pstm.setString(1, idInforme);
 		ResultSet rs = pstm.executeQuery();		
 		while (rs.next()) {
-			factures.add(initFactura(conn, rs));
+			factures.add(initFactura(conn, rs, false));
 		}
 		return factures;
 	}
@@ -781,7 +787,7 @@ public class FacturaCore {
 		pstm.setString(1, idInforme);
 		ResultSet rs = pstm.executeQuery();		
 		while (rs.next()) {
-			factures.add(initCertificacio(conn, rs));
+			factures.add(initCertificacio(conn, rs, false));
 		}
 		return factures;
 	}	
@@ -857,6 +863,16 @@ public class FacturaCore {
 		pstm.executeUpdate();
 	}
 	
+	public static void anularCertificacio(Connection conn, String idFactura, String motiu) throws SQLException, NamingException {
+		String sql = "UPDATE  public.tbl_certificacions"
+				+ " SET anulada = true, motiuanulada = ?"
+		 		+ " WHERE idcertificacio = ?";	 
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setString(1, motiu);
+		pstm.setString(2, idFactura);
+		pstm.executeUpdate();
+	}
+	
 	public static List<Factura> getFacturesConformadesPend(Connection conn) throws SQLException, NamingException {
 		List<Factura> facturesList = new ArrayList<Factura>();
 		String sql = "SELECT " + SQL_CAMPS
@@ -865,7 +881,28 @@ public class FacturaCore {
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		ResultSet rs = pstm.executeQuery();
 		while (rs.next()) {			
-			facturesList.add(initFactura(conn, rs));
+			facturesList.add(initFactura(conn, rs, false));
+		}
+		return facturesList;
+	}
+	
+	public static List<Factura> getFacturesPerInforme(Connection conn, String nif, Date dataIni, Date dataFi) throws SQLException, NamingException {
+		List<Factura> facturesList = new ArrayList<Factura>();
+		String sql = "SELECT idinforme, SUM(import) AS total"
+				+ " FROM public.tbl_factures"
+				+ " WHERE anulada = false AND nifproveidor = ? AND datafactura BETWEEN ? AND ?"
+				+ " GROUP BY idinforme;";	
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setString(1, nif);
+		pstm.setDate(2, new java.sql.Date(dataIni.getTime()));
+		pstm.setDate(3, new java.sql.Date(dataFi.getTime()));
+		ResultSet rs = pstm.executeQuery();
+		Factura factura = null;
+		while (rs.next()) {		
+			factura = new Factura();
+			factura.setInforme(InformeCore.getInformePrevi(conn, rs.getString("idinforme"), false));
+			factura.setValor(rs.getDouble("total"));
+			facturesList.add(factura);
 		}
 		return facturesList;
 	}

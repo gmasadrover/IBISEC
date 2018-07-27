@@ -94,7 +94,7 @@ public class DoEditInformeServlet extends HttpServlet {
 		    } else {
 		    	InformeCore.modificarProposta(conn, proposta);
 		    }
-		    if (multipartParams.getFitxersByName().get("informe") != null) Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("informe")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "Informe Previ", "", "", idInforme, "", Usuari.getIdUsuari());
+		    if (multipartParams.getFitxersByName().get("informe") != null) Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("informe")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "Informe previ", "", "", idInforme, "", Usuari.getIdUsuari());
 		    if (multipartParams.getFitxersByName().get("propostaActuacio") != null) Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("propostaActuacio")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Proposta actuació", Usuari.getIdUsuari());
 		    
 		    //Vistiplau cap

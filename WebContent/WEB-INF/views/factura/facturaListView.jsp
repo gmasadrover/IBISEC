@@ -39,7 +39,7 @@
 					<div class="col-md-12">
 						<form class="form-horizontal" method="POST" action="factures">
 							<div class="form-group">					
-							  	<div class="col-md-offset-1 col-md-4">
+							  	<div class="col-md-offset-1 col-md-3">
 							  		<label>Data factura</label>
 								  	<div class="input-group input-daterange datepicker">
 									    <input type="text" class="form-control" name="dataInici" value="${dataInici}">
@@ -47,7 +47,16 @@
 									    <input type="text" class="form-control" name="dataFi" value="${dataFi}">
 									</div>                                
 							  	</div>	
-							  	<div class="col-md-offset-1  col-md-4">								    
+							  	<%-- <div class="col-md-3">	
+					         		<label>Empresa</label>									            	 										            	 	
+					            	<select class="selectpicker" name="llistaEmpreses" id="llistaEmpreses" data-live-search="true" data-size="10">						                                					                                	
+					               		<option value="-1">Totes</option>
+					               		<c:forEach items="${empresesList}" var="empresa">
+					                   		<option value="${empresa.cif}">${empresa.name}</option>
+					                   	</c:forEach>	
+					                </select>	
+					        	</div> --%>
+							  	<div class="col-md-3">								    
 									<div class="col-md-12">
 										<input type="hidden" id="estatFacturaSelected" value="${estatFactura}" />
 										<label>Estat factura</label>
@@ -134,7 +143,7 @@
 							            	<td>${factura.informe.dataAprovacio}</td> 
 							            	<td>${factura.informe.getDataAprovacioString()}</td>      
 							            	<td>${factura.informe.ofertaSeleccionada.getPlicFormat()}</td> 
-							            	<td><a target="_blanck" href="downloadFichero?ruta=${factura.arxiu.getEncodedRuta()}">${factura.arxiu.nom}</a></td>      	
+							            	<td><a target="_blanck" href="downloadFichero?ruta=${factura.factura.getEncodedRuta()}">${factura.factura.nom}</a></td>							            	
 							          	</tr>
 							       	</c:forEach>                                	
                                 </tbody>

@@ -66,6 +66,25 @@ $(document).ready(function() {
 	
 	$('.signedFile').on('click', function(){
 		if ($(this).parent().find('.infoSign').hasClass('hidden')){
+			$(this).parent().find('.infoSign').html('');
+			var content = $(this).parent().find('.infoSign');
+			$.ajax({
+		        type: "GET",
+		        url: "getSignaruresDocument",
+		        async: false,
+		        dataType: "json",
+		        data: {"ruta": $(this).data('ruta')},
+		        //if received a response from the server
+		        success: function( data, textStatus, jqXHR) {		        	
+		        	 $.each(data.firmesList, function( key, firma ) {
+		        		 content.append('<span>Signat per: ' + firma.nomFirmant + ' - ' + firma.dataFirma + '</span><br>');
+	            	 });
+		        },        
+		        //If there was no resonse from the server
+		        error: function(jqXHR, textStatus, errorThrown){
+		        	content.html("error");
+		        }  
+		    });
 			$(this).parent().find('.infoSign').removeClass('hidden');
 		} else {
 			$(this).parent().find('.infoSign').addClass('hidden');

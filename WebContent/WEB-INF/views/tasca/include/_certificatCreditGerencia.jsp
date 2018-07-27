@@ -90,14 +90,10 @@
 					${informePrevi.conformeAreaEconomivaPropostaActuacio.nom}
 				</a>	
 				<c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.signat}">
-						<span class="glyphicon glyphicon-pencil signedFile"></span>
+						<span data-ruta="${informePrevi.conformeAreaEconomivaPropostaActuacio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 				</c:if>
 				<br>
 				<div class="infoSign hidden">
-					<c:forEach items="${informePrevi.conformeAreaEconomivaPropostaActuacio.firmesList}" var="firma" >
-						<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-						<br>
-					</c:forEach>
 				</div>
 			</div>	
 		</c:if>			

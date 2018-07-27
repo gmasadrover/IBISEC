@@ -133,12 +133,12 @@
 				    			<div class="col-md-12">
 				    				<label class="col-xs-3 control-label">Certificació</label> 
 				    				<div class="col-xs-3">
-										<a target="_blanck" href="downloadFichero?ruta=${certificacio.arxiu.getEncodedRuta()}">${certificacio.arxiu.nom}</a>
-										<c:if test="${certificacio.arxiu.ruta != null && certificacio.arxiu.ruta != ''}">
-											<span data-ruta="${certificacio.arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
-										</c:if>
+										<c:forEach items="${certificacio.certificacions}" var="arxiu" >
+											<c:set var="arxiu" value="${arxiu}" scope="request"/>
+											<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+										</c:forEach>		
 										<br>									
-					           			<input type="file" class="btn uploadImage" name="file" /><br/>	
+					           			<input type="file" class="btn uploadImage" name="file"/><br/>	
 				           			</div>															 		
 				    			</div>
 				      		</div>	                           

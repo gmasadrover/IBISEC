@@ -255,30 +255,14 @@
 					                   		<label class="col-xs-4 control-label">Arxius:</label> 
 					                    	<div class="col-xs-8">  		
 						                        <c:forEach items="${tramitacio.documentsList}" var="arxiu" >
-													<div class="document">
-														<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
-															${arxiu.getDataString()} - ${arxiu.nom} 
-														</a>
-														<c:if test="${arxiu.signat}">
-															<span class="glyphicon glyphicon-pencil signedFile"></span>
-														</c:if>
-														<c:if test="${canModificarProcediment}">
-															<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
-														</c:if>
-														<br>
-														<div class="infoSign hidden">
-															<c:forEach items="${arxiu.firmesList}" var="firma" >
-																<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-																<br>
-															</c:forEach>
-														</div>
-													</div>					            		
+						                        	<c:set var="arxiu" value="${arxiu}" scope="request"/>
+													<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>				            		
 												</c:forEach>	
 											</div>
 										</div>
 									</div>
 								</div>		
-								<c:if test="${canModificarProcediment}">                		 				                	
+								<c:if test="${canModificarProcediment && tramitacio.tipus != 'Pagament'}">                	
 				                	<div class="row">
 				                		<div class="form-group">
 									        <div class="col-xs-offset-6 col-xs-3">
@@ -294,15 +278,20 @@
 					       	</c:forEach>    
 	                    </div>
 	                </div> 
-	                <c:if test="${canModificarProcediment}">
-		                <div class="row">					
-							<div class="form-group">	
-							  	<div class="col-md-offset-9 col-md-3">
-							    	<a href="novaTramitacio?refPro=${procedimentOriginal.referencia}" class="loadingButton btn btn-primary"  data-msg="nova tramitació...">Afegir tramitació</a>
-								</div>
+	               
+	                <div class="row">					
+						<div class="form-group">
+							<div class="col-md-offset-6 col-md-3">
+						    	<a href="pagamentJudicial?refPro=${procedimentOriginal.referencia}" class="loadingButton btn btn-primary"  data-msg="nova tramitació...">Tramitació pagament</a>
 							</div>	
-						</div>
-					</c:if>
+							<c:if test="${canModificarProcediment}">
+							  	<div class="col-md-3">
+							    	<a href="novaTramitacio?refPro=${procedimentOriginal.referencia}" class="loadingButton btn btn-success"  data-msg="nova tramitació...">Afegir tramitació</a>
+								</div>
+							</c:if>
+						</div>	
+					</div>
+					
 					<div class="row panel-body">
 						<c:set var="tasquesList" value="${tasquesList}" scope="request"/>
 						<jsp:include page="../tasca/include/_tasquesList.jsp"></jsp:include>

@@ -55,11 +55,10 @@ public class ExpedientDetailsServlet extends HttpServlet {
 	       Incidencia incidencia = new Incidencia();
 	       Llicencia llicencia = new Llicencia();
 	       Boolean canModificar = false;
-	       String informeSeleccionat = "";
 	       try {
 	    	   expedient = ExpedientCore.findExpedient(conn, referencia);
 	    	   informePrevi = InformeCore.getInformePrevi(conn, expedient.getIdInforme(), true);
-	    	   llicencia = LlicenciaCore.findLlicenciaExpedient(conn, referencia);
+	    	   llicencia = LlicenciaCore.findLlicenciaExpedient(conn, informePrevi.getIdInf(), informePrevi.getIdIncidencia());
 	    	   actuacio = informePrevi.getActuacio();
 	    	   actuacio.setSeguiment(ActuacioCore.isSeguimentActuacio(conn, actuacio.getReferencia(), usuari.getIdUsuari()));	  
 	    	   incidencia = IncidenciaCore.findIncidencia(conn, actuacio.getIdIncidencia());

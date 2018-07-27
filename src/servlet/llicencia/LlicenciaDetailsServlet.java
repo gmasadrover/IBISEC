@@ -22,6 +22,7 @@ import core.ControlPageCore;
 import core.ExpedientCore;
 import core.LlicenciaCore;
 import core.IncidenciaCore;
+import core.InformeCore;
 import core.UsuariCore;
 import utils.Fitxers;
 import utils.MyUtils;
@@ -59,8 +60,8 @@ public class LlicenciaDetailsServlet extends HttpServlet {
 		       Incidencia incidencia = new Incidencia();
 		       Boolean canModificar = false;
 		       try {
-		    	   llicencia = LlicenciaCore.findLlicencia(conn, codi);
-		    	   actuacio = ActuacioCore.findActuacio(conn, ExpedientCore.findExpedient(conn, llicencia.getCodiExpedient()).getIdActuacio());
+		    	   actuacio = ActuacioCore.findActuacio(conn, InformeCore.getInformePrevi(conn, llicencia.getCodiExpedient(), false).getActuacio().getReferencia());
+		    	   llicencia = LlicenciaCore.findLlicencia(conn, codi, actuacio.getIdIncidencia(), llicencia.getCodiExpedient());
 		    	   actuacio.setSeguiment(ActuacioCore.isSeguimentActuacio(conn, actuacio.getReferencia(), usuari.getIdUsuari()));	  
 		    	   incidencia = IncidenciaCore.findIncidencia(conn, actuacio.getIdIncidencia());
 		    	   actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia()));

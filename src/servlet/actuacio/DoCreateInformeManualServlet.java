@@ -109,7 +109,7 @@ public class DoCreateInformeManualServlet extends HttpServlet {
 				    informe = InformeCore.getInformePrevi(conn, idinforme, false);
 				    InformeCore.seleccionarProposta(conn, informe.getLlistaPropostes().get(0).getIdProposta(), idinforme);
 				     
-				    if(newExpedient) {
+				    if(newExpedient || tipusObra.equals("conveni")) {
 					    //Cream expedient   				
 		   				double importMajor = Double.parseDouble(getServletContext().getInitParameter("importObraMajor"));
 		   				informe = InformeCore.getInformePrevi(conn, idinforme, false); //recuperam informe amb tota la informació actualitzada

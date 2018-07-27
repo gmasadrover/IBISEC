@@ -8,7 +8,7 @@
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h4 class="panel-title">
-			<a data-toggle="collapse" data-parent="#accordionInformes" href="#expedient${informePrevi.idInf}">Expedient: ${informePrevi.expcontratacio.expContratacio != '-1' ? informePrevi.expcontratacio.expContratacio : informePrevi.idInf} - ${informePrevi.expcontratacio.anulat ? 'Anul·lat' : informePrevi.getEstatEconomic()} - ${informePrevi.getPropostaInformeSeleccionada().getTipusObraFormat()}</a>
+			<a data-toggle="collapse" data-parent="#accordionInformes" href="#expedient${informePrevi.idInf}">Expedient: ${informePrevi.expcontratacio.expContratacio != '-1' ? informePrevi.expcontratacio.expContratacio : informePrevi.idInf} - ${informePrevi.expcontratacio.anulat ? 'Anul·lat' : informePrevi.getEstatEconomic()}</a>
 		</h4>
 	</div>
     <div id="expedient${informePrevi.idInf}" class="panel-collapse collapse ${informePrevi.idInf == informeSeleccionat ? 'in' : ''}">
@@ -31,16 +31,14 @@
 	    		<div class="tabbable">
                    	<ul class="nav nav-tabs">
                    	 	<li class="${informePrevi.getEstat() == 'acabat' || informePrevi.getEstat() == null ? 'estatExp active' : '' }"><a data-toggle="tab" href="#resum${informePrevi.idInf}">Resum</a></li>	
-					    <li><a data-toggle="tab" href="#personal${informePrevi.idInf}">Personal</a></li>
-					    <li class="${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'previs' ? 'estatExp active' : '' }"><a data-toggle="tab" href="#informe${informePrevi.idInf}">Previs</a></li>
-					   	<li class="${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'licitacio' ? 'estatExp active' : '' }"><a data-toggle="tab" href="#licitacio${informePrevi.idInf}">Licitació</a></li>							   											    
-					    <li class="${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'execucio' ? 'estatExp active' : '' }"><a data-toggle="tab" href="#execucio${informePrevi.idInf}">Execució</a></li>	
-					    <li class="${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'garantia' ? 'estatExp active' : '' }"><a data-toggle="tab" href="#garantia${informePrevi.idInf}">Garantia</a></li>	
-					    <li><a data-toggle="tab" href="#urbanisme${informePrevi.idInf}">Aut Urb</a></li>					   
-					    <li><a data-toggle="tab" href="#documentacioTecnica${informePrevi.idInf}">Doc Tècnica</a></li>					   
-					    <li><a data-toggle="tab" href="#documentacio${informePrevi.idInf}">Altre doc</a></li>
-					    <li><a data-toggle="tab" href="#documentacioInstalacions${informePrevi.idInf}">Instal·lacions</a></li>
-					    <li><a data-toggle="tab" href="#recursAdministratiu${informePrevi.idInf}">Recurs Adm</a></li>					   
+					   	<li class="${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'previs' ? 'estatExp active' : '' }"><a data-toggle="tab" href="#informe${informePrevi.idInf}">Previs</a></li>
+					   	<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra != 'conveni'}">
+						   	<li class="${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'licitacio' ? 'estatExp active' : '' }"><a data-toggle="tab" href="#licitacio${informePrevi.idInf}">Licitació</a></li>							   											    
+						    <li class="${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'execucio' ? 'estatExp active' : '' }"><a data-toggle="tab" href="#execucio${informePrevi.idInf}">Execució</a></li>	
+						    <li class="${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'garantia' ? 'estatExp active' : '' }"><a data-toggle="tab" href="#garantia${informePrevi.idInf}">Garantia</a></li>	
+						    <li><a data-toggle="tab" href="#personal${informePrevi.idInf}">Personal</a></li>					    
+					    </c:if>		
+					    <li><a data-toggle="tab" href="#documents${informePrevi.idInf}">Documentació</a></li>			   
 				 	</ul>
 				 	<c:set var="informePrevi" value="${informePrevi}" scope="request"/>
 				  	<div class="tab-content">					  		
@@ -48,12 +46,7 @@
 				  			<div class="col-md-12 bordertab">
 				  				<jsp:include page="_resumExpedient.jsp"></jsp:include>
 				  			</div>
-				  		</div>		
-				  		<div id="personal${informePrevi.idInf}" class="tab-pane fade">
-							<div class="col-md-12 bordertab">
-								<jsp:include page="_resumPersonal.jsp"></jsp:include>
-							</div>
-						</div>	  		
+				  		</div>
 				  		<div id="informe${informePrevi.idInf}" class="tab-pane fade ${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'previs' ? 'in active' : '' }">
 				  		 	<div class="col-md-12 bordertab">
 				  		 		<jsp:include page="_resumInforme.jsp"></jsp:include>
@@ -74,31 +67,59 @@
 								<jsp:include page="_resumGarantia.jsp"></jsp:include>
 							</div>
 						</div>
-						<div id="urbanisme${informePrevi.idInf}" class="tab-pane fade">
+						<div id="personal${informePrevi.idInf}" class="tab-pane fade">
 							<div class="col-md-12 bordertab">
-								<jsp:include page="_resumUrbanisme.jsp"></jsp:include>
+								<jsp:include page="_resumPersonal.jsp"></jsp:include>
 							</div>
+						</div>	  
+						<div id="documents${informePrevi.idInf}" class="tab-pane fade">							
+							<div class="tabbable">
+			                   	<ul class="nav nav-tabs">
+								   	<li class="active"><a data-toggle="tab" href="#documentacioTecnica${informePrevi.idInf}">Doc Tècnica</a></li>								   
+								    <c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra != 'conveni'}">
+								   		<li><a data-toggle="tab" href="#urbanisme${informePrevi.idInf}">Aut Urb</a></li>	
+								   	</c:if>						   
+								    <li><a data-toggle="tab" href="#documentacio${informePrevi.idInf}">Altre doc</a></li>
+								    <c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra != 'conveni'}">
+									    <li><a data-toggle="tab" href="#actes${informePrevi.idInf}">Actes</a></li>
+									    <li><a data-toggle="tab" href="#documentacioInstalacions${informePrevi.idInf}">Instal·lacions</a></li>
+									    <li><a data-toggle="tab" href="#recursAdministratiu${informePrevi.idInf}">Recurs Adm</a></li>	
+									</c:if>				   
+							 	</ul>
+							 	<div class="tab-content">							 		
+									<div id="documentacioTecnica${informePrevi.idInf}" class="tab-pane fade in active">
+							  			<div class="col-md-12 bordertab">
+							  				<jsp:include page="_resumDocumentacioTecnica.jsp"></jsp:include>
+							  			</div>
+							  		</div>
+							  		<div id="urbanisme${informePrevi.idInf}" class="tab-pane fade">
+						  				<div class="col-md-12 bordertab">
+											<jsp:include page="_resumUrbanisme.jsp"></jsp:include>
+										</div>
+									</div>
+							  		<div id="documentacio${informePrevi.idInf}" class="tab-pane fade">
+							  			<div class="col-md-12 bordertab">
+							  				<jsp:include page="_resumDocuments.jsp"></jsp:include>
+							  			</div>
+							  		</div>
+							  		<div id="actes${informePrevi.idInf}" class="tab-pane fade">
+							  			<div class="col-md-12 bordertab">
+							  				<jsp:include page="_resumActes.jsp"></jsp:include>
+							  			</div>
+							  		</div>
+							  		<div id="documentacioInstalacions${informePrevi.idInf}" class="tab-pane fade">
+							  			<div class="col-md-12 bordertab">
+							  				<jsp:include page="_resumDocumentsInstalacions.jsp"></jsp:include>
+							  			</div>
+							  		</div>
+							  		<div id="recursAdministratiu${informePrevi.idInf}" class="tab-pane fade">
+							  			<div class="col-md-12 bordertab">
+							  				<jsp:include page="_resumRecursAdministratiu.jsp"></jsp:include>
+							  			</div>
+							  		</div>
+								</div>	
+							 </div>
 						</div>
-				  		<div id="documentacioTecnica${informePrevi.idInf}" class="tab-pane fade">
-				  			<div class="col-md-12 bordertab">
-				  				<jsp:include page="_resumDocumentacioTecnica.jsp"></jsp:include>
-				  			</div>
-				  		</div>
-				  		<div id="documentacio${informePrevi.idInf}" class="tab-pane fade">
-				  			<div class="col-md-12 bordertab">
-				  				<jsp:include page="_resumDocuments.jsp"></jsp:include>
-				  			</div>
-				  		</div>
-				  		<div id="documentacioInstalacions${informePrevi.idInf}" class="tab-pane fade">
-				  			<div class="col-md-12 bordertab">
-				  				<jsp:include page="_resumDocumentsInstalacions.jsp"></jsp:include>
-				  			</div>
-				  		</div>
-				  		<div id="recursAdministratiu${informePrevi.idInf}" class="tab-pane fade">
-				  			<div class="col-md-12 bordertab">
-				  				<jsp:include page="_resumRecursAdministratiu.jsp"></jsp:include>
-				  			</div>
-				  		</div>
 				  	</div>
 				</div>
 			</div>

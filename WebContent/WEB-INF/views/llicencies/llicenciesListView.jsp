@@ -91,13 +91,14 @@
                                         <th>Pagada Taxa</th>
                                         <th>Pagada Taxa</th>  
                                         <th>Taxa</th>
-                                        <th>ICO</th>                                      
+                                        <th>ICO</th>    
+                                        <th>Partida</th>                                  
                                     </tr>
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${informeList}" var="informe" >
 							          	<tr>
-							           		<td><a href="actuacionsDetalls?ref=${informe.actuacio.referencia}" class="loadingButton"  data-msg="obrint expedient...">${informe.expcontratacio.expContratacio}</a></td>
+							           		<td><a href="actuacionsDetalls?ref=${informe.actuacio.referencia}" class="loadingButton"  data-msg="obrint expedient...">${informe.expcontratacio.expContratacio != '' && informe.expcontratacio.expContratacio != null  ? informe.expcontratacio.expContratacio : informe.idInf}</a></td>
 							           		<td>${informe.propostaInformeSeleccionada.objecte}</td>
 							           		<td>${informe.actuacio.centre.getNomComplet()}</td>
 							            	<td>${informe.llicencia.getTipusFormat()}</td>
@@ -109,6 +110,7 @@
 							            	<td>${informe.llicencia.getDataPagamentTaxaString()}</td>
 							            	<td>${informe.llicencia.taxa}</td>
 							            	<td>${informe.llicencia.ico}</td>
+							            	<td>${informe.llicencia.idPartida}</td>
 							          	</tr>
 							       	</c:forEach>                                	
                                 </tbody>

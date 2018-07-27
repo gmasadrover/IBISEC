@@ -100,7 +100,7 @@ public class DoCreateTascaDerivadaServlet extends HttpServlet {
 		    proposta.setIva(iva);
 		    proposta.setPlic(plic);
 		    termini = multipartParams.getParametres().get("termini" );
-		    comentari = multipartParams.getParametres().get("comentariTecnic");			   
+		    comentari = multipartParams.getParametres().get("comentari");			   
 		    proposta.setTermini(termini);
 		    proposta.setComentari(comentari);
 		    proposta.setSeleccionada(true);		
@@ -109,19 +109,20 @@ public class DoCreateTascaDerivadaServlet extends HttpServlet {
 		    informe.setPropostaInformeSeleccionada(proposta);	
 		    InformeCore.modificarInforme(conn, informe, idTecnic);	 
 		    informe = InformeCore.getInformePrevi(conn, idInformePrevi, false);
-		    System.out.println(idInformePrevi);
 		    InformeCore.seleccionarProposta(conn, informe.getLlistaPropostes().get(0).getIdProposta(), idInformePrevi);	   
 		    informe = InformeCore.getInformePrevi(conn, idInformePrevi, false);
-		    Fitxers.guardarFitxer(conn, multipartParams.getFitxers(), idIncidencia, idActuacio, "", "", "", idInformePrevi, "Informe Previ", Usuari.getIdUsuari());
+		    Fitxers.guardarFitxer(conn, multipartParams.getFitxers(), idIncidencia, idActuacio, "", "", "", idInformePrevi, "Informe previ", Usuari.getIdUsuari());
 		    
    			int idUsuariTasca = -1;
+   			String tipusTasca = "docprelicitacio";
    			if (Usuari.getRol().contains("CAP")) {
    				idUsuariTasca = UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari();
    			}else{
    				idUsuariTasca = UsuariCore.finCap(conn, Usuari.getDepartament()).getIdUsuari();
+   				tipusTasca = "vistDocTecnica";
    			}	
    			
-   			idTasca = TascaCore.novaTasca(conn, "docprelicitacio", idUsuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, comentari, assumpte, idInformePrevi, null, request.getRemoteAddr(), "manual");
+   			idTasca = TascaCore.novaTasca(conn, tipusTasca, idUsuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, comentari, assumpte, idInformePrevi, null, request.getRemoteAddr(), "manual");
    		} catch (SQLException | NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

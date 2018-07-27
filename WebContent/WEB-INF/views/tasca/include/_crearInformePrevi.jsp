@@ -10,14 +10,9 @@
 	<div class="form-group">
 		<div class="col-md-12">
 			<p>Arxius adjunts:</p>
-                	<c:forEach items="${informePrevi.informesPrevis}" var="arxiu" >
-           		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
-					${arxiu.getDataString()} - ${arxiu.nom}
-				</a>
-				<c:if test="${!isGerencia}">
-					<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
-				</c:if>
-				<br>
+           	<c:forEach items="${informePrevi.getInformesPrevis()}" var="arxiu" >
+           		<c:set var="arxiu" value="${arxiu}" scope="request"/>
+           		<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 			</c:forEach>
 		</div>
 		<c:if test="${!isGerencia}">

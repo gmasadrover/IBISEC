@@ -98,7 +98,8 @@
 						            <select class="form-control selectpicker" name="tipusContracte" id="tipusContracte">
 							           	<option value="obr">Obra</option>
 							           	<option value="srv">Servei</option>
-							           	<option value="submi">subministrament</option>
+							           	<option value="submi">Subministrament</option>
+							           	<option value="conveni">Conveni</option>
 						            </select>
 					        	</div>	
 					       		<div class="visibleObres visibleObres">					                             	

@@ -21,22 +21,12 @@
 			<p>
 				<label>Proveïdor:</label> ${factura.nomProveidor}
 			</p>						       	
-			<p>
-				<div class="document">
-		            <label>Certificació: </label>											                  	
-		          	<a target="_blanck" href="downloadFichero?ruta=${factura.arxiu.getEncodedRuta()}">
-						${factura.arxiu.nom}
-					</a>	
-					<c:if test="${factura.arxiu.signat}">
-							<span class="glyphicon glyphicon-pencil signedFile"></span>
-					</c:if><br>
-					<div class="infoSign hidden">
-						<c:forEach items="${factura.arxiu.firmesList}" var="firma" >
-							<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-							<br>
-						</c:forEach>
-					</div>
-				</div>		
+			<p>				
+	            <label>Certificació: </label>		           
+	            <c:forEach items="${factura.certificacions}" var="arxiu" >
+					<c:set var="arxiu" value="${arxiu}" scope="request"/>
+					<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+				</c:forEach>
 		 	</p>
 		</div>
     </div>

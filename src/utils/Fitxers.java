@@ -52,6 +52,7 @@ import com.itextpdf.text.pdf.security.SignaturePermissions.FieldLock;
 import bean.Actuacio;
 import bean.Actuacio.ArxiusAdjunts;
 import bean.User;
+import utils.Fitxers.Fitxer.infoFirma;
 public class Fitxers {
 	
 	
@@ -259,6 +260,19 @@ public class Fitxers {
 		return arxius;		
 	}
 	
+	public static List<Fitxer> ObtenirFitxersTasca(String idTasca) throws NamingException {
+		List<Fitxer> arxius = new ArrayList<Fitxer>();
+		
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String rutaBase =  (String)env.lookup("ruta_base") + "/documents/Actuacio/Tasca/" + idTasca;
+		arxius = ObtenirTotsFitxers(rutaBase, "");		
+		rutaBase =  (String)env.lookup("ruta_base") + "/documents/-1/Actuacio/-1/Tasca/" + idTasca;
+		arxius.addAll(ObtenirTotsFitxers(rutaBase, ""));		
+		return arxius;		
+	}
+	
 	public static ArxiusAdjunts ObtenirTotsFitxers(String idIncidencia) throws NamingException {
 		ArxiusAdjunts arxius = new Actuacio().new ArxiusAdjunts();
 		 // Get the base naming context
@@ -277,7 +291,7 @@ public class Fitxers {
 		return arxius;	
 	}
 	
-	public static Fitxer ObtenirFitxer(String ruta) {
+	public static Fitxer ObtenirFitxer(String ruta, boolean readFirma) {
 		Fitxer arxiu = new Fitxer();
 		File dir = new File(ruta);
 		File[] ficheros = dir.listFiles();
@@ -290,7 +304,7 @@ public class Fitxers {
 				for (int x=0;x<ficheros.length;x++) {	
 					if (!ficheros[x].isDirectory()) {
 						Fitxer fitxer = new Fitxer();	
-						if (ficheros[x].getName().toLowerCase().contains(".pdf")) {
+						if (readFirma && ficheros[x].getName().toLowerCase().contains(".pdf")) {
 							PdfReader reader;		
 							reader = new PdfReader(ruta + "/" + ficheros[x].getName());		
 			            	AcroFields acroFields = reader.getAcroFields();
@@ -314,7 +328,7 @@ public class Fitxers {
 		return arxiu;
 	}
 	
-	public static List<Fitxer> ObtenirFitxers(String ruta) {
+	public static List<Fitxer> ObtenirFitxers(String ruta, boolean readFirma) {
 		List<Fitxer> arxius = new ArrayList<Fitxer>();		
 		File dir = new File(ruta);
 		File[] ficheros = dir.listFiles();
@@ -327,7 +341,7 @@ public class Fitxers {
 				for (int x=0;x<ficheros.length;x++) {					
 					if (!ficheros[x].isDirectory()) {
 						Fitxer fitxer = new Fitxer();	
-						if (isPDF(ficheros[x])) {
+						if (readFirma && isPDF(ficheros[x])) {
 							PdfReader reader;						
 							reader = new PdfReader(ruta + "/" + ficheros[x].getName());						
 			            	AcroFields acroFields = reader.getAcroFields();
@@ -370,12 +384,8 @@ public class Fitxers {
 							PdfReader reader;						
 							reader = new PdfReader(ruta + "/" + ficheros[x].getName());						
 			            	AcroFields acroFields = reader.getAcroFields();
-			            	List<String> signatureNames = acroFields.getSignatureNames();		            	
-			            	SignaturePermissions perms = null;
-			            	for (String name: signatureNames) {
-			            		fitxer.setSignat(true);
-			            		perms = inspectSignature(acroFields, name, perms, fitxer);
-			    			}
+			            	List<String> signatureNames = acroFields.getSignatureNames();
+			            	if (signatureNames.size() > 0) fitxer.setSignat(true);
 						}
 		            	fitxer.setNom(ficheros[x].getName());
 						fitxer.setRuta(ruta + "/" + ficheros[x].getName());
@@ -385,7 +395,7 @@ public class Fitxers {
 						
 					}				
 				}
-			} catch (IOException | GeneralSecurityException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -404,11 +414,37 @@ public class Fitxers {
 	    return false;
 	}
 	
+	public static List<Fitxers.Fitxer.infoFirma> getSignaturesDocument(String ruta) throws GeneralSecurityException, IOException {
+		 List<infoFirma> firmesList = new ArrayList<infoFirma>();
+		 PdfReader reader;						
+		 reader = new PdfReader(ruta);						
+		 AcroFields acroFields = reader.getAcroFields();
+		 List<String> signatureNames = acroFields.getSignatureNames();	
+		 Fitxer.infoFirma info = null;
+		 for (String name: signatureNames) {     		
+				PdfPKCS7 pkcs7 = verifySignature(acroFields, name);
+				if (pkcs7 != null) {
+					info = new Fitxer().new infoFirma();
+					X509Certificate cert = (X509Certificate) pkcs7.getSigningCertificate();	
+					info.setNomFirmant(CertificateInfo.getSubjectFields(cert).getField("CN"));		
+					SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy HH:mm");		
+					info.setDataFirma(date_format.format(pkcs7.getSignDate().getTime()));	
+					firmesList.add(info);
+				}
+		 }
+		 return firmesList;
+	}
+	
 	public static PdfPKCS7 verifySignature(AcroFields fields, String name) throws GeneralSecurityException, IOException {
+		//System.out.println("name: " + name);
 		//System.out.println("Signature covers whole document: " + fields.signatureCoversWholeDocument(name));
 		//System.out.println("Document revision: " + fields.getRevision(name) + " of " + fields.getTotalRevisions());
-        PdfPKCS7 pkcs7 = fields.verifySignature(name);
-        return pkcs7;
+		try {
+			PdfPKCS7 pkcs7 = fields.verifySignature(name);   
+			 return pkcs7;
+		} catch (java.lang.IllegalArgumentException e) {
+		}
+		return null;
 	}
 	
 	
@@ -430,29 +466,32 @@ public class Fitxers {
 		//System.out.println("Digest algorithm: " + pkcs7.getHashAlgorithm());
 		//System.out.println("Encryption algorithm: " + pkcs7.getEncryptionAlgorithm());
 		//System.out.println("Filter subtype: " + pkcs7.getFilterSubtype());
-		X509Certificate cert = (X509Certificate) pkcs7.getSigningCertificate();		
-		Fitxer.infoFirma info = fitxer.new infoFirma();
-		info.setNomFirmant(CertificateInfo.getSubjectFields(cert).getField("CN"));		
-		//if (pkcs7.getSignName() != null) System.out.println("Alternative name of the signer: " + pkcs7.getSignName());
-		SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy HH:mm");		
-		info.setDataFirma(date_format.format(pkcs7.getSignDate().getTime()));
-		/*if (pkcs7.getTimeStampDate() != null) {
-			System.out.println("TimeStamp: " + date_format.format(pkcs7.getTimeStampDate().getTime()));
-			TimeStampToken ts = pkcs7.getTimeStampToken();
-			System.out.println("TimeStamp service: " + ts.getTimeStampInfo().getTsa());
-			System.out.println("Timestamp verified? " + pkcs7.verifyTimestampImprint());
-		}*/
-		//System.out.println("Location: " + pkcs7.getLocation());
-		//System.out.println("Reason: " + pkcs7.getReason());
-		PdfDictionary sigDict = fields.getSignatureDictionary(name);
-		PdfString contact = sigDict.getAsString(PdfName.CONTACTINFO);
-		if (contact != null)
-		perms = new SignaturePermissions(sigDict, perms);
-		//System.out.println("Signature type: " + (perms.isCertification() ? "certification" : "approval"));
-		//System.out.println("Filling out fields allowed: " + perms.isFillInAllowed());
-		//System.out.println("Adding annotations allowed: " + perms.isAnnotationsAllowed());
+		if (pkcs7 != null) {
+			X509Certificate cert = (X509Certificate) pkcs7.getSigningCertificate();		
+			Fitxer.infoFirma info = fitxer.new infoFirma();
+			info.setNomFirmant(CertificateInfo.getSubjectFields(cert).getField("CN"));		
+			//if (pkcs7.getSignName() != null) System.out.println("Alternative name of the signer: " + pkcs7.getSignName());
+			SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy HH:mm");		
+			info.setDataFirma(date_format.format(pkcs7.getSignDate().getTime()));
+			/*if (pkcs7.getTimeStampDate() != null) {
+				System.out.println("TimeStamp: " + date_format.format(pkcs7.getTimeStampDate().getTime()));
+				TimeStampToken ts = pkcs7.getTimeStampToken();
+				System.out.println("TimeStamp service: " + ts.getTimeStampInfo().getTsa());
+				System.out.println("Timestamp verified? " + pkcs7.verifyTimestampImprint());
+			}*/
+			//System.out.println("Location: " + pkcs7.getLocation());
+			//System.out.println("Reason: " + pkcs7.getReason());
+			PdfDictionary sigDict = fields.getSignatureDictionary(name);
+			PdfString contact = sigDict.getAsString(PdfName.CONTACTINFO);
+			if (contact != null)
+			perms = new SignaturePermissions(sigDict, perms);
+			//System.out.println("Signature type: " + (perms.isCertification() ? "certification" : "approval"));
+			//System.out.println("Filling out fields allowed: " + perms.isFillInAllowed());
+			//System.out.println("Adding annotations allowed: " + perms.isAnnotationsAllowed());
+			
+			fitxer.addFirmesList(info);
+		}
 		
-		fitxer.addFirmesList(info);
         return perms;
 	}
 	
@@ -487,7 +526,6 @@ public class Fitxers {
 		 PreparedStatement pstm = conn.prepareStatement(sqlUpdate);	
 		 pstm.setInt(1,idUsuari);
 		 pstm.setString(2, ruta);		
-		 System.out.println(pstm.toString());
 		 pstm.executeUpdate();	
 	}
 	
@@ -575,7 +613,6 @@ public class Fitxers {
 					fileName = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/" + docInforme + "/";
 				}				
 			}
-			System.out.println(fileName);
 	        for(int i=0;i<fitxers.size();i++){
 	            Fitxer fitxer = (Fitxer) fitxers.get(i);
 	            if (fitxer.getFitxer().getName() != "") {
@@ -596,10 +633,10 @@ public class Fitxers {
 			File tmpFile = new File(ruta);
 			tmpFile = tmpFile.getCanonicalFile(); 
 			if (tmpFile.exists()) {
-				System.out.println("elimina: " + ruta);
+				System.out.println("Entra 1");
 				if (tmpFile.delete()) {
+					System.out.println("Entra 2");
 					Fitxers.marcarDocumentEliminat(conn, idUsuari, ruta);
-					System.out.println("eliminat");
 				}
 			}
 		} catch (Exception e) {

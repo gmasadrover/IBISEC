@@ -39,9 +39,8 @@
                 <div class="row">
                     <div class="col-md-12">
                         <h2>Empreses Despesa</h2>
-                        <div class="table-responsive">
-                        
-                            <table class="table table-striped table-bordered filerTable">
+                        <div class="table-responsive">                        
+                            <table class="table table-striped table-bordered despesaTable">
                                 <thead>
                                     <tr>
                                         <th>CIF</th>
@@ -51,8 +50,12 @@
                                         <th>Ciutat</th>
                                         <th>Provincia</th>
                                         <th>Email</th>
-                                        <th>Total base</th>
-                                        <th>Tatal amb IVA</th>
+                                        <th>Total base (adjudicat)</th>
+                                        <th>Total base (adjudicat)</th>
+                                        <th>Total base (proposta)</th>
+                                        <th>Total base (proposta)</th>
+                                        <th>Tatal amb IVA (proposta)</th>
+                                        <th>Tatal amb IVA (proposta)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -65,8 +68,12 @@
 							            	<td>${empresa.ciutat}</td>
 							            	<td>${empresa.provincia}</td>
 							            	<td>${empresa.email}</td>
+							            	<td>${empresa.getTotalPbasePeriodeAdjudicatString()}</td>		
+							            	<td>${empresa.totalPbasePeriodeAdjudicat}</td>	
+							            	<td>${empresa.getTotalPbasePeriodeString()}</td>		
 							            	<td>${empresa.totalPbasePeriode}</td>	
-							            	<td>${empresa.totalPLicPeriode}</td>							            	
+							            	<td>${empresa.getTotalPLicPeriodeString()}</td>									            				
+							            	<td>${empresa.totalPLicPeriode}</td>								            					            	
 							          	</tr>
 							       	</c:forEach>
                                 </tbody>

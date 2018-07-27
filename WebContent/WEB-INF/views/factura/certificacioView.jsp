@@ -42,6 +42,14 @@
                 <!-- /.row -->
                 <c:if test="${not empty certificacio}">                	                		
                		<h2 class="margin_bottom30">Informació bàsica</h2>
+               		<c:if test="${certificacio.anulada}">       
+	               		<div class="row">
+		                	<div class="col-md-12">
+		               			<p style="color: red;">Certificació Anul·lada</p>
+		               			<p style="color: red;">Motiu: ${certificacio.motiuAnulada}</p>
+		               		</div>
+		               	</div>
+	               	</c:if>
 		    		<div class="row">			    				    				    		
 	                    <div class="col-xs-offset-1 col-md-5">
 	    					<p>
@@ -90,26 +98,11 @@
                 	</div>
                 	<div class="row">
                 		<div class="col-xs-offset-1 col-md-10">
-		                	<c:if test="${certificacio.arxiu.ruta != null}">															
-								<p>
-							    	<div class="document">
-							        	<label>Certificació:	</label>											                  	
-						          		<a target="_blanck" href="downloadFichero?ruta=${certificacio.arxiu.getEncodedRuta()}">
-											${certificacio.arxiu.nom}
-										</a>	
-										<c:if test="${certificacio.arxiu.signat}">
-											<span class="glyphicon glyphicon-pencil signedFile"></span>
-										</c:if>
-										<br>
-										<div class="infoSign hidden">
-											<c:forEach items="${certificacio.arxiu.firmesList}" var="firma" >
-												<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-												<br>
-											</c:forEach>
-										</div>
-									</div>																				
-								</p>	
-							</c:if>
+                			<label>Certificació: </label>
+                			<c:forEach items="${certificacio.certificacions}" var="arxiu" >
+								<c:set var="arxiu" value="${arxiu}" scope="request"/>
+								<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+							</c:forEach>		                	
 						</div>
 					</div>
                 	<div class="row">
@@ -120,13 +113,38 @@
                             </p>	                		
                         </div>
                 	</div>   
-                	<div class="row">
-                		<div class="col-md-2">
-	               			<c:if test="${canModificar}">
-								<a href="editCertificacio?ref=${certificacio.idFactura}" class="btn btn-primary" role="button">Modificar</a>									
-							</c:if>
-						</div>						
-                	</div>         	
+                	<c:if test="${!certificacio.anulada}">        
+	                	<div class="row">
+	                		<div class="col-md-2">
+		               			<c:if test="${canModificar}">
+									<a href="editCertificacio?ref=${certificacio.idFactura}" class="btn btn-primary" role="button">Modificar</a>									
+								</c:if>
+							</div>	
+		                	<div class="col-md-3">
+		               			<c:if test="${canModificar}">																	
+									<input class="btn btn-danger" data-toggle="modal" data-target="#myModal" value="Anul·lar">
+				        			<!-- Modal -->
+									<div id="myModal" class="modal fade" role="dialog">
+										<div class="modal-dialog">																	
+									    <!-- Modal content-->
+									    	<div class="modal-content">
+									      		<div class="modal-header">
+									        		<button type="button" class="close" data-dismiss="modal">&times;</button>
+									        		<h4 class="modal-title">Motiu anul·lació</h4>
+									      		</div>
+									      		<div class="modal-body">
+									        		<textarea id="motiuAnulacio" required></textarea>
+									      		</div>
+									      		<div class="modal-footer">
+									        		<a id="anularCertificacio" data-idfactura="${certificacio.idFactura}" class="btn btn-danger" role="button">Anul·lar</a>	
+									      		</div>
+								    		</div>																	
+									  	</div>
+									</div> 
+								</c:if>
+							</div>	
+						</div> 
+                	</c:if>        	
                 </c:if>
                 <!-- /.row -->     
            	</div>

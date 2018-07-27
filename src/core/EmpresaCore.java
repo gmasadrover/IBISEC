@@ -26,7 +26,7 @@ public class EmpresaCore {
 	static final String SQL_CAMPS = "cif, nom, direccio, cp, ciutat, provincia, telefon, fax, email, usumod, datamod,"
 								+ " dataexpacreditacio1, dataexpacreditacio2, dataexpacreditacio3,"
 								+ " classificacio, dataconstitucio, informacioadicional, exercicieconomic, dataregistremercantil, ratioap,"
-								+ " datavigenciaclassificaciorolece, datavigenciaclassificaciojccaib, datavigenciaclassificaciojca, pime, activa, cifsuccesora, motiuextincio";
+								+ " datavigenciaclassificaciorolece, datavigenciaclassificaciojccaib, datavigenciaclassificaciojca, pime, activa, cifsuccesora, motiuextincio, prohibiciocontractar";
 	
 	
 	private static Empresa initEmpresa(Connection conn, ResultSet rs) throws SQLException, NamingException{		
@@ -64,6 +64,10 @@ public class EmpresaCore {
 		empresa.setDataVigenciaClassificacioJCA(rs.getTimestamp("datavigenciaclassificaciojca"));
 		empresa.setPime(rs.getBoolean("pime"));
 		empresa.setActiva(rs.getBoolean("activa"));
+		empresa.setProhibicioContractar(rs.getBoolean("prohibiciocontractar"));
+		if (rs.getBoolean("prohibiciocontractar")) {
+			empresa.setDocumentsProhibicioContractarList(getDocumentsProhibicioContractar(rs.getString("cif")));
+		}
 		if (!rs.getBoolean("activa")) {
 			empresa.setSuccesora(findSuccesora(conn, rs.getString("cifsuccesora")));
 			empresa.setMotiuExtincio(rs.getString("motiuExtincio"));
@@ -148,7 +152,7 @@ public class EmpresaCore {
 				 	+ " SET cif=?, nom=?, direccio=?, cp=?, ciutat=?, provincia=?, telefon=?, fax=?, email=?, usumod=?, datamod=localtimestamp," 
 				 		+ " dataexpacreditacio1=?, dataexpacreditacio2=?, dataexpacreditacio3=?," 
 				 		+ " classificacio=?, dataconstitucio=?, informacioadicional=?, exercicieconomic=?,  dataregistremercantil=?,  ratioap=?,"
-				 		+ " datavigenciaclassificaciorolece=?, datavigenciaclassificaciojccaib=?, datavigenciaclassificaciojca=?, pime=?"
+				 		+ " datavigenciaclassificaciorolece=?, datavigenciaclassificaciojccaib=?, datavigenciaclassificaciojca=?, pime=?, prohibiciocontractar=?"
 				 	+ " WHERE cif = ?";	 
 		 PreparedStatement pstm = conn.prepareStatement(sql);	
 		 pstm.setString(1, empresa.getCif());
@@ -212,7 +216,8 @@ public class EmpresaCore {
 			 pstm.setDate(22, null);
 		 }	
 		 pstm.setBoolean(23, empresa.isPime());
-		 pstm.setString(24, cifActual);
+		 pstm.setBoolean(24, empresa.isProhibicioContractar());
+		 pstm.setString(25, cifActual);
 		 pstm.executeUpdate();		
 	 }
 	 
@@ -280,6 +285,7 @@ public class EmpresaCore {
 		 pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
 		 ResultSet rs = pstm.executeQuery();
 		 List<Empresa> list = new ArrayList<Empresa>();
+		 System.out.println(pstm.toString());
 		 while (rs.next()) {
 			 Empresa empresa = new Empresa();
 			 empresa.setCif(rs.getString("cif"));
@@ -291,9 +297,75 @@ public class EmpresaCore {
 			 empresa.setActiva(rs.getBoolean("activa"));
 			 empresa.setTotalPbasePeriode(rs.getDouble("pbase"));
 			 empresa.setTotalPLicPeriode(rs.getDouble("plic"));
+			 empresa.setTotalPbasePeriodeAdjudicat(getTotalBaseAdjudicat(conn, rs.getString("cif"), dataIni, dataFi));
+			 list.add(empresa);
+		 }
+		 sql = "SELECT e.cif AS cif, SUM(m.pbase) AS pbase, e.nom AS nom, e.direccio AS direccio, e.ciutat AS ciutat, e.provincia AS provincia, e.email AS email, e.activa AS activa, SUM(m.plic) AS plic"
+				 + " FROM public.tbl_modificacioinforme m"
+				 + " 	LEFT JOIN public.tbl_empreses e ON m.cifempresa = e.cif"
+				 + " 	LEFT JOIN public.tbl_informeactuacio i ON m.idinforme = i.idinf"
+				 + " 	LEFT JOIN public.tbl_empresaoferta o ON i.idinf = o.idinforme" 
+				 + " 	LEFT JOIN public.tbl_propostesinforme p ON p.idinf = i.idinf"
+				 + " 	LEFT JOIN public.tbl_expedient x ON x.expcontratacio = i.expcontratacio"
+				 + " WHERE x.anulat = false AND o.seleccionada = true AND p.seleccionada = true AND i.dataaprovacio >= '09/03/2018' AND o.datacre >= ? AND o.datacre <= ? AND ((o.pbase < 15000 AND p.tipusobra != 'obr') OR (o.pbase < 40000 AND p.tipusobra = 'obr'))"
+				 + " GROUP BY e.cif"
+				 + " ORDER BY e.cif";		 		
+		 pstm = conn.prepareStatement(sql);	 
+		 pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
+		 pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
+		 rs = pstm.executeQuery();
+		 System.out.println(pstm.toString());
+		 while (rs.next()) {
+			 Empresa empresa = new Empresa();
+			 empresa.setCif(rs.getString("cif"));
+			 empresa.setName(rs.getString("nom"));
+			 empresa.setDireccio(rs.getString("direccio"));
+			 empresa.setCiutat(rs.getString("ciutat"));
+			 empresa.setProvincia(rs.getString("provincia"));
+			 empresa.setEmail(rs.getString("email"));
+			 empresa.setActiva(rs.getBoolean("activa"));
+			 empresa.setTotalPbasePeriode(rs.getDouble("pbase"));
+			 empresa.setTotalPLicPeriode(rs.getDouble("plic"));
+			 empresa.setTotalPbasePeriodeAdjudicat(getTotalBaseAdjudicat(conn, rs.getString("cif"), dataIni, dataFi));
 			 list.add(empresa);
 		 }
 	     return list;
+  }	
+	 
+	 public static double getDespesaEmpresa(Connection conn, String cif, Date dataIni, Date dataFi) throws SQLException {
+		 String sql = "SELECT SUM(o.pbase) AS pbase, SUM(o.plic) AS plic"
+				 	+ " FROM public.tbl_empresaoferta o"
+				 	+ " 	LEFT JOIN public.tbl_empreses e ON o.cifempresa = e.cif"
+				 	+ " 	LEFT JOIN public.tbl_informeactuacio i ON o.idinforme = i.idinf"
+				 	+ "		LEFT JOIN public.tbl_propostesinforme p ON p.idinf = i.idinf"
+				 	+ " 	LEFT JOIN public.tbl_expedient x ON x.expcontratacio = i.expcontratacio"
+				 	+ " WHERE e.cif = ? AND x.anulat = false AND o.seleccionada = true AND p.seleccionada = true AND i.dataaprovacio >= '09/03/2018' AND o.datacre >= ? AND o.datacre <= ? AND ((o.pbase < 15000 AND p.tipusobra != 'obr') OR (o.pbase < 40000 AND p.tipusobra = 'obr'))"  
+					+ " GROUP BY e.cif"
+				 	+ " ORDER BY e.cif";
+		 PreparedStatement pstm = conn.prepareStatement(sql);	
+		 pstm.setString(1, cif);
+		 pstm.setDate(2, new java.sql.Date(dataIni.getTime()));
+		 pstm.setDate(3, new java.sql.Date(dataFi.getTime()));
+		 ResultSet rs = pstm.executeQuery();
+		 double totalAdjudicat = 0;
+		 if (rs.next()) totalAdjudicat = rs.getDouble("pbase");
+		 sql = "SELECT e.cif AS cif, SUM(m.pbase) AS pbase, e.nom AS nom, e.direccio AS direccio, e.ciutat AS ciutat, e.provincia AS provincia, e.email AS email, e.activa AS activa, SUM(m.plic) AS plic"
+				 + " FROM public.tbl_modificacioinforme m"
+				 + " 	LEFT JOIN public.tbl_empreses e ON m.cifempresa = e.cif"
+				 + " 	LEFT JOIN public.tbl_informeactuacio i ON m.idinforme = i.idinf"
+				 + " 	LEFT JOIN public.tbl_empresaoferta o ON i.idinf = o.idinforme" 
+				 + " 	LEFT JOIN public.tbl_propostesinforme p ON p.idinf = i.idinf"
+				 + " 	LEFT JOIN public.tbl_expedient x ON x.expcontratacio = i.expcontratacio"
+				 + " WHERE  e.cif = ? AND x.anulat = false AND o.seleccionada = true AND p.seleccionada = true AND i.dataaprovacio >= '09/03/2018' AND o.datacre >= ? AND o.datacre <= ? AND ((o.pbase < 15000 AND p.tipusobra != 'obr') OR (o.pbase < 40000 AND p.tipusobra = 'obr'))"
+				 + " GROUP BY e.cif"
+				 + " ORDER BY e.cif";		 		
+		 pstm = conn.prepareStatement(sql);	 
+		 pstm.setString(1, cif);
+		 pstm.setDate(2, new java.sql.Date(dataIni.getTime()));
+		 pstm.setDate(3, new java.sql.Date(dataFi.getTime()));
+		 rs = pstm.executeQuery();
+		 if (rs.next()) totalAdjudicat += rs.getDouble("pbase");
+	     return totalAdjudicat;
   }	
 	 
 	 private static Empresa findSuccesora(Connection conn, String cif) throws SQLException, NamingException {
@@ -555,6 +627,28 @@ public class EmpresaCore {
 				 fitxer = new Fitxer();
 				 fitxer.setNom(fichers[x].getName());
 				 fitxer.setRuta(ruta + "/documents/Empreses/" + cif + "/Escritura/" + fichers[x].getName());
+				 fitxersList.add(fitxer);
+			 }
+		 }
+		 return fitxersList;
+	 }
+	 
+	 public static List<Fitxer> getDocumentsProhibicioContractar(String cif) throws NamingException {
+		 List<Fitxer> fitxersList = new ArrayList<Fitxer>();
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		 File dir = new File(ruta + "/documents/Empreses/" + cif + "/Prohibicio");
+		 File[] fichers = dir.listFiles();
+		 Fitxer fitxer = new Fitxer();
+		 if (fichers == null) {
+			
+		 } else { 
+			 for (int x=0;x<fichers.length;x++) {
+				 fitxer = new Fitxer();
+				 fitxer.setNom(fichers[x].getName());
+				 fitxer.setRuta(ruta + "/documents/Empreses/" + cif + "/Prohibicio/" + fichers[x].getName());
 				 fitxersList.add(fitxer);
 			 }
 		 }
@@ -837,5 +931,41 @@ public class EmpresaCore {
 		        }
 			}
 		}
+	 
+	 private static double getTotalBaseAdjudicat(Connection conn, String cif, Date dataIni, Date dataFi) throws SQLException {
+		 double total = 0;
+		 String sql = "SELECT SUM(o.pbase) AS total"
+				 	+ " FROM public.tbl_empresaoferta o"
+				 	+ " 	LEFT JOIN public.tbl_empreses e ON o.cifempresa = e.cif"
+				 	+ " 	LEFT JOIN public.tbl_informeactuacio i ON o.idinforme = i.idinf"
+				 	+ "		LEFT JOIN public.tbl_propostesinforme p ON p.idinf = i.idinf"
+				 	+ " 	LEFT JOIN public.tbl_expedient x ON x.expcontratacio = i.expcontratacio"
+				 	+ " WHERE x.anulat = false  AND o.seleccionada = true AND p.seleccionada = true AND (x.dataadjudicacio IS NOT null OR x.dataformalitzaciocontracte IS NOT null) AND i.dataaprovacio >= '09/03/2018' AND o.datacre >= ? AND o.datacre <= ? AND ((o.pbase < 15000 AND p.tipusobra != 'obr') OR (o.pbase < 40000 AND p.tipusobra = 'obr')) AND cif = ?";
+		 PreparedStatement pstm = conn.prepareStatement(sql);	
+		 pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
+		 pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
+		 pstm.setString(3, cif);
+		 ResultSet rs = pstm.executeQuery();
+		 System.out.println(pstm.toString());
+		 if (rs.next()) {
+			 total = rs.getDouble("total");
+		 }
+		 sql = "SELECT SUM(m.pbase) AS total"
+				 + " FROM public.tbl_modificacioinforme m"
+				 + "    LEFT JOIN public.tbl_informeactuacio i ON m.idinforme = i.idinf"	
+				 + "	LEFT JOIN public.tbl_propostesinforme p ON p.idinf = i.idinf"
+				 + " 	LEFT JOIN public.tbl_empresaoferta o ON  i.idinf = o.idinforme"
+				 + " WHERE i.dataaprovacio >= '09/03/2018' AND o.seleccionada = true AND p.seleccionada = true AND m.datacre >= ? AND m.datacre <= ? AND ((o.pbase < 15000 AND p.tipusobra != 'obr') OR (o.pbase < 40000 AND p.tipusobra = 'obr')) AND m.cifempresa = ?"; 
+		 pstm = conn.prepareStatement(sql);	
+		 pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
+		 pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
+		 pstm.setString(3, cif);
+		 rs = pstm.executeQuery();
+		 System.out.println(pstm.toString());
+		 if (rs.next()) {
+			 total += rs.getDouble("total");
+		 }		
+		 return total;
+	 }
 	 
 }

@@ -44,21 +44,31 @@
 			            			- Prioritat ${tasca.prioritat}
 			            		</c:if>
 							</td>
-							<td><a href="tasca?id=${tasca.idTasca}" class="loadingButton"  data-msg="obrint tasca...">${tasca.idTasca} - ${tasca.descripcio}</a></td>
-							<td>${tasca.usuari.getNomComplet()}</td>	
-							<td>
-			            		<c:choose>
-			            			<c:when test="${tasca.actuacio.referencia != '-1'}">
-			            				<a href="actuacionsDetalls?ref=${tasca.actuacio.referencia}" class="loadingButton"  data-msg="obrint actuació...">${tasca.actuacio.referencia}</a>
-			            			</c:when>
-			            			<c:otherwise>
-			            				${tasca.idinforme}
-			            			</c:otherwise>
-			            		</c:choose>
-			            	</td>
-							<td>${tasca.actuacio.centre.illa}</td>	
-							<td>${tasca.actuacio.centre.getNomComplet()}</td>	
-							<td>${tasca.actuacio.descripcio}</td>							            	
+							<td><a href="tasca?id=${tasca.idTasca}" class="loadingButton"  data-msg="obrint tasca...">${!tasca.llegida ? '<img src="css/img/exclamation.png" class="exclamationimg">' : ''} ${tasca.idTasca} - ${tasca.descripcio}</a></td>
+							<td>${tasca.usuari.getNomComplet()}</td>								
+			            	<c:choose>			            		
+				            	<c:when test="${tasca.tipus != 'pagamentJudicial' && tasca.tipus != 'judicial'}">
+				            		<td>
+					            		<c:choose>
+					            			<c:when test="${tasca.actuacio.referencia != '-1'}">
+					            				<a href="actuacionsDetalls?ref=${tasca.actuacio.referencia}" class="loadingButton"  data-msg="obrint actuació...">${tasca.actuacio.referencia}</a>
+					            			</c:when>
+					            			<c:otherwise>
+					            				${tasca.idinforme}
+					            			</c:otherwise>
+					            		</c:choose>
+					            	</td>
+									<td>${tasca.actuacio.centre.illa}</td>	
+									<td>${tasca.actuacio.centre.getNomComplet()}</td>	
+									<td>${tasca.actuacio.descripcio}</td>			
+								</c:when>
+								<c:otherwise>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</c:otherwise>
+							</c:choose>											            	
 							<td>${tasca.getDataCreacioString()}</td>
 							<td>${tasca.dataCreacio}</td>	
 							<td>${tasca.getDarreraModificacioString()}</td>

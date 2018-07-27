@@ -168,70 +168,18 @@
 											${informePrevi.propostaActuacio.nom}
 										</a>	
 										<c:if test="${informePrevi.propostaActuacio.signat}">
-											<span class="glyphicon glyphicon-pencil signedFile"></span>
+											<span data-ruta="${informePrevi.propostaActuacio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 										</c:if>
 										<c:if test="${informePrevi.propostaActuacio.ruta != null}">
 											<span data-ruta="${informePrevi.propostaActuacio.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
 										</c:if>
 										<br>
-										<div class="infoSign hidden">
-											<c:forEach items="${informePrevi.propostaActuacio.firmesList}" var="firma" >
-												<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-												<br>
-											</c:forEach>
+										<div class="infoSign hidden">											
 										</div>
 									</div>	
 									<input type="file" class="btn uploadImage" name="propostaActuacio" /><br/>	
 								</div>																			
-							</div>										
-							<%-- <div class="form-group">    
-			                	<div class="col-md-6"> 
-									<label>Vistiplau:</label>
-									<input type="hidden" id="capVistiplau" value="${informePrevi.usuariCapValidacio.idUsuari}" >							            	 										            	 	
-					                <select class="form-control selectpicker" data-live-search="true" data-size="5" name="llistaCaps" id="llistaCaps">
-					                	<option value="-1">Sense vistiplau</option>
-					                	<c:forEach items="${llistaCaps}" var="usuari">
-					                		<option value="${usuari.idUsuari}">${usuari.getNomCompletReal()}</option>
-					                	</c:forEach>					                                	
-					                </select>	
-								</div>
-								<div class="col-md-3">
-									<label>Data vistiplau</label>
-	                                <div class="input-group date datepicker">
-									  	<input type="text" class="form-control" name="dataVistiplau" value="${informePrevi.getDataCapValidacioString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-									</div>
-								</div>
 							</div>
-							<div class="form-group">    
-	                       		<div class="col-md-12"> 
-									<label>Comentari Cap</label>
-									<textarea class="form-control" name="comentariCap" placeholder="Comentari Cap" rows="3">${informePrevi.comentariCap}</textarea>
-								</div>
-							</div>																
-							<div class="form-group">    
-	                       		<div class="col-md-12"> 
-									<div class="document">
-						              		<label>Vistiplau proposta d'actuació signada:</label>													               
-										<a target="_blanck" href="downloadFichero?ruta=${informePrevi.vistiplauPropostaActuacio.getEncodedRuta()}">
-											${informePrevi.vistiplauPropostaActuacio.nom}
-										</a>
-										<c:if test="${informePrevi.vistiplauPropostaActuacio.signat}">
-											<span class="glyphicon glyphicon-pencil signedFile"></span>
-										</c:if>
-										<c:if test="${informePrevi.vistiplauPropostaActuacio.ruta != null}">
-											<span data-ruta="${informePrevi.vistiplauPropostaActuacio.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
-										</c:if>
-										<br>
-										<div class="infoSign hidden">
-											<c:forEach items="${informePrevi.vistiplauPropostaActuacio.firmesList}" var="firma" >
-												<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-												<br>
-											</c:forEach>
-										</div>
-									</div>																	
-									<input type="file" class="btn uploadImage" name="vistiplauProposta" /><br/>	
-	                        	</div>
-	                        </div> --%>
                         </div>
                         <div class="informacioMajors">
                         	<div class="form-group">
@@ -242,17 +190,13 @@
 											${informePrevi.informeSupervisio.nom}
 										</a>	
 										<c:if test="${informePrevi.informeSupervisio.signat}">
-												<span class="glyphicon glyphicon-pencil signedFile"></span>
+												<span data-ruta="${informePrevi.informeSupervisio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 										</c:if>
 										<c:if test="${informePrevi.informeSupervisio.ruta != null}">
 											<span data-ruta="${informePrevi.informeSupervisio.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
 										</c:if>
 										<br>
-										<div class="infoSign hidden">
-											<c:forEach items="${informePrevi.informeSupervisio.firmesList}" var="firma" >
-												<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-												<br>
-											</c:forEach>
+										<div class="infoSign hidden">											
 										</div>	
 									</div>	
 									<input type="file" class="btn uploadImage" name="informeSupervisio" /><br/>		
@@ -308,17 +252,13 @@
 										${informePrevi.conformeAreaEconomivaPropostaActuacio.nom}
 									</a>	
 									<c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.signat}">
-											<span class="glyphicon glyphicon-pencil signedFile"></span>
+											<span data-ruta="${informePrevi.conformeAreaEconomivaPropostaActuacio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 									</c:if>
 									<c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.ruta != null}">
 										<span data-ruta="${informePrevi.conformeAreaEconomivaPropostaActuacio.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
 									</c:if>
 									<br>
-									<div class="infoSign hidden">
-										<c:forEach items="${informePrevi.conformeAreaEconomivaPropostaActuacio.firmesList}" var="firma" >
-											<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-											<br>
-										</c:forEach>
+									<div class="infoSign hidden">										
 									</div>	
 								</div>	
 								<input type="file" class="btn uploadImage" name="conformeAreaEconomica" /><br/>		
@@ -356,17 +296,13 @@
 											${informePrevi.autoritzacioPropostaAutoritzacio.nom}
 										</a>	
 										<c:if test="${informePrevi.autoritzacioPropostaAutoritzacio.signat}">
-												<span class="glyphicon glyphicon-pencil signedFile"></span>
+												<span data-ruta="${informePrevi.autoritzacioPropostaAutoritzacio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 										</c:if>
 										<c:if test="${informePrevi.autoritzacioPropostaAutoritzacio.ruta != null}">
 											<span data-ruta="${informePrevi.autoritzacioPropostaAutoritzacio.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
 										</c:if>
 										<br>
-										<div class="infoSign hidden">
-											<c:forEach items="${informePrevi.autoritzacioPropostaAutoritzacio.firmesList}" var="firma" >
-												<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-												<br>
-											</c:forEach>
+										<div class="infoSign hidden">											
 										</div>	
 									</div>
 									<input type="file" class="btn uploadImage" name="autoritzacioActuacio" /><br/>	
@@ -382,17 +318,13 @@
 											${informePrevi.autoritzacioConsellDeGovern.nom}
 										</a>	
 										<c:if test="${informePrevi.autoritzacioConsellDeGovern.signat}">
-												<span class="glyphicon glyphicon-pencil signedFile"></span>
+												<span data-ruta="${informePrevi.autoritzacioConsellDeGovern.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 										</c:if>
 										<c:if test="${informePrevi.autoritzacioConsellDeGovern.ruta != null}">
 											<span data-ruta="${informePrevi.autoritzacioConsellDeGovern.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
 										</c:if>
 										<br>
-										<div class="infoSign hidden">
-											<c:forEach items="${informePrevi.autoritzacioConsellDeGovern.firmesList}" var="firma" >
-												<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-												<br>
-											</c:forEach>
+										<div class="infoSign hidden">											
 										</div>	
 									</div>
 									<input type="file" class="btn uploadImage" name="autoritzacioConsellDeGovern" /><br/>	
@@ -423,17 +355,13 @@
 											${informePrevi.autoritzacioConseller.nom}
 										</a>	
 										<c:if test="${informePrevi.autoritzacioConseller.signat}">
-												<span class="glyphicon glyphicon-pencil signedFile"></span>
+												<span data-ruta="${informePrevi.autoritzacioConseller.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 										</c:if>
 										<c:if test="${informePrevi.autoritzacioConseller.ruta != null}">
 											<span data-ruta="${informePrevi.autoritzacioConseller.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
 										</c:if>
 										<br>
-										<div class="infoSign hidden">
-											<c:forEach items="${informePrevi.autoritzacioConseller.firmesList}" var="firma" >
-												<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-												<br>
-											</c:forEach>
+										<div class="infoSign hidden">											
 										</div>	
 									</div>
 									<input type="file" class="btn uploadImage" name="autoritzacioConseller" /><br/>	
@@ -474,17 +402,13 @@
 													${informePrevi.documentBOIB.nom}
 												</a>	
 												<c:if test="${informePrevi.documentBOIB.signat}">
-														<span class="glyphicon glyphicon-pencil signedFile"></span>
+														<span data-ruta="${informePrevi.documentBOIB.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 												</c:if>
 												<c:if test="${informePrevi.documentBOIB.ruta != null}">
 													<span data-ruta="${informePrevi.documentBOIB.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
 												</c:if>
 												<br>
-												<div class="infoSign hidden">
-													<c:forEach items="${informePrevi.documentBOIB.firmesList}" var="firma" >
-														<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-														<br>
-													</c:forEach>
+												<div class="infoSign hidden">													
 												</div>	
 											</div>
 											<input type="file" class="btn uploadImage" name="documentBOIB" /><br/>	
@@ -501,17 +425,13 @@
 												${informePrevi.correuInvitacio.nom}
 											</a>	
 											<c:if test="${informePrevi.correuInvitacio.signat}">
-													<span class="glyphicon glyphicon-pencil signedFile"></span>
+													<span data-ruta="${informePrevi.correuInvitacio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 											</c:if>
 											<c:if test="${informePrevi.correuInvitacio.ruta != null}">
 												<span data-ruta="${informePrevi.correuInvitacio.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
 											</c:if>
 											<br>
-											<div class="infoSign hidden">
-												<c:forEach items="${informePrevi.correuInvitacio.firmesList}" var="firma" >
-													<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-													<br>
-												</c:forEach>
+											<div class="infoSign hidden">												
 											</div>	
 										</div>
 										<input type="file" class="btn uploadImage" name="correuInvitacio" /><br/>	

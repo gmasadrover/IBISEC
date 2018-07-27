@@ -89,7 +89,7 @@ public class ControlPageCore {
 			collapse = "";
 		}
 		//Personal
-		if (UsuariCore.hasPermision(conn, usuari, SectionPage.personal)) {	
+		if (true) {	
 			if (seccio.equals("personal")) {
 				active = "active"; 
 				collapse = "in";
@@ -97,6 +97,9 @@ public class ControlPageCore {
 			menu.append("<li class='"+ active + "'>");
 			menu.append("	<a href='javascript:;' data-toggle='collapse' data-target='#personalMenu'><i class='fa fa-fw fa-suitcase'></i> Personal<i class='fa fa-fw fa-caret-down'></i></a>");
 			menu.append("	<ul id='personalMenu' class='nav nav-second-level collapse " + collapse + "'>");
+			menu.append("		<li>");
+			menu.append("       	<a href='CalendariCotxe' class='loadingButton'  data-msg='Carregant vehicles...'>Reserva Vehicles</a>");
+			menu.append("    	</li>");
 			if (UsuariCore.hasPermision(conn, usuari, SectionPage.personal)) {
 				menu.append("		<li>");
 				menu.append("       	<a href='vacancesList' class='loadingButton'  data-msg='Carregant vacances...'>Vacances</a>");
@@ -121,14 +124,27 @@ public class ControlPageCore {
 			menu.append("<li class='"+ active + "'>");
 			menu.append("	<a href='javascript:;' data-toggle='collapse' data-target='#expedientMenu'><i class='fa fa-fw fa-suitcase'></i> Expedients<i class='fa fa-fw fa-caret-down'></i></a>");
 			menu.append("	<ul id='expedientMenu' class='nav nav-second-level collapse " + collapse + "'>");
+			
 			if (UsuariCore.hasPermision(conn, usuari, SectionPage.expedient_list)) {
 				menu.append("		<li>");
-				menu.append("       	<a href='expedients' class='loadingButton'  data-msg='Carregant expedients...'>Expedients</a>");
-				menu.append("    	</li>");
+				menu.append("			<a href='javascript:;' data-toggle='collapse' data-target='#expedientSubMenu'><i class='fa fa-fw fa-suitcase'></i> Licitacions<i class='fa fa-fw fa-caret-down'></i></a>");
+				menu.append("			<ul id='expedientSubMenu' class='nav nav-third-level collapse " + collapse + "'>");
+				
+				menu.append("				<li>");
+				menu.append("       			<a href='expedients' class='loadingButton'  data-msg='Carregant expedients...'>Expedients</a>");
+				menu.append("    			</li>");
+						
+			
+				menu.append("				<li>");
+				menu.append("       			<a href='modificats' class='loadingButton'  data-msg='Carregant modificats...'>Modificats</a>");
+				menu.append("    			</li>");
+			
+				menu.append("			</ul>");
+				menu.append("    	</li>");			
 			}			
 			if (UsuariCore.hasPermision(conn, usuari, SectionPage.expedient_list)) {
 				menu.append("		<li>");
-				menu.append("       	<a href='modificats' class='loadingButton'  data-msg='Carregant modificats...'>Modificats</a>");
+				menu.append("       	<a href='convenis' class='loadingButton'  data-msg='Carregant convenis...'>Convenis</a>");
 				menu.append("    	</li>");
 			}			
 			menu.append("	</ul>");

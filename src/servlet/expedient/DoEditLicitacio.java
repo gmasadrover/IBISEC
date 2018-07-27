@@ -96,6 +96,9 @@ public class DoEditLicitacio extends HttpServlet {
     	    if (multipartParams.getFitxersByName().get("aprovacioDispoTerrenys") != null) {
     	    	Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("aprovacioDispoTerrenys")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Disponibilitat terrenys", Usuari.getIdUsuari());
     	    }
+    	    if (multipartParams.getFitxersByName().get("insuficienciaMitjans") != null) {
+    	    	Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("insuficienciaMitjans")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Insuficiencia mitjans", Usuari.getIdUsuari());
+    	    }
     	    if (multipartParams.getFitxersByName().get("resoluciVAD") != null) {
     	    	Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("resoluciVAD")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Resolució VAD", Usuari.getIdUsuari());
     	    }  
@@ -104,7 +107,11 @@ public class DoEditLicitacio extends HttpServlet {
     	    }  
     	   
     	    if (multipartParams.getFitxersByName().get("propostaTecnica") != null) Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("propostaTecnica")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Proposta tècnica", Usuari.getIdUsuari());
-    	    if (multipartParams.getFitxersByName().get("autoritzacioDespesa") != null) {
+    	    if (multipartParams.getParametres().get("dataAdjudicacio") != null && ! multipartParams.getParametres().get("dataAdjudicacio").isEmpty()) {
+	    		expedient.setDataAdjudicacio(formatter.parse(multipartParams.getParametres().get("dataAdjudicacio")));  
+	    		 ExpedientCore.updateExpedient(conn, expedient);
+	    	}
+    	    if (multipartParams.getFitxersByName().get("autoritzacioDespesa") != null) {    	    	
     	    	if (informe.getAssignacioCredit() != null && !informe.getAssignacioCredit().getIdAssignacio().isEmpty()) CreditCore.assignar(conn, idInforme, OfertaCore.findOfertaById(conn, seleccionada).getPlic());   
     	    	Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("autoritzacioDespesa")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Autorització  Proposta despesa", Usuari.getIdUsuari());
     	    	ActuacioCore.aprovar(conn, informe.getActuacio().getReferencia(), Usuari.getIdUsuari());
@@ -120,7 +127,7 @@ public class DoEditLicitacio extends HttpServlet {
     	    	Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("contracte")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Contracte signat", Usuari.getIdUsuari());
     	    	String exp = informe.getIdInf();
     	    	if (informe.getExpcontratacio() != null && informe.getExpcontratacio().getExpContratacio() != null ) exp = informe.getExpcontratacio().getExpContratacio();
-    	    	TascaCore.novaTasca(conn, "generic", UsuariCore.finCap(conn, informe.getUsuari().getDepartament()).getIdUsuari(), Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "S'ha pujat el contracte de l'expedient: " + exp, "Contracte",informe.getIdInf(),null, request.getRemoteAddr(), "automatic");
+    	    	TascaCore.novaTasca(conn, "firmaContracte", UsuariCore.finCap(conn, informe.getUsuari().getDepartament()).getIdUsuari(), Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "S'ha pujat el contracte de l'expedient: " + exp, "Contracte",informe.getIdInf(),null, request.getRemoteAddr(), "automatic");
     	    	InformeCore.modificarEstat(conn, idInforme, "execucio");
     	    }
     	    if (capDobra != null && !capDobra.isEmpty()) OfertaCore.actualitzarCapDobra(conn, seleccionada, capDobra);

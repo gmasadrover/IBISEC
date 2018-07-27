@@ -157,21 +157,26 @@
                    </table>
                </div>
           	</div>
-	</div>
+	</div>		
 	<form class="form-horizontal margin_top30" method="POST" action="DoAddPropostaTecnica">
 		<input type="hidden" name="idOfertaSeleccionada" id="idOfertaSeleccionada" value="">
    		<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
    		<input type="hidden" name="idIncidencia" value="${actuacio.idIncidencia}">
    		<input type="hidden" name="idTasca" value="${tasca.idTasca}">
    		<input type="hidden" name="idInformePrevi" id="idInformePrevi" value="${informePrevi.idInf}">	
-   		<input type="hidden" name="importReserva" value="${informePrevi.propostaInformeSeleccionada.plic}">		
-		<c:if test="${canRealitzarPropostaTecnica}">
+   		<input type="hidden" name="importReserva" value="${informePrevi.propostaInformeSeleccionada.plic}">	   		
+		<c:if test="${canRealitzarPropostaTecnica}">			
 			<div class="form-group">
 	        	<div class="col-md-6">
 	            	<h2>Proposta tècnica</h2>	
 	           		<label>Oferta seleccionada: </label>
 	           		<label id="ofertaSeleccionada">${informePrevi.ofertaSeleccionada.nomEmpresa} (${informePrevi.ofertaSeleccionada.cifEmpresa})</label>	           		
-	           	</div>	         	
+	           	</div>	
+	           	<div class="hidden" id="superaMaximPermes">
+					<div class="col-md-12">
+						<p style="color: red;">L'empresa seleccionada supera l'import màxim permès de contractació menor.</p>
+					</div>
+				</div>         	
 	       	</div>					                    	
 	       	<div class="form-group">					                    			
 	        	<div class="col-md-12">							                    			
@@ -207,12 +212,14 @@
 			<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">
 			<input type="hidden" name="idTasca" value="${tasca.idTasca}">
 			<input type="hidden" name="idInforme" value="${informePrevi.idInf}">																	
-	       	<c:if test="${informePrevi.propostaTecnica.ruta != null}">
+	       	<c:if test="${informePrevi.propostaTecnica.size()>0}">
 				<div class="col-md-12">	
-	               	<p>Proposta Tècnica signada:</p>													                  	
-	           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.propostaTecnica.getEncodedRuta()}">
-						${informePrevi.propostaTecnica.nom}
-					</a>																			
+	               	<p>Proposta Tècnica signada:</p>	
+	               	<c:forEach items="${informePrevi.propostaTecnica}" var="arxiu" >												                  	
+		           		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
+							${arxiu.nom}
+						</a>
+					</c:forEach>																			
 				</div>
 			</c:if>																	
 			<div class="col-md-8">

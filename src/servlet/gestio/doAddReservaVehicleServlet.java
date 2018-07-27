@@ -3,6 +3,7 @@ package servlet.gestio;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Calendar;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -48,10 +49,13 @@ public class doAddReservaVehicleServlet extends HttpServlet {
 	    int horaFi =  Integer.parseInt(request.getParameter("horaFi"));	   
 	    String motiu = request.getParameter("motiu");	   
 	    int idUsuari = usuariLogetjat.getIdUsuari();
-	   	    
+	   	Calendar cal = Calendar.getInstance();	
 	    String errorString = null;	
    		try {
-   			if (CalendarCore.potReservar(conn, idUsuari, vehicle, setmana, dia, year, horaIni, horaFi)) {
+   			if (cal.get(Calendar.DAY_OF_WEEK) == dia && cal.get(Calendar.WEEK_OF_YEAR) == setmana) {
+   				CalendarCore.reservar(conn, idUsuari, vehicle, setmana, dia, year, horaIni, horaFi, motiu);
+   			}
+   			else if (CalendarCore.potReservar(conn, idUsuari, vehicle, setmana, dia, year, horaIni, horaFi)) {
    				CalendarCore.reservar(conn, idUsuari, vehicle, setmana, dia, year, horaIni, horaFi, motiu);
    			} else {
    				errorString = "ocupat";

@@ -208,7 +208,7 @@ public class OfertaCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		oferta = utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + cifEmpresa + "/Oferta/");
+		oferta = utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + cifEmpresa + "/Oferta/", true);
 		return oferta;
 	}
 	
@@ -218,7 +218,7 @@ public class OfertaCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		oferta = utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + cifEmpresa + "/Personal Inscrit/");
+		oferta = utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Empreses/" + cifEmpresa + "/Personal Inscrit/", true);
 		return oferta;
 	}
 	

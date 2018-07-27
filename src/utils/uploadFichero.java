@@ -15,12 +15,18 @@ import org.apache.commons.fileupload.*;
 import org.apache.commons.fileupload.disk.*;
 import org.apache.commons.fileupload.servlet.*;
 
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.*;
 
+import bean.Registre;
 import bean.User;
+import core.RegistreCore;
 
 import java.io.*;
 import java.sql.Connection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 /**
  * Servlet implementation class uploadFichero
  */
@@ -125,12 +131,31 @@ public class uploadFichero extends HttpServlet {
 	    	        try {
 	    				arxiu.write(archivo_server);
 	    				Fitxers.guardarRegistreFitxer(conn, arxiu.getName(), ruta + "/documents/" + fileName + "temp_" + arxiu.getName(), Usuari.getIdUsuari());
-	    		        PdfReader reader = new PdfReader(ruta + "/documents/"+  fileName + "temp_" + arxiu.getName()); // input PDF
-	    		        PdfStamper stamper = new PdfStamper(reader,
-	    		          new FileOutputStream(ruta + "/documents/"+ fileName + arxiu.getName())); // output PDF
-	    		          		        
-	    		        stamper.close();
-	    		        reader.close();
+	    		        if (tipus.equals("RegistreE")) {
+	    		        	String tipusRegistre = "E";
+	    		        	if (idTipus.contains("RS")) tipusRegistre = "S";
+	    		        	Registre reg = RegistreCore.findRegistre(conn, tipusRegistre, idTipus);
+	    		        	PdfReader reader = new PdfReader(ruta + "/documents/"+  fileName + "temp_" + arxiu.getName()); // input PDF
+		    		        PdfStamper stamper = new PdfStamper(reader,
+		    		          new FileOutputStream(ruta + "/documents/"+ fileName + arxiu.getName())); // output PDF		    		     
+			    	        BaseFont font = BaseFont.createFont(); // Helvetica, WinAnsiEncoding
+			    	        for (int i = 0; i < reader.getNumberOfPages(); ++i) {
+			    	          PdfContentByte overContent = stamper.getOverContent( i + 1 );
+			    	          Rectangle rect = new Rectangle(240, 815, 480, 830);
+			    	          rect.setBorder(Rectangle.BOX);		
+			    	          rect.setBackgroundColor(BaseColor.LIGHT_GRAY);
+			    	          overContent.rectangle(rect);
+			    	          overContent.saveState();
+			    	          overContent.beginText();
+			    	          overContent.setFontAndSize( font, 10.0f );
+			    	          overContent.setTextMatrix(250, 820);
+			    	          overContent.showText("IBISEC        Registre: "+ idTipus + " (" + reg.getDataString() + ")");
+			    	          overContent.endText();		    	        
+			    	          overContent.restoreState();
+			    	        }		    	       
+		    		        stamper.close();
+		    		        reader.close();
+	    		        }	    				
 	    		        //Delete Temp file
 	    		        archivo_server.delete();
 	    		        

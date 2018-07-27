@@ -51,6 +51,14 @@
 											<br/>La seva succesora és: ${empresa.succesora.name} (${empresa.succesora.cif})
 										</c:if>
 									</c:if>
+									<c:if test="${empresa.prohibicioContractar}">
+										Aquesta empresa té prohibida la contratació.	
+										<br/>
+										<c:forEach items="${empresa.documentsProhibicioContractarList}" var="arxiu" >
+				                			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+						            		<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+										</c:forEach>										
+									</c:if>
 								</p>
 		               		</div>
 		               	 </div>     
@@ -109,9 +117,8 @@
 				                	<div class="row">
 				                		<label class="col-xs-offset-1 col-xs-2 control-label">Escritura:</label>
 				                		<c:forEach items="${empresa.documentsEscrituraList}" var="arxiu" >
-						            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
-											<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
-											<br>
+				                			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+						            		<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
 										</c:forEach>	
 				                	</div>
 				                	<div class="row">
@@ -499,8 +506,8 @@
 													            	<c:choose>
 													            		<c:when test="${informe.ofertaSeleccionada.cifEmpresa == empresa.cif}">
 													            			<td>${informe.ofertaSeleccionada.getPlicFormat()}</td>
-															            	<td>${informe.ofertaSeleccionada.getDataAprovacioString()}</td>
-															            	<td>${informe.ofertaSeleccionada.getDataAprovacio()}</td>
+															            	<td>${informe.ofertaSeleccionada.getDataCreacioString()}</td>
+															            	<td>${informe.ofertaSeleccionada.getDataCreacio()}</td>
 															            	<td>${informe.getTotalFacturatFormat()}</td>
 													            		</c:when>
 													            		<c:otherwise>

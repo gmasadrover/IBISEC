@@ -26,19 +26,8 @@
 	</div>	
 	<div class="row col-md-12">
 		<c:forEach items="${informePrevi.documentsIntalacioBaixaTensio}" var="arxiu" >
-			<div class="document">
-				<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
-				<c:if test="${arxiu.signat}">
-						<span class="glyphicon glyphicon-pencil signedFile"></span>
-				</c:if>
-				<br>
-				<div class="infoSign hidden">
-					<c:forEach items="${arxiu.firmesList}" var="firma" >
-						<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-						<br>
-					</c:forEach>
-				</div>
-			</div>
+			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 		</c:forEach>
 		<br>					            		
 	</div>
@@ -59,19 +48,8 @@
 	</div>	
 	<div class="row col-md-12">
 		<c:forEach items="${informePrevi.documentsIntalacioFotovoltaica}" var="arxiu" >
-			<div class="document">
-				<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
-				<c:if test="${arxiu.signat}">
-						<span class="glyphicon glyphicon-pencil signedFile"></span>
-				</c:if>
-				<br>
-				<div class="infoSign hidden">
-					<c:forEach items="${arxiu.firmesList}" var="firma" >
-						<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-						<br>
-					</c:forEach>
-				</div>
-			</div>
+			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 		</c:forEach>
 		<br>					            		
 	</div>
@@ -87,19 +65,8 @@
 	</div>		
 	<div class="row col-md-12">
 		<c:forEach items="${informePrevi.documentsIntalacioContraincendis}" var="arxiu" >
-			<div class="document">
-				<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
-				<c:if test="${arxiu.signat}">
-						<span class="glyphicon glyphicon-pencil signedFile"></span>
-				</c:if>
-				<br>
-				<div class="infoSign hidden">
-					<c:forEach items="${arxiu.firmesList}" var="firma" >
-						<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-						<br>
-					</c:forEach>
-				</div>
-			</div>
+			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 		</c:forEach>
 		<br>					            		
 	</div>
@@ -137,19 +104,8 @@
 	</div>	
 	<div class="row col-md-12">
 		<c:forEach items="${informePrevi.documentsInstalacioPetrolifera}" var="arxiu" >
-			<div class="document">
-				<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
-				<c:if test="${arxiu.signat}">
-						<span class="glyphicon glyphicon-pencil signedFile"></span>
-				</c:if>
-				<br>
-				<div class="infoSign hidden">
-					<c:forEach items="${arxiu.firmesList}" var="firma" >
-						<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-						<br>
-					</c:forEach>
-				</div>
-			</div>
+			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 		</c:forEach>
 		<br>					            		
 	</div>	
@@ -165,19 +121,8 @@
 	</div>	
 	<div class="row col-md-12">
 		<c:forEach items="${informePrevi.documentsIntalacioTermica}" var="arxiu" >
-			<div class="document">
-				<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
-				<c:if test="${arxiu.signat}">
-						<span class="glyphicon glyphicon-pencil signedFile"></span>
-				</c:if>
-				<br>
-				<div class="infoSign hidden">
-					<c:forEach items="${arxiu.firmesList}" var="firma" >
-						<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-						<br>
-					</c:forEach>
-				</div>
-			</div>
+			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 		</c:forEach>
 		<br>					            		
 	</div>	
@@ -193,19 +138,8 @@
 	</div>		
 	<div class="row col-md-12">
 		<c:forEach items="${informePrevi.documentsIntalacioAscensor}" var="arxiu" >
-			<div class="document">
-				<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
-				<c:if test="${arxiu.signat}">
-						<span class="glyphicon glyphicon-pencil signedFile"></span>
-				</c:if>
-				<br>
-				<div class="infoSign hidden">
-					<c:forEach items="${arxiu.firmesList}" var="firma" >
-						<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-						<br>
-					</c:forEach>
-				</div>
-			</div>
+			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 		</c:forEach>
 		<br>					            		
 	</div>
@@ -214,19 +148,8 @@
 	</p>	
 	<div class="row col-md-12">
 		<c:forEach items="${informePrevi.documentsIntalacioAlarma}" var="arxiu" >
-			<div class="document">
-				<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
-				<c:if test="${arxiu.signat}">
-						<span class="glyphicon glyphicon-pencil signedFile"></span>
-				</c:if>
-				<br>
-				<div class="infoSign hidden">
-					<c:forEach items="${arxiu.firmesList}" var="firma" >
-						<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-						<br>
-					</c:forEach>
-				</div>
-			</div>
+			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 		</c:forEach>
 		<br>					            		
 	</div>
@@ -235,19 +158,8 @@
 	</p>	
 	<div class="row col-md-12">
 		<c:forEach items="${informePrevi.documentsIntalacioSubministreAigua}" var="arxiu" >
-			<div class="document">
-				<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
-				<c:if test="${arxiu.signat}">
-						<span class="glyphicon glyphicon-pencil signedFile"></span>
-				</c:if>
-				<br>
-				<div class="infoSign hidden">
-					<c:forEach items="${arxiu.firmesList}" var="firma" >
-						<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-						<br>
-					</c:forEach>
-				</div>
-			</div>
+			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 		</c:forEach>
 		<br>					            		
 	</div>
@@ -268,19 +180,8 @@
 	</div>	
 	<div class="row col-md-12">
 		<c:forEach items="${informePrevi.documentsCertificatEficienciaEnergetica}" var="arxiu" >
-			<div class="document">
-				<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
-				<c:if test="${arxiu.signat}">
-						<span class="glyphicon glyphicon-pencil signedFile"></span>
-				</c:if>
-				<br>
-				<div class="infoSign hidden">
-					<c:forEach items="${arxiu.firmesList}" var="firma" >
-						<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-						<br>
-					</c:forEach>
-				</div>
-			</div>
+			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 		</c:forEach>
 		<br>					            		
 	</div>	
@@ -296,19 +197,8 @@
 	</div>		
 	<div class="row col-md-12">
 		<c:forEach items="${informePrevi.documentsPlaAutoproteccio}" var="arxiu" >
-			<div class="document">
-				<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
-				<c:if test="${arxiu.signat}">
-						<span class="glyphicon glyphicon-pencil signedFile"></span>
-				</c:if>
-				<br>
-				<div class="infoSign hidden">
-					<c:forEach items="${arxiu.firmesList}" var="firma" >
-						<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-						<br>
-					</c:forEach>
-				</div>
-			</div>
+			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 		</c:forEach>
 		<br>					            		
 	</div>
@@ -324,19 +214,8 @@
 	</div>	
 	<div class="row col-md-12">
 		<c:forEach items="${informePrevi.documentsCedulaDeHabitabilitat}" var="arxiu" >
-			<div class="document">
-				<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
-				<c:if test="${arxiu.signat}">
-						<span class="glyphicon glyphicon-pencil signedFile"></span>
-				</c:if>
-				<br>
-				<div class="infoSign hidden">
-					<c:forEach items="${arxiu.firmesList}" var="firma" >
-						<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-						<br>
-					</c:forEach>
-				</div>
-			</div>
+			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 		</c:forEach>
 		<br>					            		
 	</div>	

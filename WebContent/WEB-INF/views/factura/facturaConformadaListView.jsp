@@ -66,6 +66,8 @@
                                         <th>Usuari Conformador</th>
                                         <th>Data Conformació No Format</th>
                                         <th>Data Conformació</th>
+                                        <th>Data Descarregada No Format</th>
+                                        <th>Data Descarregada</th>
                                         <th>Partida</th>
                                         <th>notes</th>   
                                         <th>Centre</th> 
@@ -83,7 +85,7 @@
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${facturesList}" var="factura" >
-                                		<c:if test="${factura.arxiu.getEncodedRuta() != ''}">
+                                		<c:if test="${factura.factura != null && factura.factura.getEncodedRuta() != ''}">
 								          	<tr class="success">							          	
 								           		<td><a href="facturaDetalls?ref=${factura.idFactura}" class="loadingButton"  data-msg="obrint factura...">${factura.idFactura}</a></td>
 								            	<td><a href="actuacionsDetalls?ref=${factura.idActuacio}" class="loadingButton"  data-msg="obrint actuació...">${factura.idActuacio} - ${factura.actuacio.descripcio}</a></td>
@@ -97,6 +99,8 @@
 								            	<td>${factura.usuariConformador.getNomCompletReal()}</td>
 								            	<td>${factura.dataConformacio}</td>
 								            	<td>${factura.getDataConformacioString()}</td>
+								            	<td>${factura.getDataDescarregadaConformada()}</td>
+							            		<td>${factura.getDataDescarregadaConformadaString()}</td>
 								            	<td>${factura.informe.assignacioCredit.partida.codi}</td>
 								            	<td>${factura.notes}</td>	 
 								            	<td>${factura.actuacio.centre.getNomComplet()}</td>    
@@ -109,7 +113,7 @@
 								            	<td>${factura.informe.dataAprovacio}</td> 
 								            	<td>${factura.informe.getDataAprovacioString()}</td>      
 								            	<td>${factura.informe.ofertaSeleccionada.getPlicFormat()}</td>   
-								            	<td><a target="_blanck" href="downloadFichero?ruta=${factura.arxiu.getEncodedRuta()}">${factura.arxiu.nom}</a></td>
+								            	<td><a target="_blanck" href="downloadFichero?ruta=${factura.factura.getEncodedRuta()}">${factura.factura.nom}</a></td>
 								            </tr>
 								    	</c:if>
 							       	</c:forEach>                                	

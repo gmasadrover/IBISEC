@@ -88,11 +88,19 @@ public class DoAddModificacioServlet extends HttpServlet {
 		    	InformeCore.validacioCapInforme(conn, idModificacio, Usuari.getIdUsuari(), comentariCap, new Date());
 		    	TascaCore.nouHistoric(conn, String.valueOf(idTasca), "Informe aprovat", Usuari.getIdUsuari(), ipRemote, "automatic");
 				ActuacioCore.actualitzarActuacio(conn, idActuacio, "Proposta modificació realitzada");
-				TascaCore.reasignar(conn, 900, idTasca, tasca.getTipus());
+				TascaCore.reasignar(conn, 900, idTasca, tasca.getTipus(), tasca.getDescripcio());
 				TascaCore.tancar(conn, idTasca);
 				int idUsuari = UsuariCore.findUsuarisByRol(conn, "CAP,CONTA").get(0).getIdUsuari();
+				InformeActuacio modificacio = InformeCore.getMoficacioInforme(conn, idModificacio);
 				InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme, false);
-				TascaCore.novaTasca(conn, "resPartidaModificacio", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), idModificacio, null, ipRemote, "automatic");
+				if (modificacio.getPropostaInformeSeleccionada().getPbase() > 0) {
+					TascaCore.novaTasca(conn, "resPartidaModificacio", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), idModificacio, null, ipRemote, "automatic");
+				} else {
+					idUsuari = UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari();
+					String comentari = "S'ha realitzat la proposta de modificació " + idInforme ;
+					TascaCore.novaTasca(conn, "autoritzacioModificacio", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, comentari, "Autorització modificació actuació", idModificacio, null, ipRemote, "automatic");
+				}
+				
 			} catch (SQLException | NamingException e) {
 				errorString = e.toString();
 				e.printStackTrace();

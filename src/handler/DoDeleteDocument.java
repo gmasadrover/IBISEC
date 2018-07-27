@@ -52,7 +52,6 @@ public class DoDeleteDocument extends HttpServlet {
         Connection conn = MyUtils.getStoredConnection(request);
 		User usuari = MyUtils.getLoginedUser(request.getSession());
         JsonObject myObj = new JsonObject();   
-        System.out.println("eliminar: " + request.getParameter("ruta"));
 		Fitxers.eliminarFitxer(conn, usuari.getIdUsuari(), request.getParameter("ruta"));
 		myObj.addProperty("success", true);	
 		

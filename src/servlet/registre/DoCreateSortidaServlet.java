@@ -154,16 +154,16 @@ public class DoCreateSortidaServlet extends HttpServlet {
 			   			} else { //Cream notificació a gerència
 			   				String idIncidencia = idIncidenciesList.get(i);
 			   				if (idIncidencia == null) idIncidencia = "-1";
-			   				int idNovaTasca = TascaCore.idNovaTasca(conn);
+			   				/*int idNovaTasca = TascaCore.idNovaTasca(conn);
 			   				String assumpte = "<a href='registre?from=notificacio&idTasca=" + idNovaTasca + "&tipus=S&referencia=" + registre.getId() + "'>Nova sortida registre: " + registre.getId() + "</a>";
-			   				TascaCore.novaTasca(conn, "notificacio", 1, idUsuari, "", idIncidencia, "", assumpte, "", null, ipRemote, "automatic");
+			   				TascaCore.novaTasca(conn, "notificacio", 1, idUsuari, "", idIncidencia, "", assumpte, "", null, ipRemote, "automatic");*/
 			   				referenciesIncidencies += idIncidencia + "#";
 			   			}	
 	   				} else {
 	   					String idIncidencia = "-1";
-		   				int idNovaTasca = TascaCore.idNovaTasca(conn);
+		   				/*int idNovaTasca = TascaCore.idNovaTasca(conn);
 		   				String assumpte = "<a href='registre?from=notificacio&idTasca=" + idNovaTasca + "&tipus=S&referencia=" + registre.getId() + "'>Nova sortida registre: " + registre.getId() + "</a>";
-		   				TascaCore.novaTasca(conn, "notificacio", 1, idUsuari, "", idIncidencia, "", assumpte, "", null, ipRemote, "automatic");
+		   				TascaCore.novaTasca(conn, "notificacio", 1, idUsuari, "", idIncidencia, "", assumpte, "", null, ipRemote, "automatic");*/
 		   				referenciesIncidencies += idIncidencia + "#";
 	   				}
 	   			}	 

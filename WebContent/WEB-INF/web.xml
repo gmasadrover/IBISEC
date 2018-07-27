@@ -23,7 +23,7 @@
   </error-page>
   <context-param>
     <param-name>datakey</param-name>
-    <param-value>180508_0925</param-value>
+    <param-value>180726_0855</param-value>
   </context-param>
   <context-param>
     <param-name>importObraMajor</param-name>
@@ -51,7 +51,7 @@
   </context-param>
   <context-param>
     <param-name>idUsuariOrdreInici</param-name>
-    <param-value>6</param-value>
+    <param-value>1</param-value>
   </context-param>
   <context-param>
     <param-name>idUsuariRedaccioContracte</param-name>
@@ -71,25 +71,25 @@
   </context-param>
   <context-param>
     <param-name>pageName</param-name>
-    <param-value>Intranet IBISEC</param-value>
+    <param-value>Intranet Test</param-value>
   </context-param>
   <env-entry>
     <env-entry-name>hostName</env-entry-name>
     <env-entry-type>java.lang.String</env-entry-type>
-    <env-entry-value>10.215.26.87</env-entry-value>
+    <env-entry-value>10.215.26.93</env-entry-value>
   </env-entry>
   <env-entry>
     <env-entry-name>dbName</env-entry-name>
     <env-entry-type>java.lang.String</env-entry-type>
-    <env-entry-value>IBISEC</env-entry-value>
+    <env-entry-value>proves</env-entry-value>
   </env-entry>
   <env-entry>
-    <env-entry-name>ruta_base_ok</env-entry-name>
+    <env-entry-name>ruta_base</env-entry-name>
     <env-entry-type>java.lang.String</env-entry-type>
     <env-entry-value>E:/NOVA INTRANET</env-entry-value>
   </env-entry>
   <env-entry>
-    <env-entry-name>ruta_base</env-entry-name>
+    <env-entry-name>ruta_base_ok</env-entry-name>
     <env-entry-type>java.lang.String</env-entry-type>
     <env-entry-value>//sibisec1/usuaris/INTERCANVI D'OBRES/IBISEC/NOVA INTRANET</env-entry-value>
   </env-entry>

@@ -74,7 +74,8 @@ $(document).ready(function() {
     		$(this).parents('tr').addClass('selected');
     		$('#ofertaSeleccionada').text(table.row('.selected').data()[2]);  
     		$('#idOfertaSeleccionada').val(table.row('.selected').data()[0]);  
-    		$(this).parents('tr').removeClass('selected');
+    		getDespesaEmpresa(table.row('.selected').data()[3], table.row('.selected').data()[5]);
+    		$(this).parents('tr').removeClass('selected');    		
     	});		
 	}
 	
@@ -183,4 +184,26 @@ function initInformePrevi() {
 				$(this).closest('.form-group').find('.visibleTipusLlicencia').addClass('hidden');
 			}
 		});
+}
+
+function getDespesaEmpresa(cif, valor) {
+	$.ajax({
+        type: "POST",
+        url: "getDespesaEmpresa",
+        data: {"cif":cif, "dataIni":"09/03/2018"},
+        dataType: "json",	        
+        //if received a response from the server
+        success: function( data, textStatus, jqXHR) {
+            //our country code was correct so we have some information to display	  
+        	if (parseFloat(valor) + data.importAdjudicat >= 40000) {
+        		$('#superaMaximPermes').removeClass('hidden');
+        	} else {
+        		$('#superaMaximPermes').addClass('hidden');
+        	}
+        },        
+        //If there was no resonse from the server
+        error: function(jqXHR, textStatus, errorThrown){
+             console.log("Something really bad happened " + jqXHR.responseText);
+        }  
+    });
 }

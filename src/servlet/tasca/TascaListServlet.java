@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.naming.NamingException;
@@ -49,6 +50,7 @@ public class TascaListServlet extends HttpServlet {
     	}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_list)) {
     		response.sendRedirect(request.getContextPath() + "/");	
  	   	}else{
+ 	   		
 	 	    String filtrar = request.getParameter("filtrar");
  	   		String filterWithClosed = request.getParameter("filterWithClosed");
 	        String errorString = null;
@@ -72,7 +74,7 @@ public class TascaListServlet extends HttpServlet {
 	     		        	usuarisSeleccionats += idUsuari + "#";
 	     		        	if (NumberUtils.isNumber(idUsuari)) {
 	    	        			list = TascaCore.llistaTasquesUsuari(conn, Integer.parseInt(idUsuari), null, "on".equals(filterWithClosed));
-	    	        			informesUsuari = InformeCore.getInformesResumUsuari(conn, Integer.parseInt(idUsuari));  
+	    	        			informesUsuari = InformeCore.getInformesResumUsuari(conn, Integer.parseInt(idUsuari));  	    	        			
 	     		        	}else{
 	    	        			if ("totes".equals(idUsuari)) {
 	    	        				list = TascaCore.llistaTasquesUsuari(conn, -1, null, "on".equals(filterWithClosed));
@@ -84,6 +86,7 @@ public class TascaListServlet extends HttpServlet {
 	    	        		}	
 	     		        }
 	     	        }
+	        		
 	        	}else{
 	        		list = TascaCore.llistaTasquesUsuari(conn, usuari.getIdUsuari(), null, false);
 	        		informesUsuari = InformeCore.getInformesResumUsuari(conn, usuari.getIdUsuari());       		
@@ -95,8 +98,7 @@ public class TascaListServlet extends HttpServlet {
 	        } catch (SQLException | NumberFormatException | NamingException e) {
 	            e.printStackTrace();
 	            errorString = e.getMessage();
-	        }	        
-	        
+	        }  
 	        // Store info in request attribute, before forward to views
 	        request.setAttribute("veureTotes", veureTotes);
 	        request.setAttribute("canViewPersonal", UsuariCore.hasPermision(conn, usuari, SectionPage.personal));
@@ -120,7 +122,9 @@ public class TascaListServlet extends HttpServlet {
 	        request.setAttribute("conformarFacturaList", list.get(12)); // 12
 	        request.setAttribute("revisarCertificacioList", list.get(13)); // 13
 	        request.setAttribute("contractesList", list.get(14)); // 14
-	        request.setAttribute("altresList", list.get(15));  // 15	     
+	        request.setAttribute("contractesFirmaList", list.get(15)); // 15
+	        request.setAttribute("altresList", list.get(16));  // 16	 
+	        request.setAttribute("notificacionsList", list.get(17));  // 17	 
 	        request.setAttribute("seguimentList", listSeguiment);
 	        request.setAttribute("seguimentActuacionsList", seguimentActuacionsList);
 	        request.setAttribute("usuarisSeleccionats", usuarisSeleccionats);

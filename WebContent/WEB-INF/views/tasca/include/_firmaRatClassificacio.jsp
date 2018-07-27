@@ -77,21 +77,8 @@
 				<div class="col-md-12">
               		<label>Resolució VAD:</label>	
               		<c:forEach items="${informePrevi.resolucioVAD}" var="arxiu" >
-              			<div class="document">
-			           		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
-							${arxiu.getDataString()} - ${arxiu.nom}
-							</a>	
-							<c:if test="${arxiu.signat}">
-								<span class="glyphicon glyphicon-pencil signedFile"></span>
-							</c:if>
-							<br>
-							<div class="infoSign hidden">
-								<c:forEach items="${arxiu.firmesList}" var="firma" >
-									<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-									<br>
-								</c:forEach>
-							</div>
-						</div>
+              			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+              			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 					</c:forEach>
 					<input type="file" class="btn uploadImage" name="resolucioVAD" /><br/>	
 	       		</div>
@@ -100,21 +87,8 @@
 				<div class="col-md-12">
               		<label>Ratificació classificació:</label>	
               		<c:forEach items="${informePrevi.ratificacioClassificacio}" var="arxiu" >
-              			<div class="document">
-			           		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
-							${arxiu.getDataString()} - ${arxiu.nom}
-							</a>	
-							<c:if test="${arxiu.signat}">
-								<span class="glyphicon glyphicon-pencil signedFile"></span>
-							</c:if>
-							<br>
-							<div class="infoSign hidden">
-								<c:forEach items="${arxiu.firmesList}" var="firma" >
-									<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-									<br>
-								</c:forEach>
-							</div>
-						</div>
+              			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+              			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 					</c:forEach>
 					<input type="file" class="btn uploadImage" name="ratificacioClassificacio" /><br/>	
 	       		</div>

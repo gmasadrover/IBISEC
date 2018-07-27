@@ -19,14 +19,10 @@
 					${informePrevi.autoritzacioPropostaAutoritzacio.nom}
 				</a>	
 				<c:if test="${informePrevi.autoritzacioPropostaAutoritzacio.signat}">
-						<span class="glyphicon glyphicon-pencil signedFile"></span>
+						<span data-ruta="${informePrevi.autoritzacioPropostaAutoritzacio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 				</c:if>
 				<br>
-				<div class="infoSign hidden">
-					<c:forEach items="${informePrevi.autoritzacioPropostaAutoritzacio.firmesList}" var="firma" >
-						<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-						<br>
-					</c:forEach>
+				<div class="infoSign hidden">					
 				</div>
 			</c:if>	
 		</div>
@@ -48,14 +44,10 @@
 					${informePrevi.autoritzacioPropostaDespesa.nom}
 				</a>	
 				<c:if test="${informePrevi.autoritzacioPropostaDespesa.signat}">
-						<span class="glyphicon glyphicon-pencil signedFile"></span>
+						<span data-ruta="${informePrevi.autoritzacioPropostaDespesa.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 				</c:if>
 				<br>
-				<div class="infoSign hidden">
-					<c:forEach items="${informePrevi.autoritzacioPropostaDespesa.firmesList}" var="firma" >
-						<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-						<br>
-					</c:forEach>
+				<div class="infoSign hidden">					
 				</div>
 			</c:if>	
 		</div>
@@ -75,6 +67,17 @@
 	<p>
 		<label>Total expedient:</label> ${informePrevi.ofertaSeleccionada.plic + modificacions}€
 	</p>
+	<c:set var="penalitzacions" value="0" /> 
+		<c:forEach items="${informePrevi.llistaPenalitzacions}" var="penalitzacio" >
+			<c:if test="${penalitzacio.autoritzacioPropostaDespesa.ruta != null}">				
+				<c:set var="penalitzacions" value="${penalitzacions + penalitzacio.ofertaSeleccionada.plic}" />			
+			</c:if>
+		</c:forEach>
+	<c:if test="${penalitzacions < 0}">
+		<p>
+			<label>Total penalitzacions:</label> ${penalitzacions}€
+		</p>
+	</c:if>
 	<c:if test="${informePrevi.expcontratacio.contracte == 'major'}">
 		<p>
 			<label>Import certificat:</label> ${informePrevi.getTotalCertificatFormat()}

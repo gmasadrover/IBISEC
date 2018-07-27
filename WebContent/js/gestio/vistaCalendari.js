@@ -89,6 +89,30 @@ $(document).ready(function() {
 			$('#horaFi').append('<option value="8">12:30</option>');
 			$('#horaFi').append('<option value="9">13:00</option>');
 			$('#horaFi').append('<option value="10">13:30</option>');
+			$('#horaFi').append('<option value="11">14:00</option>');
+		} else if ($('#vehicle').val() == 'cotxeElectric') {			
+			$('#horaIni').append('<option value="1">9:00</option>');
+			$('#horaIni').append('<option value="2">9:30</option>');
+			$('#horaIni').append('<option value="3">10:00</option>');
+			$('#horaIni').append('<option value="4">10:30</option>');
+			$('#horaIni').append('<option value="5">11:00</option>');
+			$('#horaIni').append('<option value="6">11:30</option>');
+			$('#horaIni').append('<option value="7">12:00</option>');
+			$('#horaIni').append('<option value="8">12:30</option>');
+			$('#horaIni').append('<option value="9">13:00</option>');
+			$('#horaIni').append('<option value="10">13:30</option>');
+			
+			$('#horaFi').append('<option value="1">9:00</option>');
+			$('#horaFi').append('<option value="2">9:30</option>');
+			$('#horaFi').append('<option value="3">10:00</option>');
+			$('#horaFi').append('<option value="4">10:30</option>');
+			$('#horaFi').append('<option value="5">11:00</option>');
+			$('#horaFi').append('<option value="6">11:30</option>');
+			$('#horaFi').append('<option value="7">12:00</option>');
+			$('#horaFi').append('<option value="8">12:30</option>');
+			$('#horaFi').append('<option value="9">13:00</option>');
+			$('#horaFi').append('<option value="10">13:30</option>');
+			$('#horaFi').append('<option value="11">14:00</option>');
 		} else {
 			$('#horaIni').append('<option value="1">7:30</option>');
 			$('#horaIni').append('<option value="2">8:00</option>');

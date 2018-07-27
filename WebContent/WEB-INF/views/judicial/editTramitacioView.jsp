@@ -134,22 +134,8 @@
 	                   		<label class="col-xs-2 control-label">Arxius:</label> 
 	                    	<div class="col-xs-8">  		
 		                        <c:forEach items="${tramitacio.documentsList}" var="arxiu" >
-									<div class="document">
-										<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
-											${arxiu.getDataString()} - ${arxiu.nom}
-										</a>
-										<c:if test="${arxiu.signat}">
-											<span class="glyphicon glyphicon-pencil signedFile"></span>
-										</c:if>
-										<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
-										<br>
-										<div class="infoSign hidden">
-											<c:forEach items="${arxiu.firmesList}" var="firma" >
-												<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-												<br>
-											</c:forEach>
-										</div>
-									</div>					            		
+		                        	<c:set var="arxiu" value="${arxiu}" scope="request"/>
+									<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>				            		
 								</c:forEach>	
 							</div>
 						</div>

@@ -58,11 +58,11 @@ public class DoAprovarVacancesServlet extends HttpServlet {
 				if (aprovar != null) {
 					CalendarCore.aprovarAutoritzacioVacances(conn, idSolicitud);
 					TascaCore.nouHistoric(conn, Integer.toString(idTasca), "Sol·licitud aprovada", usuariLogetjat.getIdUsuari(), ipRemote, "automatic");	
-					TascaCore.reasignar(conn, idUsuariPersonal, idTasca, tasca.getTipus());
+					TascaCore.reasignar(conn, idUsuariPersonal, idTasca, tasca.getTipus(), tasca.getDescripcio());
 				} else {
 					CalendarCore.rebutjarAutoritzacioVacances(conn, idSolicitud);
 					TascaCore.nouHistoric(conn, Integer.toString(idTasca), "<span class='missatgeAutomatic'>Sol·licitud rebutjada</span><br> Motiu: " + comentari, usuariLogetjat.getIdUsuari(), ipRemote, "manual");				
-					TascaCore.reasignar(conn, reserva.getIdUsuari(), idTasca, tasca.getTipus());
+					TascaCore.reasignar(conn, reserva.getIdUsuari(), idTasca, tasca.getTipus(), tasca.getDescripcio());
 				}				
 			} else if (reserva.getAutoritzacio() != null) {
 				if (aprovar != null) {
@@ -72,7 +72,7 @@ public class DoAprovarVacancesServlet extends HttpServlet {
 					CalendarCore.rebutjarVistiplauVacances(conn, idSolicitud);
 					TascaCore.nouHistoric(conn, Integer.toString(idTasca), "<span class='missatgeAutomatic'>Vitiplau a la sol·licitud rebutjada</span><br> Motiu: " + comentari, usuariLogetjat.getIdUsuari(), ipRemote, "manual");				
 				}
-				TascaCore.reasignar(conn, reserva.getIdUsuari(), idTasca, tasca.getTipus());
+				TascaCore.reasignar(conn, reserva.getIdUsuari(), idTasca, tasca.getTipus(), tasca.getDescripcio());
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

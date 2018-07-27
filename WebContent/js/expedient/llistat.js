@@ -54,16 +54,17 @@ $(document).ready(function() {
     		{"iDataSort": 8},
     		{"bVisible": false},
     		null,
-    		null,
+    		null,    		
     		{"iDataSort": 12},
     		{"bVisible": false},
-    		{"iDataSort": 14},
+    		null,
+    		{"iDataSort": 15},
     		{"bVisible": false},
-    		{"iDataSort": 16},
+    		{"iDataSort": 17},
     		{"bVisible": false},
-    		{"iDataSort": 18},
+    		{"iDataSort": 19},
     		{"bVisible": false},
-    		{"iDataSort": 20},
+    		{"iDataSort": 21},
     		{"bVisible": false}
 		]
 	});

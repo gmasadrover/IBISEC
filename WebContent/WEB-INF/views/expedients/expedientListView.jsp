@@ -127,6 +127,7 @@
                                         <th>Preu adjudicació</th>
                                         <th>Firma</th>
                                         <th>Firma</th>
+                                        <th>Facturat</th>
                                         <th>Inici d'obra</th>
                                         <th>Inici d'obra</th>
                                         <th>Data recepció</th>
@@ -170,6 +171,7 @@
 							            	</td>
 							            	<td>${informe.expcontratacio.getDataFirmaString()}</td>
 							            	<td>${informe.expcontratacio.dataFormalitzacioContracte}</td>
+							            	<td>${informe.getTotalFacturatFormat()}</td>
 							            	<td>${informe.expcontratacio.getDataIniciObratring()}</td>
 							            	<td>${informe.expcontratacio.dataIniciExecucio}</td>
 							            	<td>${informe.expcontratacio.getDataRecepcioString()}</td>

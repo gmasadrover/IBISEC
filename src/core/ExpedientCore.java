@@ -119,6 +119,9 @@ public class ExpedientCore {
 		String tipusContracte = "";
 		String tipus = "";
 		if (informe.getPropostaInformeSeleccionada() != null) {
+			if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("conveni")) {
+				tipusContracte = "conveni";		
+			}
 			if (informe.getPropostaInformeSeleccionada().getPbase() < importObraMajor) { // Contractes menors		
 				tipusContracte = "menor";				
 			} else {																   // Contractes majors
@@ -131,6 +134,8 @@ public class ExpedientCore {
 					tipus = "servei";			
 				} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("submi")) {
 					tipus = "subministrament";			
+				} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("conveni")) {
+					tipus = "conveni";		
 				}
 			}
 		}
@@ -288,6 +293,8 @@ public class ExpedientCore {
 			tipus = "SVM";			
 		} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("submi")) {
 			tipus = "SBM";			
+		} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("conveni")) {
+			tipus = "Conveni";			
 		}				
 		String sql = "SELECT expcontratacio"
 					+ " FROM public.tbl_expedient"
@@ -299,31 +306,42 @@ public class ExpedientCore {
 					+ " WHERE expcontratacio like '" + tipus + "%/" + yearInString + "%'"
 					+ " ORDER BY expcontratacio DESC LIMIT 1;";	 
 		}
+		if (tipus.equals("Conveni")) {
+			sql = "SELECT expcontratacio"
+					+ " FROM public.tbl_expedient"
+					+ " WHERE expcontratacio like '" + tipus + "%/" + yearInString + "%'"
+					+ " ORDER BY expcontratacio DESC LIMIT 1;";	 
+		}
 		PreparedStatement pstm = conn.prepareStatement(sql);
-		System.out.println(pstm.toString());
 		ResultSet rs = pstm.executeQuery();
 		if (rs.next()) { //Codis nous
 			String actualCode = rs.getString("expcontratacio");			
 			int num = 0;
 			String numFormatted = String.format("%03d", num + 1);	
-			if (informe.getPropostaInformeSeleccionada().getPbase() < importObraMajor) {
-				if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("obr")) {				
-					num = Integer.valueOf(actualCode.split("/")[0].replace("OBM", "").trim());
-					numFormatted = String.format("%03d", num + 1);		
-					nouCodi = "OBM " + numFormatted + "/" + yearInString;						
-				} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("srv")) {					
-					num = Integer.valueOf(actualCode.split("/")[0].replace("SVM", "").trim());						
-					numFormatted = String.format("%03d", num + 1);		
-					nouCodi = "SVM " + numFormatted + "/" + yearInString;						
-				} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("submi")) {
-					num = Integer.valueOf(actualCode.split("/")[0].replace("SBM", "").trim());
-					numFormatted = String.format("%03d", num + 1);		
-					nouCodi = "SBM " + numFormatted + "/" + yearInString;	
-				}
-			} else {
-				num = Integer.valueOf(actualCode.split("/")[0].trim());
+			if (tipus.equals("Conveni")) {
+				num = Integer.valueOf(actualCode.replace("Conveni", "").trim());
 				numFormatted = String.format("%03d", num + 1);		
-				nouCodi = numFormatted + "/" + yearInString;
+				nouCodi = "Conveni " + numFormatted + "/" + yearInString;			
+			} else {
+				if (informe.getPropostaInformeSeleccionada().getPbase() < importObraMajor) {
+					if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("obr")) {				
+						num = Integer.valueOf(actualCode.split("/")[0].replace("OBM", "").trim());
+						numFormatted = String.format("%03d", num + 1);		
+						nouCodi = "OBM " + numFormatted + "/" + yearInString;						
+					} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("srv")) {					
+						num = Integer.valueOf(actualCode.split("/")[0].replace("SVM", "").trim());						
+						numFormatted = String.format("%03d", num + 1);		
+						nouCodi = "SVM " + numFormatted + "/" + yearInString;						
+					} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("submi")) {
+						num = Integer.valueOf(actualCode.split("/")[0].replace("SBM", "").trim());
+						numFormatted = String.format("%03d", num + 1);		
+						nouCodi = "SBM " + numFormatted + "/" + yearInString;	
+					}
+				} else {
+					num = Integer.valueOf(actualCode.split("/")[0].trim());
+					numFormatted = String.format("%03d", num + 1);		
+					nouCodi = numFormatted + "/" + yearInString;
+				}
 			}
 		} else {
 			if (informe.getPropostaInformeSeleccionada().getPbase() < importObraMajor) {

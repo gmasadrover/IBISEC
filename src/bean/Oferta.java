@@ -139,6 +139,13 @@ public class Oferta {
 	public Date getDataCreacio() {
 		return dataCreacio;
 	}
+	
+	public String getDataCreacioString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");	
+		String dataString = "";
+		if (this.dataCreacio != null) dataString = df.format(this.dataCreacio);
+		return dataString;	
+	}
 
 	public void setDataCreacio(Date dataCreacio) {
 		this.dataCreacio = dataCreacio;

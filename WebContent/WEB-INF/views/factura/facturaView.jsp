@@ -128,45 +128,17 @@
                 	</div>
                 	<div class="row">
                 		<div class="col-xs-offset-1 col-md-10">
-		                	<c:if test="${factura.arxiu.ruta != null}">															
-								<p>
-							    	<div class="document">
-							        	<label>Factura:	</label>											                  	
-						          		<a target="_blanck" href="downloadFichero?ruta=${factura.arxiu.getEncodedRuta()}">
-											${factura.arxiu.nom}
-										</a>	
-										<c:if test="${factura.arxiu.signat}">
-											<span class="glyphicon glyphicon-pencil signedFile"></span>
-										</c:if>
-										<br>
-										<div class="infoSign hidden">
-											<c:forEach items="${factura.arxiu.firmesList}" var="firma" >
-												<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-												<br>
-											</c:forEach>
-										</div>
-									</div>																				
-								</p>	
-							</c:if>
+                			<label>Factura: </label>
+                			<c:set var="arxiu" value="${factura.factura}" scope="request"/>
+							<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>								
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-xs-offset-1 col-md-10">
 							<label>Altres:	</label>
 							<c:forEach items="${factura.altres}" var="arxiu" >
-								<div class="document">							    			
-									<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
-									<c:if test="${arxiu.signat}">
-										<span class="glyphicon glyphicon-pencil signedFile"></span>
-									</c:if>
-									<br>
-									<div class="infoSign hidden">
-										<c:forEach items="${arxiu.firmesList}" var="firma" >
-											<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-											<br>
-										</c:forEach>
-									</div>	
-									</div>
+								<c:set var="arxiu" value="${arxiu}" scope="request"/>
+								<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
 							</c:forEach>	
 						</div>
 					</div>

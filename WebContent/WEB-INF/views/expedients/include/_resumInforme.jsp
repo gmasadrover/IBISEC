@@ -49,19 +49,8 @@
 	</p>	
 	<div class="row col-md-12">
 		<c:forEach items="${informePrevi.informesPrevis}" var="arxiu" >
-			<div class="document">
-				<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
-				<c:if test="${arxiu.signat}">
-						<span class="glyphicon glyphicon-pencil signedFile"></span>
-				</c:if>
-				<br>
-				<div class="infoSign hidden">
-					<c:forEach items="${arxiu.firmesList}" var="firma" >
-						<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-						<br>
-					</c:forEach>
-				</div>
-			</div>
+			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 		</c:forEach>
 		<br>					            		
 	</div>
@@ -74,13 +63,9 @@
 				${informePrevi.informeSupervisio.nom}
 			</a>	
 			<c:if test="${informePrevi.informeSupervisio.signat}">
-					<span class="glyphicon glyphicon-pencil signedFile"></span>
+					<span data-ruta="${informePrevi.informeSupervisio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 			</c:if><br>
-			<div class="infoSign hidden">
-				<c:forEach items="${informePrevi.informeSupervisio.firmesList}" var="firma" >
-					<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-					<br>
-				</c:forEach>
+			<div class="infoSign hidden">				
 			</div>	
 		</div>																	
 	</p>	
@@ -98,14 +83,10 @@
 				${informePrevi.propostaActuacio.nom}
 			</a>	
 			<c:if test="${informePrevi.propostaActuacio.signat}">
-					<span class="glyphicon glyphicon-pencil signedFile"></span>
+					<span data-ruta="${informePrevi.propostaActuacio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 			</c:if>
 			<br>
-			<div class="infoSign hidden">
-				<c:forEach items="${informePrevi.propostaActuacio.firmesList}" var="firma" >
-					<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-					<br>
-				</c:forEach>
+			<div class="infoSign hidden">				
 			</div>
 		</div>																				
 	</p>	
@@ -125,14 +106,10 @@
 					${informePrevi.vistiplauPropostaActuacio.nom}
 				</a>
 				<c:if test="${informePrevi.vistiplauPropostaActuacio.signat}">
-					<span class="glyphicon glyphicon-pencil signedFile"></span>
+					<span data-ruta="${informePrevi.vistiplauPropostaActuacio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 				</c:if>
 				<br>
-				<div class="infoSign hidden">
-					<c:forEach items="${informePrevi.vistiplauPropostaActuacio.firmesList}" var="firma" >
-						<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-						<br>
-					</c:forEach>
+				<div class="infoSign hidden">					
 				</div>
 			</div>																	
 		</p>
@@ -175,13 +152,9 @@
 				${informePrevi.conformeAreaEconomivaPropostaActuacio.nom}
 			</a>	
 			<c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.signat}">
-					<span class="glyphicon glyphicon-pencil signedFile"></span>
+					<span data-ruta="${informePrevi.conformeAreaEconomivaPropostaActuacio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 			</c:if><br>
-			<div class="infoSign hidden">
-				<c:forEach items="${informePrevi.conformeAreaEconomivaPropostaActuacio.firmesList}" var="firma" >
-					<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-					<br>
-				</c:forEach>
+			<div class="infoSign hidden">				
 			</div>	
 		</div>																	
 	</p>	
@@ -194,14 +167,10 @@
 				${informePrevi.autoritzacioPropostaAutoritzacio.nom}
 			</a>	
 			<c:if test="${informePrevi.autoritzacioPropostaAutoritzacio.signat}">
-					<span class="glyphicon glyphicon-pencil signedFile"></span>
+					<span data-ruta="${informePrevi.autoritzacioPropostaAutoritzacio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 			</c:if>
 			<br>
-			<div class="infoSign hidden">
-				<c:forEach items="${informePrevi.autoritzacioPropostaAutoritzacio.firmesList}" var="firma" >
-					<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-					<br>
-				</c:forEach>
+			<div class="infoSign hidden">				
 			</div>	
 		</div>
 	</p>
@@ -214,14 +183,10 @@
 				${informePrevi.autoritzacioConsellDeGovern.nom}
 			</a>	
 			<c:if test="${informePrevi.autoritzacioConsellDeGovern.signat}">
-					<span class="glyphicon glyphicon-pencil signedFile"></span>
+					<span data-ruta="${informePrevi.autoritzacioConsellDeGovern.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 			</c:if>
 			<br>
-			<div class="infoSign hidden">
-				<c:forEach items="${informePrevi.autoritzacioConsellDeGovern.firmesList}" var="firma" >
-					<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-					<br>
-				</c:forEach>
+			<div class="infoSign hidden">				
 			</div>	
 		</div>
 	</p>
@@ -234,14 +199,10 @@
 				${informePrevi.autoritzacioConseller.nom}
 			</a>	
 			<c:if test="${informePrevi.autoritzacioConseller.signat}">
-					<span class="glyphicon glyphicon-pencil signedFile"></span>
+					<span data-ruta="${informePrevi.autoritzacioConseller.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 			</c:if>
 			<br>
-			<div class="infoSign hidden">
-				<c:forEach items="${informePrevi.autoritzacioConseller.firmesList}" var="firma" >
-					<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-					<br>
-				</c:forEach>
+			<div class="infoSign hidden">				
 			</div>	
 		</div>
 	</p>
@@ -256,14 +217,10 @@
 						${informePrevi.autoritzacioConseller.nom}
 					</a>	
 					<c:if test="${informePrevi.documentBOIB.signat}">
-							<span class="glyphicon glyphicon-pencil signedFile"></span>
+							<span data-ruta="${informePrevi.documentBOIB.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 					</c:if>
 					<br>
-					<div class="infoSign hidden">
-						<c:forEach items="${informePrevi.documentBOIB.firmesList}" var="firma" >
-							<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-							<br>
-						</c:forEach>
+					<div class="infoSign hidden">						
 					</div>	
 				</div>
 			</p>
@@ -278,14 +235,10 @@
 						${informePrevi.correuInvitacio.nom}
 					</a>	
 					<c:if test="${informePrevi.correuInvitacio.signat}">
-							<span class="glyphicon glyphicon-pencil signedFile"></span>
+							<span data-ruta="${informePrevi.correuInvitacio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 					</c:if>
 					<br>
-					<div class="infoSign hidden">
-						<c:forEach items="${informePrevi.correuInvitacio.firmesList}" var="firma" >
-							<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-							<br>
-						</c:forEach>
+					<div class="infoSign hidden">						
 					</div>	
 				</div>
 			</p>
@@ -302,22 +255,8 @@
 </p>	
 <div class="row col-md-12">
 	<c:forEach items="${informePrevi.documentsAltresPrevis}" var="arxiu" >
-		<div class="document">
-			<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
-			<c:if test="${arxiu.signat}">
-					<span class="glyphicon glyphicon-pencil signedFile"></span>
-			</c:if>
-			<c:if test="${canModificarExpedient && arxiu.ruta != null}">
-				<span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
-			</c:if>
-			<br>
-			<div class="infoSign hidden">
-				<c:forEach items="${arxiu.firmesList}" var="firma" >
-					<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-					<br>
-				</c:forEach>
-			</div>
-		</div>
+		<c:set var="arxiu" value="${arxiu}" scope="request"/>
+		<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 	</c:forEach>	
 	<br>					            		
 </div>

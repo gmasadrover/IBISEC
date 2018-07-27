@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -28,7 +29,10 @@ import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 
 import bean.Factura;
+import bean.InformeActuacio;
+import core.ActuacioCore;
 import core.FacturaCore;
+import core.InformeCore;
 import utils.Fitxers;
 import utils.MyUtils;
 
@@ -65,7 +69,6 @@ public class EnviarAComptabilitat extends HttpServlet {
 	   			factura = FacturaCore.getFactura(conn, idFactura);	
 	   			Date date = new Date();
 	   			if (factura.getDataConformacio() == null) {
-	   				System.out.println("entra");
 	   				Context env;
 	   				String ruta = "";
 	   				try {
@@ -75,12 +78,11 @@ public class EnviarAComptabilitat extends HttpServlet {
 	   					// TODO Auto-generated catch block
 	   					e2.printStackTrace();
 	   				}
-	   				System.out.println(factura.getArxiu().getRuta());
 	   				
 	    	        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-	    	       
-	    	        PdfReader reader = new PdfReader(factura.getArxiu().getRuta());
-	    	        PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(factura.getArxiu().getRuta().replace(".pdf", "AU.pdf")));
+	    	        String rutaFactua = factura.getFactura().getRuta();
+	    	        PdfReader reader = new PdfReader(rutaFactua);
+	    	        PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(rutaFactua.replace(".pdf", "AU.pdf")));
 	    	        BaseFont font = BaseFont.createFont(); // Helvetica, WinAnsiEncoding
 	    	        for (int i = 0; i < reader.getNumberOfPages(); ++i) {
 	    	          PdfContentByte overContent = stamper.getOverContent( i + 1 );
@@ -94,11 +96,31 @@ public class EnviarAComptabilitat extends HttpServlet {
 	    	        }
 	    	        stamper.close();
 	    	        reader.close();
-	    	        Fitxers.eliminarFitxer(conn, idUsuari, factura.getArxiu().getRuta());
+	    	        System.out.println(rutaFactua);
+	    	        Fitxers.eliminarFitxer(conn, idUsuari, rutaFactua);
 	   			}
 	   			factura.setDataEnviatComptabilitat(date);
 	   			factura.setDataConformacio(date);
 	   			FacturaCore.modificarFactura(conn, factura, idUsuari);
+	   			InformeActuacio informeActual = InformeCore.getInformePrevi(conn, factura.getIdInforme(), false);
+   				boolean totFacturat = true;   				
+   				if (informeActual.getOfertaSeleccionada().getPlic() > informeActual.getTotalFacturat()) {
+   					totFacturat = false;	   				
+   				} else {
+   					InformeCore.modificarEstat(conn, factura.getIdInforme(), "garantia");
+   					InformeCore.tancar(conn, factura.getIdInforme());
+   				}
+   				if (totFacturat) {
+   					List<InformeActuacio> informesList = InformeCore.getInformesActuacio(conn, factura.getIdInforme());
+	   				for (InformeActuacio informe : informesList) {
+	   					if (!informe.getIdInf().equals(factura.getIdInforme()) && !informe.getEstatEconomic().equals("Facturat")) {
+	   						totFacturat = false;
+	   					}
+	   				}
+   				}
+   				if (totFacturat) {
+   					ActuacioCore.tancar(conn, informeActual.getActuacio().getReferencia(), "facturat", idUsuari);
+   				}
 	   		} catch (SQLException | NamingException | DocumentException e) {
 	  			e.printStackTrace();
 	  			errorString = e.getMessage();

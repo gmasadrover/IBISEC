@@ -98,14 +98,10 @@
 								${informePrevi.memoriaOrdreInici.nom}
 							</a>	
 							<c:if test="${informePrevi.memoriaOrdreInici.signat}">
-									<span class="glyphicon glyphicon-pencil signedFile"></span>
+									<span data-ruta="${informePrevi.memoriaOrdreInici.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 							</c:if>
 							<br>
-							<div class="infoSign hidden">
-								<c:forEach items="${informePrevi.memoriaOrdreInici.firmesList}" var="firma" >
-									<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-									<br>
-								</c:forEach>
+							<div class="infoSign hidden">								
 							</div>
 						</div>
 					</div>																
@@ -126,14 +122,10 @@
 							${informePrevi.conformeAreaEconomivaPropostaActuacio.nom}
 						</a>	
 						<c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.signat}">
-								<span class="glyphicon glyphicon-pencil signedFile"></span>
+								<span data-ruta="${informePrevi.conformeAreaEconomivaPropostaActuacio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 						</c:if>
 						<br>
 						<div class="infoSign hidden">
-							<c:forEach items="${informePrevi.conformeAreaEconomivaPropostaActuacio.firmesList}" var="firma" >
-								<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-								<br>
-							</c:forEach>
 						</div>
 					</div>	
 				</div>															

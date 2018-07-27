@@ -98,7 +98,7 @@
 				                            	<option value="-1">No hi ha relació</option>
 				                            	<option value="-2">Nou procediment</option>
 				                            	<c:forEach items="${llistaProcediment}" var="procediment" >
-			                                		<option value='${procediment.referencia}'>${procediment.numAutos}</option>
+			                                		<option value='${procediment.referencia}'>${procediment.numAutos} - ${procediment.jutjat}</option>
 			                                	</c:forEach>	
 				                            </select>
 			                             </div>

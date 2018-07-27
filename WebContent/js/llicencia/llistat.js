@@ -43,6 +43,7 @@ $(document).ready(function() {
     		{"bVisible": false},
     		{"iDataSort": 9},
     		null,
+    		null,
     		null
 		]
 	});

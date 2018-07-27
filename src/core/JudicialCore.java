@@ -144,14 +144,14 @@ public class JudicialCore {
 				+ " FROM public.tbl_tramitacions"
 				+ " WHERE idtramitacio = ?";
  
-	PreparedStatement pstm = conn.prepareStatement(sql);
-	pstm.setInt(1, Integer.parseInt(referencia));		
-	ResultSet rs = pstm.executeQuery();
-	if (rs.next()) {
-		Tramitacio tramitacio = initTramitacio(conn, rs); 
-		return tramitacio;
-	}
-	return new Judicial().new Tramitacio();
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setInt(1, Integer.parseInt(referencia));		
+		ResultSet rs = pstm.executeQuery();
+		if (rs.next()) {
+			Tramitacio tramitacio = initTramitacio(conn, rs); 
+			return tramitacio;
+		}
+		return new Judicial().new Tramitacio();
 	}
 	
 	public static List<Judicial> getProcediments(Connection conn, String estat, String year) throws SQLException, NamingException{

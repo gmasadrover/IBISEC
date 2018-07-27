@@ -6,7 +6,10 @@
 <m:setLocale value="${language}" />
 <m:setBundle basename="i18n.base"/>		
 
-		<div class="panel-body">				      	
+		<div class="panel-body">	
+			<p>			                     				
+				<label>Tipus:</label> ${propostaModificacio.getTipusModificacioFormat()}
+			</p>			      	
 			<p>			                     				
 				<label>Objecte:</label> ${propostaModificacio.propostaInformeSeleccionada.objecte}
 			</p>
@@ -59,24 +62,11 @@
 			</div>
 			<p>			                     				
 				<label>Comentari tècnic:</label> ${propostaModificacio.ofertaSeleccionada.comentari}
-			</p>
-			<c:if test="${propostaModificacio.propostaTecnica.ruta != null}">		
-				<div class="document">			
-	               	<label>Informe justificatiu:</label>													                  	
-	           		<a target="_blanck" href="downloadFichero?ruta=${propostaModificacio.propostaTecnica.getEncodedRuta()}">
-						${propostaModificacio.propostaTecnica.nom}
-					</a>
-					<c:if test="${propostaModificacio.propostaTecnica.signat}">
-							<span class="glyphicon glyphicon-pencil signedFile"></span>
-					</c:if><br>
-					<div class="infoSign hidden">
-						<c:forEach items="${propostaModificacio.propostaTecnica.firmesList}" var="firma" >
-							<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-							<br>
-						</c:forEach>
-					</div>
-				</div>
-			</c:if>
+			</p>			
+			<c:forEach items="${propostaModificacio.propostaTecnica}" var="arxiu" >	
+				<c:set var="arxiu" value="${arxiu}" scope="request"/>
+				<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+			</c:forEach>
 			<p></p>
 			<c:if test="${propostaModificacio.conformeAreaEconomivaPropostaActuacio.ruta != null}">		
 				<div class="document">			
@@ -85,7 +75,7 @@
 						${propostaModificacio.conformeAreaEconomivaPropostaActuacio.nom}
 					</a>
 					<c:if test="${propostaModificacio.conformeAreaEconomivaPropostaActuacio.signat}">
-							<span class="glyphicon glyphicon-pencil signedFile"></span>
+							<span data-ruta="${propostaModificacio.conformeAreaEconomivaPropostaActuacio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 					</c:if><br>
 					<div class="infoSign hidden">
 						<c:forEach items="${propostaModificacio.conformeAreaEconomivaPropostaActuacio.firmesList}" var="firma" >
@@ -103,7 +93,7 @@
 						${propostaModificacio.autoritzacioPropostaDespesa.nom}
 					</a>
 					<c:if test="${propostaModificacio.autoritzacioPropostaDespesa.signat}">
-							<span class="glyphicon glyphicon-pencil signedFile"></span>
+							<span data-ruta="${propostaModificacio.autoritzacioPropostaDespesa.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 					</c:if><br>
 					<div class="infoSign hidden">
 						<c:forEach items="${propostaModificacio.autoritzacioPropostaDespesa.firmesList}" var="firma" >

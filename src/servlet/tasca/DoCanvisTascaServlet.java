@@ -57,12 +57,13 @@ public class DoCanvisTascaServlet extends HttpServlet {
 	    String errorString = null;
 	  
 	    try {
+	    	Tasca tasca = TascaCore.findTascaId(conn, Integer.parseInt(idTasca), Usuari.getIdUsuari());
 	    	if (modificar != null) {
 	    		TascaCore.modificarTipus(conn, Integer.parseInt(idTasca), tipus);
 	    	} else {
-	    		TascaCore.reasignar(conn, Usuari.getIdUsuari(), Integer.parseInt(idTasca), tipus);
+	    		TascaCore.reasignar(conn, Usuari.getIdUsuari(), Integer.parseInt(idTasca), tipus, tasca.getDescripcio());
 	    	}
-		} catch (NumberFormatException | SQLException e) {
+		} catch (NumberFormatException | SQLException | NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			errorString = e.toString();

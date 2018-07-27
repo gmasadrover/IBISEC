@@ -129,6 +129,7 @@ public class RegistreCore {
 	 
 		ResultSet rs = pstm.executeQuery();
 		List<Registre> list = new ArrayList<Registre>();
+		System.out.println(pstm.toString());
 		while (rs.next()) {			
 			list.add(initRegistre(conn, rs, "E"));
 		}
@@ -150,6 +151,7 @@ public class RegistreCore {
 			pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
 			if (idCentre != "") pstm.setString(3, "%" + idCentre + "%");
 			rs = pstm.executeQuery();
+			System.out.println(pstm.toString());
 		} else {
 			if (idCentre != "") {
 				sql += " WHERE idcentre like ?";
@@ -158,8 +160,10 @@ public class RegistreCore {
 			PreparedStatement pstm = conn.prepareStatement(sql);
 			if (idCentre != "") pstm.setString(1, "%" + idCentre + "%");
 			rs = pstm.executeQuery();
+			System.out.println(pstm.toString());
 		}
 		List<Registre> list = new ArrayList<Registre>();
+		
 		while (rs.next()) {
 			list.add(initRegistre(conn, rs, "E"));
 		}
@@ -309,6 +313,20 @@ public class RegistreCore {
 	}
 	
 	public static List<Fitxer> getArxiusAdjunts(Connection conn, String idincidencia, String idInforme, String tipus) throws SQLException, NamingException {
+		List<Fitxer> documentsAdjunts = new ArrayList<Fitxer>();
+		String sql = "SELECT id"
+				+ " FROM public.tbl_regentrada"
+				+ " WHERE tipus = ? AND idinforme LIKE '%" + idInforme + "%'";	
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setString(1, tipus);
+		ResultSet rs = pstm.executeQuery();
+		while (rs.next()) {
+			documentsAdjunts.addAll(Fitxers.ObtenirFitxers(idincidencia, "", "RegistreE", rs.getString("id"), ""));
+		}
+		return documentsAdjunts;
+	}
+	
+	public static List<Fitxer> getArxiusAdjuntsPerTipus(Connection conn, String idincidencia, String idInforme, String tipus) throws SQLException, NamingException {
 		List<Fitxer> documentsAdjunts = new ArrayList<Fitxer>();
 		String sql = "SELECT id"
 				+ " FROM public.tbl_regentrada"

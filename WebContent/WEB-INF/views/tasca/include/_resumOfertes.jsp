@@ -38,7 +38,7 @@
 	<c:if test="${ofertaSeleccionada.personalInscrit.ruta != null}">
 		<p>
 			<div class="document">
-	        	<label>Personal inscrit:</label>											                  	
+	        	<label>Personal adscrit:</label>											                  	
          		<a target="_blanck" href="downloadFichero?ruta=${ofertaSeleccionada.personalInscrit.getEncodedRuta()}">
 					${ofertaSeleccionada.personalInscrit.nom}
 				</a>	
@@ -57,7 +57,7 @@
 	<p>
 		<label>Motivació adjudicació:</label> ${ofertaSeleccionada.comentari} 
 	</p>
-	<c:if test="${informePrevi.propostaTecnica.ruta != null && esCap}">
+	<c:if test="${informePrevi.propostaTecnica.size() > 0 && esCap}">
 		<div class="separator"></div>												        	
 		<div class="panel-body">
 	     	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddPA">
@@ -66,14 +66,14 @@
 				<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">
 				<input type="hidden" name="idTasca" value="${tasca.idTasca}">
 				<input type="hidden" name="idInforme" value="${informePrevi.idInf}">																	
-		       	<c:if test="${informePrevi.propostaTecnica.ruta != null}">
+		        <c:forEach items="${informePrevi.propostaTecnica}" var="arxiu" >			
 					<div class="col-md-12">	
 		               	<p>Proposta Tècnica:</p>													                  	
-		           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.propostaTecnica.getEncodedRuta()}">
-							${informePrevi.propostaTecnica.nom}
+		           		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
+							${arxiu.nom}
 						</a>																			
 					</div>
-				</c:if>																	
+				</c:forEach>															
 				<div class="col-md-8">
 					<div class="row margin_top10">
 		    			<div class="col-md-12">

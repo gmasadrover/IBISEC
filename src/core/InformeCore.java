@@ -66,7 +66,8 @@ public class InformeCore {
 		informe.setDataPD(rs.getTimestamp("datapd"));
 		informe.setTipoPD(rs.getString("tipopd"));
 		informe.setLlistaModificacions(getMoficacionsInforme(conn, rs.getString("idinf")));
-		informe.setLlicencia(LlicenciaCore.findLlicenciaExpedient(conn, rs.getString("expcontratacio")));
+		informe.setLlistaPenalitzacions(getPenalitzacionsInforme(conn, rs.getString("idinf")));
+		informe.setLlicencia(LlicenciaCore.findLlicenciaExpedient(conn, rs.getString("idinf"), rs.getString("idincidencia")));
 		informe.setPublicacioBOIB(rs.getTimestamp("databoib"));
 		informe.setLlistaIncidenciesGarantia(getIncidenciesGarantia(conn, rs.getString("idinf")));
 		informe.setRecursAdministratiu(rs.getString("recursadministratiu"));
@@ -79,7 +80,7 @@ public class InformeCore {
 		if (ambDocuments) {
 			informe.setInformesPrevis(getInformesPrevis(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
 			List<Fitxer> adjunts = getDocumentacioAltre(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf"));
-			adjunts.addAll(utils.Fitxers.ObtenirFitxers(rs.getString("idincidencia"), rs.getString("idactuacio"), "Informe Previ", rs.getString("idtasca"),""));			
+			adjunts.addAll(utils.Fitxers.ObtenirFitxers(rs.getString("idincidencia"), rs.getString("idactuacio"), "Informe previ", rs.getString("idtasca"),""));			
 			informe.setAdjunts(adjunts);
 			informe.setDocTecnica(getDocumentacioTecnia(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
 			informe.setPropostaActuacio(getPropostaActuacio(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
@@ -94,12 +95,11 @@ public class InformeCore {
 			informe.setDeclaracioUrgencia(getDeclaracioUrgenciaSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
 			informe.setAprovacioEXPPlecsDespesa(getAprovacioEXPPlecsDespesaSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
 			informe.setAprovacioDispoTerrenys(getDisponibilitatTerrenysSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+			informe.setInformeInsuficienciaMitjans(getInformeInsuficienciaMitjansSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
 			informe.setDocumentBOIB(getDocumentBOIBSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
 			informe.setCorreuInvitacio(getCorreuInvitacioSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
 			informe.setResolucioVAD(getResolucioVADSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
 			informe.setRatificacioClassificacio(getRatificacioClassificacioSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
-			informe.setActaInici(getActaInciciSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
-			informe.setActaFinalitzacio(getActaFinalitzacioSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
 			informe.setDocumentsAltresPrevis(getDocumentsAltresPrevis(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
 			informe.setDocumentsAltresLicitacio(getDocumentsAltresLicitacio(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
 			informe.setDocumentsAltresExecucio(getDocumentsAltresExecucio(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
@@ -120,6 +120,25 @@ public class InformeCore {
 			informe.setEntrades(RegistreCore.getEntrades(conn, rs.getString("idinf")));
 			informe.setSortides(RegistreCore.getSortides(conn, rs.getString("idinf")));
 			informe.setTasques(TascaCore.findTasquesInforme(conn, rs.getString("idinf"), false));
+			informe.setDocumentActaReplanteig(getDocumentActaReplanteigSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+			informe.setDocumentActaComprovacioReplanteig(getDocumentActaComprovacioReplanteigSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+			informe.setDocumentActaIniciObra(getDocumentActaIniciObraSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+			informe.setDocumentActaAprovacioPlaSeguretat(getDocumentActaAprovacioPlaSeguretatSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+			informe.setDocumentActaAprovacioResidus(getDocumentActaAprovacioResidusSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+			informe.setDocumentActaAprovacioProgramaTreball(getDocumentActaAprovacioProgramaTreballSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+			informe.setDocumentActaRecepcio(getDocumentActaRecepcioSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+			informe.setDocumentActaMedicioGeneral(getDocumentActaMedicioGeneralSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+			
+			informe.setDocumentSolDevolucio(getDocumentSolDevolucioSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+			informe.setDocumentInformeDevolucio(getDocumentInformeDevolucioSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+			informe.setDocumentLiquidacioAval(getDocumentLiquidacioAvalSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+			
+			informe.setDocumentFinalitzacioContratista(getDocumentFinalitzacioContratistaSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+			informe.setDocumentInformeDO(getDocumentInformeDOSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+			informe.setDocumentCFO(getDocumentCFOSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+			informe.setDocumentMedicioGeneral(getDocumentMedicioGeneralSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+			informe.setDocumentRepresentacioRecepcio(getDocumentRepresentacioRecepcioSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
+			informe.setDocumentConvocatoriaRecepcio(getDocumentConvocatoriaRecepcioSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
 		}
 		return informe;
 	}
@@ -156,7 +175,6 @@ public class InformeCore {
 		pstm.setInt(5, idUsuari);
 		pstm.setString(6, "previs");
 		pstm.executeUpdate();
-		System.out.println(pstm.toString());
 		if  (informe.getLlistaPropostes().size() > 0) {
 			for (PropostaInforme proposta: informe.getLlistaPropostes()) {
 				novaProposta(conn, proposta, idNouInforme);
@@ -183,7 +201,6 @@ public class InformeCore {
 		pstm.setString(11, proposta.getTermini());
 		pstm.setString(12, proposta.getComentari());
 		pstm.executeUpdate();
-		System.out.println(pstm.toString());
 		return idNovaProposta;
 	}
 	
@@ -200,11 +217,9 @@ public class InformeCore {
 			proposta = informe.getLlistaPropostes().get(0);
 		}
 		if (existProposta(conn, proposta.getIdProposta())) {
-			System.out.println("entra a exist");
 			modificarProposta(conn, proposta);				
 		}else{
 			novaProposta(conn,proposta,informe.getIdInf());
-			System.out.println("entra a nova");
 		}
 		pstm.executeUpdate();
 	}
@@ -261,6 +276,7 @@ public class InformeCore {
 			informePrevi.setDataAprovacio(rs.getTimestamp("dataaprovacio"));
 			informePrevi.setOfertaSeleccionada(OfertaCore.findOfertaSeleccionada(conn, idInforme));
 			informePrevi.setActuacio(ActuacioCore.findActuacio(conn, rs.getString("idactuacio")));
+			informePrevi.setExpcontratacio(ExpedientCore.findExpedient(conn, rs.getString("expcontratacio")));
 		}
 		return informePrevi;
 	}
@@ -285,7 +301,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Informe prèvi/");
+		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Informe previ/", true);
 		return informesPrevis;
 	}
 	
@@ -295,7 +311,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Documentació tècnica/");
+		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Documentació tècnica/", true);
 		return informesPrevis;
 	}
 	
@@ -305,7 +321,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Altre documentació/");
+		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Altre documentació/", true);
 		return informesPrevis;
 	}
 		
@@ -315,7 +331,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Documentació altres previs/");
+		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Documentació altres previs/", true);
 		informesPrevis.addAll(RegistreCore.getArxiusAdjunts(conn, idIncidencia, idInforme, "Previs"));
 		return informesPrevis;
 	}		
@@ -326,7 +342,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Documentació altres licitació/");
+		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Documentació altres licitació/", true);
 		informesPrevis.addAll(RegistreCore.getArxiusAdjunts(conn, idIncidencia, idInforme, "Licitació"));
 		return informesPrevis;
 	}		
@@ -337,7 +353,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Documentació altres execució/");
+		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Documentació altres execució/", true);
 		informesPrevis.addAll(RegistreCore.getArxiusAdjunts(conn, idIncidencia, idInforme, "Execució"));
 		return informesPrevis;
 	}		
@@ -348,7 +364,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Documentació altres garantia/");
+		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Documentació altres garantia/", true);
 		informesPrevis.addAll(RegistreCore.getArxiusAdjunts(conn, idIncidencia, idInforme, "Garantia"));
 		return informesPrevis;
 	}		
@@ -359,7 +375,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Documentació altres autUrbanística/");
+		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Documentació altres autUrbanística/", true);
 		informesPrevis.addAll(RegistreCore.getArxiusAdjunts(conn, idIncidencia, idInforme, "Autorització urbanística"));
 		return informesPrevis;
 	}		
@@ -370,7 +386,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Recursos Administratius/");
+		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Recursos Administratius/", true);
 		return informesPrevis;
 	}	
 	
@@ -380,7 +396,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Instalacio baixa tensio/");
+		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Instalacio baixa tensio/", true);
 		return informesPrevis;
 	}
 	
@@ -390,7 +406,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Instalacio fotovoltaica/");
+		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Instalacio fotovoltaica/", true);
 		return informesPrevis;
 	}
 	
@@ -400,7 +416,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Instalacio contraincencis/");
+		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Instalacio contraincencis/", true);
 		return informesPrevis;
 	}
 	
@@ -410,7 +426,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Certificat eficiència energètica/");
+		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Certificat eficiència energètica/", true);
 		return informesPrevis;
 	}
 	
@@ -420,7 +436,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Instalacio termica/");
+		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Instalacio termica/", true);
 		return informesPrevis;
 	}
 	
@@ -430,7 +446,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Instalacio ascensor/");
+		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Instalacio ascensor/", true);
 		return informesPrevis;
 	}
 	
@@ -440,7 +456,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Instalacio alarma/");
+		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Instalacio alarma/", true);
 		return informesPrevis;
 	}
 	
@@ -450,7 +466,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Subministre aigua/");
+		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Subministre aigua/", true);
 		return informesPrevis;
 	}
 	
@@ -460,7 +476,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Pla autoproteccio/");
+		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Pla autoproteccio/", true);
 		return informesPrevis;
 	}
 	
@@ -470,7 +486,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Cedula habitabilitat/");
+		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Cedula habitabilitat/", true);
 		return informesPrevis;
 	}
 	
@@ -480,7 +496,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Instalació petrolifers/");
+		informesPrevis =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Instalació petrolifers/", true);
 		return informesPrevis;
 	}
 		
@@ -490,7 +506,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		PA =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Proposta actuació/");
+		PA =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Proposta actuació/", true);
 		return PA;
 	}
 	
@@ -500,7 +516,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		VistiplauPA = utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Vistiplau Cap/");
+		VistiplauPA = utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Vistiplau Cap/", true);
 		return VistiplauPA;
 	}
 	
@@ -510,7 +526,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		VistiplauPA = utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Informe Supervisió/");
+		VistiplauPA = utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Informe Supervisió/", true);
 		return VistiplauPA;
 	}
 	
@@ -520,7 +536,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		VistiplauPA = utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Conforme àrea financera/");
+		VistiplauPA = utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Conforme àrea financera/", true);
 		return VistiplauPA;
 	}
 	
@@ -530,7 +546,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		AutoritzacioPA =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Autorització Proposta d'actuació/");
+		AutoritzacioPA =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Autorització Proposta d'actuació/", true);
 		return AutoritzacioPA;
 	}	
 	
@@ -540,7 +556,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		AutoritzacioPA =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Autorització Consell De Govern/");
+		AutoritzacioPA =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Autorització Consell De Govern/", true);
 		return AutoritzacioPA;
 	}	
 	
@@ -550,7 +566,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		AutoritzacioPA =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Autorització Conseller/");
+		AutoritzacioPA =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Autorització Conseller/", true);
 		return AutoritzacioPA;
 	}	
 	
@@ -560,7 +576,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		AutoritzacioPA =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Document BOIB/");
+		AutoritzacioPA =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Document BOIB/", true);
 		return AutoritzacioPA;
 	}	
 	
@@ -570,7 +586,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		AutoritzacioPA =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Correu invitació/");
+		AutoritzacioPA =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Correu invitació/", true);
 		return AutoritzacioPA;
 	}	
 	
@@ -580,7 +596,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		ratificacioClassificacio =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Resolució VAD/");
+		ratificacioClassificacio =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Resolució VAD/", true);
 		return ratificacioClassificacio;
 	}
 	
@@ -590,17 +606,17 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		ratificacioClassificacio =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Ratificació classificació/");
+		ratificacioClassificacio =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Ratificació classificació/", true);
 		return ratificacioClassificacio;
 	}
 	
-	public static Fitxer getPropostaTecnica(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
-		Fitxer PT = new Fitxer();
+	public static List<Fitxer> getPropostaTecnica(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
+		List<Fitxer> PT = new ArrayList<Fitxer>();
 		// Get the base naming context
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		PT =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Proposta tècnica/");
+		PT =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Proposta tècnica/", true);
 		return PT;
 	}
 	
@@ -610,7 +626,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		PT =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Autorització  Proposta despesa/");
+		PT =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Autorització  Proposta despesa/", true);
 		return PT;
 	}
 	
@@ -620,7 +636,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		contracte =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Memòria odre inici/");
+		contracte =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Memòria odre inici/", true);
 		return contracte;
 	}
 	
@@ -630,7 +646,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		contracte =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Justificació procediment i forma/");
+		contracte =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Justificació procediment i forma/", true);
 		return contracte;
 	}
 	
@@ -640,7 +656,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		contracte =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Justificació criteris adjudicació/");
+		contracte =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Justificació criteris adjudicació/", true);
 		return contracte;
 	}
 	
@@ -650,7 +666,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		contracte =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Declaració urgència/");
+		contracte =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Declaració urgència/", true);
 		return contracte;
 	}
 	
@@ -660,7 +676,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		contracte =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Aprovació expedient/");
+		contracte =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Aprovació expedient/", true);
 		return contracte;
 	}
 	
@@ -670,7 +686,17 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		contracte =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Disponibilitat terrenys/");
+		contracte =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Disponibilitat terrenys/", true);
+		return contracte;
+	}
+	
+	public static Fitxer getInformeInsuficienciaMitjansSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
+		Fitxer contracte = new Fitxer();
+		// Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		contracte =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Insuficiencia mitjans/", true);
 		return contracte;
 	}
 		
@@ -680,31 +706,172 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		contracte =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Contracte signat/");
+		contracte =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Contracte signat/", true);
 		return contracte;
 	}
 	
-	public static Fitxer getActaInciciSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
-		Fitxer contracte = new Fitxer();
-		// Get the base naming context
+	public static List<Fitxer> getDocumentActaReplanteigSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
+		List<Fitxer> actes = new ArrayList<Fitxer>();
+		 // Get the base naming context
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		contracte =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Acta inici/");
-		return contracte;
+		actes =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Acta replanteig/", true);
+		return actes;
 	}
 	
-	public static Fitxer getActaFinalitzacioSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
-		Fitxer contracte = new Fitxer();
-		// Get the base naming context
+	public static List<Fitxer> getDocumentActaComprovacioReplanteigSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
+		List<Fitxer> actes = new ArrayList<Fitxer>();
+		 // Get the base naming context
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		contracte =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Acta final/");
-		return contracte;
+		actes =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Acta comprovació replanteig/", true);
+		return actes;
 	}
 	
+	public static List<Fitxer> getDocumentActaIniciObraSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
+		List<Fitxer> actes = new ArrayList<Fitxer>();
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		actes =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Acta inici/", true);
+		return actes;
+	}
 	
+	public static List<Fitxer> getDocumentActaAprovacioPlaSeguretatSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
+		List<Fitxer> actes = new ArrayList<Fitxer>();
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		actes =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Acta aprovació pla seguretat/", true);
+		return actes;
+	}
+	
+	public static List<Fitxer> getDocumentActaAprovacioResidusSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
+		List<Fitxer> actes = new ArrayList<Fitxer>();
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		actes =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Acta aprovació residus/", true);
+		return actes;
+	}
+	
+	public static List<Fitxer> getDocumentActaAprovacioProgramaTreballSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
+		List<Fitxer> actes = new ArrayList<Fitxer>();
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		actes =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Acta aprovació treball/", true);
+		return actes;
+	}
+	
+	public static List<Fitxer> getDocumentActaRecepcioSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
+		List<Fitxer> actes = new ArrayList<Fitxer>();
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		actes =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Acta recepció/", true);
+		return actes;
+	}	
+	
+	public static List<Fitxer> getDocumentActaMedicioGeneralSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
+		List<Fitxer> actes = new ArrayList<Fitxer>();
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		actes =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Acta medició general/", true);
+		return actes;
+	}	
+	
+	public static List<Fitxer> getDocumentSolDevolucioSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
+		List<Fitxer> actes = new ArrayList<Fitxer>();
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		actes =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Solicitud devolucio aval/", true);
+		return actes;
+	}	
+	public static List<Fitxer> getDocumentInformeDevolucioSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
+		List<Fitxer> actes = new ArrayList<Fitxer>();
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		actes =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Informe devolucio aval/", true);
+		return actes;
+	}	
+	public static List<Fitxer> getDocumentFinalitzacioContratistaSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
+		List<Fitxer> actes = new ArrayList<Fitxer>();
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		actes =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Finalització contratista/", true);
+		return actes;
+	}	
+	
+	public static List<Fitxer> getDocumentInformeDOSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
+		List<Fitxer> actes = new ArrayList<Fitxer>();
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		actes =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Informe DO/", true);
+		return actes;
+	}	
+	public static List<Fitxer> getDocumentCFOSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
+		List<Fitxer> actes = new ArrayList<Fitxer>();
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		actes =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/CFO/", true);
+		return actes;
+	}	
+	public static List<Fitxer> getDocumentMedicioGeneralSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
+		List<Fitxer> actes = new ArrayList<Fitxer>();
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		actes =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Medició general/", true);
+		return actes;
+	}	
+	public static List<Fitxer> getDocumentRepresentacioRecepcioSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
+		List<Fitxer> actes = new ArrayList<Fitxer>();
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		actes =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Representació Recepció/", true);
+		return actes;
+	}	
+	public static List<Fitxer> getDocumentConvocatoriaRecepcioSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
+		List<Fitxer> actes = new ArrayList<Fitxer>();
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		actes =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Convocatòria recepció/", true);
+		return actes;
+	}	
+	public static List<Fitxer> getDocumentLiquidacioAvalSignat(Connection conn, String idIncidencia, String idActuacio, String idInforme) throws SQLException, NamingException {
+		List<Fitxer> actes = new ArrayList<Fitxer>();
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String ruta =  (String)env.lookup("ruta_base");
+		actes =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Liquidacio aval/", true);
+		return actes;
+	}	
 	
 	public static List<InformeActuacio> getInformesActuacio(Connection conn, String idActuacio) throws SQLException, NamingException {
 		 List<InformeActuacio> informes = new ArrayList<InformeActuacio>();
@@ -764,8 +931,9 @@ public class InformeCore {
 	
 	public static List<InformeActuacio> getInformesLlicencia(Connection conn, String estat, String tipus) throws SQLException, NamingException {
 		List<InformeActuacio> informes = new ArrayList<InformeActuacio>();
-		String sql = "SELECT i.idinf AS idinf, i.idactuacio AS idactuacio, i.expcontratacio AS expcontratacio, c.nom AS nomcentre, c.localitat AS localitatcentre, c.municipi As municipicentre, l.tipus AS tipus, l.datasolicitud AS datasolicitud, l.dataconcesio AS dataconcesio, l.datapagadataxa AS datapagadataxa, l.taxa AS taxa, l.ico AS ico" 
-				+ " FROM public.tbl_informeactuacio i LEFT JOIN public.tbl_llicencia l ON i.expcontratacio = l.expcontratacio"
+		String sql = "SELECT i.idinf AS idinf, i.idactuacio AS idactuacio, i.expcontratacio AS expcontratacio, c.nom AS nomcentre, c.localitat AS localitatcentre, c.municipi As municipicentre, l.tipus AS tipus, l.datasolicitud AS datasolicitud, l.dataconcesio AS dataconcesio, l.datapagadataxa AS datapagadataxa, l.taxa AS taxa, l.ico AS ico, g.idpartida AS idpartida" 
+				+ " FROM public.tbl_informeactuacio i LEFT JOIN public.tbl_llicencia l ON i.idinf = l.expcontratacio"
+				+ " LEFT JOIN public.tbl_assignacionscredit g ON l.codi = g.idinf"
 				+ " LEFT JOIN public.tbl_actuacio a ON i.idactuacio = a.id"
 				+ " LEFT JOIN public.tbl_centres c ON a.idcentre = c.codi"
 				+ " WHERE l.codi IS NOT NULL";
@@ -797,7 +965,6 @@ public class InformeCore {
 			contVars += 1;
 		}		
 		ResultSet rs = pstm.executeQuery();
-		System.out.println(pstm.toString());
 		InformeActuacio informe = null;
 		Actuacio actuacio = null;
 		Expedient expedient = null;
@@ -816,6 +983,7 @@ public class InformeCore {
 			expedient = new Expedient();
 			expedient.setExpContratacio(rs.getString("expcontratacio"));
 			informe.setExpcontratacio(expedient);
+			informe.setIdInf(rs.getString("idinf"));
 			informe.setPropostaInformeSeleccionada(getPropostaSeleccionada(conn, rs.getString("idinf")));
 			llicencia = new Llicencia();
 			llicencia.setTipus(rs.getString("tipus"));
@@ -824,6 +992,7 @@ public class InformeCore {
 			llicencia.setPagamentTaxa(rs.getTimestamp("datapagadataxa"));
 			llicencia.setTaxa(rs.getDouble("taxa"));
 			llicencia.setIco(rs.getDouble("ico"));
+			llicencia.setIdPartida(rs.getString("idpartida"));
 			informe.setLlicencia(llicencia);
 			informes.add(informe);			
 		}
@@ -1010,7 +1179,6 @@ public class InformeCore {
 	}
 	
 	public static List<InformeActuacio> getInformesExpedients(Connection conn, String estat, String tipus, String contracte, double importObraMajor, String year) throws SQLException, NamingException {
-		System.out.println(new Date().toString());
 		List<InformeActuacio> expedientsList = new ArrayList<InformeActuacio>();
 		String sql = "SELECT idinf, idtasca, i.idincidencia AS idincidencia, idactuacio, i.usucre AS usucre, i.datacre AS datacre, usucapvalidacio, datacapvalidacio, comentaricap, i.usuaprovacio AS usuaprovacio, i.dataaprovacio AS dataaprovacio, i.notes AS notes, datapartidarebujada, motiupartidarebujada, i.tipo AS tipo, i.expcontratacio AS expcontratacio, datapd, tipopd, i.databoib AS databoib, recursadministratiu, estat, e.anulat AS anulat,  e.dataliquidacio AS dataliquidacio, e.dataretorngarantia AS dataretorngarantia, e.datarecepcio AS datarecepcio, e.datainiciexecucio AS datainiciexecucio, e.dataformalitzaciocontracte AS dataformalitzaciocontracte, e.dataadjudicacio AS dataadjudicacio, a.descripcio AS descripcioact, c.nom AS nomcentre, c.municipi AS municipicentre, c.localitat AS localitat"
 				+ " FROM public.tbl_informeactuacio i LEFT JOIN public.tbl_expedient e ON i.expcontratacio = e.expcontratacio"
@@ -1074,9 +1242,7 @@ public class InformeCore {
 			}			
 		}
 		sql += " ORDER BY datacre DESC, expcontratacio DESC";
-		System.out.println(sql);
 		pstm = conn.prepareStatement(sql);	
-		System.out.println(pstm.toString());
 		ResultSet rs = pstm.executeQuery();
 		InformeActuacio informe = null;
 		Actuacio actuacio = null;
@@ -1099,7 +1265,7 @@ public class InformeCore {
 			informe.setPropostaInformeSeleccionada(getPropostaSeleccionada(conn, rs.getString("idinf")));
 			informe.setDataAprovacio(rs.getTimestamp("dataaprovacio"));
 			informe.setOfertaSeleccionada(OfertaCore.findOfertaSeleccionada(conn, rs.getString("idinf")));
-			
+			informe.setLlistaFactures(FacturaCore.getFacturesInforme(conn, rs.getString("idinf")));
 			informe.setTipo(rs.getString("tipo"));
 			expedient = new Expedient();
 			expedient.setExpContratacio(rs.getString("expcontratacio"));
@@ -1119,7 +1285,6 @@ public class InformeCore {
 			
 			expedientsList.add(informe);
 		}
-		System.out.println(new Date().toString());
 		return expedientsList;
 	}
 	
@@ -1210,9 +1375,9 @@ public class InformeCore {
 		return informe;
 	}
 	
-	public static String afegirModificacioInforme(Connection conn, String idInforme, PropostaInforme proposta, Oferta oferta, User usuari) throws SQLException {
-		String sql = "INSERT INTO public.tbl_modificacioinforme(idmodificacio, idinforme, tipusobra, llicencia, tipusllicencia, pbase, iva, plic, cifempresa, termini, comentari, usucre, datacre, objecte)"
-					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, localtimestamp, ?);";
+	public static String afegirModificacioInforme(Connection conn, String idInforme, PropostaInforme proposta, Oferta oferta, User usuari, String tipusModificacio) throws SQLException {
+		String sql = "INSERT INTO public.tbl_modificacioinforme(idmodificacio, idinforme, tipusobra, llicencia, tipusllicencia, pbase, iva, plic, cifempresa, termini, comentari, usucre, datacre, objecte, tipusmodificacio)"
+					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, localtimestamp, ?, ?);";
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		String idModificacio = getNovaModificacio(conn);
 		pstm.setString(1, idModificacio);
@@ -1228,13 +1393,14 @@ public class InformeCore {
 		pstm.setString(11, oferta.getComentari());
 		pstm.setInt(12, usuari.getIdUsuari());
 		pstm.setString(13, proposta.getObjecte());
+		pstm.setString(14, tipusModificacio);
 		pstm.executeUpdate();
 		return idModificacio;
 	}
 	
 	public static InformeActuacio getMoficacioInforme(Connection conn, String idInforme) throws SQLException, NamingException {
 		InformeActuacio modificacio = new InformeActuacio();
-		String sql = "SELECT m.idmodificacio AS idmodificacio, m.idinforme AS idinforme, m.tipusobra AS tipusobra, m.llicencia AS llicencia, m.tipusllicencia AS tipusllicencia, m.pbase AS pbase, m.iva AS iva, m.plic AS plic, m.cifempresa AS cifempresa, m.termini AS termini, m.comentari AS comentari, m.usucre AS usucre, m.datacre AS datacre, m.objecte AS objecte , i.idincidencia AS idincidencia, i.idactuacio AS idactuacio, i.expcontratacio AS expcontratacio"
+		String sql = "SELECT m.idmodificacio AS idmodificacio, m.idinforme AS idinforme, m.tipusobra AS tipusobra, m.llicencia AS llicencia, m.tipusllicencia AS tipusllicencia, m.pbase AS pbase, m.iva AS iva, m.plic AS plic, m.cifempresa AS cifempresa, m.termini AS termini, m.comentari AS comentari, m.usucre AS usucre, m.datacre AS datacre, m.objecte AS objecte, m.tipusmodificacio AS tipusmodificacio, i.idincidencia AS idincidencia, i.idactuacio AS idactuacio, i.expcontratacio AS expcontratacio"
 					+ " FROM public.tbl_modificacioinforme m LEFT JOIN public.tbl_informeactuacio i ON m.idinforme = i.idinf"
 					+ " WHERE m.idmodificacio = ?";		
 		PreparedStatement pstm = conn.prepareStatement(sql);
@@ -1253,6 +1419,7 @@ public class InformeCore {
 			propostaModificacio.setTipusObra(rs.getString("tipusobra"));
 			propostaModificacio.setLlicencia(rs.getBoolean("llicencia"));
 			propostaModificacio.setTipusLlicencia(rs.getString("tipusLlicencia"));	
+			propostaModificacio.setSeleccionada(true);
 			propostaModificacio.setTermini(rs.getString("termini"));
 			propostaModificacio.setPbase(rs.getDouble("pbase"));
 			propostaModificacio.setIva(rs.getDouble("iva"));
@@ -1262,22 +1429,26 @@ public class InformeCore {
 			ofertaModificacio.setIva(rs.getDouble("iva"));
 			ofertaModificacio.setPlic(rs.getDouble("plic"));
 			ofertaModificacio.setCifEmpresa(rs.getString("cifempresa"));
-			ofertaModificacio.setNomEmpresa(EmpresaCore.findEmpresa(conn,rs.getString("cifEmpresa")).getName());
+			if (rs.getString("cifEmpresa") != null && !rs.getString("cifEmpresa").isEmpty()) {
+				ofertaModificacio.setNomEmpresa(EmpresaCore.findEmpresa(conn,rs.getString("cifEmpresa")).getName());
+			}
 			ofertaModificacio.setComentari(rs.getString("comentari"));
 			modificacio.setPropostaInformeSeleccionada(propostaModificacio);
 			modificacio.setOfertaSeleccionada(ofertaModificacio);
 			modificacio.setAssignacioCredit(CreditCore.getPartidaInforme(conn, rs.getString("idmodificacio")));	
 			modificacio.setExpcontratacio(ExpedientCore.findExpedient(conn, rs.getString("expcontratacio")));
 			modificacio.setActuacio(ActuacioCore.findActuacio(conn, rs.getString("idactuacio")));
+			modificacio.setTipusModificacio(rs.getString("tipusmodificacio"));
 		}
 		return modificacio;
 	}
 	
-	public static List<InformeActuacio> getMoficacionsInforme(Connection conn, String idInforme) throws SQLException, NamingException {
-		List<InformeActuacio> modificacionsList = new ArrayList<InformeActuacio>();
-		String sql = "SELECT m.idmodificacio AS idmodificacio, m.idinforme AS idinforme, m.tipusobra AS tipusobra, m.llicencia AS llicencia, m.tipusllicencia AS tipusllicencia, m.pbase AS pbase, m.iva AS iva, m.plic AS plic, m.cifempresa AS cifempresa, m.termini AS termini, m.comentari AS comentari, m.usucre AS usucre, m.datacre AS datacre, m.objecte AS objecte , i.idincidencia AS idincidencia, i.idactuacio AS idactuacio, i.expcontratacio AS expcontratacio, i.idinf AS idinforme"
-					+ " FROM public.tbl_modificacioinforme m LEFT JOIN public.tbl_informeactuacio i ON m.idinforme = i.idinf";
-		if (idInforme != null) sql += " WHERE m.idinforme = ?";		
+	public static List<InformeActuacio> getPenalitzacionsInforme(Connection conn, String idInforme) throws SQLException, NamingException {
+		List<InformeActuacio> penalitzacionsList = new ArrayList<InformeActuacio>();
+		String sql = "SELECT m.idmodificacio AS idmodificacio, m.idinforme AS idinforme, m.tipusobra AS tipusobra, m.llicencia AS llicencia, m.tipusllicencia AS tipusllicencia, m.pbase AS pbase, m.iva AS iva, m.plic AS plic, m.cifempresa AS cifempresa, m.termini AS termini, m.comentari AS comentari, m.usucre AS usucre, m.datacre AS datacre, m.objecte AS objecte, m.tipusmodificacio AS tipusmodificacio, i.idincidencia AS idincidencia, i.idactuacio AS idactuacio, i.expcontratacio AS expcontratacio, i.idinf AS idinforme"
+					+ " FROM public.tbl_modificacioinforme m LEFT JOIN public.tbl_informeactuacio i ON m.idinforme = i.idinf"
+					+ " WHERE m.tipusmodificacio = 'penalitzacio'";
+		if (idInforme != null) sql += " AND m.idinforme = ?";		
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		if (idInforme != null) pstm.setString(1, idInforme);
 		ResultSet rs = pstm.executeQuery();
@@ -1295,6 +1466,53 @@ public class InformeCore {
 			informeModificacio.setConformeAreaEconomivaPropostaActuacio(getAutorotizacioFinanceraInformeModificacio(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinforme"), rs.getString("idmodificacio")));
 			informeModificacio.setAutoritzacioPropostaDespesa(getAutorotizacioDespesaModificacio(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinforme"), rs.getString("idmodificacio")));
 			informeModificacio.setResolucioModificacio(getResolucioModificacio(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinforme"), rs.getString("idmodificacio")));
+			informeModificacio.setTipusModificacio(rs.getString("tipusmodificacio"));
+			propostaModificacio = informeModificacio.new PropostaInforme();
+			propostaModificacio.setObjecte(rs.getString("objecte"));
+			propostaModificacio.setTipusObra(rs.getString("tipusobra"));
+			propostaModificacio.setLlicencia(rs.getBoolean("llicencia"));
+			propostaModificacio.setTipusLlicencia(rs.getString("tipusLlicencia"));	
+			propostaModificacio.setTermini(rs.getString("termini"));
+			ofertaModificacio = new Oferta();
+			ofertaModificacio.setPbase(rs.getDouble("pbase"));
+			ofertaModificacio.setIva(rs.getDouble("iva"));
+			ofertaModificacio.setPlic(rs.getDouble("plic"));
+			ofertaModificacio.setCifEmpresa(rs.getString("cifempresa"));
+			if (rs.getString("cifEmpresa") != null && !rs.getString("cifEmpresa").isEmpty()) {
+				ofertaModificacio.setNomEmpresa(EmpresaCore.findEmpresa(conn,rs.getString("cifEmpresa")).getName());
+			}
+			ofertaModificacio.setComentari(rs.getString("comentari"));
+			informeModificacio.setPropostaInformeSeleccionada(propostaModificacio);
+			informeModificacio.setOfertaSeleccionada(ofertaModificacio);
+			penalitzacionsList.add(informeModificacio);
+		}
+		return penalitzacionsList;
+	}
+	
+	public static List<InformeActuacio> getMoficacionsInforme(Connection conn, String idInforme) throws SQLException, NamingException {
+		List<InformeActuacio> modificacionsList = new ArrayList<InformeActuacio>();
+		String sql = "SELECT m.idmodificacio AS idmodificacio, m.idinforme AS idinforme, m.tipusobra AS tipusobra, m.llicencia AS llicencia, m.tipusllicencia AS tipusllicencia, m.pbase AS pbase, m.iva AS iva, m.plic AS plic, m.cifempresa AS cifempresa, m.termini AS termini, m.comentari AS comentari, m.usucre AS usucre, m.datacre AS datacre, m.objecte AS objecte, m.tipusmodificacio AS tipusmodificacio, i.idincidencia AS idincidencia, i.idactuacio AS idactuacio, i.expcontratacio AS expcontratacio, i.idinf AS idinforme"
+					+ " FROM public.tbl_modificacioinforme m LEFT JOIN public.tbl_informeactuacio i ON m.idinforme = i.idinf"
+					+ " WHERE m.tipusmodificacio != 'penalitzacio'";
+		if (idInforme != null) sql += " AND m.idinforme = ?";		
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		if (idInforme != null) pstm.setString(1, idInforme);
+		ResultSet rs = pstm.executeQuery();
+		InformeActuacio informeModificacio = new InformeActuacio();
+		PropostaInforme propostaModificacio = null;
+		Oferta ofertaModificacio = new Oferta();
+		while (rs.next()) {
+			informeModificacio = new InformeActuacio();
+			informeModificacio.setExpcontratacio(ExpedientCore.findExpedient(conn, rs.getString("expcontratacio")));
+			informeModificacio.setActuacio(ActuacioCore.findActuacio(conn, rs.getString("idactuacio")));
+			informeModificacio.setIdInf(rs.getString("idmodificacio"));
+			informeModificacio.setUsuari(UsuariCore.findUsuariByID(conn, rs.getInt("usucre")));
+			informeModificacio.setDataCreacio(rs.getTimestamp("datacre"));
+			informeModificacio.setPropostaTecnica(getInformeModificacio(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinforme"), rs.getString("idmodificacio")));
+			informeModificacio.setConformeAreaEconomivaPropostaActuacio(getAutorotizacioFinanceraInformeModificacio(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinforme"), rs.getString("idmodificacio")));
+			informeModificacio.setAutoritzacioPropostaDespesa(getAutorotizacioDespesaModificacio(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinforme"), rs.getString("idmodificacio")));
+			informeModificacio.setResolucioModificacio(getResolucioModificacio(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinforme"), rs.getString("idmodificacio")));
+			informeModificacio.setTipusModificacio(rs.getString("tipusmodificacio"));
 			propostaModificacio = informeModificacio.new PropostaInforme();
 			propostaModificacio.setObjecte(rs.getString("objecte"));
 			propostaModificacio.setTipusObra(rs.getString("tipusobra"));
@@ -1343,13 +1561,13 @@ public class InformeCore {
 		return newCode;	
 	}
 	
-	public static Fitxer getInformeModificacio(Connection conn, String idIncidencia, String idActuacio, String idInforme, String idModificacio) throws SQLException, NamingException {
-		Fitxer informeModificacio = new Fitxer();
+	public static List<Fitxer> getInformeModificacio(Connection conn, String idIncidencia, String idActuacio, String idInforme, String idModificacio) throws SQLException, NamingException {
+		List<Fitxer> informeModificacio = new ArrayList<Fitxer>();
 		// Get the base naming context
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informeModificacio =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Modificacions/" + idModificacio + "/Informe/");
+		informeModificacio =  utils.Fitxers.ObtenirFitxers(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Modificacions/" + idModificacio + "/Informe/", true);
 		return informeModificacio;
 	}	
 	
@@ -1359,7 +1577,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informeModificacio =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Modificacions/" + idModificacio + "/Conforme àrea financera/");
+		informeModificacio =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Modificacions/" + idModificacio + "/Conforme àrea financera/", true);
 		return informeModificacio;
 	}	
 
@@ -1369,7 +1587,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informeModificacio =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Modificacions/" + idModificacio + "/Resolució/");
+		informeModificacio =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Modificacions/" + idModificacio + "/Resolució/", true);
 		return informeModificacio;
 	}
 		
@@ -1379,7 +1597,7 @@ public class InformeCore {
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
 		String ruta =  (String)env.lookup("ruta_base");
-		informeModificacio =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Modificacions/" + idModificacio + "/Autorització Despesa modificació/");
+		informeModificacio =  utils.Fitxers.ObtenirFitxer(ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Modificacions/" + idModificacio + "/Autorització Despesa modificació/", true);
 		return informeModificacio;
 	}
 	
@@ -1615,6 +1833,7 @@ public class InformeCore {
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setInt(1, idUsuari);	
 		ResultSet rs = pstm.executeQuery();
+		System.out.println(pstm.toString());
 		InformeActuacio informe = new InformeActuacio();
 		Expedient expcontratacio = new Expedient();
 		User usuari = new User();

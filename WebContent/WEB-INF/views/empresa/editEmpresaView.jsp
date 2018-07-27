@@ -147,9 +147,8 @@
 				                	<div class="row">
 				                		<label class="col-xs-2 control-label">Document:</label>
 				                		<c:forEach items="${empresa.documentsEscrituraList}" var="arxiu" >
-						            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
-											<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
-											<br>
+				                			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+						            		<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
 										</c:forEach>	
 				                	</div>
 				                	<div class="row">

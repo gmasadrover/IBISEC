@@ -68,21 +68,11 @@
 	<p>			                     				
 		<label>Comentari tècnic:</label> ${informePrevi.ofertaSeleccionada.comentari}
 	</p>
-	<c:if test="${informePrevi.propostaTecnica.ruta != null}">					
-             	<label>Informe justificatiu:</label>													                  	
-         		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.propostaTecnica.getEncodedRuta()}">
-			${informePrevi.propostaTecnica.nom}
-		</a>
-		<c:if test="${informePrevi.propostaTecnica.signat}">
-				<span class="glyphicon glyphicon-pencil signedFile"></span>
-		</c:if><br>
-		<div class="infoSign hidden">
-			<c:forEach items="${informePrevi.propostaTecnica.firmesList}" var="firma" >
-				<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-				<br>
-			</c:forEach>
-		</div>
-	</c:if>
+		<label>Informe justificatiu:</label>	
+		<c:forEach items="${informePrevi.propostaTecnica}" var="arxiu" >	
+			<c:set var="arxiu" value="${arxiu}" scope="request"/>				
+            <jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+	 	</c:forEach>
  </div>
 
 

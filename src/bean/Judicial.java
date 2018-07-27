@@ -82,8 +82,9 @@ public class Judicial {
 			if ("dipso".equals(this.tipus)) return "Disposició Judicial";
 			if ("propis".equals(this.tipus)) return "Propis IBISEC";
 			if ("advoc".equals(this.tipus)) return "Advocacia";
+			if ("advoc".equals(this.tipus)) return "Advocacia";
 			if ("citnoperso".equals(this.tipus)) return "Citats no personats";
-			return "";
+			return this.tipus;
 		}
 		public void setTipus(String tipus) {
 			this.tipus = tipus;

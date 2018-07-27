@@ -75,7 +75,7 @@
 	                	</div> 
 	                </div>
 	                <div class="col-md-2">	
-	                	<c:if test="${tasca.tipus!='vacances' && tasca.tipus!='judicial' && tasca.tipus!='factura'}">
+	                	<c:if test="${tasca.tipus!='notificacio' && tasca.tipus!='vacances' && tasca.tipus!='judicial' && tasca.tipus!='pagamentJudicial' && tasca.tipus!='factura'}">
 		                	<div class="checkbox">
 		                        <label>
 		                          	<input id="seguimentActuacio" data-idactuacio="${actuacio.referencia}" data-idusuari="${idUsuariLogg}" data-seguir="${!actuacio.seguiment}" type="checkbox" ${actuacio.seguiment ? 'checked' : ''}> Seguir Actuació
@@ -89,14 +89,14 @@
                			<p style="color: red;">${errorString}</p>
                		</div>
                	</div>
-	            <c:if test="${tasca.tipus!='vacances' && tasca.tipus!='judicial' && tasca.tipus!='factura'}">					
+	            <c:if test="${tasca.tipus!='notificacio' && tasca.tipus!='vacances' && tasca.tipus!='judicial' && tasca.tipus!='pagamentJudicial' && tasca.tipus!='factura'}">					
 					<div class="row">					
 		                <div class="col-md-12">	                	
 		                	<jsp:include page="../actuacio/include/_resumActuacio.jsp"></jsp:include>		                	
 		                </div>				            	
 					</div>						
 				</c:if>
-				<c:if test="${tasca.tipus=='judicial'}">					
+				<c:if test="${tasca.tipus=='judicial' || tasca.tipus=='pagamentJudicial'}">					
 					<div class="row">					
 		                <div class="col-md-12">	                	
 		                	<a target="_blanck" href="procediment?ref=${tasca.idinforme}">Anar al procediment -></a><br>              	
@@ -135,35 +135,21 @@
 									<div class="col-md-12">
 										<p>Arxius adjunts:</p>
 							            <c:forEach items="${tasca.documents}" var="arxiu" >
-							           		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
-												${arxiu.getDataString()} - ${arxiu.nom}
-											</a>
-											<c:if test="${arxiu.signat}">
-													<span class="glyphicon glyphicon-pencil signedFile"></span>
-											</c:if>
-											<c:if test="${esCap}">
-												<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
-											</c:if>
-											<br>
-											<div class="infoSign hidden">
-												<c:forEach items="${arxiu.firmesList}" var="firma" >
-													<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-													<br>
-												</c:forEach>
-											</div>
+							            	<c:set var="arxiu" value="${arxiu}" scope="request"/> 	
+							            	<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
 										</c:forEach>
 									</div>
 								</div>
 							</div>
 						</c:if>	                     
-                        <c:if test="${tasca.activa && tasca.tipus != 'notificacio'}">		  
+                        <c:if test="${tasca.activa}">		  
                         	<div class="panel panel-info">
                         		<c:if test="${tasca.tipus != 'generic'}">
 	                        		<div>
 		                        		<c:choose>
 										    <c:when test="${tasca.tipus=='infPrev' || tasca.tipus == 'solInfPrev' || tasca.tipus == 'vistInfPrev'}">
 										   		<c:if test="${canRealitzarTasca}">
-											    	<div class="panel-body">
+											    	<div class="panel-body">											    	   
 														<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddInforme">
 															<input type="hidden" id="infPrev" name=infPrev value="${propostesInformeList.size()}">
 															<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
@@ -245,9 +231,13 @@
 										    <c:when test="${tasca.tipus=='modificacio'}">
 										    	<jsp:include page="include/_modificacioInforme.jsp"></jsp:include>
 										    </c:when>
+										     <c:when test="${tasca.tipus=='penalitzacio'}">
+										    	<jsp:include page="include/_modificacioPenalitzacio.jsp"></jsp:include>
+										    </c:when>
 										    <c:when test="${tasca.tipus=='autoritModificacio'}">
 										    	<jsp:include page="include/_modificacioInformeJur.jsp"></jsp:include>
 										    </c:when>
+										    
 										    <c:when test="${tasca.tipus=='resPartida' || tasca.tipus=='resPartidaModificacio'}">
 										    	<jsp:include page="include/_reservaPartida.jsp"></jsp:include>
 										    </c:when>
@@ -289,6 +279,9 @@
 										    <c:when test="${tasca.tipus=='facturaConformada'}">
 										    	<jsp:include page="include/_facturaConformada.jsp"></jsp:include>
 										    </c:when>
+										    <c:when test="${tasca.tipus=='pagamentJudicial'}">
+										    	<jsp:include page="include/_pagamentJudicial.jsp"></jsp:include>
+										    </c:when>
 										</c:choose>
 									</div>
 								</c:if>
@@ -305,7 +298,7 @@
 					                    					<textarea class="form-control" name="comentari" placeholder="comentari" rows="3"></textarea> 
 					                      				</div>
 					                      			</div>
-					                      			<c:if test="${tasca.tipus!='infPrev' && tasca.tipus!='solInfPrev' && tasca.tipus!='vistInfPrev' && tasca.tipus!='doctecnica' && tasca.tipus!='vistDocTecnica'}">
+					                      			<c:if test="${tasca.tipus!='infPrev' && tasca.tipus!='solInfPrev' && tasca.tipus!='vistInfPrev' && tasca.tipus!='doctecnica' && tasca.tipus!='vistDocTecnica' && tasca.tipus!='pagamentJudicial'}">
 						                      			<div class="row margin_top10">
 												        	<div class="col-md-12">		
 									                            <div class="col-xs-10">   
@@ -333,7 +326,8 @@
 								                                		<option value='instalacions'>Instal·lacions i Manteniment</option> 
 									                                </select>
 								                             	</div>
-								                       			<input class="btn btn-success" type="submit" name="reasignar" value="Reassignar">
+								                             	<input name="urgent" type="checkbox"> Urgent  
+											                    <input class="btn btn-success" type="submit" name="reasignar" value="Reassignar">
 															</div>
 												        </div>
 											        </c:if>
@@ -341,7 +335,7 @@
 											        	<div class="col-md-6"></div>
 											            <div><input class="btn btn-primary" type="submit" name="afegirComentari" value="Només afegir comentari"></div>
 											        </div>
-											        <c:if test="${esCap || tasca.tipus=='vacances' || tasca.tipus=='generic'}">
+											        <c:if test="${esCap || tasca.tipus=='vacances' || tasca.tipus=='generic' || tasca.tipus=='certificacioFirmada' || tasca.tipus=='firmaContracte'}">
 												        <div class="row margin_top10">
 												        	<div class="col-md-6"></div>
 												            <div><input class="btn btn-danger" type="submit" name="tancar" value="Tancar"></div>
@@ -350,7 +344,7 @@
 											    </div>
 					                       	</div>		                       	
 				                       	</form>	
-				                       	<c:if test="${isGerencia}">	
+				                       	<c:if test="${isGerencia && tasca.tipus != 'notificacio'}">	
 			                    			<div class="separator"></div>		                    			
 			                    			<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoCanvisTasca">
 				                    			<input class="hidden" name="idTasca" value="${tasca.idTasca}">	

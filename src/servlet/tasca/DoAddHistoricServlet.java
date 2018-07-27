@@ -56,6 +56,7 @@ public class DoAddHistoricServlet extends HttpServlet {
 	    String idIncidencia = multipartParams.getParametres().get("idIncidencia");
 	    String idActuacio = multipartParams.getParametres().get("idActuacio");
 	    String reasignar = multipartParams.getParametres().get("reasignar");
+	    boolean urgent = "on".equals(multipartParams.getParametres().get("urgent"));
 	    String tancar = multipartParams.getParametres().get("tancar");
 	    User Usuari = MyUtils.getLoginedUser(request.getSession());	 
 	    String comentari = multipartParams.getParametres().get("comentari");
@@ -66,7 +67,7 @@ public class DoAddHistoricServlet extends HttpServlet {
 	   	//Registrar comentari;	   
 	   	try {
 	   		if (reasignar != null) {
-	   			comentari = comentari + "<br><span class='missatgeAutomatic'>Es reassigna la tasca</span>";
+	   			comentari = comentari + "<br><span class='missatgeAutomatic'>Es reassigna la tasca</span>";	   			
 	   		}else if (tancar != null) {
 	   			comentari = comentari + "<br><span class='missatgeAutomatic'>Es tanca la tasca</span>";
 	   		}
@@ -142,7 +143,15 @@ public class DoAddHistoricServlet extends HttpServlet {
    							tipus = "doctecnica";
    						}
    					}
-   					TascaCore.reasignar(conn, Integer.parseInt(idUsuariNou), Integer.parseInt(idTasca), tipus);
+   					String descripcio = tasca.getDescripcio();
+   					if (urgent) {
+   						if (!descripcio.contains("URGENT - ")) {
+   							descripcio = "URGENT - " + descripcio;
+   						}
+   					} else {
+   						descripcio = descripcio.replaceAll("URGENT - ", "");
+   					}
+   					TascaCore.reasignar(conn, Integer.parseInt(idUsuariNou), Integer.parseInt(idTasca), tipus, descripcio);
 	   				
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block

@@ -11,6 +11,7 @@
 		<table class="table table-striped table-bordered">
 		    <thead>
 		        <tr>
+		            <th>Oferta (Sense IVA)</th>
 		            <th>Oferta</th>
 		            <th>Licitador</th>			                                        
 		        </tr>
@@ -18,7 +19,8 @@
 		    <tbody>
 		    	<c:forEach items="${ofertes}" var="oferta" >
 					<tr ${oferta.seleccionada ? "class='success'" : ""}>	
-						<td>${oferta.getPlicFormat()}</td>							          	
+						<td>${oferta.getPbaseFormat()}</td>		
+						<td>${oferta.getPlicFormat()}</td>						          	
 						<td><a href='empresa?cif=${oferta.cifEmpresa}'>${oferta.nomEmpresa} (${oferta.cifEmpresa})</a></td>
 		    		</tr>
 				</c:forEach>
@@ -40,7 +42,16 @@
 	<p>
 		<label>Proposta tècnica: ${estatActuacio}</label> ${ofertaSeleccionada.comentari} 
 	</p>
-	<c:if test="${informePrevi.propostaTecnica.ruta != null}">
+	<p>
+		<c:forEach items="${informePrevi.propostaTecnica}" var="arxiu" >	
+			<c:set var="arxiu" value="${arxiu}" scope="request"/>											
+        	<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+		</c:forEach>
+	</p>
+	<p>
+		<label>Import total adjudicat menor a l'empresa expedients iniciats després de 09/03/2018</label> ${totalAdjudicatEmpresa} € (SENSE IVA)
+	</p>
+	<c:if test="${informePrevi.propostaTecnica.size() > 0}">
 		<div class="panel-body">										    		
     		<div class="col-md-12">
     			<c:if test="${informePrevi.autoritzacioPropostaDespesa.ruta != null}">
@@ -50,13 +61,9 @@
 							${informePrevi.autoritzacioPropostaDespesa.nom}
 						</a>	
 						<c:if test="${informePrevi.autoritzacioPropostaDespesa.signat}">
-								<span class="glyphicon glyphicon-pencil signedFile"></span>
+								<span data-ruta="${informePrevi.autoritzacioPropostaDespesa.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 						</c:if><br>
-						<div class="infoSign hidden">
-							<c:forEach items="${informePrevi.autoritzacioPropostaDespesa.firmesList}" var="firma" >
-								<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-								<br>
-							</c:forEach>
+						<div class="infoSign hidden">							
 						</div>
 					</div>	
 				</c:if>            	
@@ -102,17 +109,13 @@
 					${informePrevi.autoritzacioPropostaDespesa.nom}
 				</a>	
 				<c:if test="${informePrevi.autoritzacioPropostaDespesa.signat}">
-					<span class="glyphicon glyphicon-pencil signedFile"></span>
+					<span data-ruta="${informePrevi.autoritzacioPropostaDespesa.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 				</c:if>
 				<c:if test="${informePrevi.autoritzacioPropostaDespesa.ruta != null}">
 					<span data-ruta="${informePrevi.autoritzacioPropostaDespesa.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
 				</c:if>
 				<br>
 				<div class="infoSign hidden">
-					<c:forEach items="${informePrevi.autoritzacioPropostaDespesa.firmesList}" var="firma" >
-						<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-						<br>
-					</c:forEach>
 				</div>	
 			</div>																
 			<div class="col-md-8">

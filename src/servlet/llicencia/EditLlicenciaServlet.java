@@ -19,6 +19,7 @@ import bean.ControlPage.SectionPage;
 import core.ActuacioCore;
 import core.ControlPageCore;
 import core.ExpedientCore;
+import core.InformeCore;
 import core.LlicenciaCore;
 import core.UsuariCore;
 import utils.MyUtils;
@@ -50,17 +51,18 @@ public class EditLlicenciaServlet extends HttpServlet {
     		response.sendRedirect(request.getContextPath() + "/");	 
  	   	}else{
 			String codi = request.getParameter("codi");
-			String expContractacio = request.getParameter("exp");
+			String idInforme = request.getParameter("exp");
 			String from = request.getParameter("from"); 
+			String mode = request.getParameter("mode");
 	        Llicencia llicencia = new Llicencia();	
 	        Actuacio actuacio = new Actuacio();	
 	        String errorString = null;	 
 	        try {
 	        	if (codi == null || codi.isEmpty()) {
-	        		codi = LlicenciaCore.novaLlicencia(conn, expContractacio, "");
+	        		codi = LlicenciaCore.novaLlicencia(conn, idInforme, "");
 	        	}
-	            llicencia = LlicenciaCore.findLlicencia(conn, codi);
-	            actuacio = ActuacioCore.findActuacio(conn, ExpedientCore.findExpedient(conn, llicencia.getCodiExpedient()).getIdActuacio());
+	        	actuacio = InformeCore.getInformePrevi(conn, idInforme, false).getActuacio();
+	            llicencia = LlicenciaCore.findLlicencia(conn, codi, actuacio.getIdIncidencia(), idInforme);	            
 	        } catch (SQLException | NamingException e) {
 	            e.printStackTrace();
 	            errorString = e.getMessage();
@@ -77,9 +79,11 @@ public class EditLlicenciaServlet extends HttpServlet {
 	 
 	        // Store errorString in request attribute, before forward to views.
 	        request.setAttribute("errorString", errorString);
+	        request.setAttribute("idInforme", idInforme);
 	        request.setAttribute("llicencia", llicencia);
 	        request.setAttribute("from", from);
 	        request.setAttribute("actuacio", actuacio);
+	        request.setAttribute("mode", mode);
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"llicencies"));
 	        
 	        RequestDispatcher dispatcher = request.getServletContext()

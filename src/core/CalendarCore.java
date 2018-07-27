@@ -48,37 +48,15 @@ public class CalendarCore {
 	
 	public static String getDiesPossibles() {
 		String dies = "";
-		Calendar cal = Calendar.getInstance();	  
-		cal.add(Calendar.DATE, 1);
-		if (cal.get(Calendar.DAY_OF_WEEK) == 7) {
-			cal.add(Calendar.DATE, 1);
-			cal.add(Calendar.DATE, 1);
-		}
-		dies = "<option value='" + cal.get(Calendar.DAY_OF_WEEK) + "#" + cal.get(Calendar.WEEK_OF_YEAR) + "#" + cal.get(Calendar.YEAR) + "'>" + getDiaSetmana(cal.get(Calendar.DAY_OF_WEEK)) + " " + cal.get(Calendar.DAY_OF_MONTH) + "</option>";
-		cal.add(Calendar.DATE, 1);
-		if (cal.get(Calendar.DAY_OF_WEEK) == 7) {
-			cal.add(Calendar.DATE, 1);
+		Calendar cal = Calendar.getInstance();	 
+		for (int i = 0; i <= 5; i++) {		
+			System.out.println("ENTRA: " + i);
+			if (cal.get(Calendar.DAY_OF_WEEK) == 7) {
+				cal.add(Calendar.DATE, 2);
+			}
+			dies += "<option value='" + cal.get(Calendar.DAY_OF_WEEK) + "#" + cal.get(Calendar.WEEK_OF_YEAR) + "#" + cal.get(Calendar.YEAR) + "'>" + getDiaSetmana(cal.get(Calendar.DAY_OF_WEEK)) + " " + cal.get(Calendar.DAY_OF_MONTH) + "</option>";
 			cal.add(Calendar.DATE, 1);
 		}
-        dies += "<option value='" + cal.get(Calendar.DAY_OF_WEEK) + "#" + cal.get(Calendar.WEEK_OF_YEAR) + "#" + cal.get(Calendar.YEAR) + "'>" + getDiaSetmana(cal.get(Calendar.DAY_OF_WEEK)) + " " + cal.get(Calendar.DAY_OF_MONTH) + "</option>";
-        cal.add(Calendar.DATE, 1);
-        if (cal.get(Calendar.DAY_OF_WEEK) == 7) {
-			cal.add(Calendar.DATE, 1);
-			cal.add(Calendar.DATE, 1);
-		}
-        dies += "<option value='" + cal.get(Calendar.DAY_OF_WEEK) + "#" + cal.get(Calendar.WEEK_OF_YEAR) + "#" + cal.get(Calendar.YEAR) + "'>" + getDiaSetmana(cal.get(Calendar.DAY_OF_WEEK)) + " " + cal.get(Calendar.DAY_OF_MONTH) + "</option>";
-        cal.add(Calendar.DATE, 1);
-        if (cal.get(Calendar.DAY_OF_WEEK) == 7) {
-			cal.add(Calendar.DATE, 1);
-			cal.add(Calendar.DATE, 1);
-		}
-        dies += "<option value='" + cal.get(Calendar.DAY_OF_WEEK) + "#" + cal.get(Calendar.WEEK_OF_YEAR) + "#" + cal.get(Calendar.YEAR) + "'>" + getDiaSetmana(cal.get(Calendar.DAY_OF_WEEK)) + " " + cal.get(Calendar.DAY_OF_MONTH) + "</option>";
-        cal.add(Calendar.DATE, 1);
-        if (cal.get(Calendar.DAY_OF_WEEK) == 7) {
-			cal.add(Calendar.DATE, 1);
-			cal.add(Calendar.DATE, 1);
-		}
-        dies += "<option value='" + cal.get(Calendar.DAY_OF_WEEK) + "#" + cal.get(Calendar.WEEK_OF_YEAR) + "#" + cal.get(Calendar.YEAR) + "'>" + getDiaSetmana(cal.get(Calendar.DAY_OF_WEEK)) + " " + cal.get(Calendar.DAY_OF_MONTH) + "</option>";
 		return dies;
 	}
 	
@@ -86,16 +64,18 @@ public class CalendarCore {
 		boolean potReservar = true;
 		String sql = "SELECT setmana"
 				+ " FROM public.tbl_vehicles"
-				+ " WHERE setmana = ? AND dia = ? AND hora >= ? AND hora <= ? AND year = ? LIMIT 1";
+				+ " WHERE setmana = ? AND dia = ? AND hora >= ? AND hora <= ? AND year = ? AND vehicle = ? LIMIT 1";
 		PreparedStatement pstm;
 		pstm = conn.prepareStatement(sql);
 		pstm.setInt(1, setmana);	
 		pstm.setInt(2, dia);
 		pstm.setInt(3, horaIni);
-		if (horaIni < horaFi) horaFi = -1;
+		if (horaFi < horaIni) horaFi = horaIni;
 		pstm.setInt(4, horaFi);
 		pstm.setInt(5, year);
+		pstm.setString(6, vehicle);
 		ResultSet rs = pstm.executeQuery();
+		System.out.println(pstm.toString());
 		if (rs.next()) potReservar = false;
 		sql = "SELECT setmana"
 				+ " FROM public.tbl_vehicles"
@@ -206,6 +186,9 @@ public class CalendarCore {
 				if (reserva.getVehicle().equals("cotxe")) {
 					horesFormat = ReservaVehicle.horesCotxe[reserva.getHora()-1];
 					vehicle = " del cotxe";
+				} else if (reserva.getVehicle().equals("cotxeElectric")) {
+					horesFormat = ReservaVehicle.horesCotxeElectric[reserva.getHora()-1];
+					vehicle = " del cotxe elèctric";
 				} else {
 					horesFormat = ReservaVehicle.horesFurgoneta[reserva.getHora()-1];
 					vehicle = " de la furgoneta";
@@ -215,7 +198,9 @@ public class CalendarCore {
 			}
 			if (reserva.getVehicle().equals("cotxe")) {
 				horaFinal = ReservaVehicle.horesCotxe[reserva.getHora()];
-			} else {
+			} else if (reserva.getVehicle().equals("cotxeElectric")) {
+				horaFinal = ReservaVehicle.horesCotxeElectric[reserva.getHora()];
+			} else{
 				horaFinal = ReservaVehicle.horesFurgoneta[reserva.getHora()];
 			}
 			reservaAnt = reserva;

@@ -68,7 +68,6 @@ public class DoAddInformeServlet extends HttpServlet {
 	    String ipRemote = request.getRemoteAddr();
 		if (guardar != null) {
 			try {
-				System.out.println(idInformePrevi);
 				String msg = "S'ha afegit l'informe";
 				if (idInformePrevi == null || idInformePrevi.isEmpty() || idInformePrevi.equals("0")) {
 					Actuacio actuacio = new Actuacio();
@@ -83,7 +82,7 @@ public class DoAddInformeServlet extends HttpServlet {
 		   			InformeCore.modificarInforme(conn, informe, Usuari.getIdUsuari());
 		   			msg = "S'ha modificat l'informe";	   		
 				}				
-				Fitxers.guardarFitxer(conn, multipartParams.getFitxers(), idIncidencia, idActuacio, "", String.valueOf(idTasca), "", idInformePrevi, "Informe prèvi", Usuari.getIdUsuari());
+				Fitxers.guardarFitxer(conn, multipartParams.getFitxers(), idIncidencia, idActuacio, "", String.valueOf(idTasca), "", idInformePrevi, "Informe previ", Usuari.getIdUsuari());
 				TascaCore.nouHistoric(conn, String.valueOf(idTasca), msg, Usuari.getIdUsuari(), ipRemote, "automatic");	
 		   		if (idActuacio != "") idIncidencia = String.valueOf(ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia());
 			} catch (NamingException | SQLException e) {
@@ -109,7 +108,7 @@ public class DoAddInformeServlet extends HttpServlet {
 				String comentariGerencia = multipartParams.getParametres().get("comentariGerencia");
 				TascaCore.nouHistoric(conn, String.valueOf(idTasca), comentariGerencia, Usuari.getIdUsuari(), ipRemote, "manual");	
 				int usuariTasca = UsuariCore.finCap(conn, informe.getUsuari().getDepartament()).getIdUsuari();
-				TascaCore.reasignar(conn, usuariTasca, idTasca, "doctecnica");
+				TascaCore.reasignar(conn, usuariTasca, idTasca, "doctecnica", "Redacció documentació tècnica");
 				TascaCore.assignarPrioritat(conn, idTasca, prioritat);
 			} catch (SQLException | NamingException e) {
 				e.printStackTrace();

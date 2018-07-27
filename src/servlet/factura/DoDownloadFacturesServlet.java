@@ -62,9 +62,9 @@ public class DoDownloadFacturesServlet extends HttpServlet {
 		    try {
 				List<Factura> factures = FacturaCore.getFacturesConformadesPend(conn);
 				for (Factura factura: factures) {
-					 if (factura.getArxiu() != null && factura.getArxiu().getRuta() != null) {
+					 if (factura.getFactura() != null && factura.getFactura().getRuta() != null) {
 						 FacturaCore.descarregada(conn, factura.getIdFactura());
-						 if (!filenames.contains(factura.getArxiu().getRuta())) filenames.add(factura.getArxiu().getRuta());
+						 if (!filenames.contains(factura.getFactura().getRuta())) filenames.add(factura.getFactura().getRuta());
 					 }
 				}
 			} catch (SQLException | NamingException e) {

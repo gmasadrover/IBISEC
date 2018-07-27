@@ -1,6 +1,7 @@
 package bean;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -9,6 +10,7 @@ import utils.Fitxers;
 
 public class Llicencia {
 	private String codiExpedient;
+	private String idPartida;
 	private String codi;
 	private String tipus;
 	private double taxa;
@@ -19,6 +21,10 @@ public class Llicencia {
 	private Date pagamentTaxa;
 	private Date pagamentICO;
 	private List<Fitxers.Fitxer> arxius;
+	private List<Fitxers.Fitxer> documentSolLlicencia;
+	private List<Fitxers.Fitxer> documentConcessioLlicencia;
+	private List<Fitxers.Fitxer> documentPagamentLlicencia;
+	private List<Fitxers.Fitxer> documentTitolHabilitant;
 	
 	public Llicencia() {
 		
@@ -103,12 +109,22 @@ public class Llicencia {
 		return taxa;
 	}
 
+	public String getTaxaFormat(){
+		DecimalFormat num = new DecimalFormat("#,##0.00");
+	    return num.format(this.taxa) + '€';
+	}
+	
 	public void setTaxa(double taxa) {
 		this.taxa = taxa;
 	}
 
 	public double getIco() {
 		return ico;
+	}
+	
+	public String getIcoFormat(){
+		DecimalFormat num = new DecimalFormat("#,##0.00");
+	    return num.format(this.ico) + '€';
 	}
 
 	public void setIco(double ico) {
@@ -151,5 +167,45 @@ public class Llicencia {
 	
 	public void setPagamentICO(Date pagamentICO) {
 		this.pagamentICO = pagamentICO;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentSolLlicencia() {
+		return documentSolLlicencia;
+	}
+
+	public void setDocumentSolLlicencia(List<Fitxers.Fitxer> documentSolLlicencia) {
+		this.documentSolLlicencia = documentSolLlicencia;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentConcessioLlicencia() {
+		return documentConcessioLlicencia;
+	}
+
+	public void setDocumentConcessioLlicencia(List<Fitxers.Fitxer> documentConcessioLlicencia) {
+		this.documentConcessioLlicencia = documentConcessioLlicencia;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentPagamentLlicencia() {
+		return documentPagamentLlicencia;
+	}
+
+	public void setDocumentPagamentLlicencia(List<Fitxers.Fitxer> documentPagamentLlicencia) {
+		this.documentPagamentLlicencia = documentPagamentLlicencia;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentTitolHabilitant() {
+		return documentTitolHabilitant;
+	}
+
+	public void setDocumentTitolHabilitant(List<Fitxers.Fitxer> documentTitolHabilitant) {
+		this.documentTitolHabilitant = documentTitolHabilitant;
+	}
+
+	public String getIdPartida() {
+		return idPartida;
+	}
+
+	public void setIdPartida(String idPartida) {
+		this.idPartida = idPartida;
 	}
 }

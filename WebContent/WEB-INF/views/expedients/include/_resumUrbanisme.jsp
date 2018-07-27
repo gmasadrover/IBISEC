@@ -9,42 +9,112 @@
 	<div class="col-md-12">
 		<p> 
        		<label>Tipus: </label> ${informePrevi.llicencia.getTipusFormat()}
-       	</p> 
-       	<p> 
-       		<label>Data sol·licitud: </label> ${informePrevi.llicencia.getDataPeticioString()}
-       	</p>   
-       	<p> 
-       		<label>Data concesió: </label> ${informePrevi.llicencia.getDataConcesioString()}
-       	</p>    
-       	<p> 
-       		<label>Data pagament taxa: </label> ${informePrevi.llicencia.getDataPagamentTaxaString()}
-       	</p> 
-       		<p> 
-       		<label>Data pagament ICO: </label> ${informePrevi.llicencia.getDataPagamentICOString()}
-       	</p> 
+       	</p>
+       	<c:choose>
+       		<c:when test="${informePrevi.llicencia.tipus == 'comun'}">
+       			<p>
+					<label>Sol·licitud Comunicació Prèvia:</label>
+				</p>	
+				<div class="row col-md-12">
+					<c:forEach items="${informePrevi.llicencia.documentSolLlicencia}" var="arxiu" >
+						<c:set var="arxiu" value="${arxiu}" scope="request"/>
+						<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+					</c:forEach>
+					<br>					            		
+				</div>
+				<p> 
+		       		<label>Data sol·licitud: </label> ${informePrevi.llicencia.getDataPeticioString()}
+		       	</p>
+       		</c:when>
+       		<c:otherwise>
+       			<p>
+					<label>Sol·licitud llicència:</label>
+				</p>	
+				<div class="row col-md-12">
+					<c:forEach items="${informePrevi.llicencia.documentSolLlicencia}" var="arxiu" >
+						<c:set var="arxiu" value="${arxiu}" scope="request"/>
+						<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+					</c:forEach>
+					<br>					            		
+				</div>
+				<p> 
+		       		<label>Data sol·licitud: </label> ${informePrevi.llicencia.getDataPeticioString()}
+		       	</p>  
+				<p>
+		       		<label>Concessió llicència:</label>
+		       	</p>
+				<div class="row col-md-12">
+					<c:forEach items="${informePrevi.llicencia.documentConcessioLlicencia}" var="arxiu" >
+						<c:set var="arxiu" value="${arxiu}" scope="request"/>
+						<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+					</c:forEach>
+					<br>					            		
+				</div>	    	 
+		       	<p> 
+		       		<label>Data concessió: </label> ${informePrevi.llicencia.getDataConcesioString()}
+		       	</p> 
+		       	<p> 
+		       		<label>Valor taxa: </label> ${informePrevi.llicencia.getTaxaFormat()}
+		       	</p>       	
+		       	<p> 
+		       		<label>Data pagament taxa: </label> ${informePrevi.llicencia.getDataPagamentTaxaString()}
+		       	</p> 
+		       	<p> 
+		       		<label>Valor ICO: </label> ${informePrevi.llicencia.getIcoFormat()}
+		       	</p>
+		       	<p> 
+		       		<label>Data pagament ICO: </label> ${informePrevi.llicencia.getDataPagamentICOString()}
+		       	</p> 
+		       	<p>
+		       		<label>Justificant pagament:</label>
+		       	</p>
+				<div class="row col-md-12">
+					<c:forEach items="${informePrevi.llicencia.documentPagamentLlicencia}" var="arxiu" >
+						<c:set var="arxiu" value="${arxiu}" scope="request"/>
+						<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+					</c:forEach>
+					<br>					            		
+				</div>
+				<p>
+		       		<label>Títol habilitant:</label>
+		       	</p>
+				<div class="row col-md-12">
+					<c:forEach items="${informePrevi.llicencia.documentTitolHabilitant}" var="arxiu" >
+						<c:set var="arxiu" value="${arxiu}" scope="request"/>
+						<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>
+					</c:forEach>
+					<br>					            		
+				</div>		
+       		</c:otherwise>   
+       	</c:choose> 
+       		
+       	
        	<p> 
        		<label>Observacions: </label> ${informePrevi.llicencia.observacio}
        	</p>  
+       	<p>
+        	<label>Partida despesa: </label> ${informePrevi.llicencia.getIdPartida()}
+        </p>     
 	</div>            		 
 </div>
+<c:if test="${canModificarUrbanisme}">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="row">
+	   			<c:if test="true">
+					<div class="col-md-offset-9 col-md-2 margin_top30">
+						<a href="editLlicencia?codi=${informePrevi.llicencia.codi}&mode=${informePrevi.llicencia.codi != null ? 'modificar' : 'crear'}&exp=${informePrevi.idInf}&from=expedient" class="btn btn-primary" role="button">Editar</a>
+					</div>
+				</c:if>
+	 		</div>       
+		</div>
+	</div>
+</c:if>
 <h2 class="margin_bottom30">Arxius</h2>
 <div class="row col-md-12 margin_bottom30">  
 	<c:forEach items="${informePrevi.llicencia.arxius}" var="arxiu" >
-		<div class="document">
-			<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
-				${arxiu.getDataString()} - ${arxiu.nom}
-			</a>
-			<c:if test="${arxiu.signat}">
-				<span class="glyphicon glyphicon-pencil signedFile"></span>
-			</c:if>			
-			<br>
-			<div class="infoSign hidden">
-				<c:forEach items="${arxiu.firmesList}" var="firma" >
-					<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-					<br>
-				</c:forEach>
-			</div>
-		</div>					            		
+		<c:set var="arxiu" value="${arxiu}" scope="request"/>
+		<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>				            		
 	</c:forEach>	
 </div>	
 <div class="row col-md-12">
@@ -52,22 +122,8 @@
 		<label>Altre documentació autoritzacions urbanístiques:</label>
 	</p>
 	<c:forEach items="${informePrevi.documentsAltresAutUrbanistica}" var="arxiu" >
-		<div class="document">
-			<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
-			<c:if test="${arxiu.signat}">
-					<span class="glyphicon glyphicon-pencil signedFile"></span>
-			</c:if>
-			<c:if test="${canModificarExpedient && arxiu.ruta != null}">
-				<span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
-			</c:if>
-			<br>
-			<div class="infoSign hidden">
-				<c:forEach items="${arxiu.firmesList}" var="firma" >
-					<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-					<br>
-				</c:forEach>
-			</div>
-		</div>
+		<c:set var="arxiu" value="${arxiu}" scope="request"/>
+		<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 	</c:forEach>
 	<br>					            		
 </div>
@@ -87,16 +143,3 @@
 		</div>         				
 	</form>							
 </div>
-<c:if test="${canModificarUrbanisme}">
-	<div class="row">
-		<div class="col-md-12">
-			<div class="row">
-	   			<c:if test="true">
-					<div class="col-md-offset-9 col-md-2 margin_top30">
-						<a href="editLlicencia?codi=${informePrevi.llicencia.codi}&exp=${informePrevi.expcontratacio.expContratacio}&from=expedient" class="btn btn-primary" role="button">Editar</a>
-					</div>
-				</c:if>
-	 		</div>       
-		</div>
-	</div>
-</c:if>

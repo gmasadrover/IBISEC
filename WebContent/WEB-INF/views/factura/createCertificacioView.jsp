@@ -120,7 +120,7 @@
                             <div class="form-group">
                             	<label class="col-xs-3 control-label">Adjuntar certificació:</label>
 	                            <div class="col-xs-5">   
-	                                <input type="file" class="btn" name="file" /><br/>
+	                                <input type="file" class="btn" name="file" multiple/><br/>
 								</div> 	
 							</div>
 		    				<br>

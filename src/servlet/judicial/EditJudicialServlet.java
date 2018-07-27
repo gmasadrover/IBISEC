@@ -76,7 +76,6 @@ public class EditJudicialServlet extends HttpServlet {
 	        // The product does not exist to edit.
 	        // Redirect to productList page.
 	        if (errorString != null || procediment.getReferencia() == null) {
-	        	System.out.println(errorString);
 	            response.sendRedirect("/judicials");
 	            return;
 	        }

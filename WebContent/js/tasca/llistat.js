@@ -137,12 +137,12 @@ $('.filterWithClosed').on('change', function() {
             		 var nom = data.usuari.name + ' ' + data.usuari.llinatges;
             		 if (data.usuari.alias != undefined && data.usuari.alias != '') nom = data.usuari.alias;
             		 var dataCreacio = new Date(data.dataCreacio);
-            		 var dataModificacio = new Date(data.darreraModificacio);
+            		 var dataModificacio = new Date(data.darreraModificacio); 
             		 var rowNode = table.row.add([					          	
 						'<a href="tasca?id=' + data.idTasca + '" class="loadingButton"  data-msg="obrint tasca...">' + data.idTasca + ' - ' + data.descripcio + '</a>',
 						nom,
-						dataCreacio.getDate() + '/' + dataCreacio.getMonth() + '/' + dataCreacio.getFullYear() + ' ' + dataCreacio.getHours() + ':' + dataCreacio.getMinutes() ,						
-						dataModificacio.getDate() + '/' + dataModificacio.getMonth() + '/' + dataModificacio.getFullYear() + ' ' + dataModificacio.getHours() + ':' + dataModificacio.getMinutes() ]).draw().node();
+						("0" + dataCreacio.getDate()).slice(-2) + '/' + ("0" + (dataCreacio.getMonth() + 1)).slice(-2) + '/' + ("0" + dataCreacio.getFullYear()).slice(-2) + ' ' + ("0" + dataCreacio.getHours()).slice(-2) + ':' + ("0" + dataCreacio.getMinutes()).slice(-2) ,						
+						("0" + dataModificacio.getDate()).slice(-2) + '/' + ("0" + (dataModificacio.getMonth() + 1)).slice(-2) + '/' + ("0" + dataModificacio.getFullYear()).slice(-2) + ' ' + ("0" + dataModificacio.getHours()).slice(-2) + ':' + ("0" + dataModificacio.getMinutes()).slice(-2) ]).draw().node();
             		 if (data.activa) {
             			 $(rowNode).addClass('success');
             		 } else {

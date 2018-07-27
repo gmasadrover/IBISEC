@@ -21,6 +21,12 @@
 					<div class="form-group">
 						<div class="col-md-12">
 							<p>Arxius adjunts:</p>
+							<c:forEach items="${informePrevi.informesPrevis}" var="arxiu" >
+				           		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
+									${arxiu.getDataString()} - ${arxiu.nom}
+								</a>				
+								<br>
+							</c:forEach>
 				            <c:forEach items="${informePrevi.docTecnica}" var="arxiu" >
 				           		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
 									${arxiu.getDataString()} - ${arxiu.nom}
@@ -147,14 +153,10 @@
 								${informePrevi.conformeAreaEconomivaPropostaActuacio.nom}
 							</a>	
 							<c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.signat}">
-									<span class="glyphicon glyphicon-pencil signedFile"></span>
+									<span data-ruta="${informePrevi.conformeAreaEconomivaPropostaActuacio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 							</c:if>
 							<br>
 							<div class="infoSign hidden">
-								<c:forEach items="${informePrevi.conformeAreaEconomivaPropostaActuacio.firmesList}" var="firma" >
-									<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-									<br>
-								</c:forEach>
 							</div>
 						</div>	
 					</div>		

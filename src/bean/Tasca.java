@@ -11,6 +11,7 @@ public class Tasca {
 	private int idTasca;
 	private User usuari;
 	private Actuacio actuacio;
+	private String idActuacio;
 	private Incidencia incidencia;
 	private String descripcio;
 	private String tipus;
@@ -22,6 +23,7 @@ public class Tasca {
 	private boolean llegida;
 	private String primerComentari;
 	private Date darreraModificacio;
+	private String duradaTasca;
 	private String departament;
 	private boolean seguiment;
 	private int prioritat;
@@ -217,5 +219,21 @@ public class Tasca {
 
 	public void setDocuments(List<Fitxer> documents) {
 		this.documents = documents;
+	}
+
+	public String getIdActuacio() {
+		return idActuacio;
+	}
+
+	public void setIdActuacio(String idActuacio) {
+		this.idActuacio = idActuacio;
+	}
+
+	public String getDuradaTasca() {		
+		return String.valueOf((this.darreraModificacio.getTime() - this.dataCreacio.getTime())/86400000);
+	}
+
+	public void setDuradaTasca(String duradaTasca) {
+		this.duradaTasca = duradaTasca;
 	}
 }

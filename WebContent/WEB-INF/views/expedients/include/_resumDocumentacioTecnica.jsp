@@ -10,22 +10,8 @@
 </p>	
 <div class="row col-md-12 margin_bottom30">
 	<c:forEach items="${informePrevi.docTecnica}" var="arxiu" >
-		<div class="document">
-			<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
-			<c:if test="${arxiu.signat}">
-				<span class="glyphicon glyphicon-pencil signedFile"></span>
-			</c:if>
-			<c:if test="${canModificarExpedient && arxiu.ruta != null}">
-				<span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
-			</c:if>
-			<br>
-			<div class="infoSign hidden">
-				<c:forEach items="${arxiu.firmesList}" var="firma" >
-					<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-					<br>
-				</c:forEach>
-			</div>
-		</div>
+		<c:set var="arxiu" value="${arxiu}" scope="request"/>
+		<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 	</c:forEach>
 	<br>					            		
 </div>

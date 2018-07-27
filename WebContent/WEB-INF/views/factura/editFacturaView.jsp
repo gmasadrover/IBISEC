@@ -154,10 +154,8 @@
 				    			<div class="col-md-12">
 				    				<label class="col-xs-3 control-label">Factura</label> 
 				    				<div class="col-xs-3">
-										<a target="_blanck" href="downloadFichero?ruta=${factura.arxiu.getEncodedRuta()}">${factura.arxiu.nom}</a>
-										<c:if test="${factura.arxiu.ruta != null && factura.arxiu.ruta != ''}">
-											<span data-ruta="${factura.arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
-										</c:if>
+										<c:set var="arxiu" value="${factura.factura}" scope="request"/>
+										<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>											
 										<br>									
 					           			<input type="file" class="btn uploadImage" name="factura" /><br/>	
 				           			</div>															 		

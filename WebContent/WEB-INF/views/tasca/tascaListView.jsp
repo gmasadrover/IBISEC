@@ -138,9 +138,17 @@
 						    <c:if test="${contractesList.size() > 0}">
 						    	<li class="${primera ? 'active' : ''}"><a data-toggle="tab" href="#contractesList">Redacció contractes<span class="notif">${contractesList.size()}</span></a></li>	
 						    	<c:if test="${primera}"><c:set var="primera" value="false" scope="request"/></c:if> 
+						    </c:if>		
+						    <c:if test="${contractesFirmaList.size() > 0}">
+						    	<li class="${primera ? 'active' : ''}"><a data-toggle="tab" href="#contractesFirmaList">Contractes firmats<span class="notif">${contractesFirmaList.size()}</span></a></li>	
+						    	<c:if test="${primera}"><c:set var="primera" value="false" scope="request"/></c:if> 
 						    </c:if>			    
 						   	<c:if test="${altresList.size() > 0}">
 						    	<li class="${primera ? 'active' : ''}"><a data-toggle="tab" href="#altres">Altres<span class="notif">${altresList.size()}</span></a></li>
+						    	<c:if test="${primera}"><c:set var="primera" value="false" scope="request"/></c:if> 
+						    </c:if>	
+						    <c:if test="${notificacionsList.size() > 0}">
+						    	<li class="${primera ? 'active' : ''}"><a data-toggle="tab" href="#notificacios">Notificacions<span class="notif">${notificacionsList.size()}</span></a></li>
 						    	<c:if test="${primera}"><c:set var="primera" value="false" scope="request"/></c:if> 
 						    </c:if>					   
 					 	</ul>					 	
@@ -281,10 +289,28 @@
 						  			</div>
 						  		</div>
 						  	</c:if>
+						  	<c:if test="${contractesFirmaList.size() > 0}"> 				  		
+						  		<div id="contractesFirmaList" class="tab-pane fade ${primera ? 'in active' : ''}">
+						  			<div class="col-md-12 bordertab">
+						  				<c:set var="tasquesList" value="${contractesFirmaList}" scope="request"/>
+						  				<jsp:include page="include/_tasquesList.jsp"></jsp:include>
+						  				<c:if test="${primera}"><c:set var="primera" value="false" scope="request"/></c:if> 
+						  			</div>
+						  		</div>
+						  	</c:if>
 						  	<c:if test="${altresList.size() > 0}"> 				  		
 						  		<div id="altres" class="tab-pane fade ${primera ? 'in active' : ''}">
 						  			<div class="col-md-12 bordertab">
 						  				<c:set var="tasquesList" value="${altresList}" scope="request"/>
+						  				<jsp:include page="include/_tasquesList.jsp"></jsp:include>
+						  				<c:if test="${primera}"><c:set var="primera" value="false" scope="request"/></c:if> 
+						  			</div>
+						  		</div>
+						  	</c:if>
+						  	<c:if test="${notificacionsList.size() > 0}"> 				  		
+						  		<div id="notificacios" class="tab-pane fade ${primera ? 'in active' : ''}">
+						  			<div class="col-md-12 bordertab">
+						  				<c:set var="tasquesList" value="${notificacionsList}" scope="request"/>
 						  				<jsp:include page="include/_tasquesList.jsp"></jsp:include>
 						  				<c:if test="${primera}"><c:set var="primera" value="false" scope="request"/></c:if> 
 						  			</div>

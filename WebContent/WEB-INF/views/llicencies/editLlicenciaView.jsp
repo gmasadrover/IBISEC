@@ -51,11 +51,26 @@
 	                                	<input class="form-control" name="newLlicencia" value="${llicencia.codi}" disabled>
 	                                	<input type="hidden" name="llicencia" value="${llicencia.codi}">  
 	                                	<input type="hidden" name="idActuacio" value="${actuacio.referencia}"> 
-	                                	<input type="hidden" name="from" value="${from}">                         	
+	                                	<input type="hidden" name="from" value="${from}">     
+	                                	<input type="hidden" name="mode" value="${mode}">        
+	                                	<input type="hidden" name="idInforme" value="${idInforme}">                  	
 	                                </div>
 	                            </div>   
 	                    	</div>
-                		</div>                		
+	                    	<div class="col-md-6">
+	                			<label class="col-xs-3 control-label">Tipus</label>
+					      	 	<input type="hidden" id="tipusLlicenciaPrev" value="${llicencia.tipus}" >
+					      	 	<div class="col-xs-6">
+						           	<select class="form-control selectpicker" name="tipusLlicencia" id="tipusLlicencia">
+						               	<option value="llicencia">Llicència</option>
+						               	<option value="comun">Comunicació prèvia</option>
+						         	</select>
+						         </div>
+				         	</div>				
+                		</div>   
+                		<div class="row">
+                			         	
+                		</div>             		
 			    		<div class="row">			    				    				    		
 		                    <div class="col-md-6">	  
 		                    	<div class="form-group">
@@ -64,6 +79,7 @@
 	                                	<input class="form-control" name="taxa" value="${llicencia.taxa}">                    	
 	                                </div>
 	                            </div>
+	                            
 		                    	<div class="form-group">
 	                                <label class="col-xs-3 control-label">Data sol·licitud</label>
 	                                <div class="input-group date col-xs-6 datepicker">
@@ -108,39 +124,70 @@
 	                            </div>
                             </div>
 	                	</div>	
-	                	<div class="row">
-		                    <div class="col-md-12">
-		                        <h2 class="margin_bottom30">Arxius</h2>
-		                        <div class="row">  
-			                        <c:forEach items="${llicencia.arxius}" var="arxiu" >
-										<div class="document">
-											<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
-												${arxiu.getDataString()} - ${arxiu.nom}
-											</a>
-											<c:if test="${arxiu.signat}">
-												<span class="glyphicon glyphicon-pencil signedFile"></span>
-											</c:if>
-											<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
-											<br>
-											<div class="infoSign hidden">
-												<c:forEach items="${arxiu.firmesList}" var="firma" >
-													<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-													<br>
-												</c:forEach>
-											</div>
-										</div>					            		
-									</c:forEach>	
-								</div>
-		                		<div class="row">            			
-									<div class="form-group">
-										<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-			                            <div class="col-xs-5">   
-			                                <input type="file" class="btn" name="file" multiple/><br/>
-										</div>					
-			         				</div>						
-				            	</div>              		
-		                    </div>
-		                </div>                	           	
+	                	<div class="row col-md-12">
+	                		<p>
+								<label>Sol·licitud llicència:</label>
+							</p>
+							<c:forEach items="${llicencia.documentSolLlicencia}" var="arxiu" >
+								<c:set var="arxiu" value="${arxiu}" scope="request"/>
+								<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+							</c:forEach>
+							<br>
+							<div class="form-group">
+								<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+						           <div class="col-xs-5">   
+						           	<input type="file" class="btn" name="documentSolLlicencia" multiple/><br/>
+								</div> 
+							</div>					            		
+						</div>
+						<div class="row col-md-12">
+							<p>
+					       		<label>Concessió llicència:</label>
+					       	</p>
+							<c:forEach items="${llicencia.documentConcessioLlicencia}" var="arxiu" >
+								<c:set var="arxiu" value="${arxiu}" scope="request"/>
+								<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+							</c:forEach>
+							<br>
+							<div class="form-group">
+								<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+						           <div class="col-xs-5">   
+						           	<input type="file" class="btn" name="documentConcessioLlicencia" multiple/><br/>
+								</div> 
+							</div>					            		
+						</div>
+						<div class="row col-md-12">
+							<p>
+					       		<label>Justificant pagament:</label>
+					       	</p>
+							<c:forEach items="${llicencia.documentPagamentLlicencia}" var="arxiu" >
+								<c:set var="arxiu" value="${arxiu}" scope="request"/>
+								<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+							</c:forEach>
+							<br>
+							<div class="form-group">
+								<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+						           <div class="col-xs-5">   
+						           	<input type="file" class="btn" name="documentPagamentLlicencia" multiple/><br/>
+								</div> 
+							</div>					            		
+						</div>
+						<div class="row col-md-12">
+							<p>
+					       		<label>Títol habilitant:</label>
+					       	</p>
+							<c:forEach items="${llicencia.documentTitolHabilitant}" var="arxiu" >
+								<c:set var="arxiu" value="${arxiu}" scope="request"/>
+								<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+							</c:forEach>
+							<br>
+							<div class="form-group">
+								<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+						           <div class="col-xs-5">   
+						           	<input type="file" class="btn" name="documentTitolHabilitant" multiple/><br/>
+								</div> 
+							</div>					            		
+						</div>	                	                	           	
 	                	<div class="row">
 	                		<div class="form-group">
 						        <div class="col-xs-offset-9 col-xs-9">

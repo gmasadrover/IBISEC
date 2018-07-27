@@ -56,6 +56,7 @@
 							      	<div>
 		                                <select class="form-control selectpicker" name="vehicle" id="vehicle">
 		                                	<option value="cotxe">Cotxe</option>
+		                                	<option value="cotxeElectric">Cotxe Elèctric</option>
 		                                	<option value="furgoneta">Furgoneta</option>
 		                                </select>
 	                             	</div>
@@ -235,7 +236,127 @@
                         	</div>
                         </div>
                     </div>
-                </div>       
+                </div>    
+                <div class="row">
+                    <div class="col-md-12">
+                    	<div class="setmana">
+	                        <h2>Cotxe Elèctric</h2>
+	                        <div class="table-responsive">                        
+	                            <table class="table table-striped table-bordered">
+	                                <thead>
+	                                    <tr>
+	                                        <th></th>
+	                                        <th ${diaSetmana == 2 ? 'class="today"' : ''}>Dilluns ${setmanaCotxeElectric.dilluns}</th>        
+	                                        <th ${diaSetmana == 3 ? 'class="today"' : ''}>Dimarts ${setmanaCotxeElectric.dimarts}</th>
+	                                        <th ${diaSetmana == 4 ? 'class="today"' : ''}>Dimecres ${setmanaCotxeElectric.dimecres}</th>
+	                                        <th ${diaSetmana == 5 ? 'class="today"' : ''}>Dijous ${setmanaCotxeElectric.dijous}</th>
+	                                        <th ${diaSetmana == 6 ? 'class="today"' : ''}>Divendres ${setmanaCotxeElectric.divendres}</th>                                       
+	                                        <th class="weekend bloqued">Dissabte ${setmanaCotxeElectric.dissabte}</th>
+	                                        <th class="weekend bloqued">Diumenge ${setmanaCotxeElectric.diumenge}</th>										                                
+	                                    </tr>
+	                                </thead>
+	                                <tbody>
+	                                	<c:forEach begin="0" end="${fn:length(horesCotxeElectric) - 1}" var="i" >
+	                                		<tr>							          	
+								           		<td>${horesCotxeElectric[i]}</td>
+								           		<td class="${setmanaCotxeElectric.reservesDilluns[i].usuari.idUsuari > 0 ? 'reserved' : ''} ${diaSetmana == 2 ? ' today' : ''}">
+								           			<c:if test="${i == 0 || setmanaCotxeElectric.reservesDilluns[i].usuari.idUsuari != setmanaCotxeElectric.reservesDilluns[i-1].usuari.idUsuari}">
+									           			${setmanaCotxeElectric.reservesDilluns[i].usuari.getNomCompletReal()}
+									            		${setmanaCotxeElectric.reservesDilluns[i].motiu}
+								           			</c:if>								            		
+								            	</td>	
+								            	<td class="${setmanaCotxeElectric.reservesDimarts[i].usuari.idUsuari > 0 ? 'reserved' : ''} ${diaSetmana == 3 ? ' today' : ''}">
+								            		<c:if test="${i == 0 || setmanaCotxeElectric.reservesDimarts[i].usuari.idUsuari != setmanaCotxeElectric.reservesDimarts[i-1].usuari.idUsuari}">
+									           			${setmanaCotxeElectric.reservesDimarts[i].usuari.getNomCompletReal()}
+									            		${setmanaCotxeElectric.reservesDimarts[i].motiu}
+								           			</c:if>									            		
+								            	</td>
+								            	<td class="${setmanaCotxeElectric.reservesDimecres[i].usuari.idUsuari > 0 ? 'reserved' : ''} ${diaSetmana == 4 ? ' today' : ''}">
+								            		<c:if test="${i == 0 || setmanaCotxeElectric.reservesDimecres[i].usuari.idUsuari != setmanaCotxeElectric.reservesDimecres[i-1].usuari.idUsuari}">
+									           			${setmanaCotxeElectric.reservesDimecres[i].usuari.getNomCompletReal()}
+									            		${setmanaCotxeElectric.reservesDimecres[i].motiu}
+								           			</c:if>	
+								            	</td>
+								            	<td class="${setmanaCotxeElectric.reservesDijous[i].usuari.idUsuari > 0 ? 'reserved' : ''} ${diaSetmana == 5 ? ' today' : ''}">
+								            		<c:if test="${i == 0 || setmanaCotxeElectric.reservesDijous[i].usuari.idUsuari != setmanaCotxeElectric.reservesDijous[i-1].usuari.idUsuari}">
+									           			${setmanaCotxeElectric.reservesDijous[i].usuari.getNomCompletReal()}
+									            		${setmanaCotxeElectric.reservesDijous[i].motiu}
+								           			</c:if>	
+								            	</td>
+								            	<td class="${setmanaCotxeElectric.reservesDivendres[i].usuari.idUsuari > 0 ? 'reserved' : ''} ${diaSetmana == 6 ? ' today' : ''}">
+								            		<c:if test="${i == 0 || setmanaCotxeElectric.reservesDivendres[i].usuari.idUsuari != setmanaCotxeElectric.reservesDivendres[i-1].usuari.idUsuari}">
+									           			${setmanaCotxeElectric.reservesDivendres[i].usuari.getNomCompletReal()}
+									            		${setmanaCotxeElectric.reservesDivendres[i].motiu}
+								           			</c:if>	
+								            	</td>			
+								            	<td class="weekend bloqued"></td>
+								            	<td class="weekend bloqued"></td>	            	
+								          	</tr>
+	                                	</c:forEach>						          	                       	
+	                                </tbody>
+	                            </table>
+                        	</div>
+                        </div>
+                        <div class="hidden setmanaSeguent">
+	                        <h2>Cotxe Elèctric</h2>
+	                        <div class="table-responsive">                        
+	                            <table class="table table-striped table-bordered">
+	                                <thead>
+	                                    <tr>
+	                                        <th></th>
+	                                        <th>Dilluns ${seguentSetmanaCotxeElectric.dilluns}</th>        
+	                                        <th>Dimarts ${seguentSetmanaCotxeElectric.dimarts}</th>
+	                                        <th>Dimecres ${seguentSetmanaCotxeElectric.dimecres}</th>
+	                                        <th>Dijous ${seguentSetmanaCotxeElectric.dijous}</th>
+	                                        <th>Divendres ${seguentSetmanaCotxeElectric.divendres}</th>                                       
+	                                        <th class="weekend bloqued">Dissabte ${seguentSetmanaCotxeElectric.dissabte}</th>
+	                                        <th class="weekend bloqued">Diumenge ${seguentSetmanaCotxeElectric.diumenge}</th>										                                
+	                                    </tr>
+	                                </thead>
+	                                <tbody>
+	                                	<c:forEach begin="0" end="${fn:length(horesCotxeElectric) - 1}" var="i" >
+	                                		<tr>							          	
+								           		<td>${horesCotxeElectric[i]}</td>
+								           		<td class="${seguentSetmanaCotxeElectric.reservesDilluns[i].usuari.idUsuari > 0 ? 'reserved' : ''}">
+								           			<c:if test="${i == 0 || seguentSetmanaCotxeElectric.reservesDilluns[i].usuari.idUsuari != seguentSetmanaCotxeElectric.reservesDilluns[i-1].usuari.idUsuari}">
+									           			${seguentSetmanaCotxeElectric.reservesDilluns[i].usuari.getNomCompletReal()}
+									            		${seguentSetmanaCotxeElectric.reservesDilluns[i].motiu}
+								           			</c:if>								            		
+								            	</td>	
+								            	<td class="${seguentSetmanaCotxeElectric.reservesDimarts[i].usuari.idUsuari > 0 ? 'reserved' : ''}">
+								            		<c:if test="${i == 0 || seguentSetmanaCotxeElectric.reservesDimarts[i].usuari.idUsuari != seguentSetmanaCotxeElectric.reservesDimarts[i-1].usuari.idUsuari}">
+									           			${seguentSetmanaCotxeElectric.reservesDimarts[i].usuari.getNomCompletReal()}
+									            		${seguentSetmanaCotxeElectric.reservesDimarts[i].motiu}
+								           			</c:if>									            		
+								            	</td>
+								            	<td class="${seguentSetmanaCotxeElectric.reservesDimecres[i].usuari.idUsuari > 0 ? 'reserved' : ''}">
+								            		<c:if test="${i == 0 || seguentSetmanaCotxeElectric.reservesDimecres[i].usuari.idUsuari != seguentSetmanaCotxeElectric.reservesDimecres[i-1].usuari.idUsuari}">
+									           			${seguentSetmanaCotxeElectric.reservesDimecres[i].usuari.getNomCompletReal()}
+									            		${seguentSetmanaCotxeElectric.reservesDimecres[i].motiu}
+								           			</c:if>	
+								            	</td>
+								            	<td class="${seguentSetmanaCotxeElectric.reservesDijous[i].usuari.idUsuari > 0 ? 'reserved' : ''}">
+								            		<c:if test="${i == 0 || seguentSetmanaCotxeElectric.reservesDijous[i].usuari.idUsuari != seguentSetmanaCotxeElectric.reservesDijous[i-1].usuari.idUsuari}">
+									           			${seguentSetmanaCotxeElectric.reservesDijous[i].usuari.getNomCompletReal()}
+									            		${seguentSetmanaCotxeElectric.reservesDijous[i].motiu}
+								           			</c:if>	
+								            	</td>
+								            	<td class="${seguentSetmanaCotxeElectric.reservesDivendres[i].usuari.idUsuari > 0 ? 'reserved' : ''}">
+								            		<c:if test="${i == 0 || seguentSetmanaCotxeElectric.reservesDivendres[i].usuari.idUsuari != seguentSetmanaCotxeElectric.reservesDivendres[i-1].usuari.idUsuari}">
+									           			${seguentSetmanaCotxeElectric.reservesDivendres[i].usuari.getNomCompletReal()}
+									            		${seguentSetmanaCotxeElectric.reservesDivendres[i].motiu}
+								           			</c:if>	
+								            	</td>			
+								            	<td class="weekend bloqued"></td>
+								            	<td class="weekend bloqued"></td>	            	
+								          	</tr>
+	                                	</c:forEach>						          	                       	
+	                                </tbody>
+	                            </table>
+                        	</div>
+                        </div>
+                    </div>
+                </div>    
                 <div class="row">
                     <div class="col-md-12">
                     	<div class="setmana">

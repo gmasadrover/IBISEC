@@ -1,5 +1,7 @@
 package servlet.registre;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.Authenticator.RequestorType;
@@ -11,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -18,6 +22,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.AcroFields;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfStamper;
 
 import bean.Actuacio;
 import bean.Incidencia;
@@ -188,9 +197,44 @@ public class DoCreateEntradaServlet extends HttpServlet {
 	   				int usuariTasca = UsuariCore.finCap(conn, "juridica").getIdUsuari();
 	   				TascaCore.novaTasca(conn, "judicial", usuariTasca, idUsuari, "-1", "-1", "S'ha registrat un document nou al procediment " + numAutos, "Nova documentació procediment", refPro, null, request.getRemoteAddr(), "automatic");
 	   				referenciesIncidencies = refPro;
+	   			} else if (!tipus.equals("Sol·licitud Personal") && !tipus.equals("Resposta Sol·licitud Personal") && !tipus.equals("Tramesa documentació Personal")){
+	   				int idNovaTasca = TascaCore.idNovaTasca(conn);
+	   				String assumpte = "<a href='registre?from=notificacio&idTasca=" + idNovaTasca + "&tipus=E&referencia=" + registre.getId() + "'>Nova entrada registre: " + registre.getId() + "</a>";
+	   				TascaCore.novaTasca(conn, "notificacio", 1, UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari(), "-1", "-1", assumpte, registre.getId(), "", null, request.getRemoteAddr(), "automatic");
 	   			}
 	   			//Actualitzam referències registres
 	   			RegistreCore.actualitzarIdIncidencia(conn, "E", referencia, referenciesIncidencies);
+	   			
+	   			//Crear certificat REGISTRE
+	   			try {
+	   				Context env;
+	   				String ruta = "";
+	   				try {
+	   					env = (Context)new InitialContext().lookup("java:comp/env");
+	   					ruta = (String)env.lookup("ruta_base");
+	   				} catch (NamingException e2) {
+	   					// TODO Auto-generated catch block
+	   					e2.printStackTrace();
+	   				}
+	   				String incidencia = "-1";
+	   				if (idIncidenciesList.size() > 0) incidencia = idIncidenciesList.get(0);
+	            	PdfReader reader = new PdfReader(ruta + "/base/Registre IBISEC.pdf"); // input PDF
+	    			PdfStamper stamper = new PdfStamper(reader,
+	    			  new FileOutputStream(ruta + "/documents/" + incidencia + "/RegistreE/" + registre.getId() + "/registre-"+ registre.getId() +".pdf"));			
+	    			            
+	                AcroFields fields = stamper.getAcroFields();    	        
+	    	        fields.setField("idregistre", registre.getId());
+	    	        fields.setField("dataregistre", registre.getDataString());
+	    	        fields.setField("contingut", registre.getContingut());	    	       
+	    	        stamper.close();
+	    	        reader.close();    
+	    	        
+	    		} catch (DocumentException e1) {
+	    			// TODO Auto-generated catch block
+	    			e1.printStackTrace();
+	    		} // output PDF
+	   		  
+	   			
 	   		} catch (SQLException | NamingException e) {
 	  			e.printStackTrace();
 	  			errorString = e.getMessage();

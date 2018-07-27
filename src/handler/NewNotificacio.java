@@ -62,7 +62,6 @@ public class NewNotificacio extends HttpServlet {
         Connection conn = MyUtils.getStoredConnection(request);
         User Usuari = MyUtils.getLoginedUser(request.getSession());	         
         if (Usuari != null) {
-        	System.out.println("entra: " + Usuari.getIdUsuari());
             try {
     			myObj.addProperty("success", true);
     			boolean haveNewTasca = TascaCore.haveNewTasca(conn, Usuari.getIdUsuari());

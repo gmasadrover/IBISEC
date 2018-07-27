@@ -27,7 +27,7 @@ $(document).ready(function() {
 				$('#errorModificacio').html("");
 				$('.potModificar').removeClass('hidden');
 			}
-		} else {
+		} else if(pbase != '-') {
 			$('#pbase').val('');
 			$('#iva').val('');
 			$('#plic').val('');
@@ -64,7 +64,7 @@ $(document).ready(function() {
 				$('#errorModificacio').html("");
 				$('.potModificar').removeClass('hidden');
 			}			
-		} else {
+		} else if(plic != '-') {
 			$('#pbase').val('');
 			$('#iva').val('');
 			$('#plic').val('');
@@ -92,4 +92,27 @@ $(document).ready(function() {
 
 	$('#llistaEmpreses option[value="' + $('#empresaPrev').val() + '"]').attr('selected', 'selected');	
 	$('.selectpicker').selectpicker('refresh');		
+	
+	$('#tipusIncidencia').on('change', function(){
+		if ($('#tipusIncidencia').val() == 'penalitzacio') {			
+			$('#infoMoficacio').addClass('hidden');
+			$('#infoPenalitzacio').removeClass('hidden');
+		} else {
+			$('#infoPenalitzacio').addClass('hidden');
+			$('#infoMoficacio').removeClass('hidden');
+			
+		}
+	});
+	
+	$('#plicPenalitzacio').on('keyup', function(){
+		var plic = $('#plicPenalitzacio').val().replace(',','.');
+		if ($.isNumeric(plic)) {
+			
+		} else if(plic != '-') {
+			$('#plicPenalitzacio').val('');
+			$('#errorModificacio').html("");
+			$('.potModificar').removeClass('hidden');
+		}
+	});
+	
 });

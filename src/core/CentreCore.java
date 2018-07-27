@@ -171,7 +171,6 @@ public class CentreCore {
 			contVars += 1;
 		}		*/
 		ResultSet rs = pstm.executeQuery();	 
-		System.out.println(pstm.toString());
 		while (rs.next()) {
 			Centre centre = initCentre(conn, rs, false);
 			centres.add(centre);

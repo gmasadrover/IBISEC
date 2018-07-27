@@ -538,12 +538,16 @@ public class CreditCore {
 		double totalGastat = 0;
 		String sql = "SELECT SUM(f.import) AS total"
 				  	+ " FROM public.tbl_factures f LEFT JOIN public.tbl_assignacionscredit a ON f.idinforme = a.idinf"
-				  	+ " WHERE f.anulada = false AND a.idpartida = ?";
+				  	+ " WHERE f.anulada = false AND a.idpartida = ?"
+				  	+ " UNION SELECT SUM(valorpa) AS total"
+				  	+ " FROM public.tbl_assignacionscredit"
+				  	+ " WHERE idpartida = ? AND idinf LIKE '%-LLI-%'";
 		PreparedStatement pstm = conn.prepareStatement(sql);		 
 		pstm.setString(1, idPartida);
+		pstm.setString(2, idPartida);
 		ResultSet rs = pstm.executeQuery();
-		if (rs.next()) {
-			totalGastat = rs.getDouble("total");
+		while (rs.next()) {
+			totalGastat += rs.getDouble("total");
 		}
 		return totalGastat;
 	}

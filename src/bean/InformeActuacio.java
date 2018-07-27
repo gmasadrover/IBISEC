@@ -338,6 +338,8 @@ public class InformeActuacio {
 	private double totalFacturat;
 	private List<Factura> llistaCertificacions;
 	private List<InformeActuacio> llistaModificacions;
+	private List<InformeActuacio> llistaPenalitzacions;
+	private String tipusModificacio;
 	private Date dataTancament;
 	private Date dataRecepcio;
 	private String notes;
@@ -355,7 +357,7 @@ public class InformeActuacio {
 	private Fitxer autoritzacioPropostaAutoritzacio;
 	private Fitxer autoritzacioConsellDeGovern;
 	private Fitxer autoritzacioConseller;
-	private Fitxer propostaTecnica;
+	private List<Fitxer> propostaTecnica;
 	private Fitxer autoritzacioPropostaDespesa;
 	private Fitxer resolucioModificacio;
 	private Fitxer contracteSignat;
@@ -365,20 +367,22 @@ public class InformeActuacio {
 	private Fitxer declaracioUrgencia;
 	private Fitxer aprovacioEXPPlecsDespesa;
 	private Fitxer aprovacioDispoTerrenys;
+	private Fitxer informeInsuficienciaMitjans;
 	private List<Fitxer> resolucioVAD;
 	private List<Fitxer> ratificacioClassificacio;
 	private Date publicacioBOIB;
 	private Fitxer documentBOIB;
 	private Fitxer correuInvitacio;
-	private Fitxer actaInici;
-	private Fitxer actaFinalitzacio;
+	
 	private List<Fitxers.Fitxer> documentsAltresPrevis; 
 	private List<Fitxers.Fitxer> documentsAltresLicitacio; 
 	private List<Fitxers.Fitxer> documentsAltresExecucio; 
 	private List<Fitxers.Fitxer> documentsAltresGarantia; 
 	private List<Fitxers.Fitxer> documentsAltresAutUrbanistica; 
+	
 	private String recursAdministratiu;
 	private List<Fitxers.Fitxer> documentsRecursosAdministratius;
+	
 	private List<Fitxers.Fitxer> documentsIntalacioBaixaTensio;
 	private List<Fitxers.Fitxer> documentsIntalacioFotovoltaica;
 	private List<Fitxers.Fitxer> documentsIntalacioContraincendis;
@@ -390,6 +394,29 @@ public class InformeActuacio {
 	private List<Fitxers.Fitxer> documentsPlaAutoproteccio;
 	private List<Fitxers.Fitxer> documentsCedulaDeHabitabilitat;
 	private List<Fitxers.Fitxer> documentsInstalacioPetrolifera;
+	
+	private List<Fitxers.Fitxer> documentActaReplanteig;
+	private List<Fitxers.Fitxer> documentActaComprovacioReplanteig;
+	private List<Fitxers.Fitxer> documentActaIniciObra;
+	private List<Fitxers.Fitxer> documentActaAprovacioPlaSeguretat;
+	private List<Fitxers.Fitxer> documentActaAprovacioResidus;
+	private List<Fitxers.Fitxer> documentActaAprovacioProgramaTreball;
+	private List<Fitxers.Fitxer> documentActaRecepcio;
+	private List<Fitxers.Fitxer> documentActaMedicioGeneral;
+	
+	private List<Fitxers.Fitxer> documentFinalitzacioContratista;
+	private List<Fitxers.Fitxer> documentInformeDO;
+	private List<Fitxers.Fitxer> documentCFO;
+	private List<Fitxers.Fitxer> documentMedicioGeneral;
+	private List<Fitxers.Fitxer> documentRepresentacioRecepcio;
+	private List<Fitxers.Fitxer> documentConvocatoriaRecepcio;
+	
+	private List<Fitxers.Fitxer> documentSolDevolucio;
+	private List<Fitxers.Fitxer> documentInformeDevolucio;
+	private List<Fitxers.Fitxer> documentLiquidacioAval;
+	
+	
+	
 	private List<Registre> entrades;
 	private List<Registre> sortides;
 	private List<Tasca> tasques;
@@ -710,11 +737,11 @@ public class InformeActuacio {
 		this.autoritzacioPropostaAutoritzacio = autoritzacioPropostaAutoritzacio;
 	}
 
-	public Fitxer getPropostaTecnica() {
+	public List<Fitxer> getPropostaTecnica() {
 		return propostaTecnica;
 	}
 
-	public void setPropostaTecnica(Fitxer propostaTecnica) {
+	public void setPropostaTecnica(List<Fitxer> propostaTecnica) {
 		this.propostaTecnica = propostaTecnica;
 	}
 
@@ -957,22 +984,6 @@ public class InformeActuacio {
 		this.informesPrevis = informesPrevis;
 	}
 
-	public Fitxer getActaFinalitzacio() {
-		return actaFinalitzacio;
-	}
-
-	public void setActaFinalitzacio(Fitxer actaFinalitzacio) {
-		this.actaFinalitzacio = actaFinalitzacio;
-	}
-
-	public Fitxer getActaInici() {
-		return actaInici;
-	}
-
-	public void setActaInici(Fitxer actaInici) {
-		this.actaInici = actaInici;
-	}
-
 	public List<Fitxers.Fitxer> getDocTecnica() {
 		return docTecnica;
 	}
@@ -1199,5 +1210,181 @@ public class InformeActuacio {
 
 	public void setDocumentsIntalacioFotovoltaica(List<Fitxers.Fitxer> documentsIntalacioFotovoltaica) {
 		this.documentsIntalacioFotovoltaica = documentsIntalacioFotovoltaica;
+	}
+
+	public String getTipusModificacio() {
+		return tipusModificacio;
+	}
+	
+	public String getTipusModificacioFormat() {
+		String estat = this.tipusModificacio;	
+		
+		if (this.tipusModificacio.equals("modificacio")) {
+			estat = "Modificació";
+		} else if (this.tipusModificacio.equals("preusContradictoris")) {
+			estat = "Preus contradictoris";
+		} else if(this.tipusModificacio.equals("penalitzacio")) {
+			estat = "Penalització";
+		} else if(this.tipusModificacio.equals("certfinal")) {
+			estat = "Certificació final";
+		}
+				
+		return estat;
+	}
+
+	public void setTipusModificacio(String tipusModificacio) {
+		this.tipusModificacio = tipusModificacio;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentActaReplanteig() {
+		return documentActaReplanteig;
+	}
+
+	public void setDocumentActaReplanteig(List<Fitxers.Fitxer> documentActaReplanteig) {
+		this.documentActaReplanteig = documentActaReplanteig;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentActaComprovacioReplanteig() {
+		return documentActaComprovacioReplanteig;
+	}
+
+	public void setDocumentActaComprovacioReplanteig(List<Fitxers.Fitxer> documentActaComprovacioReplanteig) {
+		this.documentActaComprovacioReplanteig = documentActaComprovacioReplanteig;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentActaIniciObra() {
+		return documentActaIniciObra;
+	}
+
+	public void setDocumentActaIniciObra(List<Fitxers.Fitxer> documentActaIniciObra) {
+		this.documentActaIniciObra = documentActaIniciObra;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentActaAprovacioPlaSeguretat() {
+		return documentActaAprovacioPlaSeguretat;
+	}
+
+	public void setDocumentActaAprovacioPlaSeguretat(List<Fitxers.Fitxer> documentActaAprovacioPlaSeguretat) {
+		this.documentActaAprovacioPlaSeguretat = documentActaAprovacioPlaSeguretat;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentActaAprovacioResidus() {
+		return documentActaAprovacioResidus;
+	}
+
+	public void setDocumentActaAprovacioResidus(List<Fitxers.Fitxer> documentActaAprovacioResidus) {
+		this.documentActaAprovacioResidus = documentActaAprovacioResidus;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentActaAprovacioProgramaTreball() {
+		return documentActaAprovacioProgramaTreball;
+	}
+
+	public void setDocumentActaAprovacioProgramaTreball(List<Fitxers.Fitxer> documentActaAprovacioProgramaTreball) {
+		this.documentActaAprovacioProgramaTreball = documentActaAprovacioProgramaTreball;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentActaRecepcio() {
+		return documentActaRecepcio;
+	}
+
+	public void setDocumentActaRecepcio(List<Fitxers.Fitxer> documentActaRecepcio) {
+		this.documentActaRecepcio = documentActaRecepcio;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentSolDevolucio() {
+		return documentSolDevolucio;
+	}
+
+	public void setDocumentSolDevolucio(List<Fitxers.Fitxer> documentSolDevolucio) {
+		this.documentSolDevolucio = documentSolDevolucio;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentInformeDevolucio() {
+		return documentInformeDevolucio;
+	}
+
+	public void setDocumentInformeDevolucio(List<Fitxers.Fitxer> documentInformeDevolucio) {
+		this.documentInformeDevolucio = documentInformeDevolucio;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentLiquidacioAval() {
+		return documentLiquidacioAval;
+	}
+
+	public void setDocumentLiquidacioAval(List<Fitxers.Fitxer> documentLiquidacioAval) {
+		this.documentLiquidacioAval = documentLiquidacioAval;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentFinalitzacioContratista() {
+		return documentFinalitzacioContratista;
+	}
+
+	public void setDocumentFinalitzacioContratista(List<Fitxers.Fitxer> documentFinalitzacioContratista) {
+		this.documentFinalitzacioContratista = documentFinalitzacioContratista;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentInformeDO() {
+		return documentInformeDO;
+	}
+
+	public void setDocumentInformeDO(List<Fitxers.Fitxer> documentInformeDO) {
+		this.documentInformeDO = documentInformeDO;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentCFO() {
+		return documentCFO;
+	}
+
+	public void setDocumentCFO(List<Fitxers.Fitxer> documentCFO) {
+		this.documentCFO = documentCFO;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentMedicioGeneral() {
+		return documentMedicioGeneral;
+	}
+
+	public void setDocumentMedicioGeneral(List<Fitxers.Fitxer> documentMedicioGeneral) {
+		this.documentMedicioGeneral = documentMedicioGeneral;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentRepresentacioRecepcio() {
+		return documentRepresentacioRecepcio;
+	}
+
+	public void setDocumentRepresentacioRecepcio(List<Fitxers.Fitxer> documentRepresentacioRecepcio) {
+		this.documentRepresentacioRecepcio = documentRepresentacioRecepcio;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentConvocatoriaRecepcio() {
+		return documentConvocatoriaRecepcio;
+	}
+
+	public void setDocumentConvocatoriaRecepcio(List<Fitxers.Fitxer> documentConvocatoriaRecepcio) {
+		this.documentConvocatoriaRecepcio = documentConvocatoriaRecepcio;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentActaMedicioGeneral() {
+		return documentActaMedicioGeneral;
+	}
+
+	public void setDocumentActaMedicioGeneral(List<Fitxers.Fitxer> documentActaMedicioGeneral) {
+		this.documentActaMedicioGeneral = documentActaMedicioGeneral;
+	}
+
+	public List<InformeActuacio> getLlistaPenalitzacions() {
+		return llistaPenalitzacions;
+	}
+
+	public void setLlistaPenalitzacions(List<InformeActuacio> llistaPenalitzacions) {
+		this.llistaPenalitzacions = llistaPenalitzacions;
+	}
+
+	public Fitxer getInformeInsuficienciaMitjans() {
+		return informeInsuficienciaMitjans;
+	}
+
+	public void setInformeInsuficienciaMitjans(Fitxer informeInsuficienciaMitjans) {
+		this.informeInsuficienciaMitjans = informeInsuficienciaMitjans;
 	}
 }

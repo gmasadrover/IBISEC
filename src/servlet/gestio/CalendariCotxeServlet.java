@@ -72,9 +72,11 @@ public class CalendariCotxeServlet extends HttpServlet {
 			}
 			
 	        ReservaVehicle setmanaCotxe = CalendarCore.getSetmana(conn, cal, "cotxe");
+	        ReservaVehicle setmanaCotxeElectric = CalendarCore.getSetmana(conn, cal, "cotxeElectric");
 	        ReservaVehicle setmanaFurgoneta = CalendarCore.getSetmana(conn, cal, "furgoneta");
 	        cal.add(Calendar.DATE, 7);
 	        ReservaVehicle seguentSetmanaCotxe = CalendarCore.getSetmana(conn, cal, "cotxe");
+	        ReservaVehicle seguentSetmanaCotxeElectric = CalendarCore.getSetmana(conn, cal, "cotxeElectric");
 	        ReservaVehicle seguentSetmanaFurgoneta = CalendarCore.getSetmana(conn, cal, "furgoneta");
 	        String optionDies = CalendarCore.getDiesPossibles();
 	        	        
@@ -83,6 +85,9 @@ public class CalendariCotxeServlet extends HttpServlet {
 	        request.setAttribute("horesCotxe", ReservaVehicle.horesCotxe);
 	        request.setAttribute("setmanaCotxe", setmanaCotxe);
 	        request.setAttribute("seguentSetmanaCotxe", seguentSetmanaCotxe);
+	        request.setAttribute("horesCotxeElectric", ReservaVehicle.horesCotxeElectric);
+	        request.setAttribute("setmanaCotxeElectric", setmanaCotxeElectric);
+	        request.setAttribute("seguentSetmanaCotxeElectric", seguentSetmanaCotxeElectric);
 	        request.setAttribute("horesFurgoneta", ReservaVehicle.horesFurgoneta);
 	        request.setAttribute("setmanaFurgoneta", setmanaFurgoneta);
 	        request.setAttribute("seguentSetmanaFurgoneta", seguentSetmanaFurgoneta);

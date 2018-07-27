@@ -28,7 +28,8 @@ public class Factura {
 	private Date dataEnviatConformador;
 	private Date dataEnviatComptabilitat;
 	private Date dataDescarregadaConformada;
-	private Fitxer arxiu;
+	private Fitxer factura;
+	private List<Fitxer> certificacions;
 	private List<Fitxer> altres;
 	private boolean anulada;
 	private String motiuAnulada;
@@ -224,14 +225,6 @@ public class Factura {
 		this.nomProveidor = nomProveidor;
 	}
 
-	public Fitxer getArxiu() {
-		return arxiu;
-	}
-
-	public void setArxiu(Fitxer arxiu) {
-		this.arxiu = arxiu;
-	}
-
 	public Date getDataDescarregadaConformada() {
 		return dataDescarregadaConformada;
 	}
@@ -269,6 +262,22 @@ public class Factura {
 
 	public void setMotiuAnulada(String motiuAnulada) {
 		this.motiuAnulada = motiuAnulada;
+	}
+
+	public Fitxer getFactura() {
+		return factura;
+	}
+
+	public void setFactura(Fitxer factura) {
+		this.factura = factura;
+	}
+
+	public List<Fitxer> getCertificacions() {
+		return certificacions;
+	}
+
+	public void setCertificacions(List<Fitxer> certificacions) {
+		this.certificacions = certificacions;
 	}
 	
 }

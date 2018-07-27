@@ -24,29 +24,10 @@
 			<p>
 				<label>Proposta tècnica:</label> ${informePrevi.ofertaSeleccionada.comentari} 
 			</p>
-			<c:if test="${informePrevi.propostaTecnica.ruta != null}">
-				<div class="panel-body">										    		
-		    		<div class="col-md-12">
-		    			<c:if test="${informePrevi.propostaTecnica.ruta != null}">
-		               		<div class="document">
-			               		<label>Proposta tècnica:</label>											                  	
-				           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.propostaTecnica.getEncodedRuta()}">
-									${informePrevi.propostaTecnica.nom}
-								</a>	
-								<c:if test="${informePrevi.propostaTecnica.signat}">
-										<span class="glyphicon glyphicon-pencil signedFile"></span>
-								</c:if><br>
-								<div class="infoSign hidden">
-									<c:forEach items="${informePrevi.propostaTecnica.firmesList}" var="firma" >
-										<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-										<br>
-									</c:forEach>
-								</div>
-							</div>	
-						</c:if>            	
-		    		</div>
-		    	</div>
-		    </c:if>	
+			<c:forEach items="${informePrevi.propostaTecnica}" var="arxiu" >
+				<c:set var="arxiu" value="${arxiu}" scope="request"/>
+				<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+		    </c:forEach>
 		</div>	
 		<div class="col-md-6">
 			<h4>Informació actuació</h4>               		
@@ -95,21 +76,9 @@
 				<label>Proveïdor:</label> ${factura.nomProveidor}
 			</p>						       	
 			<p>
-				<div class="document">
-		            <label>Factura:	</label>											                  	
-		          	<a target="_blanck" href="downloadFichero?ruta=${factura.arxiu.getEncodedRuta()}">
-						${factura.arxiu.nom}
-					</a>	
-					<c:if test="${factura.arxiu.signat}">
-							<span class="glyphicon glyphicon-pencil signedFile"></span>
-					</c:if><br>
-					<div class="infoSign hidden">
-						<c:forEach items="${factura.arxiu.firmesList}" var="firma" >
-							<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-							<br>
-						</c:forEach>
-					</div>
-				</div>		
+				<label>Factura:	</label>				
+				<c:set var="arxiu" value="${factura.factura}" scope="request"/>
+				<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>									
 		 	</p>
 		</div> 	
     </div>

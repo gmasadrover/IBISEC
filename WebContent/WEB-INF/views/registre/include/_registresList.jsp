@@ -59,27 +59,21 @@
 						</c:choose>								            		
 						<td>${registre.getNomCentresString()}</td>	
 						<c:if test="${canViewIncidencies}">
-							<td>
-								<c:forEach items="${registre.getIdIncidenciesList()}" var="idIncidencia" >
-									<c:choose>
-										<c:when test="${idIncidencia == '-1' || idIncidencia == '-2'}">												        
-										</c:when>    
-										<c:otherwise>
-											<c:choose>
-		                        				<c:when test="${registre.tipus == 'Procediment judicial'}">
-		                        					<c:forEach items="${registre.getIdIncidenciesList()}" var="idIncidencia" >
-			                        			 		<a href="procediment?ref=${idIncidencia}" class="loadingButton"  data-msg="obrint procediment...">${idIncidencia}</a></br>
-			                        			 	</c:forEach>   
-		                        				</c:when>
-		                        				<c:otherwise>
-				                        			<c:forEach items="${registre.getIdIncidenciesList()}" var="idIncidencia" >
-			                        			 		<a href="incidenciaDetalls?ref=${idIncidencia}" class="loadingButton"  data-msg="obrint incidència...">${idIncidencia}</a></br>
-			                        			 	</c:forEach>     
-		                        				</c:otherwise>
-		                        			</c:choose>									        
-					  					</c:otherwise>
-									</c:choose>	
-								</c:forEach> 
+							<td>								
+								<c:choose>
+                       				<c:when test="${registre.tipus == 'Procediment judicial'}">
+                       					<c:forEach items="${registre.getIdIncidenciesList()}" var="idIncidencia" >
+                        			 		<a href="procediment?ref=${idIncidencia}" class="loadingButton"  data-msg="obrint procediment...">${idIncidencia}</a></br>
+                        			 	</c:forEach>   
+                       				</c:when>
+                       				<c:otherwise>
+	                        			<c:forEach items="${registre.getIdIncidenciesList()}" var="idIncidencia" >
+	                        				<c:if test="${idIncidencia != '-1' && idIncidencia != '-2'}">		
+	                        					<a href="incidenciaDetalls?ref=${idIncidencia}" class="loadingButton"  data-msg="obrint incidència...">${idIncidencia}</a></br>		
+	                        				</c:if>			                        			 		
+                        			 	</c:forEach>     
+                       				</c:otherwise>
+                       			</c:choose>									 
 							</td>	
 						</c:if>
 						<td>

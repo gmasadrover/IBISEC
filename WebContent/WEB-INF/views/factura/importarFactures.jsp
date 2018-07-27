@@ -118,7 +118,7 @@
 								            	<td>${factura.informe.dataAprovacio}</td> 
 								            	<td>${factura.informe.getDataAprovacioString()}</td>      
 								            	<td>${factura.informe.ofertaSeleccionada.getPlicFormat()}</td> 
-								            	<td><a target="_blanck" href="downloadFichero?ruta=${factura.arxiu.getEncodedRuta()}">${factura.arxiu.nom}</a></td>      	     	
+								            	<td><a target="_blanck" href="downloadFichero?ruta=${factura.factura.getEncodedRuta()}">${factura.factura.nom}</a></td>
 								          	</tr>
 								       	</c:forEach>                                	
 	                                </tbody>

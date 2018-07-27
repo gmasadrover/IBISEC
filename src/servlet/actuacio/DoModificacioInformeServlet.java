@@ -56,14 +56,23 @@ public class DoModificacioInformeServlet extends HttpServlet {
 		}
 	    String idInforme = multipartParams.getParametres().get("idInforme");
 	    String objecte = multipartParams.getParametres().get("objecteModificacio");
+	    String tipusIncidencia = multipartParams.getParametres().get("tipusIncidencia");
 	    User Usuari = MyUtils.getLoginedUser(request.getSession());	   
 	    boolean reqLlicencia = false;
 	    if (multipartParams.getParametres().get("reqLlicencia") != null) reqLlicencia = multipartParams.getParametres().get("reqLlicencia").equals("si");	   
 	    String tipusLlicencia = multipartParams.getParametres().get("tipusLlicencia");	   	   
+	    double pbase = 0;
+	    double iva = 0;
+	    double plic = 0;
 	    
-	    double pbase = Double.parseDouble(multipartParams.getParametres().get("pbase").replace(',','.'));
-	    double iva = Double.parseDouble(multipartParams.getParametres().get("iva"));
-	    double plic = Double.parseDouble(multipartParams.getParametres().get("plic").replace(',','.'));	
+	    if (tipusIncidencia.equals("penalitzacio")) {	
+	    	plic = Double.parseDouble(multipartParams.getParametres().get("plicPenalitzacio").replace(',','.'));
+	    	if (plic > 0) plic = -1*plic;
+	    } else {
+	    	pbase = Double.parseDouble(multipartParams.getParametres().get("pbase").replace(',','.'));
+	    	iva = Double.parseDouble(multipartParams.getParametres().get("iva"));
+	    	plic = Double.parseDouble(multipartParams.getParametres().get("plic").replace(',','.'));	
+	    }
 	    
 	    String termini = multipartParams.getParametres().get("termini");
 	    
@@ -85,28 +94,41 @@ public class DoModificacioInformeServlet extends HttpServlet {
 	  		proposta.setTermini(termini);
 	  		
 	  		Oferta ofertaProposta = new Oferta();
-	  		ofertaProposta.setIdActuacio(informe.getActuacio().getReferencia());
-	  		ofertaProposta.setCifEmpresa(empresaCif);
-	  		ofertaProposta.setPlic(plic);
-	   		ofertaProposta.setPbase(pbase);
-	   		ofertaProposta.setIva(iva);			
-	  		ofertaProposta.setComentari(propostaTecnica);
-	  		
+	  		if (!tipusIncidencia.equals("penalitzacio")) {	 
+		  		ofertaProposta.setIdActuacio(informe.getActuacio().getReferencia());
+		  		ofertaProposta.setCifEmpresa(empresaCif);
+		  		ofertaProposta.setPlic(plic);
+		   		ofertaProposta.setPbase(pbase);
+		   		ofertaProposta.setIva(iva);			
+		  		ofertaProposta.setComentari(propostaTecnica);
+	  		}
 	  		
 	  		//Cream modificació	  		
-	  		String idModificacio = InformeCore.afegirModificacioInforme(conn, idInforme, proposta, ofertaProposta, Usuari);	
-	  		ofertaProposta.setIdInforme(idModificacio);
-	  		ofertaProposta.setSeleccionada(true);
-	  		OfertaCore.novaOferta(conn, ofertaProposta, Usuari.getIdUsuari());
+	  		String idModificacio = InformeCore.afegirModificacioInforme(conn, idInforme, proposta, ofertaProposta, Usuari, tipusIncidencia);	
+	  		if (!tipusIncidencia.equals("penalitzacio")) {	 
+		  		ofertaProposta.setIdInforme(idModificacio);
+		  		ofertaProposta.setSeleccionada(true);
+		  		OfertaCore.novaOferta(conn, ofertaProposta, Usuari.getIdUsuari());
+	  		}
 	  		InformeCore.saveInformeModificacio(conn, informe.getIdIncidencia(), informe.getActuacio().getReferencia(), idInforme, idModificacio, multipartParams.getFitxers(), Usuari.getIdUsuari());
 	  		
 	  		if (Usuari.getRol().contains("CAP")) {
 	  			ActuacioCore.actualitzarActuacio(conn, informe.getActuacio().getReferencia(), "Proposta modificació realitzada");
 				int idUsuari = UsuariCore.findUsuarisByRol(conn, "CAP,CONTA").get(0).getIdUsuari();
-				TascaCore.novaTasca(conn, "resPartidaModificacio", idUsuari, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getActuacio().getIdIncidencia(), "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), idModificacio, null, request.getRemoteAddr(), "automatic");
+				if (pbase > 0) {
+					TascaCore.novaTasca(conn, "resPartidaModificacio", idUsuari, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getActuacio().getIdIncidencia(), "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), idModificacio, null, request.getRemoteAddr(), "automatic");
+				} else {
+					String comentari = "S'ha realitzat la proposta de modificació" + idInforme ;
+					TascaCore.novaTasca(conn, "autoritzacioModificacio", idUsuari, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getActuacio().getIdIncidencia(), comentari, "Autorització modificació actuació", idInforme, null, request.getRemoteAddr(), "automatic");
+				}
+				
 	  		} else {
 	  			//Cream tasca a Cap
-		  		TascaCore.novaTasca(conn, "modificacio", UsuariCore.finCap(conn, Usuari.getDepartament()).getIdUsuari(), Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "Sol·licitud modificació", "Modificació", idModificacio, null, request.getRemoteAddr(), "automatic");
+	  			if (tipusIncidencia.equals("penalitzacio")) {
+	  				TascaCore.novaTasca(conn, "penalitzacio", UsuariCore.finCap(conn, Usuari.getDepartament()).getIdUsuari(), Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "Penalització", "Penalització", idModificacio, null, request.getRemoteAddr(), "automatic");
+	  			} else {
+	  				TascaCore.novaTasca(conn, "modificacio", UsuariCore.finCap(conn, Usuari.getDepartament()).getIdUsuari(), Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "Sol·licitud modificació", "Modificació", idModificacio, null, request.getRemoteAddr(), "automatic");
+	  			}
 	  		}
 	   		/*;*/
 		} catch (SQLException | NamingException e) {

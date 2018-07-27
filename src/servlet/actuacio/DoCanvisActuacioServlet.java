@@ -2,7 +2,9 @@ package servlet.actuacio;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.naming.NamingException;
@@ -14,11 +16,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileUploadException;
 
+import bean.Expedient;
 import bean.InformeActuacio;
 import bean.Oferta;
 import bean.User;
 import core.ActuacioCore;
 import core.CreditCore;
+import core.ExpedientCore;
 import core.InformeCore;
 import core.LlicenciaCore;
 import core.OfertaCore;
@@ -78,7 +82,9 @@ public class DoCanvisActuacioServlet extends HttpServlet {
 				ActuacioCore.aprovar(conn, idActuacio, Usuari.getIdUsuari());
 				ActuacioCore.actualitzarActuacio(conn, idActuacio, "Autorització generada");
 				OfertaCore.aprovarOferta(conn, idInforme, Usuari.getIdUsuari());
-	   			CreditCore.assignar(conn, idInforme, OfertaCore.findOfertaSeleccionada(conn, idInforme).getPlic());
+				if (OfertaCore.findOfertaSeleccionada(conn, idInforme) != null) {
+					CreditCore.assignar(conn, idInforme, OfertaCore.findOfertaSeleccionada(conn, idInforme).getPlic());
+				}	   			
 	   			TascaCore.nouHistoric(conn, String.valueOf(idTasca), "Autorització generada", Usuari.getIdUsuari(), ipRemota, "automatic");
 	   			TascaCore.tancar(conn, idTasca);	   			
 	   			if (idInforme.contains("-MOD-")) {
@@ -91,23 +97,28 @@ public class DoCanvisActuacioServlet extends HttpServlet {
 			   		if (informe.getUsuari() != null) TascaCore.novaTasca(conn, "generic", informe.getUsuari().getIdUsuari(), Usuari.getIdUsuari(), idActuacio, idIncidencia, "S'ha aprovat la despesa de modificació per a l'informe: " + informe.getIdInfOriginal(), "Aprovació proposta despesa modificació",informe.getIdInf(),null, ipRemota, "automatic");
 	   			} else {
 	   				Fitxers.guardarFitxer(conn, fitxers, idIncidencia, idActuacio, "", "", "", idInforme, "Autorització  Proposta despesa", Usuari.getIdUsuari());
-	   				informe = InformeCore.getInformePrevi(conn, idInforme, false);
-	   				//Crear tasca redacció contracte
-	   				InformeCore.modificarEstat(conn, idInforme, "execucio");
-	   				int usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariRedaccioContracte"));   	
-	   				if (informe.getExpcontratacio().getContracte().equals("major")) {
-	   					usuariTasca = UsuariCore.findUsuarisByRol(conn, "CAP,JUR").get(0).getIdUsuari();
-	   				} 
-					TascaCore.novaTasca(conn, "contracte", usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Redactar contracte per expedient " + informe.getExpcontratacio().getExpContratacio(), "Redacció contracte",informe.getIdInf(),null, ipRemota, "automatic");
-		   			
-		   			//Nova tasca llicència
-	   				if (informe.getLlicencia() == null && informe.getPropostaInformeSeleccionada().isLlicencia() && informe.getPropostaInformeSeleccionada().getTipusLlicencia().equals("comun")) {
-						usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariLlicencies"));   		
-						TascaCore.novaTasca(conn, "generic", usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Sol·licitar comunicació prèvia obra", "Sol·licitud comunicació prèvia",informe.getIdInf(),null, ipRemota, "automatic");
-						LlicenciaCore.novaLlicencia(conn, informe.getExpcontratacio().getExpContratacio(), informe.getPropostaInformeSeleccionada().getTipusLlicencia());
-	   				}
-	   			}
-	   			
+	   				if (OfertaCore.findOfertaSeleccionada(conn, idInforme) != null) {
+	   					informe = InformeCore.getInformePrevi(conn, idInforme, false);
+		   				//Crear tasca redacció contracte
+		   				InformeCore.modificarEstat(conn, idInforme, "execucio");
+		   				int usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariRedaccioContracte"));   	
+		   				if (informe.getExpcontratacio().getContracte().equals("major")) {
+		   					usuariTasca = UsuariCore.findUsuarisByRol(conn, "CAP,JUR").get(0).getIdUsuari();
+		   				} 
+		   				Calendar cal = Calendar.getInstance(); 
+		   				Expedient expedient = informe.getExpcontratacio();
+		   				expedient.setDataAdjudicacio(cal.getTime());  
+			    		ExpedientCore.updateExpedient(conn, expedient);
+						TascaCore.novaTasca(conn, "contracte", usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Redactar contracte per expedient " + informe.getExpcontratacio().getExpContratacio(), "Redacció contracte",informe.getIdInf(),null, ipRemota, "automatic");
+			   			
+			   			//Nova tasca llicència
+		   				if (informe.getPropostaInformeSeleccionada().isLlicencia() && informe.getPropostaInformeSeleccionada().getTipusLlicencia().equals("comun")) {
+							usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariLlicencies"));   		
+							TascaCore.novaTasca(conn, "generic", usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Sol·licitar comunicació prèvia obra", "Sol·licitud comunicació prèvia",informe.getIdInf(),null, ipRemota, "automatic");
+							LlicenciaCore.novaLlicencia(conn, informe.getExpcontratacio().getExpContratacio(), informe.getPropostaInformeSeleccionada().getTipusLlicencia());
+		   				}
+	   				}	   				
+	   			}	   			
 			} catch (SQLException | NamingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

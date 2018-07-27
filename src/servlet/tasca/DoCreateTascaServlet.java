@@ -156,7 +156,7 @@ public class DoCreateTascaServlet extends HttpServlet {
    					String modificacio = "Crear nova tasca";
    					if ("infPrev".equals(tipus)) {
    						tipus = "solInfPrev";
-   						modificacio = "Sol·licitar informe prèvi";
+   						modificacio = "Sol·licitar informe previ";
    					} else if ("notificacio".equals(tipus)) {
    						modificacio = "Enviar nova notificació";
    					}

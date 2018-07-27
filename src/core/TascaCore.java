@@ -27,8 +27,13 @@ public class TascaCore {
 		tasca.setIdTasca(rs.getInt("idtasca"));		
 		tasca.setUsuari(UsuariCore.findUsuariByID(conn,rs.getInt("idusuari")));
 		tasca.setDepartament(rs.getString("departament"));
-		if (!rs.getString("idactuacio").equals("-1")) tasca.setActuacio(ActuacioCore.findActuacio(conn,  rs.getString("idactuacio")));
-		if (complet && !rs.getString("idincidencia").equals("-1")) tasca.setIncidencia(IncidenciaCore.findIncidencia(conn, rs.getString("idincidencia")));
+		if (!rs.getString("idactuacio").equals("-1"))  {
+			tasca.setActuacio(ActuacioCore.findActuacio(conn,  rs.getString("idactuacio")));
+		}
+		if (!rs.getString("idincidencia").equals("-1"))  {
+			tasca.setIncidencia(IncidenciaCore.findIncidencia(conn, rs.getString("idincidencia")));
+		}
+		tasca.setIdActuacio(rs.getString("idactuacio"));
 		tasca.setActiva(rs.getBoolean("activa"));
 		tasca.setDescripcio(rs.getString("descripcio"));
 		tasca.setTipus(rs.getString("tipus"));
@@ -38,7 +43,7 @@ public class TascaCore {
 		tasca.setPrioritat(rs.getInt("prioritat"));		
 		if (rs.getString("idinforme") != null) {
 			if (NumberUtils.isNumber(rs.getString("idinforme")) || rs.getString("idinforme").contains("-INF-")) {
-				tasca.setInforme(InformeCore.getInformePrevi(conn, rs.getString("idinforme"), false));
+				tasca.setInforme(InformeCore.getInformePreviInfo(conn, rs.getString("idinforme")));
 			} else if (rs.getString("idinforme").contains("-MOD-")) {
 				InformeActuacio informe = InformeCore.getMoficacioInforme(conn, rs.getString("idinforme"));
 				tasca.setInforme(informe);
@@ -48,7 +53,7 @@ public class TascaCore {
 		tasca.setLlegida(rs.getBoolean("llegida"));		
 		tasca.setPrimerComentari(findHistorial(conn, rs.getInt("idtasca"), rs.getString("idincidencia"), rs.getString("idactuacio")).get(0).getComentari());
 		tasca.setDarreraModificacio(findDarreraModificacioHistorial(conn, rs.getInt("idtasca"), rs.getString("idincidencia"), rs.getString("idactuacio")));
-		tasca.setDocuments(getDocuments(rs.getString("idtasca"), rs.getString("idincidencia"), rs.getString("idactuacio")));
+		if (complet) tasca.setDocuments(getDocuments(rs.getString("idtasca"), rs.getString("idincidencia"), rs.getString("idactuacio")));
 		return tasca;		
 	}
 	
@@ -82,13 +87,12 @@ public class TascaCore {
 		String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament, prioritat"
 				 	+ " FROM public.tbl_tasques";
 		if (idUsuari > -1) {
-			sql  += " WHERE idusuari = ? AND tipus NOT LIKE '%notificacio%'";
+			sql  += " WHERE idusuari = ?";
+			if (! withTancades) sql += " AND activa = true";
 		} else if (area != null) {
-			sql  += " WHERE departament = ? AND tipus NOT LIKE '%notificacio%'";
-		} else {
-			sql  += " WHERE tipus NOT LIKE '%notificacio%'";
-		}				 	
-		if (! withTancades) sql += " AND activa = true";
+			sql  += " WHERE departament = ?";
+			if (! withTancades) sql += " AND activa = true";
+		} else if (! withTancades) sql += " WHERE activa = true";
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		if (idUsuari > -1) {
 			pstm.setInt(1, idUsuari);
@@ -113,6 +117,9 @@ public class TascaCore {
         List<Tasca> conformarFacturaList = new ArrayList<Tasca>();    
         List<Tasca> revisarCertificacioList = new ArrayList<Tasca>();
         List<Tasca> contractesList = new ArrayList<Tasca>();
+        List<Tasca> contractesFirmaList = new ArrayList<Tasca>();
+        List<Tasca> notificacionsList = new ArrayList<Tasca>();
+        System.out.println("    1.1: " + new Date());
 		while (rs.next()) {			
 			if (rs.getString("tipus").equals("infPrev")) { // 0
 				infPrevList.add(initTasca(conn, rs, false));
@@ -136,7 +143,7 @@ public class TascaCore {
 				resCreditList.add(initTasca(conn, rs, false));
 			} else if (rs.getString("tipus").equals("docprelicitacio") || rs.getString("tipus").equals("certificatCreditGerencia") || rs.getString("tipus").equals("preLicitacio")) { // 10
 				docPreLicitacioList.add(initTasca(conn, rs, false));			
-			} else if (rs.getString("tipus").equals("judicial")) { // 11
+			} else if (rs.getString("tipus").equals("judicial") || rs.getString("tipus").equals("pagamentJudicial")) { // 11
 				judicialList.add(initTasca(conn, rs, false));
 			} else if (rs.getString("tipus").equals("conformarFactura")) { // 12
 				conformarFacturaList.add(initTasca(conn, rs, false));
@@ -144,8 +151,12 @@ public class TascaCore {
 				revisarCertificacioList.add(initTasca(conn, rs, false));
 			} else if (rs.getString("tipus").equals("contracte")) {
 				contractesList.add(initTasca(conn, rs, false)); // 14
+			} else if (rs.getString("tipus").equals("firmaContracte")) {
+				contractesFirmaList.add(initTasca(conn, rs, false)); // 15
+			} else if (rs.getString("tipus").equals("notificacio")) {
+				notificacionsList.add(initTasca(conn, rs, false)); // 17
 			}else {
-				altresList.add(initTasca(conn, rs, false)); // 15
+				altresList.add(initTasca(conn, rs, false)); // 16
 			}
 		}		
 		list.add(infPrevList); // 0
@@ -162,8 +173,10 @@ public class TascaCore {
         list.add(judicialList);  // 11
         list.add(conformarFacturaList); // 12
         list.add(revisarCertificacioList); // 13
-        list.add(contractesList);  // 14 
-        list.add(altresList);  // 15 
+        list.add(contractesList);  // 14
+        list.add(contractesFirmaList);  // 15 
+        list.add(altresList);  // 16 
+        list.add(notificacionsList);  // 17 
 	  	return list;
     }
 	
@@ -276,7 +289,6 @@ public class TascaCore {
 		 ResultSet rs = pstm.executeQuery();
 		 List<Tasca> list = new ArrayList<Tasca>();
 		 while (rs.next()) {
-			 System.out.println(rs.getString("idtasca"));
 			 Tasca tasca = initTasca(conn, rs, false);
 			 list.add(tasca);
 		 }
@@ -414,7 +426,7 @@ public class TascaCore {
 		pstm.setString(10, UsuariCore.findUsuariByID(conn, idUsuari).getDepartament());			
 		pstm.executeUpdate();		
 		//Registrar comentari 1
-		String idComentari = nouHistoric(conn, Integer.toString(idNovaTasca), comentari, idUsuariComentari, ipRemota, tipusHistorial);
+		nouHistoric(conn, Integer.toString(idNovaTasca), comentari, idUsuariComentari, ipRemota, tipusHistorial);
 		try {
 			Fitxers.guardarFitxer(conn, adjunts, idIncidencia, idActuacio, "Tasca", Integer.toString(idNovaTasca), "", "", "", idUsuariComentari);
 		} catch (IOException e) {
@@ -497,16 +509,17 @@ public class TascaCore {
 		return String.valueOf(idNouHistoric);
 	}
 	
-	public static void reasignar(Connection conn, int idUsuari, int idTasca, String tipus) throws SQLException{
+	public static void reasignar(Connection conn, int idUsuari, int idTasca, String tipus, String assumpte) throws SQLException{
 		String sql = "UPDATE public.tbl_tasques"
-					+ " SET idusuari=?, departament =?, tipus = ?, llegida = false"
+					+ " SET idusuari=?, departament =?, tipus = ?, descripcio = ?, llegida = false"
 					+ " WHERE idtasca=?;";
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		pstm = conn.prepareStatement(sql);	 
 		pstm.setInt(1, idUsuari);
 		pstm.setString(2, UsuariCore.findUsuariByID(conn, idUsuari).getDepartament());
 		pstm.setString(3, tipus);
-		pstm.setInt(4, idTasca);
+		pstm.setString(4, assumpte);
+		pstm.setInt(5, idTasca);
 		pstm.executeUpdate();
 	}
 	
@@ -547,7 +560,7 @@ public class TascaCore {
 		pstm.executeUpdate();	
 	}
 	
-	public static List<Fitxer> getDocuments(String idTasca, String idIncidencia, String idActuacio) throws NamingException {
+	public static List<Fitxer> getDocuments(String idTasca, String idIncidencia, String idActuacio) throws NamingException {		
 		List<Fitxer> adjunts = new ArrayList<Fitxer>();
 		adjunts = utils.Fitxers.ObtenirFitxers(idIncidencia, idActuacio, "Tasca", idTasca, "");
 		return adjunts;
@@ -629,5 +642,11 @@ public class TascaCore {
 			//newTasca = true;		
 		}
 		return newTasca;
+	}
+	
+	public static List<Fitxer> getTascaDocuments(int idTasca) throws NamingException {
+		List<Fitxer> adjunts = new ArrayList<Fitxer>();
+		adjunts = utils.Fitxers.ObtenirFitxersTasca(String.valueOf(idTasca));
+		return adjunts;
 	}
 }

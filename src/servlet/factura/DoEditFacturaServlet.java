@@ -109,7 +109,7 @@ public class DoEditFacturaServlet extends HttpServlet {
 	    	try {
 				factura = FacturaCore.getFactura(conn, idFactura);	
 				List<Fitxer> fitxerFactura = new ArrayList<Fitxer>();
-				fitxerFactura.add(factura.getArxiu());
+				fitxerFactura.add(factura.getFactura());
 				fitxers =  fitxerFactura;
 			} catch (SQLException | NamingException e) {
 				// TODO Auto-generated catch block
@@ -135,7 +135,8 @@ public class DoEditFacturaServlet extends HttpServlet {
 	   		try {
 	   			factura.setUsuariConformador(UsuariCore.findUsuariByID(conn, idUsuariConformador));	   			
 	   			factura.setDataConformacio(dataConformada); 
-	   			factura.setDataEnviatComptabilitat(dataPasadaComptabilitat);	   			
+	   			factura.setDataEnviatComptabilitat(dataPasadaComptabilitat);
+	   			factura.setDataDescarregadaConformada(dataPasadaComptabilitat);
 	   			FacturaCore.modificarFactura(conn, factura, idUsuari);		   			
 	   			//Tancar actuacio si es menor i tots els expedients estan facturats
 	   			if (dataPasadaComptabilitat!=null) {

@@ -96,13 +96,12 @@
                                         <th>data PD</th>
                                         <th>data aut No Format</th>
                                         <th>data aut</th>
-                                        <th>despesa prevista</th>    
-                                        <th>Certificació</th>                               
+                                        <th>despesa prevista</th>                              
                                     </tr>
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${certificacionsList}" var="certificacio" >
-							          	<tr class="success">							          	
+							         	 <tr class="${certificacio.anulada ? 'danger' : ''}">								          	
 							           		<td><a href="certificacioDetalls?ref=${certificacio.idFactura}" class="loadingButton"  data-msg="obrint certificació...">${certificacio.idFactura}</a></td>
 							            	<td><a href="actuacionsDetalls?ref=${certificacio.idActuacio}" class="loadingButton"  data-msg="obrint actuació...">${certificacio.idActuacio} - ${certificacio.actuacio.descripcio}</a></td>
 							            	<td>${certificacio.getDataFacturaString()}</td>
@@ -127,8 +126,7 @@
 							            	<td>${certificacio.informe.dataAprovacio}</td> 
 							            	<td>${certificacio.informe.getDataAprovacioString()}</td>      
 							            	<td>${certificacio.informe.ofertaSeleccionada.getPlicFormat()}</td>
-							            	<td><a target="_blanck" href="downloadFichero?ruta=${certificacio.arxiu.getEncodedRuta()}">${certificacio.arxiu.nom}</a></td>      	
-							          	</tr>
+							            </tr>
 							       	</c:forEach>                                	
                                 </tbody>
                             </table>

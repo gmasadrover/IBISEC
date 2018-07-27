@@ -39,10 +39,7 @@
 				</c:if>
 			</div>
 			<p></p>
-		</c:if>
-		<p>
-			<label>Requereix formalització contracte:</label> ${informePrevi.propostaInformeSeleccionada.contracte ? "Si" : "No"}
-		</p>
+		</c:if>		
 		<p>
 			<label>Termini d'execució:</label> ${informePrevi.propostaInformeSeleccionada.termini}
 		</p>	
@@ -62,10 +59,12 @@
 			<label>Arxius ajunts:</label>
 		</p>	
 		<div class="row col-md-12">
-			<c:forEach items="${informePrevi.adjunts}" var="arxiu" >
-				<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
+			<c:forEach items="${informePrevi.propostaTecnica}" var="arxiu" >
+           		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
+					${arxiu.getDataString()} - ${arxiu.nom}
+				</a>				
 				<br>
-			</c:forEach>					            		
+			</c:forEach>                      		
 		</div>
 		<p>
 			<label>Comentari Cap:</label> ${informePrevi.comentariCap}
@@ -91,14 +90,10 @@
 					${informePrevi.autoritzacioPropostaAutoritzacio.nom}
 				</a>	
 				<c:if test="${informePrevi.autoritzacioPropostaAutoritzacio.signat}">
-						<span class="glyphicon glyphicon-pencil signedFile"></span>
+						<span data-ruta="${informePrevi.autoritzacioPropostaAutoritzacio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
 				</c:if>
 				<br>
 				<div class="infoSign hidden">
-					<c:forEach items="${informePrevi.autoritzacioPropostaAutoritzacio.firmesList}" var="firma" >
-						<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-						<br>
-					</c:forEach>
 				</div>
 			</div>	
 		</c:if>	

@@ -1,6 +1,7 @@
 package bean;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -209,8 +210,11 @@ public class Empresa {
    private Fitxers.Fitxer succesoraFile;
    private String motiuExtincio;
    private Fitxers.Fitxer extincioFile;
+   private double totalPbasePeriodeAdjudicat;
    private double totalPbasePeriode;
    private double totalPLicPeriode;
+   private boolean prohibicioContractar;
+   private List<Fitxers.Fitxer> documentsProhibicioContractarList;
    
    public Empresa() {
  
@@ -630,6 +634,11 @@ public class Empresa {
 	public double getTotalPbasePeriode() {
 		return totalPbasePeriode;
 	}
+	
+	public String getTotalPbasePeriodeString() {
+		DecimalFormat num = new DecimalFormat("#,##0.00");
+	    return num.format(this.totalPbasePeriode) + '€';
+	}
 
 	public void setTotalPbasePeriode(double totalPbasePeriode) {
 		this.totalPbasePeriode = totalPbasePeriode;
@@ -638,9 +647,43 @@ public class Empresa {
 	public double getTotalPLicPeriode() {
 		return totalPLicPeriode;
 	}
+	
+	public String getTotalPLicPeriodeString() {
+		DecimalFormat num = new DecimalFormat("#,##0.00");
+	    return num.format(this.totalPLicPeriode) + '€';
+	}
 
 	public void setTotalPLicPeriode(double totalPLicPeriode) {
 		this.totalPLicPeriode = totalPLicPeriode;
+	}
+
+	public boolean isProhibicioContractar() {
+		return prohibicioContractar;
+	}
+
+	public void setProhibicioContractar(boolean prohibicioContractar) {
+		this.prohibicioContractar = prohibicioContractar;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsProhibicioContractarList() {
+		return documentsProhibicioContractarList;
+	}
+
+	public void setDocumentsProhibicioContractarList(List<Fitxers.Fitxer> documentsProhibicioContractarList) {
+		this.documentsProhibicioContractarList = documentsProhibicioContractarList;
+	}
+
+	public double getTotalPbasePeriodeAdjudicat() {
+		return totalPbasePeriodeAdjudicat;
+	}
+	
+	public String getTotalPbasePeriodeAdjudicatString() {
+		DecimalFormat num = new DecimalFormat("#,##0.00");
+	    return num.format(this.totalPbasePeriodeAdjudicat) + '€';
+	}
+
+	public void setTotalPbasePeriodeAdjudicat(double totalPbasePeriodeAdjudicat) {
+		this.totalPbasePeriodeAdjudicat = totalPbasePeriodeAdjudicat;
 	}
 
 }
