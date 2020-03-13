@@ -7,20 +7,44 @@ $(document).ready(function() {
 			$('#import').val('');
 		}
 	});		
+	$('#centresList option[value="' + $('#idCentreActual').val() + '"]').attr('selected', 'selected');
+	if ($('#idCentreActual').val() != '' && $('#idCentreActual').val() != '-1') {	
+		if ($('#idCentreActual').val() == 'procediment') {	
+			$('.proveidor').addClass('hidden');
+			searchProcediments();
+		} else {
+			searchIncidencies($('#idCentreActual').val());
+		}		
+	} 
+	if ($('#idActuacio').val() != "-1") {
+		if ($('#idActuacio').val().indexOf("PRO-") !== -1) {
+			
+		} else {
+			searchExpedients($('#idActuacio').val());    	
+		}		
+	}
+		
 	$('#llistaEmpreses option[value="' + $('#nifProveidor').val() + '"]').attr('selected', 'selected');	
 	$('#usuarisList option[value="' + $('#idUsuariInforme').val() + '"]').attr('selected', 'selected');	
+	$('#tipusCertificacio option[value="' + $('#tipusCert').val() + '"]').attr('selected', 'selected');	
 
 	$('#centresList').on('change', function(){
+		$('.proveidor').removeClass('hidden');
 		$('#seleccionarInforme').append('<div class="loader"></div>');
 		$('#incidencies').html('');	
 		$('#expedients').html('');	
-		if ($(this).val() != '-1') {		
-			searchIncidencies($(this).val());
+		$('#procediments').html('');
+		if ($(this).val() != '-1') {	
+			if ($(this).val() == 'procediment') {	
+				$('.proveidor').addClass('hidden');
+				searchProcediments();
+			} else {
+				searchIncidencies($(this).val());
+			}			
 		} else {
 			$('#seleccionarInforme .loader').remove();
 		}
 	});
-	$('#centresList option[value="-1"]').attr('selected', 'selected');	
 	$('.selectpicker').selectpicker('refresh');	
 });
 
@@ -50,6 +74,7 @@ function searchIncidencies(idCentre) {
         			if (data.refExt != '') refExt = ' <b>(EXP ' + data.refExt + ')</b> ';
         			$('#incidenciesList').append('<option value=' + data.referencia + '>' + data.referencia + refExt + '-' + data.descripcio + '</option>');
         		});     
+        		$('#incidenciesList option[value="' + $('#idActuacio').val() + '"]').attr('selected', 'selected');
         		$('.selectpicker').selectpicker('refresh');   
         		$('#seleccionarInforme .loader').remove();
         		$('#incidenciesList').on('change', function(){
@@ -60,10 +85,47 @@ function searchIncidencies(idCentre) {
     					searchExpedients($(this).val());    					
     				} else {
     					$('#seleccionarInforme .loader').remove();
-    				}	
+    				}	    				
         			$('.selectpicker').selectpicker('refresh');	
         			
         		});
+             }                 
+        },        
+        //If there was no resonse from the server
+        error: function(jqXHR, textStatus, errorThrown){
+             console.log("Something really bad happened " + jqXHR.responseText);
+        }  
+    });
+	
+}
+
+function searchProcediments() {
+	var optionDefault = '';	
+	var html = '';
+	$.ajax({
+        type: "POST",
+        url: "LlistatProcediments",
+        dataType: "json",
+        //if received a response from the server
+        success: function( data, textStatus, jqXHR) {
+            //our country code was correct so we have some information to display
+             if(data.success){
+            	html += '<div class="form-group procediments">';
+            	html += '	<label class="col-xs-3 control-label">Procediment</label>';
+            	html += ' 	<div class="col-xs-3">';   
+            	html += '     	<select class="form-control selectpicker" name="procedimentsList" data-live-search="true" data-size="5" id="procedimentsList">';
+            	html += '		</select>';
+            	html += '	</div>';
+            	html += '</div>';
+            	$('#procediments').append(html);            	
+        		$.each(data.llistatProcediments, function( key, data ) {
+        			var demanda = data.objecteDemanda;
+        			if (demanda == null) demanda = '';
+        			$('#procedimentsList').append('<option value=' + data.referencia + '>' + data.numAutos + '-' + demanda + '</option>');
+        		});     
+        		$('#procedimentsList option[value="' + $('#idInforme').val() + '"]').attr('selected', 'selected');
+        		$('.selectpicker').selectpicker('refresh');   
+        		$('#seleccionarInforme .loader').remove();        		
              }                 
         },        
         //If there was no resonse from the server
@@ -102,6 +164,7 @@ function searchExpedients(idActuacio) {
         				$('#expedientsList').append('<option data-idactuacio="' + data.actuacio.referencia + '" data-idinf="' + data.idInf + '" data-objecte="' + data.propostaInformeSeleccionada.objecte + '" data-total="' + data.propostaInformeSeleccionada.plic + '" data-pagat="' + data.totalFacturat + '" value=' + data.idInf + '>' + refExt + '-' + data.propostaInformeSeleccionada.objecte + '</option>');
         			}
         		});     
+        		$('#expedientsList option[value="' + $('#idInforme').val() + '"]').attr('selected', 'selected');
         		$('.selectpicker').selectpicker('refresh');      
         		$('#expedientsList').on('change', function () {
         			$('.infoExpedient').html('');

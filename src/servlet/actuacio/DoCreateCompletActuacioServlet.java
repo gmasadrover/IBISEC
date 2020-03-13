@@ -131,7 +131,7 @@ public class DoCreateCompletActuacioServlet extends HttpServlet {
    				double importObraMajor = Double.parseDouble(getServletContext().getInitParameter("importObraMajor"));
    				informe = InformeCore.getInformePrevi(conn, idinforme, false); //recuperam informe amb tota la informació actualitzada
    				String nouCodi = ExpedientCore.crearExpedient(conn, informe, importObraMajor, false, "");	   				
-   				if (llicencia) LlicenciaCore.novaLlicencia(conn, nouCodi, tipusLlicencia);
+   				//if (llicencia) LlicenciaCore.novaLlicencia(conn, nouCodi, tipusLlicencia);
 		   		
 	   		} catch (SQLException | NamingException e) {
 	  			e.printStackTrace();

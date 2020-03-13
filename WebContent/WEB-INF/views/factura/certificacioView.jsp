@@ -77,6 +77,9 @@
 	                  	</div>
 		             	<div class="col-xs-offset-1 col-md-5">
 		             		<p> 
+	                        	<label>Tipus: </label> ${certificacio.tipus}
+                            </p> 
+		             		<p> 
 	                        	<label>Informe: </label> ${certificacio.idInforme}
                             </p> 
 		                    <p> 

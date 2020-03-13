@@ -27,10 +27,9 @@
 						<td>${persona.getDataAltaString()}</td>
 						<td>${persona.getDataBaixaString()}</td>
 						<td>
-							<c:if test="${canModificarPersonal}">
+							<c:if test="${canModificarPersonal && persona.actiu}">
 								<input class="btn btn-danger btn-sm deleteRelacioPersona" data-idrelacio="${persona.relacioID}" type="button" value="Baixa">
-	                   			<input class="btn btn-primary btn-sm modificarRelacioPersona" type="button" value="Modificar">
-                   			</c:if>	          
+	                   		</c:if>	          
 						</td>
 		    		</tr>
 				</c:forEach>

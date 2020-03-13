@@ -72,6 +72,22 @@ public class OfertaCore {
 		return newCode;
 	}
 	
+	public static void modificarOferta(Connection conn, Oferta oferta) throws SQLException {
+		String sql = "UPDATE public.tbl_empresaoferta"
+					+ " SET cifempresa = ?, pbase = ?, iva = ?, plic = ?, termini = ?, comentari = ?"
+					+ " WHERE idoferta = ?;";
+ 
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setString(1, oferta.getCifEmpresa());
+		pstm.setDouble(2, oferta.getPbase());
+		pstm.setDouble(3, oferta.getIva());
+		pstm.setDouble(4, oferta.getPlic());
+		pstm.setString(5, oferta.getTermini());
+		pstm.setString(6, oferta.getComentari());
+		pstm.setString(7, oferta.getIdOferta());
+		pstm.executeUpdate();
+	}
+	
 	public static Oferta findOfertaById(Connection conn, String idOferta) throws SQLException, NamingException {
 		Oferta ofertaSeleccionada = new Oferta();
 		String sql = "SELECT idoferta, idactuacio, cifempresa, pbase, iva, plic, termini, seleccionada, descalificada, comentari, usucre, datacre, usuaprovacio, dataaprovacio, idinforme, usucapvalidacio, datacapvalidacio, capdobres"

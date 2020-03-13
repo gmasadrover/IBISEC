@@ -211,8 +211,12 @@ public class UsuariCore {
 					+ " SET password=?"
 				  	+ " WHERE idusuari=?";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);
-		String newPasswordMD5=DigestUtils.md5Hex(newPassword); 
-		pstm.setString(1, newPasswordMD5);
+		if (!newPassword.isEmpty()) {
+			String newPasswordMD5=DigestUtils.md5Hex(newPassword); 
+			pstm.setString(1, newPasswordMD5);
+		} else {
+			pstm.setString(1, "");
+		}
 		pstm.setInt(2, idUsuari);
 		pstm.executeUpdate();
 	}

@@ -19,18 +19,20 @@ $(document).ready(function() {
 	            visibility: true
 	        }
         ],	
-		"order": [[ 10, "desc" ]],
+		"order": [[ 11, "desc" ]],
 		"aoColumns": [
 			null,
     		null,
     		null,
-    		null,
+    		{"bVisible": false},
+    		null,    		
     		{"bVisible": false},
     		null,
     		{"bVisible": false},
     		{"iDataSort": 8},
     		{"bVisible": false},
     		{"iDataSort": 10},
+    		{"bVisible": false},
     		{"bVisible": false},
     		{"bVisible": false},
     		{"bVisible": false},

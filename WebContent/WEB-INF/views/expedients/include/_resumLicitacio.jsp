@@ -110,6 +110,13 @@
 				</p>
 			</c:if>
 		</div>
+		<h4>Publicació</h4>		
+		<div class="col-md-12">
+			<p>			                     				
+				<label>Data publicació:</label>${informePrevi.expcontratacio.getDataPublicacioPerfilContratantString()}
+			</p>
+		</div>
+		<br>
 		<c:if test="${informePrevi.llistaOfertes.size()>0}">
 			<h4>Avaluació de criteris</h4>
 			<c:set var="ofertes" scope="request" value="${informePrevi.llistaOfertes}"></c:set>
@@ -144,14 +151,14 @@
 				</c:forEach>
 			</c:if>
 		</div>
-			<div class="col-md-12">
- 				<c:forEach items="${informePrevi.propostaTecnica}" var="arxiu" >	
- 					<c:set var="arxiu" value="${arxiu}" scope="request"/>											
-             		<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+		<div class="col-md-12">
+			<c:forEach items="${informePrevi.propostaTecnica}" var="arxiu" >	
+				<c:set var="arxiu" value="${arxiu}" scope="request"/>											
+           		<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 			</c:forEach>
 		</div>
 		<div class="col-md-12">
-			<c:if test="${informePrevi.autoritzacioPropostaDespesa.ruta != null}">
+			<c:if test="${informePrevi.autoritzacioPropostaDespesa != null}">
 				<h4>Resolució d'adjudicació:</h4>		
 				<c:if test="${informePrevi.expcontratacio.getDataAdjudicacioString() != null && informePrevi.expcontratacio.getDataAdjudicacioString() != ''}">	
 					<div class="col-md-12">
@@ -161,16 +168,10 @@
 					</div>
 				</c:if>
 				<p>
-              		<div class="document">				                  	
-	           			<a target="_blanck" href="downloadFichero?ruta=${informePrevi.autoritzacioPropostaDespesa.getEncodedRuta()}">
-							${informePrevi.autoritzacioPropostaDespesa.nom}
-						</a>	
-						<c:if test="${informePrevi.autoritzacioPropostaDespesa.signat}">
-							<span data-ruta="${informePrevi.autoritzacioPropostaDespesa.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
-						</c:if><br>
-						<div class="infoSign hidden">								
-						</div>
-					</div>	
+					<c:forEach items="${informePrevi.autoritzacioPropostaDespesa}" var="arxiu" >
+	  					<c:set var="arxiu" value="${arxiu}" scope="request"/>																
+	              		<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+					</c:forEach>              		
 				</p>
 			</c:if>
 		</div>
@@ -224,7 +225,7 @@
 			<input type="hidden" name="idIncidencia" value="${informePrevi.actuacio.idIncidencia}">
 			<input type="hidden" name="idInforme" value="${informePrevi.idInf}">			    
 			<div class="col-xs-2"> 
-				<input type="submit" class="btn btn-primary" value="Pujar" />
+				<input type="submit" class="btn btn-primary loadingButton" value="Pujar" />
 			</div>    						
 		</div>         				
 	</form>							

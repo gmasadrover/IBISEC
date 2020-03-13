@@ -41,6 +41,7 @@
 							      <label>Filtrar per centre</label>
 							      <div>
 		                                <select class="form-control selectpicker" name="idCentre" data-live-search="true" id="centresList">
+		                                	<option value="-1">Tots els centres</option>
 		                                </select>
 		                             </div>
 							    </div>						    

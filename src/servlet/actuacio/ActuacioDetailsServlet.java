@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.bouncycastle.asn1.x509.Time;
+
 import bean.Actuacio;
 import bean.InformeActuacio;
 import bean.Registre;
@@ -62,8 +64,7 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       List<Tasca> tasques = new ArrayList<Tasca>();
 	       List<Tasca> notificacions = new ArrayList<Tasca>();
 	       List<Fitxers.Fitxer> arxius = new ArrayList<Fitxers.Fitxer>();
-	       List<InformeActuacio> informes = new ArrayList<InformeActuacio>();	       
-	       List<Factura> factures = new ArrayList<Factura>();	      
+	       List<InformeActuacio> informes = new ArrayList<InformeActuacio>();	
 	       List<Registre> entrades = new ArrayList<Registre>();
 	       List<Registre> sortides = new ArrayList<Registre>();
 	       Context env;
@@ -88,16 +89,22 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       boolean canModificarPersonal = false;
 	       boolean canCreateFeina = false;
 	       try {
+	    	   System.out.println("1. //" + java.time.LocalTime.now());
 	    	   actuacio = ActuacioCore.findActuacio(conn, referencia);
+	    	   System.out.println("2. //" + java.time.LocalTime.now());
 	    	   if (actuacio.getCentre() != null && actuacio.getCentre().getIdCentre() != null && actuacio.getCentre().getIdCentre().equals("9999PERSO") && !UsuariCore.hasPermision(conn, usuari, SectionPage.personal)) response.sendRedirect(request.getContextPath() + "/");
 	    	   actuacio.setSeguiment(ActuacioCore.isSeguimentActuacio(conn, referencia, usuari.getIdUsuari()));
+	    	   System.out.println("3. //" + java.time.LocalTime.now());
 	    	   incidencia = IncidenciaCore.findIncidencia(conn, actuacio.getIdIncidencia());
-	    	   actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia()));
+	    	   System.out.println("4. //" + java.time.LocalTime.now());
 	    	   tasques = TascaCore.findTasquesActuacio(conn, referencia, false); 
+	    	   System.out.println("5. //" + java.time.LocalTime.now());
 	    	   informes = InformeCore.getInformesActuacio(conn, referencia);
-	    	   factures = FacturaCore.getFacturesActuacio(conn, referencia);  
-	    	   entrades = RegistreCore.searchEntradesIncidencia(conn, incidencia.getIdIncidencia());
-	    	   sortides = RegistreCore.searchSortidesIncidencia(conn, incidencia.getIdIncidencia());
+	    	   System.out.println("6. //" + java.time.LocalTime.now());	
+	    	   entrades = RegistreCore.searchEntradesIncidencia(conn, incidencia.getIdIncidencia(), incidencia.getIdCentre());
+	    	   System.out.println("7. //" + java.time.LocalTime.now());
+	    	   sortides = RegistreCore.searchSortidesIncidencia(conn, incidencia.getIdIncidencia(), incidencia.getIdCentre());
+	    	   System.out.println("8. //" + java.time.LocalTime.now());
 	    	   rutaActuacio += incidencia.getIdIncidencia() + "/Actuacio";
 	    	   canModificarActuacio = UsuariCore.hasPermision(conn, usuari, SectionPage.actuacio_modificar);	
 	    	   canCreateInformePrevi = UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_crear) || "gerencia".equals(usuari.getDepartament());
@@ -126,8 +133,8 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       request.setAttribute("informes", informes);	      
 	       request.setAttribute("entrades", entrades);
 	       request.setAttribute("sortides", sortides);
-	       request.setAttribute("factures", factures);
 	       request.setAttribute("rutaActuacio", rutaActuacio);
+	       request.setAttribute("isCap", usuari.getRol().contains("CAP") || usuari.getRol().contains("ADMIN"));
 	       request.setAttribute("canCreateInformePrevi", canCreateInformePrevi);
 	       request.setAttribute("canCreateTasca", canCreateTasca);
 	       request.setAttribute("canModificarActuacio", canModificarActuacio);

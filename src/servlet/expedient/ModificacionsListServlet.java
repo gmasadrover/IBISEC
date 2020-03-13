@@ -51,7 +51,7 @@ public class ModificacionsListServlet extends HttpServlet {
 			
 			List<InformeActuacio> modificacionsList = new ArrayList<InformeActuacio>();
 			try {
-				modificacionsList = InformeCore.getMoficacionsInforme(conn, null);
+				modificacionsList = InformeCore.getMoficacionsInforme(conn, null, false);
 			} catch (SQLException | NamingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

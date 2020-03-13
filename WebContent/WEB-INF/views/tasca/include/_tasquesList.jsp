@@ -14,7 +14,8 @@
 	            	<th>Expedient</th>                                    
 	                <th>Tasca</th>
 	                <th>Responsable</th>
-	                <th>id Actuació</th>
+	                <th>Remitent</th>
+	                <th>Actuació</th>
 	                <th>Illa</th>    
 	                <th>Centre</th>  	               
 	                <th>Descripció</th>                                 
@@ -25,6 +26,7 @@
 	                <th>Departament</th>       
 	                <th>Valor PA</th>
 	                <th>Valor PD</th>
+	                <th>Estat</th>
 	            </tr>
 	        </thead>
 	        <tbody>
@@ -32,10 +34,13 @@
 	        		<c:if test="${!(tasca.actuacio.centre.idCentre == '9999PERSO' && !canViewPersonal)}">
 						<tr class="${tasca.activa ? tasca.tipus == 'notificacio' ? "warning" : "success" : "danger"}">							          	
 							<td>
-								<c:choose>
+								<c:choose>	
+									<c:when test="${tasca.registre != null}">
+										<a href="registre?from=notificacio&idTasca=${tasca.idTasca}&tipus=E&referencia=${tasca.registre}" class="loadingButton"  data-msg="obrint registre...">${tasca.registre}</a>	
+									</c:when>			
 			            			<c:when test="${tasca.informe != null && tasca.informe.expcontratacio != null && tasca.informe.expcontratacio.expContratacio != '-1'}">
 			            				<a href="actuacionsDetalls?ref=${tasca.actuacio.referencia}&exp=${tasca.informe.idInf}" class="loadingButton"  data-msg="obrint expedient...">${tasca.informe.expcontratacio.expContratacio}</a>
-			            			</c:when>
+			            			</c:when>			            			
 			            			<c:otherwise>
 			            				${tasca.idinforme}		            				
 			            			</c:otherwise>
@@ -45,12 +50,16 @@
 			            		</c:if>
 							</td>
 							<td><a href="tasca?id=${tasca.idTasca}" class="loadingButton"  data-msg="obrint tasca...">${!tasca.llegida ? '<img src="css/img/exclamation.png" class="exclamationimg">' : ''} ${tasca.idTasca} - ${tasca.descripcio}</a></td>
-							<td>${tasca.usuari.getNomComplet()}</td>								
+							<td>${tasca.usuari.getNomComplet()}</td>	
+							<td>${tasca.usuCre}</td>							
 			            	<c:choose>			            		
 				            	<c:when test="${tasca.tipus != 'pagamentJudicial' && tasca.tipus != 'judicial'}">
 				            		<td>
 					            		<c:choose>
-					            			<c:when test="${tasca.actuacio.referencia != '-1'}">
+					            			<c:when test="${tasca.actuacio.referencia == '-1' || tasca.actuacio.referencia == '' || tasca.actuacio.referencia == null}">
+					            				<a href="incidenciaDetalls?ref=${tasca.incidencia.idIncidencia}" class="loadingButton"  data-msg="obrint actuació...">${tasca.incidencia.idIncidencia}</a>
+					            			</c:when>
+					            			<c:when test="${tasca.actuacio.referencia != '-1' && tasca.actuacio.referencia != '0'}">
 					            				<a href="actuacionsDetalls?ref=${tasca.actuacio.referencia}" class="loadingButton"  data-msg="obrint actuació...">${tasca.actuacio.referencia}</a>
 					            			</c:when>
 					            			<c:otherwise>
@@ -58,9 +67,18 @@
 					            			</c:otherwise>
 					            		</c:choose>
 					            	</td>
-									<td>${tasca.actuacio.centre.illa}</td>	
-									<td>${tasca.actuacio.centre.getNomComplet()}</td>	
-									<td>${tasca.actuacio.descripcio}</td>			
+					            	<c:choose>
+					            		<c:when test="${tasca.actuacio.referencia == '-1' || tasca.actuacio.referencia == '' || tasca.actuacio.referencia == null}">
+											<td></td>	
+											<td>${tasca.incidencia.nomCentre}</td>	
+											<td></td>			
+										</c:when>
+										<c:otherwise>
+											<td>${tasca.actuacio.centre.illa}</td>	
+											<td>${tasca.actuacio.centre.getNomComplet()}</td>	
+											<td>${tasca.actuacio.descripcio} - ${tasca.informe.getPropostaInformeSeleccionada().getObjecte()}</td>		
+										</c:otherwise>
+					            	</c:choose>	
 								</c:when>
 								<c:otherwise>
 									<td></td>
@@ -76,6 +94,7 @@
 							<td>${tasca.usuari.departament}</td>
 							<td>${tasca.informe.getPropostaInformeSeleccionada().getPlicFormat()}</td>
 							<td>${tasca.informe.getOfertaSeleccionada().getPlicFormat()}</td>
+							<td>${tasca.activa}</td>
 						</tr>
 					</c:if>
 				</c:forEach>

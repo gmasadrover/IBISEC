@@ -23,6 +23,9 @@
 		</p>	
 		<p>			                     				
 			<label>Comentari tècnic:</label> ${informePrevi.propostaInformeSeleccionada.comentari}
+		</p>
+		<p>			                     				
+			<label>Comentari administratiu:</label> ${informePrevi.propostaInformeSeleccionada.comentariAdministratiu}
 		</p>				                         	
 		<p>
 			<label>Tipus de contracte:</label> <m:message key="${informePrevi.propostaInformeSeleccionada.tipusObra}"/>
@@ -99,7 +102,7 @@
 			</div>	
 		</c:if>	
 		<c:if test="${informePrevi.autoritzacioPropostaAutoritzacio.ruta == null}">			
-	     	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddPA">
+	     	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoTasca">
 		     	<input type="hidden" name="document" value="certificatCredit">
 				<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
 				<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">															

@@ -114,7 +114,7 @@
 							            	<td>${certificacio.usuariConformador.getNomCompletReal()}</td>
 							            	<td>${certificacio.dataConformacio}</td>
 							            	<td>${certificacio.getDataConformacioString()}</td>
-							            	<td>${certificacio.informe.assignacioCredit.partida.codi}</td>	 
+							            	<td>${certificacio.informe.assignacioCredit[0].partida.codi}</td>	 
 							            	<td>${certificacio.notes}</td>	 
 							            	<td>${certificacio.actuacio.centre.getNomComplet()}</td>    
 							            	<td>${certificacio.actuacio.dataCreacio}</td> 
@@ -142,7 +142,7 @@
 
     </div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/factura/llistat.js?<%=application.getInitParameter("datakey")%>"></script>
+    <script src="js/factura/llistatCertificacions.js?<%=application.getInitParameter("datakey")%>"></script>
     <!-- /#wrapper -->
 </body>
 </html>

@@ -62,7 +62,7 @@
 			</div>
 			<p>			                     				
 				<label>Comentari tècnic:</label> ${propostaModificacio.ofertaSeleccionada.comentari}
-			</p>			
+			</p>						
 			<c:forEach items="${propostaModificacio.propostaTecnica}" var="arxiu" >	
 				<c:set var="arxiu" value="${arxiu}" scope="request"/>
 				<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	

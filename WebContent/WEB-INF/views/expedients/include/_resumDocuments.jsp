@@ -9,14 +9,7 @@
 	<label>Altra documentació:</label>
 </p>	
 <div class="row col-md-12 margin_bottom30">
-	<c:forEach items="${actuacio.arxiusAdjunts.arxiusAltres}" var="arxiu" >
-		<c:set var="arxiu" value="${arxiu}" scope="request"/>
-		<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>		            		
-	</c:forEach>
-	<c:forEach items="${informePrevi.adjunts}" var="arxiu" >
-		<c:set var="arxiu" value="${arxiu}" scope="request"/>
-		<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>			            		
-	</c:forEach>	
+	<div class="documentsAltres"></div>	
 </div>
 <div class="row">            			
 	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadDocumentacioAdjunta">
@@ -29,7 +22,7 @@
 			<input type="hidden" name="idIncidencia" value="${informePrevi.actuacio.idIncidencia}">
 			<input type="hidden" name="idInforme" value="${informePrevi.idInf}">			    
 			<div class="col-xs-2"> 
-				<input type="submit" class="btn btn-primary" value="Pujar" />
+				<input type="submit" class="btn btn-primary loadingButton" value="Pujar" />
 			</div>    						
 		</div>         				
 	</form>							

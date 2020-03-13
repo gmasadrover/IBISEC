@@ -49,6 +49,22 @@ public class CentreCore {
 		pstm.executeUpdate();
 	}
 	
+	public static void editCentre(Connection conn, Centre centre) throws SQLException {
+		String sql = "UPDATE public.tbl_centres"
+					+ " SET tipo = ?, nom = ?, illa = ?, municipi = ?, localitat = ?, adreca = ?, cp = ?"
+					+ " WHERE codi = ?;";
+		PreparedStatement pstm = conn.prepareStatement(sql);		
+		pstm.setString(1, centre.getTipo());
+		pstm.setString(2, centre.getNom());
+		pstm.setString(3, centre.getIlla());
+		pstm.setString(4, centre.getMunicipi());
+		pstm.setString(5, centre.getLocalitat());
+		pstm.setString(6, centre.getAdreca());
+		pstm.setString(7, centre.getCp());
+		pstm.setString(8, centre.getIdCentre());
+		pstm.executeUpdate();
+	}
+	
 	public static String nomCentre(Connection conn, String idCentre) throws SQLException {		 
 		String sql = "SELECT nom from public.tbl_centres"
 					+ " WHERE codi = ?";

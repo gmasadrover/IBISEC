@@ -2,6 +2,7 @@
    pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="m"  %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <c:set var="language" value="${not empty param.language ? param.language : not empty language ? language : pageContext.request.locale}" scope="session" />
 <m:setLocale value="${language}" />
 <m:setBundle basename="i18n.base"/>	
@@ -12,20 +13,7 @@
 		<label>Estat:</label> ${informePrevi.getEstatExpedientFormat()}
 	</p>
 	<p>	
-		<div class="document">
-			<label>Data PA autoritzat:</label> ${informePrevi.getDataAprovacioString()}
-			<c:if test="${informePrevi.autoritzacioPropostaAutoritzacio.ruta != null}">
-				<a target="_blanck" href="downloadFichero?ruta=${informePrevi.autoritzacioPropostaAutoritzacio.getEncodedRuta()}">
-					${informePrevi.autoritzacioPropostaAutoritzacio.nom}
-				</a>	
-				<c:if test="${informePrevi.autoritzacioPropostaAutoritzacio.signat}">
-						<span data-ruta="${informePrevi.autoritzacioPropostaAutoritzacio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
-				</c:if>
-				<br>
-				<div class="infoSign hidden">					
-				</div>
-			</c:if>	
-		</div>
+		<label>Data PA autoritzat:</label> ${informePrevi.getDataAprovacioString()}
 	</p>
 	<p>
 		<label>Import PA:</label> ${informePrevi.propostaInformeSeleccionada.plic}€
@@ -34,50 +22,57 @@
 		<label>Autorització urbanística:</label> ${informePrevi.propostaInformeSeleccionada.llicencia ? "Si" : "No"}
 	</p>													
 	<p>
-		<label>Partida:</label> <a target="_black" href="partidaDetalls?codi=${informePrevi.assignacioCredit.partida.codi}">${informePrevi.assignacioCredit.partida.codi} (${informePrevi.assignacioCredit.partida.nom})</a>
+		<label>Partida:</label> 
+		<c:forEach items="${informePrevi.assignacioCredit}" var="assignacioCredit" >
+			<a target="_black" href="partidaDetalls?codi=${assignacioCredit.partida.codi}">${assignacioCredit.partida.codi} (${assignacioCredit.partida.nom})</a><br/>
+		</c:forEach>		
 	</p>
 	<p>
-		<div class="document">
-			<label>Data adjudicació:</label> ${informePrevi.getDataPDString()}
-			<c:if test="${informePrevi.autoritzacioPropostaDespesa.ruta != null}">
-				<a target="_blanck" href="downloadFichero?ruta=${informePrevi.autoritzacioPropostaDespesa.getEncodedRuta()}">
-					${informePrevi.autoritzacioPropostaDespesa.nom}
-				</a>	
-				<c:if test="${informePrevi.autoritzacioPropostaDespesa.signat}">
-						<span data-ruta="${informePrevi.autoritzacioPropostaDespesa.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
-				</c:if>
-				<br>
-				<div class="infoSign hidden">					
-				</div>
-			</c:if>	
-		</div>
+		<label>Data adjudicació:</label> ${informePrevi.getDataPDString()}
 	</p>
 	<p>
 		<label>Import adjudicació:</label> ${informePrevi.ofertaSeleccionada.plic}€
 	</p>
 	<c:set var="modificacions" value="0" /> 
 	<c:forEach items="${informePrevi.llistaModificacions}" var="modificacio" >
-		<c:if test="${modificacio.autoritzacioPropostaDespesa.ruta != null}">				
-			<p>
-				<label>Modificació:</label> ${modificacio.ofertaSeleccionada.plic}€
-				<c:set var="modificacions" value="${modificacions + modificacio.ofertaSeleccionada.plic}" />
-			</p>
-		</c:if>
+		<c:if test="${!modificacio.anulat}">
+			<c:if test="${modificacio.autoritzacioPropostaDespesa.size() > 0 || modificacio.formalitzacioSignat.ruta != null}">				
+				<p>
+					<label>Modificació:</label> ${modificacio.ofertaSeleccionada.plic}€
+					<c:set var="modificacions" value="${modificacions + modificacio.ofertaSeleccionada.plic}" />
+				</p>
+			</c:if>
+		</c:if>		
 	</c:forEach>
 	<p>
 		<label>Total expedient:</label> ${informePrevi.ofertaSeleccionada.plic + modificacions}€
 	</p>
 	<c:set var="penalitzacions" value="0" /> 
-		<c:forEach items="${informePrevi.llistaPenalitzacions}" var="penalitzacio" >
-			<c:if test="${penalitzacio.autoritzacioPropostaDespesa.ruta != null}">				
+	<c:forEach items="${informePrevi.llistaPenalitzacions}" var="penalitzacio" >
+		<c:if test="${!penalitzacio.propostaInformeSeleccionada.retencio}">
+			<c:if test="${penalitzacio.autoritzacioPropostaDespesa.size() > 0 || penalitzacio.formalitzacioSignat.ruta != null}">				
 				<c:set var="penalitzacions" value="${penalitzacions + penalitzacio.ofertaSeleccionada.plic}" />			
 			</c:if>
-		</c:forEach>
+		</c:if>		
+	</c:forEach>
 	<c:if test="${penalitzacions < 0}">
 		<p>
 			<label>Total penalitzacions:</label> ${penalitzacions}€
 		</p>
-	</c:if>
+	</c:if>	
+	<c:set var="retencions" value="0" /> 
+	<c:forEach items="${informePrevi.llistaPenalitzacions}" var="penalitzacio" >
+		<c:if test="${penalitzacio.propostaInformeSeleccionada.retencio}">
+			<c:if test="${penalitzacio.autoritzacioPropostaDespesa.size() > 0 || penalitzacio.formalitzacioSignat.ruta != null}">				
+				<c:set var="retencions" value="${retencions + penalitzacio.ofertaSeleccionada.plic}" />			
+			</c:if>
+		</c:if>		
+	</c:forEach>
+	<c:if test="${retencions < 0}">
+		<p>
+			<label>Total retencions:</label> ${retencions}€
+		</p>
+	</c:if>	
 	<c:if test="${informePrevi.expcontratacio.contracte == 'major'}">
 		<p>
 			<label>Import certificat:</label> ${informePrevi.getTotalCertificatFormat()}
@@ -88,7 +83,7 @@
 	</p>
 	<c:if test="${informePrevi.estat != 'garantia'}">
 		<p>
-			<label>Romanent:</label> ${modificacions + informePrevi.ofertaSeleccionada.plic - informePrevi.getTotalFacturat()}€
+			<label>Romanent:</label> ${modificacions + informePrevi.ofertaSeleccionada.plic - informePrevi.getTotalFacturat() + penalitzacions}€
 		</p>
 	</c:if>
 </div>

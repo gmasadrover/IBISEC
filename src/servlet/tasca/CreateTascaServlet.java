@@ -57,7 +57,7 @@ public class CreateTascaServlet extends HttpServlet {
 	        	request.setAttribute("tipus", tipus);
 	        	request.setAttribute("centre", request.getParameter("centre"));
 				request.setAttribute("nouCodi", TascaCore.idNovaTasca(conn));
-				boolean canReasignar = (!usuari.getDepartament().equals("obres") && !usuari.getDepartament().equals("instalacions")) || usuari.getRol().contains("CAP") || usuari.getRol().contains("MANUAL");
+				boolean canReasignar = (!usuari.getDepartament().equals("obres") && !usuari.getDepartament().equals("instalacions")) || usuari.getRol().contains("CAP") || usuari.getRol().contains("ADM");
 				
 				if (("infPrev".equals(tipus) || "factura".equals(tipus)) && !usuari.getRol().contains("MANUAL") && !usuari.getRol().contains("CAP") && !usuari.getRol().contains("ADMIN")) {
 					llistaUsuaris = UsuariCore.findUsuarisByRol(conn, "CAP");

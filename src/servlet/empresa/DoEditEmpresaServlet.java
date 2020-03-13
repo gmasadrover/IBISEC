@@ -50,7 +50,9 @@ public class DoEditEmpresaServlet extends HttpServlet {
 		User Usuari = MyUtils.getLoginedUser(request.getSession());	   
 		String extincio = multipartParams.getParametres().get("extincio");
 		String succecio = multipartParams.getParametres().get("succecio");
-		
+		String prohibicio = multipartParams.getParametres().get("prohibicio");
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+		Date dataFinsProhibicio = null;
        	String cif = multipartParams.getParametres().get("newcif");
        	if (cif == null) cif = multipartParams.getParametres().get("cif");
        	Boolean isUte = "true".equals(multipartParams.getParametres().get("isute"));       	
@@ -79,7 +81,18 @@ public class DoEditEmpresaServlet extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-       	} else {       	
+       	} else if (prohibicio != null) {
+       		try {       			
+       			if (multipartParams.getParametres().get("dateLimitProhibicio") != null && ! multipartParams.getParametres().get("dateLimitProhibicio").isEmpty()) dataFinsProhibicio = formatter.parse(multipartParams.getParametres().get("dateLimitProhibicio"));
+				EmpresaCore.prohibicioContractarEmpresa(conn, cif, dataFinsProhibicio);				
+				empresa.setCif(cif);
+				//Guardar adjunts
+			   	EmpresaCore.guardarFitxer(conn, Usuari.getIdUsuari(), multipartParams.getFitxers(), empresa.getCif(), "");
+			} catch (SQLException | NamingException | ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+   		}else {       	
 			String name = multipartParams.getParametres().get("name");
 			String direccio = multipartParams.getParametres().get("direccio");
 			String cp = multipartParams.getParametres().get("cp");
@@ -89,13 +102,14 @@ public class DoEditEmpresaServlet extends HttpServlet {
 			if (multipartParams.getParametres().get("provincia") != null) provincia = URLDecoder.decode(multipartParams.getParametres().get("provincia").split("_")[1], "UTF-8");
 			String telefon = multipartParams.getParametres().get("telefon");
 			String fax = multipartParams.getParametres().get("fax");
-			String email = multipartParams.getParametres().get("email");		
+			String email = multipartParams.getParametres().get("email");	
+			String tipus =  multipartParams.getParametres().get("tipus");	
 			String classificacio = multipartParams.getParametres().get("llistatClassificacio");		
 			String informacioAdicional = multipartParams.getParametres().get("informacioAdicional");		
 			
 			Boolean isPime = "on".equals(multipartParams.getParametres().get("pime"));
 			
-			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+			
 			Date dataConstitucio = null;
 			Date dateExpAcreditacio1 = null;
 			Date dateExpAcreditacio2 = null;
@@ -133,6 +147,7 @@ public class DoEditEmpresaServlet extends HttpServlet {
 				empresa.setTelefon(telefon);
 				empresa.setFax(fax);
 				empresa.setEmail(email);
+				empresa.setTipus(tipus);
 				empresa.setPime(isPime);
 				empresa.setDataConstitucio(dataConstitucio);
 				empresa.setClassificacioString(classificacio);
@@ -181,7 +196,7 @@ public class DoEditEmpresaServlet extends HttpServlet {
 		// If everything nice.
 		// Redirect to the product listing page.            
 		else {
-           response.sendRedirect(request.getContextPath() + "/editEmpresa?cif=" + empresa.getCif());
+           response.sendRedirect(request.getContextPath() + "/empresa?cif=" + empresa.getCif());
 		}
    	}
  

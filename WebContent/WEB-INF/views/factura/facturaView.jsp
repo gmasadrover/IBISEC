@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="m"  %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <c:set var="language" value="${not empty param.language ? param.language : not empty language ? language : pageContext.request.locale}" scope="session" />
 <m:setLocale value="${language}" />
 <m:setBundle basename="i18n.base"/>
@@ -80,9 +81,18 @@
 								<label>Codi:</label> ${factura.idFactura}
 							</p>
                             <input type="hidden" name="codi" value="${factura.idFactura}">
-	                        <p>
-	                        	<label>Actuacio:</label> <a href="actuacionsDetalls?ref=${factura.idActuacio}" target="_blank">${factura.idActuacio}</a>
-	                        </p>    
+                            <c:choose>
+                            	<c:when test="${fn:contains(factura.idActuacio, 'PRO-')}">
+                            		<p>
+			                        	<label>Procediment:</label> <a href="procediment?ref=${factura.idActuacio}" target="_blank">${factura.idActuacio}</a>
+			                        </p>
+                            	</c:when>
+                            	<c:otherwise>
+                            		<p>
+			                        	<label>Actuacio:</label> <a href="actuacionsDetalls?ref=${factura.idActuacio}" target="_blank">${factura.idActuacio}</a>
+			                        </p>   
+                            	</c:otherwise>
+                            </c:choose>
 	                        <p> 
 	                        	<label>Data factura: </label> ${factura.getDataFacturaString()}
                             </p>

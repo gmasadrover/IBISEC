@@ -67,6 +67,7 @@ public class EditInformeServlet extends HttpServlet {
 				} else {
 					expedient = ExpedientCore.findExpedient(conn, refExp);
 					informePrevi = InformeCore.getInformePrevi(conn, expedient.getIdInforme(), true);
+					System.out.println(informePrevi.isCessioCredit());
 				}
 	            partidesList = CreditCore.getPartides(conn, false);
 	            llistaUsuaris = UsuariCore.llistaUsuaris(conn, true);

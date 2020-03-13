@@ -71,35 +71,35 @@ public class DoEditJudicialServlet extends HttpServlet {
         			JudicialCore.modificarProcediment(conn, procediment);    			
            		} else if (tipus.equals("2ainstancia")) {       			
            			if (ref == null || ref.isEmpty()) {
-           				ref = JudicialCore.nouProcediement(conn, procediment, refOriginal, tipus);
+           				ref = JudicialCore.nouProcediment(conn, procediment, refOriginal, tipus);
            				procediment.setReferencia(ref);
            			} else {
            				JudicialCore.modificarProcediment(conn, procediment);
            			}
            		} else if (tipus.equals("altresrecursosobert")) {       			
         			if (ref == null || ref.isEmpty()) {
-           				ref = JudicialCore.nouProcediement(conn, procediment, refOriginal, tipus);
+           				ref = JudicialCore.nouProcediment(conn, procediment, refOriginal, tipus);
            				procediment.setReferencia(ref);
            			} else {
            				JudicialCore.modificarProcediment(conn, procediment);
            			}
            		} else if (tipus.equals("execucio")) {       			
         			if (ref == null || ref.isEmpty()) {
-           				ref = JudicialCore.nouProcediement(conn, procediment, refOriginal, tipus);
+           				ref = JudicialCore.nouProcediment(conn, procediment, refOriginal, tipus);
            				procediment.setReferencia(ref);
            			} else {
            				JudicialCore.modificarProcediment(conn, procediment);
            			}
            		} else if (tipus.equals("recursexecucio")) {       			
         			if (ref == null || ref.isEmpty()) {
-           				ref = JudicialCore.nouProcediement(conn, procediment, refOriginal, tipus);
+           				ref = JudicialCore.nouProcediment(conn, procediment, refOriginal, tipus);
            				procediment.setReferencia(ref);
            			} else {
            				JudicialCore.modificarProcediment(conn, procediment);
            			}
            		} else if (tipus.equals("mesurescautelars")) {       			
         			if (ref == null || ref.isEmpty()) {
-           				ref = JudicialCore.nouProcediement(conn, procediment, refOriginal, tipus);
+           				ref = JudicialCore.nouProcediment(conn, procediment, refOriginal, tipus);
            				procediment.setReferencia(ref);
            			} else {
            				JudicialCore.modificarProcediment(conn, procediment);

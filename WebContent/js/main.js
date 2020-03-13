@@ -42,6 +42,7 @@ $(document).ready(function() {
 	
 	$('.deleteFile').on('click', function(){
 		if(confirm("Segur que voleu eliminar aquest document?")) {
+			waitingDialog.show('Eliminar');
 			$.ajax({
 		        type: "GET",
 		        url: "DeleteDocument",
@@ -51,10 +52,7 @@ $(document).ready(function() {
 		        //if received a response from the server
 		        success: function( data, textStatus, jqXHR) {
 		            //our country code was correct so we have some information to display
-		        	setTimeout(function() {
-		        		location.reload();
-		        	}, 2000);
-		        	      
+			        location.reload();	
 		        },        
 		        //If there was no resonse from the server
 		        error: function(jqXHR, textStatus, errorThrown){
@@ -115,7 +113,7 @@ function loadCentres(){
         type: "POST",
         url: "LlistatCentres",
         dataType: "json",
-        
+        async: false,
         //if received a response from the server
         success: function( data, textStatus, jqXHR) {
             //our country code was correct so we have some information to display
@@ -137,6 +135,59 @@ function loadCentres(){
         }  
     });
 }
+
+var numDocument = 1;
+
+function deleteFile(numDocument){
+	var id = '#' + numDocument;
+	if(confirm("Segur que voleu eliminar aquest document?")) {
+		waitingDialog.show('Eliminar');
+		$.ajax({
+	        type: "GET",
+	        url: "DeleteDocument",
+	        async: false,
+	        dataType: "json",
+	        data: {"ruta": $(id).find('.deleteFile').data('ruta')},
+	        //if received a response from the server
+	        success: function( data, textStatus, jqXHR) {
+	            //our country code was correct so we have some information to display
+		        location.reload();	
+	        },        
+	        //If there was no resonse from the server
+	        error: function(jqXHR, textStatus, errorThrown){
+	             console.log("Something really bad happened " + jqXHR.responseText);
+	        }  
+	    });
+	}		
+};
+
+function signedFile(numDocument){
+	var id = '#' + numDocument;
+	if ($(id).find('.infoSign').hasClass('hidden')){
+		$(id).find('.infoSign').html('');
+		var content = $(id).find('.infoSign');
+		$.ajax({
+	        type: "GET",
+	        url: "getSignaruresDocument",
+	        async: false,
+	        dataType: "json",
+	        data: {"ruta": $(id).find('.signedFile').data('ruta')},
+	        //if received a response from the server
+	        success: function( data, textStatus, jqXHR) {		        	
+	        	 $.each(data.firmesList, function( key, firma ) {
+	        		 content.append('<span>Signat per: ' + firma.nomFirmant + ' - ' + firma.dataFirma + '</span><br>');
+            	 });
+	        },        
+	        //If there was no resonse from the server
+	        error: function(jqXHR, textStatus, errorThrown){
+	        	content.html("error");
+	        }  
+	    });
+		$(id).find('.infoSign').removeClass('hidden');
+	} else {
+		$(id).find('.infoSign').addClass('hidden');
+	}
+};
 function prueba_notificacion() {
 	if (Notification) {
 		//if (Notification.permission !== "granted") {

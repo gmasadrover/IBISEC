@@ -22,7 +22,9 @@ import bean.Factura;
 import bean.InformeActuacio;
 import bean.Oferta;
 import bean.User;
+import bean.Actuacio;
 import bean.ControlPage.SectionPage;
+import core.ActuacioCore;
 import core.ControlPageCore;
 import core.EmpresaCore;
 import core.FacturaCore;
@@ -60,8 +62,19 @@ public class EditFacturaServlet extends HttpServlet {
  	   		String idFactura = request.getParameter("ref");
  	   		List<Empresa> empresesList = new ArrayList<Empresa>();
  	   		Factura factura = new Factura();
+ 	   		Actuacio actuacio = new Actuacio();
+ 	   		String idCentre = "";
 	        try {
 	        	factura = FacturaCore.getFactura(conn, idFactura);
+	        	System.out.println(factura.getIdActuacio());
+	        	if (factura.getIdActuacio() != null && !factura.getIdActuacio().equals("-1")) {
+	        		if (factura.getIdActuacio().contains("PRO-")) {
+	        			idCentre = "procediment";
+	        		} else {
+	        			actuacio = ActuacioCore.findActuacio(conn, factura.getIdActuacio());
+	        			idCentre = actuacio.getCentre().getIdCentre();
+	        		}	        		
+	        	}	        	
 				empresesList = EmpresaCore.getEmpreses(conn);
 				request.setAttribute("llistaUsuaris", UsuariCore.llistaUsuaris(conn, true));
 			} catch (SQLException | NamingException e) {
@@ -69,6 +82,7 @@ public class EditFacturaServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 	        request.setAttribute("factura", factura);
+	        request.setAttribute("idCentre", idCentre);
 	        request.setAttribute("empresesList", empresesList);
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Factures"));
 	        RequestDispatcher dispatcher = request.getServletContext()

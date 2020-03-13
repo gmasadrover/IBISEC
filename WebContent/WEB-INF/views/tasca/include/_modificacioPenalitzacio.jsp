@@ -30,9 +30,7 @@
             <jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 	 	</c:forEach>
  </div>
-
-
-   	<div class="panel-body">
+    	<div class="panel-body">
    		<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddModificacio">
    			<input type="hidden" name="document" value="autoritzacioCap">
 			<input type="hidden" name="idActuacio" value="${actuacio.referencia}">

@@ -53,9 +53,13 @@ public class doAddReservaVehicleServlet extends HttpServlet {
 	    String errorString = null;	
    		try {
    			if (cal.get(Calendar.DAY_OF_WEEK) == dia && cal.get(Calendar.WEEK_OF_YEAR) == setmana) {
-   				CalendarCore.reservar(conn, idUsuari, vehicle, setmana, dia, year, horaIni, horaFi, motiu);
+   				if (CalendarCore.potReservar(conn, idUsuari, vehicle, setmana, dia, year, horaIni, horaFi, false)) { 
+   	   				CalendarCore.reservar(conn, idUsuari, vehicle, setmana, dia, year, horaIni, horaFi, motiu);
+   				} else {
+   	   				errorString = "ocupat";
+   	   			}
    			}
-   			else if (CalendarCore.potReservar(conn, idUsuari, vehicle, setmana, dia, year, horaIni, horaFi)) {
+   			else if (CalendarCore.potReservar(conn, idUsuari, vehicle, setmana, dia, year, horaIni, horaFi, true)) {
    				CalendarCore.reservar(conn, idUsuari, vehicle, setmana, dia, year, horaIni, horaFi, motiu);
    			} else {
    				errorString = "ocupat";

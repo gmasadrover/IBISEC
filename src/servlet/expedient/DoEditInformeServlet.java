@@ -26,6 +26,8 @@ import bean.InformeActuacio.PropostaInforme;
 import core.ActuacioCore;
 import core.ExpedientCore;
 import core.InformeCore;
+import core.TascaCore;
+import core.UsuariCore;
 import utils.Fitxers;
 import utils.MyUtils;
 
@@ -64,13 +66,18 @@ public class DoEditInformeServlet extends HttpServlet {
        	String errorString = null;       	
      	SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
      	InformeActuacio informe = new InformeActuacio();
+     	boolean tramitacioIBISEC = "on".equals(multipartParams.getParametres().get("tramitacioIBISEC"));
+		boolean tramitacioConselleria = "on".equals(multipartParams.getParametres().get("tramitacioConselleria"));
+		boolean tramitacioAltres = "on".equals(multipartParams.getParametres().get("tramitacioAltres"));
+		boolean cessioCredit = "on".equals(multipartParams.getParametres().get("esCessioDeCredit"));
        	try {       		
        		informe =  InformeCore.getInformePrevi(conn, idInforme, false);   
-       		InformeCore.modificarTecnic(conn, informe, Integer.parseInt(multipartParams.getParametres().get("llistaUsuaris"))); 
+       		//InformeCore.modificarTecnic(conn, informe, Integer.parseInt(multipartParams.getParametres().get("llistaUsuaris"))); 
        		if (multipartParams.getParametres().get("dataCreacio") != null && ! multipartParams.getParametres().get("dataCreacio").isEmpty()) {
 				InformeCore.modificarDataCreacio(conn, informe, formatter.parse(multipartParams.getParametres().get("dataCreacio")));
 			}
        		
+       		     		
     	    //Proposta    	    
     	    PropostaInforme proposta = informe.getPropostaInformeSeleccionada();
     	    proposta.setObjecte(multipartParams.getParametres().get("descripcio"));
@@ -84,29 +91,81 @@ public class DoEditInformeServlet extends HttpServlet {
 		    }
 		    proposta.setContracte(true);
 		    proposta.setPbase(Double.parseDouble(multipartParams.getParametres().get("pbase").replace(',','.')));
+		    proposta.setVec(Double.parseDouble(multipartParams.getParametres().get("pbase").replace(',','.')));
 		    proposta.setIva(Double.parseDouble(multipartParams.getParametres().get("iva").replace(',','.')));
 		    proposta.setPlic(Double.parseDouble(multipartParams.getParametres().get("plic").replace(',','.')));
+		    double vec = Double.parseDouble(multipartParams.getParametres().get("vec").replace(',','.'));
+		    if (vec > 0) proposta.setVec(Double.parseDouble(multipartParams.getParametres().get("vec").replace(',','.')));
 		    proposta.setTermini(multipartParams.getParametres().get("termini"));
 		    proposta.setComentari(multipartParams.getParametres().get("comentariTecnic"));
+		    proposta.setComentariAdministratiu(multipartParams.getParametres().get("comentariAdministratiu"));
 		    if (proposta.getIdProposta() == null) {
 		    	String idProposta = InformeCore.novaProposta(conn, proposta, idInforme);
 		    	InformeCore.seleccionarProposta(conn, idProposta, idInforme);
 		    } else {
 		    	InformeCore.modificarProposta(conn, proposta);
 		    }
+		    
+		    if (proposta.getTipusObra().equals("conveni")) {
+		    	String dependencies = "";				    	
+		    	if (tramitacioIBISEC) dependencies += "IBISEC#";
+		    	if (tramitacioConselleria) dependencies += "Conselleria#";
+		    	if (tramitacioAltres) dependencies += "Altres#";
+		    	informe.setCessioCredit(cessioCredit);
+		    	
+		    	if (multipartParams.getParametres().get("dataContracte") != null && ! multipartParams.getParametres().get("dataContracte").isEmpty()) {
+		    		expedient = ExpedientCore.findExpedient(conn, informe.getExpcontratacio().getExpContratacio());
+		    		expedient.setDataFormalitzacioContracte(formatter.parse(multipartParams.getParametres().get("dataContracte"))); 
+		    		ExpedientCore.updateExpedient(conn, expedient);
+		    	}
+		    	
+				    	
+		    	if (multipartParams.getParametres().get("dataPublicacioRegistreConvenis") != null && ! multipartParams.getParametres().get("dataPublicacioRegistreConvenis").isEmpty()) {
+		    		informe.setDataPublicacioRegitreConvenis(formatter.parse(multipartParams.getParametres().get("dataPublicacioRegistreConvenis"))); 
+		    	}
+		    	else {
+		    		informe.setDataPublicacioRegitreConvenis(null);
+		    	}
+		    	if (multipartParams.getParametres().get("dataPublicacioBOIB") != null && ! multipartParams.getParametres().get("dataPublicacioBOIB").isEmpty()) {
+		    		informe.setPublicacioBOIB(formatter.parse(multipartParams.getParametres().get("dataPublicacioBOIB")));
+				}else {
+		    		informe.setPublicacioBOIB(null);
+		    	}
+		    	if (multipartParams.getParametres().get("dataPublicacioDGP") != null && ! multipartParams.getParametres().get("dataPublicacioDGP").isEmpty()) {
+		    		informe.setDataPublicacioDGPressuposts(formatter.parse(multipartParams.getParametres().get("dataPublicacioDGP")));
+		    	}else {
+		    		informe.setDataPublicacioDGPressuposts(null);
+		    	}
+		    	if (multipartParams.getParametres().get("dataPublicacioDGT") != null && ! multipartParams.getParametres().get("dataPublicacioDGT").isEmpty()) {
+			    	informe.setDataPublicacioDGTresoreria(formatter.parse(multipartParams.getParametres().get("dataPublicacioDGT")));
+		    	}else {
+		    		informe.setDataPublicacioDGTresoreria(null);
+		    	}
+		    	
+		      	InformeCore.modificarDataPublicacio(conn, informe); 		    	
+		    	InformeCore.moficarDependencies(conn, informe.getIdInf(), dependencies);
+		    	InformeCore.modiciarCessioCredit(conn, informe.getIdInf(), cessioCredit);
+		    	
+		    	if (multipartParams.getFitxersByName().get("contracte") != null) {
+	    	    	Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("contracte")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Contracte signat", Usuari.getIdUsuari());
+	    	    	InformeCore.modificarEstat(conn, idInforme, "execucio");
+	    	    }
+		    	
+		    	
+		    }
+		    
+		    
+		    if (multipartParams.getParametres().get("dataPublicacioPerfilContractant") != null && ! multipartParams.getParametres().get("dataPublicacioPerfilContractant").isEmpty()) {
+	    		informe.setDataPublicacioPerfilContractant(formatter.parse(multipartParams.getParametres().get("dataPublicacioPerfilContractant")));
+	    		InformeCore.modificarDataPublicacio(conn, informe);  
+		    }else {
+	    		informe.setDataPublicacioPerfilContractant(null);
+	    	}
+		    
 		    if (multipartParams.getFitxersByName().get("informe") != null) Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("informe")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "Informe previ", "", "", idInforme, "", Usuari.getIdUsuari());
 		    if (multipartParams.getFitxersByName().get("propostaActuacio") != null) Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("propostaActuacio")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Proposta actuació", Usuari.getIdUsuari());
 		    
-		    //Vistiplau cap
-		   /* Date dataVistiPlau = null;
-		    if (multipartParams.getParametres().get("dataVistiplau") != null && ! multipartParams.getParametres().get("dataVistiplau").isEmpty()) dataVistiPlau = formatter.parse(multipartParams.getParametres().get("dataVistiplau"));
-		    if (!multipartParams.getParametres().get("llistaCaps").equals("-1")) {
-		    	InformeCore.validacioCapInforme(conn, idInforme, Integer.parseInt(multipartParams.getParametres().get("llistaCaps")), multipartParams.getParametres().get("comentariCap"), dataVistiPlau);				
-		    } else if (informe.getUsuariCapValidacio() != null) {
-		    	InformeCore.eliminarValidacioCapInforme(conn, idInforme);
-		    }
-		    if (multipartParams.getFitxersByName().get("vistiplauProposta") != null) Fitxers.guardarFitxer(Arrays.asList(multipartParams.getFitxersByName().get("vistiplauProposta")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Vistiplau cap");*/
-		    
+		
 		    //Informe supervisió
 			if (multipartParams.getFitxersByName().get("informeSupervisio") != null) Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("informeSupervisio")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Informe Supervisió", Usuari.getIdUsuari());
 		    
@@ -115,7 +174,8 @@ public class DoEditInformeServlet extends HttpServlet {
 			
 		    //Partida
 		    informe.setComentariPartida(multipartParams.getParametres().get("comentariFinancer"));
-		    AssignacioCredit assignacio = informe.getAssignacioCredit();
+		    AssignacioCredit assignacio = new AssignacioCredit();
+		    if (informe.getAssignacioCredit().size() > 0) assignacio = informe.getAssignacioCredit().get(0);
     	    assignacio.setBei(multipartParams.getParametres().get("bei") != null);
     	    assignacio.setFeder(multipartParams.getParametres().get("feder") != null);    	 
     	    InformeCore.modificarPartida(conn, informe, multipartParams.getParametres().get("llistaPartides"), Usuari.getIdUsuari(), assignacio);    	     

@@ -79,11 +79,13 @@ public class Fitxers {
 		private String nom;
 		private String nomCamp;
 		private String ruta;
+		private String encodedRuta;
 		private String seccio;
 		private boolean signat;
 		private List<infoFirma> firmesList;
 		private FileItem fitxer;
 		private FileTime data;
+		private String dataString;
 		private int idRegistre;
 		private User usuari;
 		private Date dataPujada;
@@ -106,18 +108,19 @@ public class Fitxers {
 			return ruta;
 		}
 		public String getEncodedRuta() {
-			String encoded = "";
+			this.encodedRuta = "";
 			if (this.ruta != null && !this.ruta.isEmpty()) {
 				try {
-					encoded = java.net.URLEncoder.encode(this.ruta, "UTF-8");
+					this.encodedRuta = java.net.URLEncoder.encode(this.ruta, "UTF-8");
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				}
 			}
-			return encoded;
+			return this.encodedRuta;
 		}
 		public void setRuta(String ruta) {
 			this.ruta = ruta;
+			this.encodedRuta = getEncodedRuta();
 		}
 
 		public String getSeccio() {
@@ -162,13 +165,14 @@ public class Fitxers {
 		
 		public String getDataString() {
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");	
-			String dataString = "";
-			if (this.data != null) dataString = df.format(this.data.toMillis());
-			return dataString;
+			this.dataString = "";
+			if (this.data != null) this.dataString = df.format(this.data.toMillis());
+			return this.dataString;
 		}
 
 		public void setData(FileTime data) {
 			this.data = data;
+			this.dataString = getDataString();
 		}
 
 		public String getNomCamp() {
@@ -266,10 +270,8 @@ public class Fitxers {
 		 // Get the base naming context
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
 	    // Get a single value
-		String rutaBase =  (String)env.lookup("ruta_base") + "/documents/Actuacio/Tasca/" + idTasca;
-		arxius = ObtenirTotsFitxers(rutaBase, "");		
-		rutaBase =  (String)env.lookup("ruta_base") + "/documents/-1/Actuacio/-1/Tasca/" + idTasca;
-		arxius.addAll(ObtenirTotsFitxers(rutaBase, ""));		
+		String rutaBase =  (String)env.lookup("ruta_base") + "/documents/Tasca/" + idTasca;
+		arxius = ObtenirTotsFitxers(rutaBase, "");				
 		return arxius;		
 	}
 	
@@ -277,14 +279,9 @@ public class Fitxers {
 		ArxiusAdjunts arxius = new Actuacio().new ArxiusAdjunts();
 		 // Get the base naming context
 	    Context env = (Context)new InitialContext().lookup("java:comp/env");
-	    // Get a single value
-	    List<Fitxers.Fitxer> arxiusRegistre = new ArrayList<Fitxers.Fitxer>();
-		String rutaBase =  (String)env.lookup("ruta_base") + "/documents/" + idIncidencia + "/RegistreE";	
-		arxiusRegistre = ObtenirTotsFitxers(rutaBase, "Registre");	
-		arxius.setArxiusRegistre(arxiusRegistre);
-		
+	    // Get a single value			
 	    List<Fitxers.Fitxer> arxiusAltres = new ArrayList<Fitxers.Fitxer>();
-		rutaBase =  (String)env.lookup("ruta_base") + "/documents/" + idIncidencia;		
+	    String rutaBase =  (String)env.lookup("ruta_base") + "/documents/" + idIncidencia;		
 		arxiusAltres = ObtenirTotsFitxers(rutaBase, "Altres");	
 		arxius.setArxiusAltres(arxiusAltres);
 		
@@ -304,16 +301,12 @@ public class Fitxers {
 				for (int x=0;x<ficheros.length;x++) {	
 					if (!ficheros[x].isDirectory()) {
 						Fitxer fitxer = new Fitxer();	
-						if (readFirma && ficheros[x].getName().toLowerCase().contains(".pdf")) {
+						if (readFirma && isPDF(ficheros[x])) {
 							PdfReader reader;		
 							reader = new PdfReader(ruta + "/" + ficheros[x].getName());		
 			            	AcroFields acroFields = reader.getAcroFields();
-			            	List<String> signatureNames = acroFields.getSignatureNames();
-			            	SignaturePermissions perms = null;
-			            	for (String name: signatureNames) {
-			            		fitxer.setSignat(true);
-			            		perms = inspectSignature(acroFields, name, perms, fitxer);
-			    			}
+			            	List<String> signatureNames = acroFields.getSignatureNames();			            	
+			            	if (signatureNames.size()>0) fitxer.setSignat(true);
 						}
 		            	fitxer.setNom(ficheros[x].getName());
 						fitxer.setRuta(ruta + "/" + ficheros[x].getName());
@@ -321,7 +314,7 @@ public class Fitxers {
 						arxiu = fitxer;				
 					}
 				}				
-			} catch (IOException | GeneralSecurityException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -345,12 +338,8 @@ public class Fitxers {
 							PdfReader reader;						
 							reader = new PdfReader(ruta + "/" + ficheros[x].getName());						
 			            	AcroFields acroFields = reader.getAcroFields();
-			            	List<String> signatureNames = acroFields.getSignatureNames();		            	
-			            	SignaturePermissions perms = null;
-			            	for (String name: signatureNames) {
-			            		fitxer.setSignat(true);
-			            		perms = inspectSignature(acroFields, name, perms, fitxer);
-			    			}
+			            	List<String> signatureNames = acroFields.getSignatureNames();
+			            	if (signatureNames.size()>0) fitxer.setSignat(true);
 						}
 		            	fitxer.setNom(ficheros[x].getName());
 						fitxer.setRuta(ruta + "/" + ficheros[x].getName());
@@ -358,7 +347,7 @@ public class Fitxers {
 						arxius.add(fitxer);
 					}				
 				}
-			} catch (IOException | GeneralSecurityException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -377,10 +366,10 @@ public class Fitxers {
 			try {
 				for (int x=0;x<ficheros.length;x++) {					
 					if (ficheros[x].isDirectory()) {
-						if (! ficheros[x].getName().equals("informe")  && ! ficheros[x].getName().equals("RegistreE")) arxius.addAll(ObtenirTotsFitxers(ruta + "/" + ficheros[x].getName(), seccio + " - " + ficheros[x].getName()));
+						if (! ficheros[x].getName().equals("informe")  && ! ficheros[x].getName().equals("RegistreE")  && ! ficheros[x].getName().equals("Resguard") && ! ficheros[x].getName().equals("Rebut")) arxius.addAll(ObtenirTotsFitxers(ruta + "/" + ficheros[x].getName(), seccio + " - " + ficheros[x].getName()));
 					} else {
 						Fitxer fitxer = new Fitxer();	
-						if (isPDF(ficheros[x])) {
+						if (!ficheros[x].getName().contains(".zip") && isPDF(ficheros[x])) {
 							PdfReader reader;						
 							reader = new PdfReader(ruta + "/" + ficheros[x].getName());						
 			            	AcroFields acroFields = reader.getAcroFields();
@@ -397,6 +386,33 @@ public class Fitxers {
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
+			}
+		}
+		return arxius;	
+	}
+	
+	public static List<Fitxer> ObtenirTotsFitxersBD(String rutaBase) {
+		List<Fitxer> arxius = new ArrayList<Fitxer>();	
+		String ruta = rutaBase;
+		File dir = new File(ruta);
+		File[] ficheros = dir.listFiles();
+		LoggerFactory.getInstance().setLogger(new SysoLogger());
+		BouncyCastleProvider provider = new BouncyCastleProvider();
+		Security.addProvider(provider);
+		if (ficheros == null) {			
+		} else {
+			for (int x=0;x<ficheros.length;x++) {					
+				if (ficheros[x].isDirectory()) {
+					if (!ficheros[x].getName().equals("Llicencies") && !ficheros[x].getName().equals("Empreses") && !ficheros[x].getName().equals("RegistreE") && !ficheros[x].getName().equals("Factures") && !ficheros[x].getName().equals("Certificacions"))
+					arxius.addAll(ObtenirTotsFitxersBD(ruta + "/" + ficheros[x].getName()));
+				} else {
+					Fitxer fitxer = new Fitxer();
+			    	fitxer.setNom(ficheros[x].getName());
+					fitxer.setRuta(ruta + "/" + ficheros[x].getName());						
+					//fitxer.setData(Files.getLastModifiedTime(ficheros[x].toPath()));
+					arxius.add(fitxer);
+					//System.out.println(ruta + "/" + ficheros[x].getName());
+				}				
 			}
 		}
 		return arxius;	
@@ -508,15 +524,17 @@ public class Fitxers {
 	}
 	
 	public static void guardarRegistreFitxer(Connection conn, String nomdocument, String ruta, int idUsuari) throws SQLException {
-		 String sqlInsert = "INSERT INTO public.tbl_registredocuments(idregistre, usuari, data, nomdocument, dataeliminacio, usuarieliminacio, rutadocument)"
-		 			+ " VALUES (?, ?, localtimestamp, ?, null, null, ?);";	 
-		 PreparedStatement pstmInsert = null; 			 
-		 pstmInsert = conn.prepareStatement(sqlInsert);	
-		 pstmInsert.setInt(1, getIdRegistreDocument(conn));
-		 pstmInsert.setInt(2, idUsuari);
-		 pstmInsert.setString(3, nomdocument);		
-		 pstmInsert.setString(4, ruta);		
-		 pstmInsert.executeUpdate();		
+		 if (idUsuari != 4) { //Silvia Sanz
+			 String sqlInsert = "INSERT INTO public.tbl_registredocuments(idregistre, usuari, data, nomdocument, dataeliminacio, usuarieliminacio, rutadocument)"
+			 			+ " VALUES (?, ?, localtimestamp, ?, null, null, ?);";	 
+			 PreparedStatement pstmInsert = null; 			 
+			 pstmInsert = conn.prepareStatement(sqlInsert);	
+			 pstmInsert.setInt(1, getIdRegistreDocument(conn));
+			 pstmInsert.setInt(2, idUsuari);
+			 pstmInsert.setString(3, nomdocument);		
+			 pstmInsert.setString(4, ruta);		
+			 pstmInsert.executeUpdate();	
+		 }
 	}
 	
 	public static void marcarDocumentEliminat(Connection conn, int idUsuari, String ruta) throws SQLException {
@@ -633,14 +651,11 @@ public class Fitxers {
 			File tmpFile = new File(ruta);
 			tmpFile = tmpFile.getCanonicalFile(); 
 			if (tmpFile.exists()) {
-				System.out.println("Entra 1");
 				if (tmpFile.delete()) {
-					System.out.println("Entra 2");
 					Fitxers.marcarDocumentEliminat(conn, idUsuari, ruta);
 				}
 			}
 		} catch (Exception e) {
-			System.out.println(e.toString());
    		}
 	}
 	

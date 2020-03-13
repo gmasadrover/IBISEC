@@ -8,6 +8,7 @@ $(document).ready(function() {
 		$('.expedients').addClass('hidden');	
 		if ($(this).val() != null && ($(this).val().length == 2 || $(this).val().indexOf("-1") < 0)) {		
 			$('#centresList option[value="-1"]').prop('selected', false);
+			$('#idCentresSeleccionats').val('');
 			if (decodeURIComponent($('#tipusList').val()) != 'Procediment judicial') {
 				$.each($(this).val(), function( key, data ) {
 					if (data != "-1") {
@@ -17,11 +18,17 @@ $(document).ready(function() {
 						} else {
 							searchIncidencies(data);
 						}
-					}				
+					}	
+					$('#idCentresSeleccionats').val($('#idCentresSeleccionats').val() + "#" + data);
 				});	
+			} else {
+				$.each($(this).val(), function( key, data ) {
+					$('#idCentresSeleccionats').val($('#idCentresSeleccionats').val() + "#" + data);
+				});
 			}
 			$('.selectpicker').selectpicker('refresh');
 		} else {	
+			$('#idCentresSeleccionats').val('-1');
 			if ($('.selectpicker').size() > 0) {
 				$(".centresList").selectpicker('deselectAll');
 				$('.centresList').selectpicker('val', "-1");				
@@ -98,8 +105,14 @@ function searchIncidencies(idCentre) {
             	$('#incidencies').append(html);
         		$.each(data.llistatActuacions, function( key, data ) {
         			var refExt = '';
+        			var estat = '';
+        			var estilTancada = 'greend';
         			if (data.refExt != '') refExt = ' <b>(EXP ' + data.refExt + ')</b> ';
-        			$('#incidenciesList' + idCentre).append('<option value=' + data.referencia + '>' + data.referencia + refExt + '-' + data.descripcio + '</option>');
+        			if (data.dataTancament != null) {
+        				estat = '<b>TANCADA - </b>';
+        				estilTancada = 'red';
+        			}
+        			$('#incidenciesList' + idCentre).append('<option class = ' + estilTancada + ' value=' + data.referencia + '>' + estat + data.referencia + refExt + ' - ' + data.descripcio + '</option>');
         		});     
         		$('.selectpicker').selectpicker('refresh');
         		$('#incidenciesList' + idCentre).on('change', function(){

@@ -57,7 +57,6 @@ public class FacturaListServlet extends HttpServlet {
     		response.sendRedirect(request.getContextPath() + "/");	
 		} else {
 			List<Factura> list = new ArrayList<Factura>();
-			List<Empresa> empresesList = new ArrayList<Empresa>();
 			String errorString = null;
 			String filtrar = request.getParameter("filtrar");
 			String estatFactura = request.getParameter("estatFactura");
@@ -67,11 +66,8 @@ public class FacturaListServlet extends HttpServlet {
 			String dataFiString = df.format(dataFi);	 
 			cal.add(Calendar.MONTH, -2);
 			Date dataInici = cal.getTime();
-			String dataIniciString = df.format(dataInici);			
-			String empresaSeleccionada = request.getParameter("llistaEmpreses");
-			try {
-				empresesList = EmpresaCore.getEmpreses(conn);
-				empresesList.addAll(EmpresaCore.getEmpresesUTE(conn));
+			String dataIniciString = df.format(dataInici);	
+			try {				
 				if (filtrar != null) {	
 					dataInici = null;
 					dataFi = null;
@@ -95,7 +91,6 @@ public class FacturaListServlet extends HttpServlet {
 			request.setAttribute("dataInici", dataIniciString);
 		    request.setAttribute("dataFi", dataFiString);
 		    request.setAttribute("estatFactura", estatFactura);
-		    request.setAttribute("empresesList", empresesList);
 			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Factures"));
 			// Forward to /WEB-INF/views/homeView.jsp
 			// (Users can not access directly into JSP pages placed in WEB-INF)

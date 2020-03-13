@@ -149,7 +149,7 @@
 			<input type="hidden" name="idIncidencia" value="${informePrevi.actuacio.idIncidencia}">
 			<input type="hidden" name="idInforme" value="${informePrevi.idInf}">			    
 			<div class="col-xs-2"> 
-				<input type="submit" class="btn btn-primary" value="Pujar" />
+				<input type="submit" class="btn btn-primary loadingButton" value="Pujar" />
 			</div>    						
 		</div>         				
 	</form>							

@@ -139,8 +139,7 @@ public class DoCreateTascaServlet extends HttpServlet {
 		 	    	 tipus = "vistInfPrev";
 		 	    } else {
 		 	    	 tipus = "solInfPrev";
-		 	    }
-		 	   
+		 	    }   				
    			} else if (idProcediment != null && !idProcediment.equals("")) {
    				idIncidencia = "-1";
    				idActuacio = "-1";
@@ -159,6 +158,13 @@ public class DoCreateTascaServlet extends HttpServlet {
    						modificacio = "Sol·licitar informe previ";
    					} else if ("notificacio".equals(tipus)) {
    						modificacio = "Enviar nova notificació";
+   					} else if ("modificacio".equals(tipus)) {
+   						User user = UsuariCore.findUsuariByID(conn, idUsuari);
+   						if (user.getRol().contains("CAP")) {
+   							idUsuariTasca =  UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari();
+   						} 
+   						tipus = "solModificacio";
+   						modificacio = "Incidència execució";
    					}
    					ActuacioCore.actualitzarActuacio(conn, idActuacio, modificacio);
    					idIncidencia = ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia();

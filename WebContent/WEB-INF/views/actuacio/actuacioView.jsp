@@ -108,8 +108,8 @@
 				        		</c:if>
 				        	</div>
 				        	<div class="col-md-2"> 
-					        	<c:if test="${actuacio.activa && canCreateInformePrevi}">					      			
-						      		<a href="createTasca?idActuacio=${actuacio.referencia}&tipus=infPrev" class="btn btn-primary right" role="button">Sol·licitar informe</a>
+					        	<c:if test="${actuacio.activa}">					      			
+						      		<a href="createTasca?idActuacio=${actuacio.referencia}&tipus=infPrev" class="btn btn-primary right" role="button">Sol·licitar nova actuació relacionada</a>
 								</c:if> 
 							</div>   							                 			 
                  		</div>	                    		                       	
@@ -164,7 +164,7 @@
            				<div class="panel panel-default">
 						    <div class="panel-heading">
 								<h4 class="panel-title">
-							    	<a data-toggle="collapse" data-parent="#accordion" href="#tasques">Tasques</a>
+							    	<a data-toggle="collapse" data-parent="#accordion" class="carregarTasquesActuacio" href="#tasques">Tasques</a>
 							  	</h4>
 						    </div>
 						    <div id="tasques" class="panel-collapse collapse">	
@@ -176,6 +176,7 @@
 											</div>
 							    		</div>
 							    	</c:if>
+							    	<div class="tasquesActuacio"></div>		
 						    		<div class="row panel-body">
 										<c:set var="tasquesList" value="${tasques}" scope="request"/>
 										<c:set var="idInfActual" value="-1" scope="request"/>
@@ -184,7 +185,7 @@
 								</div>
 						    </div>
 					  	</div>	
-          					<div class="panel panel-default">
+          				<div class="panel panel-default">
            				  	<div class="panel-heading">
 								<h4 class="panel-title">
 							    	<a data-toggle="collapse" data-parent="#accordion" href="#registre">Registres</a>
@@ -202,7 +203,7 @@
 								  		 		<c:if test="${canCreateRegistre}">
 										      		<div class="row margin_bottom10">
 											    		<div class="col-md-12">
-															<a href="novaEntrada?idIncidencia=${incidencia.idIncidencia}&idInf=${incidencia.idIncidencia}" class="btn btn-primary loadingButton"  data-msg="obrint formulari..." role="button">Nova entrada</a>
+															<a href="novaEntrada?idIncidencia=${incidencia.idIncidencia}" class="btn btn-primary loadingButton"  data-msg="obrint formulari..." role="button">Nova entrada</a>
 														</div>
 										    		</div>
 										    	</c:if>
@@ -233,39 +234,35 @@
 								</div>
 				    		</div>
 			    		</div>	
-			    		<c:if test="${informes.size() == 0}">
-	           				<div class="panel panel-default">
-							    <div class="panel-heading">
-							      <h4 class="panel-title">
-							        <a data-toggle="collapse" data-parent="#accordion" href="#arxiusAdjunts">Arxius adjunts</a>
-							      </h4>
-							    </div>
-							    <div id="arxiusAdjunts" class="panel-collapse collapse">
-							      	<div class="panel-body">					      		
-							    		<div class="row panel-body">
-								    		<jsp:include page="include/_resumFitxers.jsp"></jsp:include>																
-										</div>
-										<div class="row">            			
-											<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadFichero">
-												<div class="form-group">
-													<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-						                            <div class="col-xs-5">   
-						                                <input type="file" class="btn" name="file" multiple/><br/>
-													</div> 											
-													<input type="hidden" name="idIncidencies" value="${incidencia.idIncidencia}">
-													<input type="hidden" name="tipus" value="Actuacio">
-													<input type="hidden" name="idTipus" value="${actuacio.referencia}">											
-													<input type="hidden" name="redirect" value="/actuacionsDetalls?ref=${actuacio.referencia}">				    
-													<div class="col-xs-2"> 
-						         						<input type="submit" class="btn btn-primary" value="Pujar" />
-						         					</div>    						
-						         				</div>         				
-											</form>							
-						            	</div>     
-									</div>
-						    	</div>
-						  	</div>
-						</c:if>
+           				<div class="panel panel-default">
+						    <div class="panel-heading">
+						      <h4 class="panel-title">
+						        <a data-toggle="collapse" data-parent="#accordion" href="#arxiusAdjuntsActuacio" class="carregarDocumentsActuacio" data-iscap="${isCap}" data-idincidencia="${incidencia.idIncidencia}" data-idactuacio="${actuacio.referencia}">Altres arxius</a>
+						      </h4>
+						    </div>
+						    <div id="arxiusAdjuntsActuacio" class="panel-collapse collapse">
+						      	<div class="panel-body">		
+						      		<div class="row">            			
+										<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadDocumentsActuacio">
+											<div class="form-group">
+												<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+									            <div class="col-xs-5">   
+									            	<input type="file" class="btn" name="file" multiple/><br/>
+												</div> 
+												<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
+												<input type="hidden" name="idIncidencia" value="${actuacio.idIncidencia}">			    
+												<div class="col-xs-2"> 
+													<input type="submit" class="btn btn-primary loadingButton" value="Pujar" />
+												</div>    						
+											</div>         				
+										</form>							
+									</div> 			      		
+						    		<div class="row panel-body">
+							    		<div class="documentsActuacio"></div>							
+									</div>									
+								</div>
+					    	</div>
+					  	</div>
           			</div>     		
             	</div>       
 				</c:if>

@@ -56,6 +56,7 @@ public class CreateCertificacioServlet extends HttpServlet {
         } else{ 	 
  	   		String idInforme = request.getParameter("idInforme");
  	   		List<Empresa> empresesList = new ArrayList<Empresa>();
+ 	   		boolean NovaLLei = false;
 	        try {
 	        	InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme, false);
 	        	Oferta oferta = OfertaCore.findOfertaSeleccionada(conn, idInforme);
@@ -68,7 +69,7 @@ public class CreateCertificacioServlet extends HttpServlet {
 				request.setAttribute("concepte", informe.getPropostaInformeSeleccionada().getObjecte());
 				request.setAttribute("llistaUsuaris", UsuariCore.llistaUsuaris(conn, true));
 				empresesList = EmpresaCore.getEmpreses(conn);
-				empresesList.addAll(EmpresaCore.getEmpresesUTE(conn));
+				empresesList.addAll(EmpresaCore.getEmpresesUTE(conn));		
 			} catch (SQLException | NamingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -78,6 +79,7 @@ public class CreateCertificacioServlet extends HttpServlet {
 	        request.setAttribute("data", today);
 	        request.setAttribute("empresesList", empresesList);
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Factures"));
+	        request.setAttribute("NovaLLei", true);
 	        RequestDispatcher dispatcher = request.getServletContext()
 	                .getRequestDispatcher("/WEB-INF/views/factura/createCertificacioView.jsp");
 	        dispatcher.forward(request, response);

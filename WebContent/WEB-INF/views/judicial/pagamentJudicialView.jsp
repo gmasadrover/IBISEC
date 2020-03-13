@@ -59,18 +59,6 @@
                         </div>
                 	</div>
                 	<div class="row">
-	                	<div class="form-group">
-				    		<label class="col-xs-2 control-label">Partida asignada</label>	
-				    		<div class="col-xs-8">							            	 										            	 	
-				                <select class="form-control selectpicker" name="llistaPartides" id="llistaPartides">
-				                	<c:forEach items="${partidesList}" var="partida">
-				                		<option value="${partida.codi}">${partida.codi} (${partida.nom} - Restant: ${partida.getPartidaPerAsignarFormat()})</option>
-				                	</c:forEach>					                                	
-				                </select>	
-			                </div>					                       		
-				       	</div>	
-			       	</div>	
-                	<div class="row">
 						<div class="form-group">
 							<label class="col-xs-2 control-label">Adjuntar arxius:</label>
                             <div class="col-xs-5">   

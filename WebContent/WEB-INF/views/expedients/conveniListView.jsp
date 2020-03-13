@@ -70,24 +70,12 @@
                                         <th>Data Creacio</th>
                                         <th>Centre</th>
                                         <th>Descripció</th>
-                                        <th>Publicació</th>
-                                        <th>Publicació</th>
-                                        <th>Preu licitació</th>
-                                        <th>Adjudicació</th>
-                                        <th>Adjudicació</th>
-                                        <th>Adjudicatari</th>
-                                        <th>Preu adjudicació</th>
+                                        <th>Valor</th>
+                                        <th>Tramitació</th>
+                                        <th>Cessió de crèdit</th>
                                         <th>Firma</th>
                                         <th>Firma</th>
-                                        <th>Facturat</th>
-                                        <th>Inici d'obra</th>
-                                        <th>Inici d'obra</th>
-                                        <th>Data recepció</th>
-                                        <th>Data recepció</th>
-                                        <th>Fi garantia</th>
-                                        <th>Fi garantia</th>
-                                        <th>Liquidació</th>
-                                        <th>Liquidació</th>
+                                        <th>Facturat</th>                                       
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -105,33 +93,12 @@
 							           		<td>${informe.expcontratacio.dataCreacio}</td>
 							            	<td>${informe.actuacio.centre.getNomComplet()}</td>
 							            	<td>${informe.getPropostaInformeSeleccionada().objecte}</td>
-							            	<td>${informe.getPublicacioBOIBString()}</td>
-							            	<td>${informe.publicacioBOIB}</td>
 							            	<td>${informe.getPropostaInformeSeleccionada().getPlicFormat()}</td>
-							            	<td>${informe.expcontratacio.getDataAdjudicacioString()}</td>
-							            	<td>${informe.expcontratacio.dataAdjudicacio}</td>
-							            	<td>${informe.getOfertaSeleccionada().nomEmpresa}</td>
-							            	<td>
-							            		<c:choose>
-								            		<c:when test="${informe.llistaModificacions.size() > 0}">
-								            			<a href="modificacions?exp=${informe.expcontratacio.expContratacio}">${informe.getOfertaSeleccionada().getPlicFormat()} *</a>
-								            		</c:when>
-								            		<c:otherwise>
-								            			${informe.getOfertaSeleccionada().getPlicFormat()}
-								            		</c:otherwise>
-							            		</c:choose>
-							            	</td>
+							            	<td>${informe.getOrganismeDependenciaString()}</td>
+							            	<td>${informe.cessioCredit ? 'Cessió de crèdit' : ''}</td>
 							            	<td>${informe.expcontratacio.getDataFirmaString()}</td>
 							            	<td>${informe.expcontratacio.dataFormalitzacioContracte}</td>
 							            	<td>${informe.getTotalFacturatFormat()}</td>
-							            	<td>${informe.expcontratacio.getDataIniciObratring()}</td>
-							            	<td>${informe.expcontratacio.dataIniciExecucio}</td>
-							            	<td>${informe.expcontratacio.getDataRecepcioString()}</td>
-							            	<td>${informe.expcontratacio.dataRecepcio}</td>
-							            	<td>${informe.expcontratacio.getDataRetornGarantiaString()}</td>
-							            	<td>${informe.expcontratacio.dataRetornGarantia}</td>
-							            	<td>${informe.expcontratacio.getDataLiquidacioString()}</td>
-							            	<td>${informe.expcontratacio.dataLiquidacio}</td>
 							          	</tr>
 							       	</c:forEach>                                	
                                 </tbody>
@@ -148,7 +115,7 @@
 
     </div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/expedient/llistat.js?<%=application.getInitParameter("datakey")%>"></script>
+    <script src="js/expedient/llistatConvenis.js?<%=application.getInitParameter("datakey")%>"></script>
     <!-- /#wrapper -->
 </body>
 </html>

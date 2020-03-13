@@ -55,8 +55,7 @@ public class CreateModificacioInformeServlet extends HttpServlet {
  	       InformeActuacio informePrevi = new InformeActuacio();
  	       List<Empresa> empresesList = new ArrayList<Empresa>();      
  	      
- 	       try {
- 	    	   
+ 	       try { 	    	   
  	    	   informePrevi = InformeCore.getInformePrevi(conn, idInforme, false);
  	    	   empresesList = EmpresaCore.getEmpreses(conn);
  	    	   empresesList.addAll(EmpresaCore.getEmpresesUTE(conn));

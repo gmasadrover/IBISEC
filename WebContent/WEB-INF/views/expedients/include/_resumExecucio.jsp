@@ -12,9 +12,11 @@
         	<div class="tabbable">
                	<ul class="nav nav-tabs">
                		<c:set var="primera" value="true" scope="request"/>
+               		<c:set var="incidencies" value="1" /> 
                		<c:forEach items="${informePrevi.llistaModificacions}" var="propostaModificacio" >
-               			<li ${primera ? 'class="active"' : ''}><a data-toggle="tab" href="#propostaModificacio_${propostaModificacio.idInf}">Incidència ${propostaModificacio.idInf}</a></li>
+               			<li ${primera ? 'class="active"' : ''}><a data-toggle="tab" href="#propostaModificacio_${propostaModificacio.idInf}">Incidència ${incidencies} - ${propostaModificacio.getTipusModificacioFormat()}</a></li>
                		 	<c:set var="primera" value="false" scope="request"/>	
+               		 	<c:set var="incidencies" value="${incidencies + 1}" />	
                		</c:forEach>					   
  				</ul>
 			  	<div class="tab-content">
@@ -23,7 +25,7 @@
 				  		<div id="propostaModificacio_${propostaModificacio.idInf}" class="tab-pane fade ${primera ? 'in active' : ''}">
 				  		 	<div class="col-md-12 bordertab">
 				  		 		<c:set var="propostaModificacio" value="${propostaModificacio}" scope="request"/>
-				  		 		<jsp:include page="../../tasca/include/_resumModificacioInforme.jsp"></jsp:include>
+				  		 		<jsp:include page="_resumModificat.jsp"></jsp:include>
 						    	<c:set var="primera" value="false" scope="request"/>
 						    </div>
 				  		 </div>
@@ -32,39 +34,21 @@
 			</div>
       	</div>
     </c:if>
-    <c:if test="${informePrevi.llistaPenalitzacions.size() > 0}">
-    	<div class="panel-body">
-        	<div class="tabbable">
-               	<ul class="nav nav-tabs">
-               		<c:set var="primera" value="true" scope="request"/>
-               		<c:set var="penalitzacions" value="1" /> 
-               		<c:forEach items="${informePrevi.llistaPenalitzacions}" var="propostaPenalitzacio" >
-               			<li ${primera ? 'class="active"' : ''}><a data-toggle="tab" href="#propostaPenalitzacio_${propostaPenalitzacio.idInf}">Penalització ${penalitzacions}</a></li>
-               		 	<c:set var="primera" value="false" scope="request"/>	
-               		 	<c:set var="penalitzacions" value="${penalitzacions + 1}" />		
-               		</c:forEach>					   
- 				</ul>
-			  	<div class="tab-content">
-			  		<c:set var="primera" value="true" scope="request"/>
-			  		<c:forEach items="${informePrevi.llistaPenalitzacions}" var="propostaPenalitzacio" >  
-				  		<div id="propostaModificacio_${propostaPenalitzacio.idInf}" class="tab-pane fade ${primera ? 'in active' : ''}">
-				  		 	<div class="col-md-12 bordertab">
-				  		 		<c:set var="propostaModificacio" value="${propostaPenalitzacio}" scope="request"/>
-				  		 		<jsp:include page="../../tasca/include/_resumModificacioInformePenalitzacio.jsp"></jsp:include>
-						    	<c:set var="primera" value="false" scope="request"/>
-						    </div>
-				  		 </div>
-			  		</c:forEach>
-  				</div>
-			</div>
-      	</div>
-    </c:if>
-    <div class="panel-body">
-		<div class="row panel-body">
-			<h4>Incidències</h4>	
-           	<a href="modificarInforme?idInforme=${informePrevi.idInf}" class="btn btn-primary" role="button">Afegir incidència</a>							                    				                       	
-       	</div>
-   	</div>
+    <c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra != 'acordMarc'}">
+	    <div class="panel-body">
+			<div class="row panel-body">			
+				<h4>Incidències</h4>
+				<div class="col-md-6">
+	           		<a href="createTasca?idActuacio=${informePrevi.actuacio.referencia}&idInf=${informePrevi.idInf}&tipus=modificacio" class="btn btn-primary" role="button">Afegir incidència</a>							                    				                       	
+	       		</div>
+	       		<c:if test="${canModificarExpedient}">
+		       		<div class="col-md-6">
+		           		<a href="modificarInforme?idInforme=${informePrevi.idInf}" class="btn btn-primary" role="button">Crear incidència execució</a>							                    				                       	
+		       		</div>
+		       	</c:if>
+	       	</div>
+	   	</div>
+   	</c:if>
 </div>
 
 <div class="separator"></div>
@@ -93,8 +77,7 @@
 	                       	<th>Nombre certificació</th>
 	                      	<th>Tipus</th>
 	                        <th>Proveïdor</th>
-	                      	<th>notes</th>  	
-	                      	<th>Arxiu</th>                      	
+	                      	<th>notes</th>                     	
 	                   	</tr>
 	               	</thead>
 	              	<tbody>
@@ -116,12 +99,7 @@
 				            	<td>${certificacio.nombreFactura}</td>
 				            	<td>${certificacio.tipusFactura}</td>
 				            	<td>${certificacio.idProveidor}</td>
-				            	<td>${certificacio.notes}</td>	 
-				            	<td>
-				            		<c:forEach items="${certificacio.certificacions}" var="arxiu" >
-				            			<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.nom}</a><br>
-				            		</c:forEach>
-				            	</td>			            				            	
+				            	<td>${certificacio.notes}</td>					            				            				            	
 				          	</tr>
 				       	</c:forEach>
               		</tbody>
@@ -164,7 +142,6 @@
 	                      	<th>Tipus</th>
 	                        <th>Proveïdor</th>
 	                      	<th>notes</th>  
-	                      	<th>Arxiu</th>
 	                   	</tr>
 	               	</thead>
 	              	<tbody>
@@ -187,15 +164,14 @@
 				            	<td>${factura.tipusFactura}</td>
 				            	<td>${factura.idProveidor}</td>
 				            	<td>${factura.notes}</td>	 	
-				            	<td><a target="_blanck" href="downloadFichero?ruta=${factura.factura.getEncodedRuta()}">${factura.factura.nom}</a></td>				            	
-				          	</tr>
+				            </tr>
 				       	</c:forEach>
               		</tbody>
              	</table>
        		</div>															
 		</div>
  	</div>
-  	<c:if test="${informePrevi.ofertaSeleccionada != null && canCreateFactura}">
+  	<c:if test="${(informePrevi.ofertaSeleccionada != null || informePrevi.propostaInformeSeleccionada.tipusObra == 'acordMarc') && canCreateFactura}">
     	<div class="panel-body">
 			<div class="row panel-body">	
             	<a href="registrarFactura?idInforme=${informePrevi.idInf}" class="btn btn-primary" role="button">Registrar factura</a>							                    				                       	
@@ -204,124 +180,62 @@
       	
    	</c:if>   
 </div>
+<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra != 'acordMarc'}">
 <div class="separator"></div>
-<div class="panel panel-default">
-	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadDocumentacioFinalObra">	
-		<input type="hidden" name="idActuacio" value="${informePrevi.actuacio.referencia}">
-		<input type="hidden" name="idIncidencia" value="${informePrevi.actuacio.idIncidencia}">
-		<input type="hidden" name="idInforme" value="${informePrevi.idInf}">			    
-		<div class="panel-body">
-			<div class="row panel-body">
-				<h4>Final d'obra</h4>			
-				<p>
-					<label>Avis finalització contratista:</label>
-				</p>	
-				<div class="row col-md-12">
-					<c:forEach items="${informePrevi.documentFinalitzacioContratista}" var="arxiu" >
-						<c:set var="arxiu" value="${arxiu}" scope="request"/>
-						<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-					</c:forEach>
-					<br>					            		
-				</div>
-				<div class="form-group">
-					<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-			           <div class="col-xs-5">   
-			           	<input type="file" class="btn" name="documentFinalitzacioContratista" multiple/><br/>
-					</div> 
-				</div>
-				<p>
-					<label>Informe D.O.:</label>
-				</p>	
-				<div class="row col-md-12">
-					<c:forEach items="${informePrevi.documentInformeDO}" var="arxiu" >
-						<c:set var="arxiu" value="${arxiu}" scope="request"/>
-						<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-					</c:forEach>
-					<br>					            		
-				</div>
-				<div class="form-group">
-					<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-			           <div class="col-xs-5">   
-			           	<input type="file" class="btn" name="documentInformeDO" multiple/><br/>
-					</div> 
-				</div>
-				<p>
-					<label>C.F.O.:</label>
-				</p>	
-				<div class="row col-md-12">
-					<c:forEach items="${informePrevi.documentCFO}" var="arxiu" >
-						<c:set var="arxiu" value="${arxiu}" scope="request"/>
-						<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-					</c:forEach>
-					<br>					            		
-				</div>
-				<div class="form-group">
-					<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-			           <div class="col-xs-5">   
-			           	<input type="file" class="btn" name="documentCFO" multiple/><br/>
-					</div> 
-				</div>
-				<p>
-					<label>Medició general:</label>
-				</p>	
-				<div class="row col-md-12">
-					<c:forEach items="${informePrevi.documentMedicioGeneral}" var="arxiu" >
-						<c:set var="arxiu" value="${arxiu}" scope="request"/>
-						<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-					</c:forEach>
-					<br>					            		
-				</div>	
-				<div class="form-group">
-					<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-			           <div class="col-xs-5">   
-			           	<input type="file" class="btn" name="documentMedicioGeneral" multiple/><br/>
-					</div> 
-				</div>
-				<p>
-					<label>Nombrament representació recepció:</label>
-				</p>	
-				<div class="row col-md-12">
-					<c:forEach items="${informePrevi.documentRepresentacioRecepcio}" var="arxiu" >
-						<c:set var="arxiu" value="${arxiu}" scope="request"/>
-						<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-					</c:forEach>
-					<br>					            		
-				</div>	
-				<div class="form-group">
-					<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-			           <div class="col-xs-5">   
-			           	<input type="file" class="btn" name="documentRepresentacioRecepcio" multiple/><br/>
-					</div> 
-				</div>
-				<p>
-					<label>Convocatòria recepció:</label>
-				</p>	
-				<div class="row col-md-12">
-					<c:forEach items="${informePrevi.documentConvocatoriaRecepcio}" var="arxiu" >
-						<c:set var="arxiu" value="${arxiu}" scope="request"/>
-						<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-					</c:forEach>
-					<br>					            		
-				</div>	
-				<div class="form-group">
-					<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-			           <div class="col-xs-5">   
-			           	<input type="file" class="btn" name="documentConvocatoriaRecepcio" multiple/><br/>
-					</div> 
-				</div>									
-			</div>
-	 	</div>
-	 	<div class="row">
-			<div class="col-md-12">
-				<div class="row">	  			
-					<div class="col-md-offset-9 col-md-2 margin_top30">
-						<input type="submit" class="btn btn-primary" value="Actualitzar" />
+	<div class="panel panel-default">
+		<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadDocumentacioFinalObra">	
+			<input type="hidden" name="idActuacio" value="${informePrevi.actuacio.referencia}">
+			<input type="hidden" name="idIncidencia" value="${informePrevi.actuacio.idIncidencia}">
+			<input type="hidden" name="idInforme" value="${informePrevi.idInf}">			    
+			<div class="panel-body">
+				<div class="row panel-body">
+					<h4>Final d'obra</h4>			
+					<p>
+						<label>Medició general:</label>
+					</p>	
+					<div class="row col-md-12">
+						<c:forEach items="${informePrevi.documentMedicioGeneral}" var="arxiu" >
+							<c:set var="arxiu" value="${arxiu}" scope="request"/>
+							<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+						</c:forEach>
+						<br>					            		
+					</div>	
+					<div class="form-group">
+						<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+				           <div class="col-xs-5">   
+				           	<input type="file" class="btn" name="documentMedicioGeneral" multiple/><br/>
+						</div> 
 					</div>
-		    	</div>       
+					<p>
+						<label>Convocatòria recepció:</label>
+					</p>	
+					<div class="row col-md-12">
+						<c:forEach items="${informePrevi.documentConvocatoriaRecepcio}" var="arxiu" >
+							<c:set var="arxiu" value="${arxiu}" scope="request"/>
+							<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+						</c:forEach>
+						<br>					            		
+					</div>	
+					<div class="form-group">
+						<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+				           <div class="col-xs-5">   
+				           	<input type="file" class="btn" name="documentConvocatoriaRecepcio" multiple/><br/>
+						</div> 
+					</div>									
+				</div>
+		 	</div>
+		 	<div class="row">
+				<div class="col-md-12">
+					<div class="row">	  			
+						<div class="col-md-offset-9 col-md-2 margin_top30">
+							<input type="submit" class="btn btn-primary" value="Actualitzar" />
+						</div>
+			    	</div>       
+				</div>
 			</div>
-		</div>
-	 </form>
-</div>
+		 </form>
+	</div>
+</c:if>
 <div class="separator"></div>
 <br />
 <p>
@@ -345,7 +259,7 @@
 			<input type="hidden" name="idIncidencia" value="${informePrevi.actuacio.idIncidencia}">
 			<input type="hidden" name="idInforme" value="${informePrevi.idInf}">			    
 			<div class="col-xs-2"> 
-				<input type="submit" class="btn btn-primary" value="Pujar" />
+				<input type="submit" class="btn btn-primary loadingButton" value="Pujar" />
 			</div>    						
 		</div>         				
 	</form>							

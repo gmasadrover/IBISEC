@@ -70,15 +70,6 @@ public class ControlPageCore {
 			active = "";
 			collapse = "";
 		}
-		//Projectes
-		if (UsuariCore.hasPermision(conn, usuari, SectionPage.projectes_list)) {			
-			if (seccio.equals("projectes")) active = "active"; 
-			menu.append("<li class='" + active + "'>");
-			menu.append("	<a href='projectes' class='loadingButton'  data-msg='Carregant projectes...'><i class='fa fa-fw fa-bookmark'></i> Projectes</a>");
-			menu.append("</li>");
-			active = "";
-			collapse = "";
-		}
 		//Actuacions Manuals
 		if (UsuariCore.hasPermision(conn, usuari, SectionPage.actuacio_manual)) {			
 			if (seccio.equals("ActuacionsManuals")) active = "active"; 
@@ -138,6 +129,10 @@ public class ControlPageCore {
 				menu.append("				<li>");
 				menu.append("       			<a href='modificats' class='loadingButton'  data-msg='Carregant modificats...'>Modificats</a>");
 				menu.append("    			</li>");
+								
+				/*menu.append("				<li>");
+				menu.append("       			<a href='penalitzacions' class='loadingButton'  data-msg='Carregant penalitzacions...'>Penalitzacions</a>");
+				menu.append("    			</li>");*/
 			
 				menu.append("			</ul>");
 				menu.append("    	</li>");			
@@ -145,6 +140,9 @@ public class ControlPageCore {
 			if (UsuariCore.hasPermision(conn, usuari, SectionPage.expedient_list)) {
 				menu.append("		<li>");
 				menu.append("       	<a href='convenis' class='loadingButton'  data-msg='Carregant convenis...'>Convenis</a>");
+				menu.append("    	</li>");
+				menu.append("		<li>");
+				menu.append("       	<a href='expdespeses' class='loadingButton'  data-msg='Carregant expedients despesa...'>Despeses d'Explotació</a>");
 				menu.append("    	</li>");
 			}			
 			menu.append("	</ul>");

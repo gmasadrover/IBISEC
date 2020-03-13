@@ -42,11 +42,12 @@
                 
     			<div class="row">
                     <div class="col-md-12">                    	
-		    			<form class="form-horizontal" method="POST" action="DoCreateSortidaServlet">
+		    			<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoCreateSortidaServlet">
 		    				<div class="form-group">
 		    					<input type="hidden" id="tipusRegistre" value="S"> 
 		    					<input type="hidden" name="idIncidenciaSeleccionada" value="${idIncidencia}"> 
 		    					<input type="hidden" name="idInformeSeleccionat" value="${idInforme}"> 
+		    					<input type="hidden" id="idCentresSeleccionats" name="idCentresSeleccionats" value=""> 
                                 <label class="col-xs-3 control-label">Referència</label>
                                 <div class="col-xs-3">
                                 	<input class="form-control" name="referencia" placeholder="referència" value="${nouCodi}">
@@ -70,52 +71,31 @@
                                 <div class="col-xs-3">
                                 	<textarea class="form-control" name="contingut" placeholder="contingut" rows="3"></textarea>
                                 </div>
-                            </div>		    				
+                            </div>		  
+                            <div class="form-group">
+								<label class="col-xs-3 control-label">Arxius:</label>								
+	                            <div class="col-xs-3">  	                            	
+	                                <input type="file" class="btn" name="file" multiple/><br/>
+								</div>					
+	         				</div>  						
 		    				<div class="form-group">
                                 <label class="col-xs-3 control-label">Data petició</label>
                                 <div class="input-group date col-xs-3 datepicker">
 								  	<input type="text" class="form-control"  name="peticio" value="${data}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>
-                            </div>
-                             <c:if test="${idIncidencia == null || idIncidencia == ''}">
-                            	<div class="form-group">
-	                                <label class="col-xs-3  control-label">Centre</label>
-	                                <div class="col-xs-3">
-		                                <select class="form-control selectpicker centresList" name="idCentre" data-live-search="true" data-size="5" id="centresList" multiple>
-			                            	<option value="-1">No hi ha relació</option>
-			                            </select>
-		                             </div>
-	                            </div>
-	                            <div id="incidencies"></div>   
-	                            <div class="procedimentdiv hidden">      
-		                            <div class="form-group">
-		                            	<label class="col-xs-3  control-label">Procediments</label>
-		                                <div class="col-xs-3">
-			                                <select class="form-control selectpicker procedimentList" name="idProcediment" data-live-search="true" data-size="5" id="procedimentList">
-				                            	<option value="-1">No hi ha relació</option>
-				                            	<option value="-2">Nou procediment</option>
-				                            	<c:forEach items="${llistaProcediment}" var="procediment" >
-			                                		<option value='${procediment.referencia}'>${procediment.numAutos}</option>
-			                                	</c:forEach>	
-				                            </select>
-			                             </div>
-		                            </div>      
-		                            <div class="procedimentnoudiv hidden"> 
-			                            <div class="form-group">
-			                                <label class="col-xs-3 control-label">Num Autos</label>
-			                                <div class="col-xs-3">
-			                                	<input class="form-control" name="numautos" placeholder="Num Autos">
-			                                </div>
-			                            </div>	
-			                            <div class="form-group">
-			                                <label class="col-xs-3 control-label">Jutjat / Tribunal</label>
-			                                <div class="col-xs-3">
-			                                	<input class="form-control" name="jutjat" placeholder="Jutjat / Tribunal">
-			                                </div>
-			                            </div>	
-			                        </div>  
-		                    	</div> 	                                    	          
-							</c:if>			
+                            </div>                             
+                           	<div class="form-group">
+                                <label class="col-xs-3  control-label">Centre</label>
+                                <div class="col-xs-3">
+	                                <select class="form-control selectpicker centresList" name="idCentre" data-live-search="true" data-size="5" id="centresList" multiple>
+		                            	<option value="-1">No hi ha relació</option>
+		                            </select>
+	                             </div>
+                            </div>	
+                            <div id="incidencies">
+                           	</div>		
+                            <div id="expedients">
+                           	</div>	
                             <br>
 						    <div class="form-group">
 						        <div class="col-xs-offset-3 col-xs-9">

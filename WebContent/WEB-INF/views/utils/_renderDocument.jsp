@@ -9,7 +9,7 @@
 	<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
 		${arxiu.getDataString()} - ${arxiu.nom}
 	</a>
-	<c:if test="${canModificarPersonal && arxiu.ruta != null}">
+	<c:if test="${isCap && arxiu.ruta != null}">
 		<span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
 	</c:if>
 	<c:if test="${arxiu.signat}">

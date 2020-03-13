@@ -53,7 +53,8 @@ $(document).ready(function() {
     		{"iDataSort": 10},
     		{"bVisible": false},
     		{"iDataSort": 12},
-    		{"bVisible": false}
+    		{"bVisible": false},
+    		null
 		]	
 	});	
 });	

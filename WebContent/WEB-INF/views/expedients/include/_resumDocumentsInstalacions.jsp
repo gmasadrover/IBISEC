@@ -9,6 +9,7 @@
 	<input type="hidden" name="idActuacio" value="${informePrevi.actuacio.referencia}">
 	<input type="hidden" name="idIncidencia" value="${informePrevi.actuacio.idIncidencia}">
 	<input type="hidden" name="idInforme" value="${informePrevi.idInf}">			    
+	<div class="documentacioInstalacions"></div>
 	<p>
 		<label>Documentació Instal·lació baixa tensió:</label>
 	</p>
@@ -25,10 +26,7 @@
 		</div>
 	</div>	
 	<div class="row col-md-12">
-		<c:forEach items="${informePrevi.documentsIntalacioBaixaTensio}" var="arxiu" >
-			<c:set var="arxiu" value="${arxiu}" scope="request"/>
-			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-		</c:forEach>
+		<div class="documentsIntalacioBaixaTensio"></div>
 		<br>					            		
 	</div>
 	<p>
@@ -47,10 +45,7 @@
 		</div>
 	</div>	
 	<div class="row col-md-12">
-		<c:forEach items="${informePrevi.documentsIntalacioFotovoltaica}" var="arxiu" >
-			<c:set var="arxiu" value="${arxiu}" scope="request"/>
-			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-		</c:forEach>
+		<div class="documentsIntalacioFotovoltaica"></div>
 		<br>					            		
 	</div>
 	<p>
@@ -64,10 +59,7 @@
 		</div>		
 	</div>		
 	<div class="row col-md-12">
-		<c:forEach items="${informePrevi.documentsIntalacioContraincendis}" var="arxiu" >
-			<c:set var="arxiu" value="${arxiu}" scope="request"/>
-			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-		</c:forEach>
+		<div class="documentsIntalacioContraincendis"></div>
 		<br>					            		
 	</div>
 	<p>
@@ -84,7 +76,7 @@
 				<label>Data:</label> ${informePrevi.instalacions.getDataPetrolifersString()}
 			</p>
 		</div>		
-	</div>	
+	</div>
 	<div class="row col-md-12">
 		<div class="col-md-6">
 			<p>
@@ -103,10 +95,31 @@
 		</div>		
 	</div>	
 	<div class="row col-md-12">
-		<c:forEach items="${informePrevi.documentsInstalacioPetrolifera}" var="arxiu" >
-			<c:set var="arxiu" value="${arxiu}" scope="request"/>
-			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-		</c:forEach>
+		<div class="documentsInstalacioPetrolifera"></div>
+		<br>					            		
+	</div>		
+	<p>
+		<label>Documentació Instal·lació Gas:</label>
+	</p>	
+	<div class="row col-md-12">
+		<div class="col-md-4">
+			<p>
+				<label>Nº Expedient:</label> ${informePrevi.instalacions.expedientInstalacioGas}
+			</p>
+		</div>	
+		<div class="col-md-4">
+			<p>
+				<label>Tipus de gas:</label> ${informePrevi.instalacions.tipusInstalacioGas}
+			</p>
+		</div>	
+		<div class="col-md-4">
+			<p>
+				<label>Data:</label> ${informePrevi.instalacions.getDataInstalacioGasString()}
+			</p>
+		</div>		
+	</div>	
+	<div class="row col-md-12">
+		<div class="documentsInstalacioGas"></div>
 		<br>					            		
 	</div>	
 	<p>
@@ -120,10 +133,7 @@
 		</div>		
 	</div>	
 	<div class="row col-md-12">
-		<c:forEach items="${informePrevi.documentsIntalacioTermica}" var="arxiu" >
-			<c:set var="arxiu" value="${arxiu}" scope="request"/>
-			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-		</c:forEach>
+		<div class="documentsIntalacioTermica"></div>
 		<br>					            		
 	</div>	
 	<p>
@@ -137,30 +147,21 @@
 		</div>		
 	</div>		
 	<div class="row col-md-12">
-		<c:forEach items="${informePrevi.documentsIntalacioAscensor}" var="arxiu" >
-			<c:set var="arxiu" value="${arxiu}" scope="request"/>
-			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-		</c:forEach>
+		<div class="documentsIntalacioAscensor"></div>
 		<br>					            		
 	</div>
 	<p>
 		<label>Documentació Instal·lació alarma:</label>
 	</p>	
 	<div class="row col-md-12">
-		<c:forEach items="${informePrevi.documentsIntalacioAlarma}" var="arxiu" >
-			<c:set var="arxiu" value="${arxiu}" scope="request"/>
-			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-		</c:forEach>
+		<div class="documentsIntalacioAlarma"></div>
 		<br>					            		
 	</div>
 	<p>
 		<label>Documentació Instal·lació subministrament aigua:</label>
 	</p>	
 	<div class="row col-md-12">
-		<c:forEach items="${informePrevi.documentsIntalacioSubministreAigua}" var="arxiu" >
-			<c:set var="arxiu" value="${arxiu}" scope="request"/>
-			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-		</c:forEach>
+		<div class="documentsIntalacioSubministreAigua"></div>
 		<br>					            		
 	</div>
 	<p>
@@ -179,10 +180,7 @@
 		</div>
 	</div>	
 	<div class="row col-md-12">
-		<c:forEach items="${informePrevi.documentsCertificatEficienciaEnergetica}" var="arxiu" >
-			<c:set var="arxiu" value="${arxiu}" scope="request"/>
-			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-		</c:forEach>
+		<div class="documentsCertificatEficienciaEnergetica"></div>
 		<br>					            		
 	</div>	
 	<p>
@@ -196,10 +194,7 @@
 		</div>		
 	</div>		
 	<div class="row col-md-12">
-		<c:forEach items="${informePrevi.documentsPlaAutoproteccio}" var="arxiu" >
-			<c:set var="arxiu" value="${arxiu}" scope="request"/>
-			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-		</c:forEach>
+		<div class="documentsPlaAutoproteccio"></div>
 		<br>					            		
 	</div>
 	<p>
@@ -213,10 +208,14 @@
 		</div>
 	</div>	
 	<div class="row col-md-12">
-		<c:forEach items="${informePrevi.documentsCedulaDeHabitabilitat}" var="arxiu" >
-			<c:set var="arxiu" value="${arxiu}" scope="request"/>
-			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-		</c:forEach>
+		<div class="documentsCedulaDeHabitabilitat"></div>
+		<br>					            		
+	</div>
+	<p>
+		<label>Documentació incici activitat:</label>
+	</p>
+	<div class="row col-md-12">
+		<div class="documentsIniciActivitat"></div>
 		<br>					            		
 	</div>	
 	<div class="row">

@@ -57,9 +57,9 @@ public class EmpresaListDespesaView extends HttpServlet {
 			Date dataFi = cal.getTime();
 			String dataFiString = df.format(dataFi);	
 			dataFi = new Date(dataFi.getTime());
-			cal.set(2018, 2, 9);
+			cal.set(2019, 0, 1);
 			Date dataIni = cal.getTime();
-			String dataIniciString = df.format(dataIni);	
+			String dataIniciString = df.format(dataIni);
 	        try {
 	            list = EmpresaCore.getDespesaEmpreses(conn, dataIni, dataFi);
 	        } catch (SQLException e) {

@@ -44,7 +44,6 @@
     			<div class="row">
                     <div class="col-md-12">                    	                    	
 		    			<form class="form-horizontal" method="POST" action="DoModificarActuacio">
-		    				<input type="hidden" id="idCentreSelected" value="${incidencia.idCentre}">
 		    				<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
 		    				<div class="form-group">
                                 <label class="col-xs-3 control-label">Referència</label>
@@ -81,5 +80,6 @@
 		<!-- /#page-wrapper -->
 	</div>
     <jsp:include page="../_footer.jsp"></jsp:include>
+    <script src="js/actuacio/modificar.js?<%=application.getInitParameter("datakey")%>"></script>
 </body>
 </html>

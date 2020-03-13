@@ -68,6 +68,9 @@
 	<p>			                     				
 		<label>Comentari tècnic:</label> ${informePrevi.ofertaSeleccionada.comentari}
 	</p>
+	<p>			                     				
+		<label>Comentari administratiu:</label> ${informePrevi.ofertaSeleccionada.comentariAdministratiu}
+	</p>
 	<label>Informe justificatiu:</label>	
 	<c:forEach items="${informePrevi.propostaTecnica}" var="arxiu" >
 		<c:set var="arxiu" value="${arxiu}" scope="request"/>						

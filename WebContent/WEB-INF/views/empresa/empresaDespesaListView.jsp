@@ -56,6 +56,7 @@
                                         <th>Total base (proposta)</th>
                                         <th>Tatal amb IVA (proposta)</th>
                                         <th>Tatal amb IVA (proposta)</th>
+                                        <th>Tipus</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -73,7 +74,8 @@
 							            	<td>${empresa.getTotalPbasePeriodeString()}</td>		
 							            	<td>${empresa.totalPbasePeriode}</td>	
 							            	<td>${empresa.getTotalPLicPeriodeString()}</td>									            				
-							            	<td>${empresa.totalPLicPeriode}</td>								            					            	
+							            	<td>${empresa.totalPLicPeriode}</td>	
+							            	<td>${empresa.tipus}</td>							            					            	
 							          	</tr>
 							       	</c:forEach>
                                 </tbody>

@@ -60,10 +60,11 @@ public class DoEditCertificacioServlet extends HttpServlet {
 	    String idActuacio = multipartParams.getParametres().get("idActuacio");
 	    String idProveidor = multipartParams.getParametres().get("idEmpresa");	    
 	    String concepte = multipartParams.getParametres().get("concepte");	   
-	    double valor = Double.parseDouble(multipartParams.getParametres().get("import"));	  
+	    double valor = Double.parseDouble(multipartParams.getParametres().get("import").replace(",", "."));	  
 	    String nombreCertificacio = multipartParams.getParametres().get("nombre");
 	    int idUsuariConformador = Integer.parseInt(multipartParams.getParametres().get("idConformador"));
 	    String notes = multipartParams.getParametres().get("notes");
+	    String tipus = multipartParams.getParametres().get("tipusCertificacio");
 	    
 	    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 	    Date dataCertificacio = null;
@@ -95,6 +96,7 @@ public class DoEditCertificacioServlet extends HttpServlet {
 	    certificacio.setDataEntrada(dataEntrada);
 	    certificacio.setNombreFactura(nombreCertificacio);
 	    certificacio.setNotes(notes);
+	    certificacio.setTipus(tipus);
 	    
 	    String errorString = null;	 	      
 		if (errorString == null) {

@@ -15,15 +15,17 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import bean.Credit;
 import bean.InformeActuacio;
 import bean.Llicencia;
+import bean.Partida;
 import utils.Fitxers;
 import utils.Fitxers.Fitxer;
 
 public class LlicenciaCore {
 	static final String SQL_CAMPS = "codi, expcontratacio, tipus, taxa, observacio, datapagadataxa, datapagadaico, importatib, ico, datasolicitud, dataconcesio";
 	
-	private static Llicencia initLlicencia(Connection conn, ResultSet rs, String idIncidencia, String idInforme) throws SQLException, NamingException{
+	private static Llicencia initLlicencia(Connection conn, ResultSet rs) throws SQLException, NamingException{
 		Llicencia llicencia = new Llicencia();
 		llicencia.setCodi(rs.getString("codi"));
 		llicencia.setCodiExpedient(rs.getString("expcontratacio"));
@@ -35,7 +37,7 @@ public class LlicenciaCore {
 		llicencia.setConcesio(rs.getTimestamp("dataconcesio"));
 		llicencia.setPagamentTaxa(rs.getTimestamp("datapagadataxa"));
 		llicencia.setPagamentICO(rs.getTimestamp("datapagadaico"));
-		llicencia.setArxius(getArxius(rs.getString("codi"), conn, idIncidencia, idInforme));
+		//llicencia.setArxius(getArxius(rs.getString("codi"), conn, idIncidencia, idInforme));
 		llicencia.setDocumentSolLlicencia(getDocumentSolLlicenciaString(rs.getString("codi")));
 		llicencia.setDocumentConcessioLlicencia(getDocumentConcessioLlicencia(rs.getString("codi")));
 		llicencia.setDocumentPagamentLlicencia(getDocumentPagamentLlicencia(rs.getString("codi")));
@@ -86,12 +88,12 @@ public class LlicenciaCore {
 		}		
 		ResultSet rs = pstm.executeQuery();
 		while (rs.next()) {		
-			llicencies.add(initLlicencia(conn, rs, "", ""));
+			llicencies.add(initLlicencia(conn, rs));
 		}
 		return llicencies;
 	}
 	
-	public static Llicencia findLlicencia(Connection conn, String codi, String idIncidencia, String idInforme) throws SQLException, NamingException {
+	public static Llicencia findLlicencia(Connection conn, String codi) throws SQLException, NamingException {
 		Llicencia llicencia = new Llicencia();
 		String sql = "SELECT " + SQL_CAMPS
 				+ " FROM public.tbl_llicencia"
@@ -100,7 +102,7 @@ public class LlicenciaCore {
 		pstm = conn.prepareStatement(sql);	
 		pstm.setString(1, codi);
 		ResultSet rs = pstm.executeQuery();
-		if (rs.next()) llicencia = initLlicencia(conn, rs, idIncidencia, idInforme);
+		if (rs.next()) llicencia = initLlicencia(conn, rs);
 		return llicencia;
 	}
 	
@@ -113,7 +115,7 @@ public class LlicenciaCore {
 		pstm = conn.prepareStatement(sql);	
 		pstm.setString(1, idInforme);
 		ResultSet rs = pstm.executeQuery();
-		if (rs.next()) llicencia = initLlicencia(conn, rs, idIncidencia, idInforme);
+		if (rs.next()) llicencia = initLlicencia(conn, rs);
 		return llicencia;
 	}
 	
@@ -150,25 +152,13 @@ public class LlicenciaCore {
 		pstm.executeUpdate();
 	}
 	
-	public static String novaLlicencia(Connection conn, String expContractacio, String tipus) throws SQLException {
-		String sql = "INSERT INTO public.tbl_llicencia(codi, expcontratacio, tipus, datacre)"
-					+ " VALUES (?, ?, ?, localtimestamp);";
-		PreparedStatement pstm;
-		String codi = getNouCodi(conn);
-		pstm = conn.prepareStatement(sql);	
-		pstm.setString(1, codi);
-		pstm.setString(2, expContractacio);
-		pstm.setString(3, tipus);
-		pstm.executeUpdate();
-		return codi;
-	}
-	
-	public static void novaLlicencia(Connection conn, String expContractacio, Llicencia llicencia) throws SQLException {
+	public static String novaLlicencia(Connection conn, String expContractacio, Llicencia llicencia) throws SQLException {
 		String sql = "INSERT INTO public.tbl_llicencia(codi, expcontratacio, tipus, taxa, observacio, datapagadataxa, ico, datasolicitud, dataconcesio, datacre, datapagadaico)"
 				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, localtimestamp, ?);";	
 		PreparedStatement pstm;
 		pstm = conn.prepareStatement(sql);	
-		pstm.setString(1, getNouCodi(conn));
+		String codi = getNouCodi(conn);
+		pstm.setString(1, codi);
 		pstm.setString(2, llicencia.getCodiExpedient());
 		pstm.setString(3, llicencia.getTipus());
 		pstm.setDouble(4, llicencia.getTaxa());
@@ -195,6 +185,7 @@ public class LlicenciaCore {
 			pstm.setDate(10, null);
 		}
 		pstm.executeUpdate();
+		return codi;
 	}
 	
 	private static String getNouCodi(Connection conn) throws SQLException {
@@ -407,35 +398,54 @@ public class LlicenciaCore {
 		return idPartida;
 	}
 	
-	public static void actualitzarPartida(Connection conn, Llicencia llicencia, double valor, InformeActuacio informe) throws SQLException {
-		System.out.println(llicencia.getIdPartida());
-		if (informe.getAssignacioCredit() != null && informe.getAssignacioCredit().getPartida() != null) {
-			if (llicencia.getIdPartida() == null || llicencia.getIdPartida().isEmpty()) {
-				String sql = "INSERT INTO public.tbl_assignacionscredit(idassignacio, idactuacio, idinf, reserva, assignacio, idpartida, valorpa, valorpd)"
-							+ " VALUES (?, ?, ?, true, true, ?, ?, ?);";
-				PreparedStatement pstm;
-				pstm = conn.prepareStatement(sql);	
-				pstm.setString(1, llicencia.getCodi());
-				pstm.setString(2, informe.getActuacio().getReferencia());
-				pstm.setString(3, llicencia.getCodi());
-				if (informe.getAssignacioCredit() != null && informe.getAssignacioCredit().getPartida() != null) {
-					pstm.setString(4, informe.getAssignacioCredit().getPartida().getCodi());
+	public static void actualitzarPartida(Connection conn, Llicencia llicencia, double valor, InformeActuacio informe) throws SQLException, NamingException {	
+		if (valor > 0) {
+			if (informe.getAssignacioCredit() != null  && informe.getAssignacioCredit().size()>0 && informe.getAssignacioCredit().get(0).getPartida() != null) {
+				if (llicencia.getIdPartida() == null || llicencia.getIdPartida().isEmpty()) {
+					String sql = "INSERT INTO public.tbl_assignacionscredit(idassignacio, idactuacio, idinf, reserva, assignacio, idpartida, valorpa, valorpd)"
+								+ " VALUES (?, ?, ?, true, true, ?, ?, ?);";
+					PreparedStatement pstm;
+					pstm = conn.prepareStatement(sql);	
+					pstm.setString(1, llicencia.getCodi());
+					pstm.setString(2, informe.getActuacio().getReferencia());
+					pstm.setString(3, llicencia.getCodi());
+					Partida partida = new Partida();
+					if (informe.getAssignacioCredit() != null && informe.getAssignacioCredit().get(0).getPartida() != null) {
+						partida = CreditCore.getPartida(conn, informe.getAssignacioCredit().get(0).getPartida().getCodi());
+						if (partida.getEstat()) {
+							if (partida.getPartidaPerAsignar() >= valor) {
+								pstm.setString(4, informe.getAssignacioCredit().get(0).getPartida().getCodi());
+							} else {
+								
+							}
+						} else {
+							partida = CreditCore.getPartidaDefecte(conn);
+							if (partida.getPartidaPerAsignar() >= valor) {
+								pstm.setString(4, partida.getCodi());
+							} else {
+								
+							}							
+						}						
+					} else {
+						partida = CreditCore.getPartidaDefecte(conn);
+						pstm.setString(4, partida.getCodi());
+					}			
+					pstm.setDouble(5, valor);
+					pstm.setDouble(6, valor);
+					pstm.executeUpdate();
 				} else {
-					pstm.setString(4, "");
-				}			
-				pstm.setDouble(5, valor);
-				pstm.setDouble(6, valor);
-				pstm.executeUpdate();
+					String sql = "UPDATE public.tbl_assignacionscredit"
+								+ " SET valorpa=?, valorpd=?"
+								+ " WHERE idassignacio = ?;";
+					PreparedStatement pstm;
+					pstm = conn.prepareStatement(sql);	
+					pstm.setDouble(1, valor);
+					pstm.setDouble(2, valor);
+					pstm.setString(3, llicencia.getCodi());
+					pstm.executeUpdate();
+				}
 			} else {
-				String sql = "UPDATE public.tbl_assignacionscredit"
-							+ " SET valorpa=?, valorpd=?"
-							+ " WHERE idassignacio = ?;";
-				PreparedStatement pstm;
-				pstm = conn.prepareStatement(sql);	
-				pstm.setDouble(1, valor);
-				pstm.setDouble(2, valor);
-				pstm.setString(3, llicencia.getCodi());
-				pstm.executeUpdate();
+				// assignar partida manual?
 			}
 		}		
 	}

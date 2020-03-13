@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %> 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="m"  %>
 <c:set var="language" value="${not empty param.language ? param.language : not empty language ? language : pageContext.request.locale}" scope="session" />
 <m:setLocale value="${language}" />
@@ -59,15 +60,6 @@
 								  	<input type="text" class="form-control" name="dataCreacio" value="${informePrevi.getDataCreacioString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>
                 	 		</div>
-							<div class="col-md-4">
-								<label>Tècnic</label>
-								<input type="hidden" id="tecnicPrev" value="${informePrevi.usuari.idUsuari}" >							            	 										            	 	
-				                <select class="form-control selectpicker" data-live-search="true" data-size="5" name="llistaUsuaris" id="llistaUsuaris">
-				                	<c:forEach items="${llistaUsuaris}" var="usuari">
-				                		<option value="${usuari.idUsuari}">${usuari.getNomCompletReal()}</option>
-				                	</c:forEach>					                                	
-				                </select>	
-							</div>
 						</div>       		
                 		<div class="form-group">                               
                             <div class="col-md-12">
@@ -98,6 +90,13 @@
 								<label class="">€</label>
 							</div>					                                
 						</div>
+						<div class="form-group">
+							<div class="col-md-4">
+								<label>VEC:</label>
+								<input name="vec" id="vec" class="vec" placeholder="0000,00" value="${informePrevi.propostaInformeSeleccionada.vec}">						
+								<label class="">€</label>
+							</div>
+						</div>
                         <div class="form-group">
 				     		<div class="col-md-3">
 				     	 		<label>Tipus de Contracte</label>
@@ -106,9 +105,10 @@
 						           	<option value="obr">Obra</option>
 						           	<option value="srv">Servei</option>
 						           	<option value="submi">subministrament</option>
+						           	<option value="conveni">Conveni</option>
 					            </select>
 				        	</div>	
-				       		<div class="visibleObres visibleObres">					                             	
+				       		<div class="visibleObres">					                             	
 					        	<div class="col-md-3">
 						      	 	<label>Autorització urbanística</label>
 						      	 	<input type="hidden" id="reqLlicenciaPrev" value="${informePrevi.propostaInformeSeleccionada.llicencia ? 'si' : 'no'}" >
@@ -126,10 +126,41 @@
 					                </select>
 					           	</div>					           	
 							</div>				                       																
-						</div>							
+						</div>	
+						<div class="visibleConveni hidden">
+						 	<label>Tramitació</label>
+					        <div class="form-group">									   	
+					          	<label class="col-xs-2 control-label">IBISEC</label> 
+		                		<div class="checkbox">
+			                        <label>
+			                          	<input name="tramitacioIBISEC" type="checkbox" ${fn:contains(informePrevi.organismeDependencia, 'IBISEC#') ? 'checked' : ''}>
+			                        </label>
+			                	</div> 
+						     	<label class="col-xs-2 control-label">Conselleria</label> 
+		                		<div class="checkbox">
+			                        <label>
+			                          	<input name="tramitacioConselleria" type="checkbox" ${fn:contains(informePrevi.organismeDependencia, 'Conselleria#') ? 'checked' : ''}>
+			                        </label>
+			                	</div>
+								<label class="col-xs-2 control-label">Altres</label> 
+		                		<div class="checkbox">
+			                        <label>
+			                          	<input name="tramitacioAltres" type="checkbox" ${fn:contains(informePrevi.organismeDependencia, 'Altres#') ? 'checked' : ''}>
+			                        </label>
+			                	</div>
+                            </div> 
+                            <div class="form-group">									   	
+					          	<label class="col-xs-2 control-label">Cessió de crèdit</label> 
+		                		<div class="checkbox">
+			                        <label>
+			                          	<input name="esCessioDeCredit" type="checkbox"  ${informePrevi.cessioCredit ? 'checked' : ''}>
+			                        </label>
+			                	</div> 
+			                </div>
+				        </div>									
 						<div class="form-group">
 							<div class="col-md-6">
-								<label>Termini d'execució</label>
+								<label>${informePrevi.propostaInformeSeleccionada.tipusObra == 'conveni' ? 'Vigència conveni' : 'Termini d\'execució'}:</label>
 								<input name="termini" placeholder="" value="${informePrevi.propostaInformeSeleccionada.termini}" required>
 							</div>
 						</div>
@@ -138,6 +169,15 @@
 								<div class="row">	 
 									<div class="col-md-12">						                    						
 					          			<textarea class="form-control" name="comentariTecnic" placeholder="comentari tècnic" rows="3">${informePrevi.propostaInformeSeleccionada.comentari}</textarea> 
+					            	</div>
+					        	</div>	        	
+							</div>						                       		
+						</div>	
+						<div class="form-group">
+							<div class="col-md-12">		
+								<div class="row">	 
+									<div class="col-md-12">						                    						
+					          			<textarea class="form-control" name="comentariAdministratiu" placeholder="comentari administratiu" rows="3">${informePrevi.propostaInformeSeleccionada.comentariAdministratiu}</textarea> 
 					            	</div>
 					        	</div>	        	
 							</div>						                       		
@@ -159,7 +199,7 @@
                             	<textarea class="form-control" name="notes" placeholder="notes" rows="3">${informePrevi.notes}</textarea>
                             </div>
                         </div>
-                        <div class="informacioMenors">
+                        <div class="informacioMenors visibleObres">
 	                       	<div class="form-group">    
 	                       		<div class="col-md-12"> 
 					           		<div class="document">
@@ -181,23 +221,20 @@
 								</div>																			
 							</div>
                         </div>
-                        <div class="informacioMajors">
+                        <div class="informacioMajors visibleObres">
                         	<div class="form-group">
 	                        	<div class="col-md-12">
 					       			<div class="document">
-										<label>Informe supervisió / contractació:</label>										                  	
-						           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.informeSupervisio.getEncodedRuta()}">
-											${informePrevi.informeSupervisio.nom}
-										</a>	
-										<c:if test="${informePrevi.informeSupervisio.signat}">
-												<span data-ruta="${informePrevi.informeSupervisio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
-										</c:if>
-										<c:if test="${informePrevi.informeSupervisio.ruta != null}">
-											<span data-ruta="${informePrevi.informeSupervisio.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
-										</c:if>
-										<br>
-										<div class="infoSign hidden">											
-										</div>	
+										<label>Informe supervisió / contractació:</label>	
+										<c:forEach items="${informePrevi.informeSupervisio}" var="arxiu" >
+											<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
+											<c:if test="${arxiu.signat}">
+												<span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
+											</c:if>
+											<span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+											<div class="infoSign hidden"></div>	
+											<br>
+										</c:forEach>	
 									</div>	
 									<input type="file" class="btn uploadImage" name="informeSupervisio" /><br/>		
 					       		</div>
@@ -206,7 +243,7 @@
 						<div class="form-group">
 				    		<div class="col-md-4">	
 				      			<label>Partida asignada</label>		
-				      			<input type="hidden" id="partidaPrev" value="${informePrevi.assignacioCredit.partida.codi}" >							            	 										            	 	
+				      			<input type="hidden" id="partidaPrev" value="${informePrevi.assignacioCredit[0].partida.codi}" >							            	 										            	 	
 				                <select class="form-control selectpicker" name="llistaPartides" id="llistaPartides">
 				                	<option value="-1">No assignar partida</option>
 				                	<c:forEach items="${partidesList}" var="partida">
@@ -220,7 +257,7 @@
 	                			<label class="col-xs-2 control-label">Afectat BEI</label> 
 		                		<div class="checkbox">
 			                        <label>
-			                          	<input name="bei" type="checkbox" ${informePrevi.assignacioCredit.bei ? 'checked' : ''}>
+			                          	<input name="bei" type="checkbox" ${informePrevi.assignacioCredit[0].bei ? 'checked' : ''}>
 			                        </label>
 			                	</div> 
 			                </div>
@@ -230,7 +267,7 @@
 	                			<label class="col-xs-2 control-label">Afectat FEDER</label> 
 		                		<div class="checkbox">
 			                        <label>
-			                          	<input name="feder" type="checkbox" ${informePrevi.assignacioCredit.feder ? 'checked' : ''}>
+			                          	<input name="feder" type="checkbox" ${informePrevi.assignacioCredit[0].feder ? 'checked' : ''}>
 			                        </label>
 			                	</div> 
 			                </div>
@@ -280,7 +317,7 @@
 							</c:if>
 				       	</div>	
 				       	<c:if test="${expedient.contracte != 'major'}">
-					       	<div class="form-group">  
+					       	<div class="form-group visibleObres">  
 								<div class="col-md-3">
 									<label>Data aprovació</label>
 	                                <div class="input-group date datepicker">
@@ -288,7 +325,7 @@
 									</div>
 								</div>
 							</div>
-					       	<div class="form-group">
+					       	<div class="form-group visibleObres">
 					       		<div class="col-md-12">
 					       			<div class="document">
 										<label>Autorització proposta d'actuació signada:</label>										                  	
@@ -312,24 +349,19 @@
 				       	<div class="autoritzacioConsellGovern">
 				       		<div class="form-group">
 					       		<div class="col-md-6">
-					       			<div class="document">
-										<label>Autorització Consell de Govern:</label>										                  	
-							          		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.autoritzacioConsellDeGovern.getEncodedRuta()}">
-											${informePrevi.autoritzacioConsellDeGovern.nom}
-										</a>	
-										<c:if test="${informePrevi.autoritzacioConsellDeGovern.signat}">
-												<span data-ruta="${informePrevi.autoritzacioConsellDeGovern.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
-										</c:if>
-										<c:if test="${informePrevi.autoritzacioConsellDeGovern.ruta != null}">
-											<span data-ruta="${informePrevi.autoritzacioConsellDeGovern.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
-										</c:if>
-										<br>
-										<div class="infoSign hidden">											
-										</div>	
+					       			<p>
+										<label>Autorització Consell De Govern:</label>
+									</p>	
+									<div class="row col-md-12">
+										<c:forEach items="${informePrevi.autoritzacioConsellDeGovern}" var="arxiu" >
+											<c:set var="arxiu" value="${arxiu}" scope="request"/>
+											<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+										</c:forEach>
+										<br>					            		
 									</div>
-									<input type="file" class="btn uploadImage" name="autoritzacioConsellDeGovern" /><br/>	
+									<input type="file" class="btn uploadImage" name="autoritzacioConsellDeGovern" multiple/><br/>	
 					       		</div>
-					       		<c:if test="${informePrevi.autoritzacioConsellDeGovern.ruta == null}">
+					       		<c:if test="${false}">
 						       		<div class="col-md-6">
 										<div class="form-group">
 								    		<div class="col-md-12">
@@ -346,7 +378,7 @@
 								</c:if>
 					       	</div>
 				       	</div>
-				       	<div class="autoritzacioConseller">
+				       	<div class="autoritzacioConseller visibleObres">
 				       		<div class="form-group">
 					       		<div class="col-md-6">
 					       			<div class="document">
@@ -383,18 +415,72 @@
 								</c:if>	
 					       	</div>
 				       	</div>
-				       	<c:choose>
-					       	<c:when test="${expedient.contracte == 'major'}">
-						       	<div class="form-group">  
-									<div class="col-md-3">
-										<label>Data publicació</label>
-		                                <div class="input-group date datepicker">
-										  	<input type="text" class="form-control" name="dataPublicacioBOIB" value="${informePrevi.getPublicacioBOIBString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-										</div>
+				       	<div class="hidden visibleConveni">					       		
+	   					 	<div class="form-group">  
+								<div class="col-md-3">
+									<label>Data firma conveni</label>
+	                                <div class="input-group date datepicker">
+									  	<input type="text" class="form-control" name="dataContracte" value="${informePrevi.expcontratacio.getDataFirmaString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 									</div>
 								</div>
+							</div>
+		   					<div class="form-group">				       		
+					       		<div class="col-md-6">
+					       			<div class="document">
+				               			<label>${informePrevi.propostaInformeSeleccionada.tipusObra == 'conveni' ? 'Conveni' : 'Contracte'} signat:</label>											                  	
+					           			<a target="_blanck" href="downloadFichero?ruta=${informePrevi.contracteSignat.getEncodedRuta()}">
+											${informePrevi.contracteSignat.nom}
+										</a>	
+										<c:if test="${informePrevi.contracteSignat.signat}">
+											<span data-ruta="${informePrevi.contracteSignat.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
+										</c:if>
+										<c:if test="${informePrevi.contracteSignat.ruta != null}">
+											<span data-ruta="${informePrevi.contracteSignat.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
+										</c:if>
+										<br>
+										<div class="infoSign hidden">										
+										</div>
+									</div>	
+									<input type="file" class="btn uploadImage" name="contracte" /><br/>	
+					       		</div>				       		
+					       	</div>
+					       	<div class="form-group">  
+								<div class="col-md-3">
+									<label>Publicació registre convenis</label>
+	                                <div class="input-group date datepicker">
+									  	<input type="text" class="form-control" name="dataPublicacioRegistreConvenis" value="${informePrevi.getDataPublicacioRegitreConvenisString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">  
+								<div class="col-md-3">
+									<label>Publicació BOIB</label>
+	                                <div class="input-group date datepicker">
+									  	<input type="text" class="form-control" name="dataPublicacioBOIB" value="${informePrevi.getPublicacioBOIBString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">  
+								<div class="col-md-3">
+									<label>Publicació Perfil del contractant</label>
+	                                <div class="input-group date datepicker">
+									  	<input type="text" class="form-control" name="dataPublicacioPerfilContractant" value="${informePrevi.getDataPublicacioPerfilContractantString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">  
+								<div class="col-md-3">
+									<label>Informació DG Tresoreria</label>
+	                                <div class="input-group date datepicker">
+									  	<input type="text" class="form-control" name="dataPublicacioDGT" value="${informePrevi.getDataPublicacioDGTresoreriaString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+									</div>
+								</div>
+							</div>
+				       	</div>
+				       	<c:choose>
+					       	<c:when test="${expedient.contracte == 'major'}">						       	
 								<c:if test="${informePrevi.documentBOIB.ruta != null}">
-							       	<div class="form-group">
+							       	<div class="form-group visibleObres">
 							       		<div class="col-md-12">
 							       			<div class="document">
 												<label>Document enviar BOIB:</label>										                  	
@@ -417,7 +503,7 @@
 								</c:if>
 					       	</c:when>
 					       	<c:otherwise>
-					       		<div class="form-group">
+					       		<div class="form-group visibleObres">
 						       		<div class="col-md-12">
 						       			<div class="document">
 											<label>Correu invitació licitació:</label>										                  	

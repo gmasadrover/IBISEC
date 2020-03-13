@@ -51,6 +51,7 @@ public class DoCreateEmpresaServlet extends HttpServlet {
 		String telefon = request.getParameter("telefon");
 		String fax = request.getParameter("fax");
 		String email = request.getParameter("email");
+		String tipus = request.getParameter("tipus");
 			
 		List<Empresa.Administrador> administradors = new ArrayList<Empresa.Administrador>();
 		
@@ -64,6 +65,7 @@ public class DoCreateEmpresaServlet extends HttpServlet {
 		empresa.setTelefon(telefon);
 		empresa.setFax(fax);
 		empresa.setEmail(email);
+		empresa.setTipus(tipus);
 		empresa.setAdministradors(administradors);
 		
 		String errorString = null; 

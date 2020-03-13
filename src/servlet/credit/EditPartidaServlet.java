@@ -55,7 +55,7 @@ public class EditPartidaServlet extends HttpServlet {
 			Partida partida = new Partida();
 	       	try {
 	       		partida = CreditCore.getPartida(conn,codi);	  	       	
-	       	} catch (SQLException e) {
+	       	} catch (SQLException | NamingException e) {
 	       		e.printStackTrace();
 	       		errorString = e.getMessage();
 	       	}

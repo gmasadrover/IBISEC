@@ -182,6 +182,7 @@ public class Empresa {
    private String telefon;
    private String fax;
    private String email;
+   private String tipus;
    private Date dataConstitucio;
    private List<Fitxers.Fitxer> documentsEscrituraList;
    private Fitxers.Fitxer documentREA;
@@ -214,6 +215,7 @@ public class Empresa {
    private double totalPbasePeriode;
    private double totalPLicPeriode;
    private boolean prohibicioContractar;
+   private Date prohibitContractarFins;
    private List<Fitxers.Fitxer> documentsProhibicioContractarList;
    
    public Empresa() {
@@ -684,6 +686,29 @@ public class Empresa {
 
 	public void setTotalPbasePeriodeAdjudicat(double totalPbasePeriodeAdjudicat) {
 		this.totalPbasePeriodeAdjudicat = totalPbasePeriodeAdjudicat;
+	}
+
+	public Date getProhibitContractarFins() {
+		return prohibitContractarFins;
+	}
+
+	public String getProhibitContractarFinsString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+		String dataString = "";
+		if (this.prohibitContractarFins != null) dataString = df.format(this.prohibitContractarFins);
+		return dataString;
+	}
+	
+	public void setProhibitContractarFins(Date prohibitContractarFins) {
+		this.prohibitContractarFins = prohibitContractarFins;
+	}
+
+	public String getTipus() {
+		return tipus;
+	}
+
+	public void setTipus(String tipus) {
+		this.tipus = tipus;
 	}
 
 }

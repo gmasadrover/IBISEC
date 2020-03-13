@@ -118,8 +118,8 @@
 						            	<td>${assignacio.valorPA}</td>
 						            	<td>${assignacio.getValorPDFormat()}</td>
 						            	<td>${assignacio.valorPD}</td>
-						            	<td>${assignacio.informe.getTotalFacturatFormat()}</td>
-						            	<td>${assignacio.informe.getTotalFacturat()}</td>
+						            	<td>${assignacio.getValorPagatFormat()}</td>
+						            	<td>${assignacio.valorPagat}</td>
 						            </tr>
 					       		</c:forEach>						                                	                              	
 		                        </tbody>

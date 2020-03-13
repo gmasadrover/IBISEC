@@ -117,7 +117,7 @@ public class ImportFacturesHandler extends HttpServlet {
     		Factura factura = new Factura();
     		for (FileItem arxiu: arxius) {
     			if (arxiu.getName().toUpperCase().contains("XML")) {
-    				fileName = ruta + "/documents/-1/Actuacio/-1/informe/-1/Empreses/-1/Factures/-1/";
+    				fileName = ruta + "/documents/Factures/-1/";
     				File archivo_server = new File(fileName + "temp_" + arxiu.getName());
     				try {    					
 						arxiu.write(archivo_server);

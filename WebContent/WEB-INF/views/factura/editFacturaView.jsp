@@ -49,25 +49,26 @@
                                 <div class="col-xs-3">
                                 	<input class="form-control" placeholder="codi factura" value="${factura.idFactura}" disabled>
                                 	<input class="hidden" name="idFactura" value="${factura.idFactura}">
-                                	<input class="hidden" name="idInforme" value="${factura.idInforme}">
-                                	<input class="hidden" name="idActuacio" value="${factura.idActuacio}">
+                                	<input class="hidden" name="idInforme" id="idInforme" value="${factura.idInforme}">
+                                	<input class="hidden" name="idActuacio" id="idActuacio" value="${factura.idActuacio}">
                                 </div>
                             </div>
-                            <c:if test="${factura.idActuacio == '-1'}"> 
-                            	<div id="seleccionarInforme">                            		
-		                            <div class="form-group">
-		                                <label class="col-xs-3  control-label">Centre</label>
-		                                <div class="col-xs-3">
-			                                <select class="form-control selectpicker centresList" name="idCentre" data-live-search="true" data-size="5" id="centresList">
-				                            	<option value="-1">No hi ha relació</option>
-				                            </select>
-			                             </div>
-		                            </div> 
-		                            <div id="incidencies"></div>   
-		                            <div id="expedients"></div>     
-		                    	</div>
-                            </c:if>
-                            <div class="form-group">
+                           	<div id="seleccionarInforme">                            		
+	                            <div class="form-group">
+	                                <label class="col-xs-3  control-label">Centre</label>
+	                                <input class="hidden" name="idCentreActual" id=idCentreActual value="${idCentre}"> 
+	                                <div class="col-xs-3">
+		                                <select class="form-control selectpicker centresList" name="idCentre" data-live-search="true" data-size="5" id="centresList">
+			                            	<option value="-1">No hi ha relació</option>
+			                            	<option value="procediment">Procediment</option>
+			                            </select>
+		                             </div>
+	                            </div> 
+	                            <div id="incidencies"></div>   
+	                            <div id="procediments"></div>   
+	                            <div id="expedients"></div>     
+	                    	</div>
+                            <div class="form-group proveidor">
                                 <label class="col-xs-3 control-label">Proveidor</label>
                                 <input class="hidden" name="nifProveidor" id=nifProveidor value="${factura.idProveidor}"> 
                                 <div class="col-xs-3">
@@ -143,7 +144,13 @@
                                 <div class="input-group date col-xs-3 datepicker">
 								  	<input type="text" class="form-control" name="dataPasadaComptabilitat" value="${factura.getDataEnviatComptabilitatString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>
-                            </div>                            
+                            </div>          
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label">Data descarregada</label>
+                                <div class="input-group date col-xs-3 datepicker">
+								  	<input type="text" class="form-control" name="dataDescarregadaComptabilitat" value="${factura.getDataDescarregadaConformadaString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+								</div>
+                            </div>            
                             <div class="form-group">
                             	<label class="col-xs-3 control-label">Notes</label>
                                 <div class="col-xs-3">
@@ -177,11 +184,13 @@
 				    			</div>
 				      		</div>	                           
 		    				<br>
-						    <div class="form-group">
-						        <div class="col-xs-offset-3 col-xs-9">
-						            <input type="submit" class="btn btn-primary" value="Modificar">
-						        </div>
-						    </div>    				
+		    				<c:if test="${errorString==null}">
+							    <div class="form-group">
+							        <div class="col-xs-offset-3 col-xs-9">
+							            <input type="submit" class="btn btn-primary" value="Modificar">
+							        </div>
+							    </div>    	
+						    </c:if>			
 		    			</form>
                     </div>
                     <div class="col-md-3 infoExpedient">                    	

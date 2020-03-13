@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
    pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %> 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="m"  %>
 <c:set var="language" value="${not empty param.language ? param.language : not empty language ? language : pageContext.request.locale}" scope="session" />
 <m:setLocale value="${language}" />
@@ -18,57 +19,65 @@
 	</div>
 	<div class="col-md-4">
 		<p>
-			<label>Tècnic:</label> ${informePrevi.usuari.getNomComplet()}
-		</p>
-	</div>
-	<div class="col-md-4">
-		<p>
 			<label>Data:</label> ${informePrevi.getDataCreacioString()}
 		</p>
 	</div>
 </div>
-
-<c:set var="informePrevi" value="${informePrevi}" scope="request"/>
-<c:set var="propostaActuacio" value="${informePrevi.llistaPropostes[0]}" scope="request"/> 	
-<jsp:include page="_resumProposta.jsp"></jsp:include>						
-
-<c:if test="${informePrevi.adjunts.size() > 0}">										
-	<p>
-		<label>Arxius adjunts:</label>
-	</p>	
+<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra == 'conveni'}">
 	<div class="row col-md-12">
-		<c:forEach items="${informePrevi.adjunts}" var="arxiu" >
-			<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">${arxiu.getDataString()} - ${arxiu.nom}</a>
-			<br>
-		</c:forEach>					            		
+		<c:if test="${informePrevi.contracteSignat.ruta != null}">
+             <p>
+             	<div class="document">
+               		<label>Contracte signat:</label>											                  	
+	           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.contracteSignat.getEncodedRuta()}">
+						${informePrevi.contracteSignat.nom}
+					</a>	
+					<c:if test="${informePrevi.contracteSignat.signat}">
+						<span data-ruta="${informePrevi.contracteSignat.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
+					</c:if>							
+					<br>
+					<div class="infoSign hidden">								
+					</div>
+				</div>
+			</p>	
+		</c:if>					            		
+	</div>	
+	<div class="row">
+		<div class="col-md-4">
+			<p>
+				<label>Data firma:</label> ${informePrevi.expcontratacio.getDataFirmaString()}
+			</p>
+		</div>
 	</div>
 </c:if>
+${informePrevi.expcontratacio.contracte}
+<c:set var="informePrevi" value="${informePrevi}" scope="request"/>
+<c:set var="propostaActuacio" value="${informePrevi.llistaPropostes[0]}" scope="request"/> 	
+<c:set var="expedient" value="${informePrevi.expcontratacio}" scope="request"/>
+<jsp:include page="_resumProposta.jsp"></jsp:include>	
 <c:if test="${informePrevi.informesPrevis.size() > 0}">										
 	<p>
 		<label>Informe tècnic:</label>
 	</p>	
 	<div class="row col-md-12">
 		<c:forEach items="${informePrevi.informesPrevis}" var="arxiu" >
-			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+			<c:set var="arxiu" value="${arxiu}" scope="request"/>		
 			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 		</c:forEach>
 		<br>					            		
 	</div>
 </c:if>								
-<c:if test="${informePrevi.informeSupervisio.ruta != null}">
+<c:if test="${informePrevi.informeSupervisio.size() > 0}">
 	<p>
-		<div class="document">
-			<label>Informe supervisió:</label>										                  	
-          		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.informeSupervisio.getEncodedRuta()}">
-				${informePrevi.informeSupervisio.nom}
-			</a>	
-			<c:if test="${informePrevi.informeSupervisio.signat}">
-					<span data-ruta="${informePrevi.informeSupervisio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
-			</c:if><br>
-			<div class="infoSign hidden">				
-			</div>	
-		</div>																	
+		<label>Informe supervisió:</label>
 	</p>	
+	<div class="row col-md-12">
+		<c:forEach items="${informePrevi.informeSupervisio}" var="arxiu" >
+			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+		</c:forEach>
+		<br>					            		
+	</div>	
 </c:if>	
 <c:if test="${informePrevi.notes != null && informePrevi.notes != ''}">	
 	<p>			                     				
@@ -91,10 +100,11 @@
 		</div>																				
 	</p>	
 </c:if>	
+<p>
+	<label>Comentari Cap:</label> ${informePrevi.comentariCap}
+</p>
 <c:if test="${informePrevi.vistiplauPropostaActuacio.ruta != null || informePrevi.usuariCapValidacio != null}">		
-	<p>
-		<label>Comentari Cap:</label> ${informePrevi.comentariCap}
-	</p>
+	
 	<p>
 		<label>Vistiplau:</label> ${informePrevi.usuariCapValidacio.getNomComplet()} - ${informePrevi.getDataCapValidacioString()}
 	</p>															
@@ -115,6 +125,36 @@
 		</p>
 	</c:if>	
 </c:if>
+<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra == 'conveni'}">
+	<div class="row">
+		<div class="col-md-4">
+		    <label class="left margin_right10">Tramitació IBISEC</label> 
+		   	<div class="checkbox inline">
+		    	<label><input name="bei" type="checkbox" ${fn:contains(informePrevi.organismeDependencia, 'IBISEC#') ? 'checked' : ''} disabled></label>
+		   	</div> 
+	   	</div>
+	   	<div class="col-md-4">
+		    <label class="left margin_right10">Tramitació Conselleria</label> 
+		 	<div class="checkbox inline">
+		     	<label><input name="feder" type="checkbox" ${fn:contains(informePrevi.organismeDependencia, 'Conselleria#') ? 'checked' : ''} disabled></label>
+		  	</div>
+	  	</div>
+	  	<div class="col-md-4">
+		    <label class="left margin_right10">Tramitació Altres</label> 
+		 	<div class="checkbox inline">
+		     	<label><input name="feder" type="checkbox" ${fn:contains(informePrevi.organismeDependencia, 'Altres#') ? 'checked' : ''} disabled></label>
+		  	</div>
+	  	</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<label class="left margin_right10">Cessió de crèdit</label> 
+		   	<div class="checkbox inline">
+		    	<label><input name="bei" type="checkbox" ${informePrevi.cessioCredit ? 'checked' : ''} disabled></label>
+		   	</div>
+		</div>
+	</div>
+</c:if>
 <c:if test="${informePrevi.vistiplauPropostaActuacio.ruta != null || partida != ''}">
 	<div class="row">
 		<div class="col-md-4">
@@ -125,21 +165,23 @@
 						${informePrevi.partidaRebutjadaMotiu}
 					</c:when>
 					<c:otherwise>
-						<a target="_black" href="partidaDetalls?codi=${informePrevi.assignacioCredit.partida.codi}">${informePrevi.assignacioCredit.partida.codi} (${informePrevi.assignacioCredit.partida.nom})</a>
-					</c:otherwise>
+						<c:forEach items="${informePrevi.assignacioCredit}" var="assignacioCredit" >
+							<a target="_black" href="partidaDetalls?codi=${assignacioCredit.partida.codi}">${assignacioCredit.partida.codi} (${assignacioCredit.partida.nom})</a><br/>
+						</c:forEach>
+						</c:otherwise>
 				</c:choose> 
 			</p>
 		</div>
 		<div class="col-md-4">
 		    <label class="left margin_right10">Afectat BEI</label> 
 		   	<div class="checkbox inline">
-		    	<label><input name="bei" type="checkbox" ${informePrevi.assignacioCredit.bei ? 'checked' : ''} disabled></label>
+		    	<label><input name="bei" type="checkbox" ${informePrevi.assignacioCredit[0].bei ? 'checked' : ''} disabled></label>
 		   	</div> 
 	   	</div>
 	   	<div class="col-md-4">
 		    <label class="left margin_right10">Afectat FEDER</label> 
 		 	<div class="checkbox inline">
-		     	<label><input name="feder" type="checkbox" ${informePrevi.assignacioCredit.feder ? 'checked' : ''} disabled></label>
+		     	<label><input name="feder" type="checkbox" ${informePrevi.assignacioCredit[0].feder ? 'checked' : ''} disabled></label>
 		  	</div>
 	  	</div>
 	</div>
@@ -175,21 +217,17 @@
 		</div>
 	</p>
 </c:if>	
-<c:if test="${informePrevi.autoritzacioConsellDeGovern.ruta != null}">
+<c:if test="${informePrevi.autoritzacioConsellDeGovern.size() > 0}">
 	<p>
-		<div class="document">
-			<label>Autorització Consell De Govern:</label>										                  	
-	         		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.autoritzacioConsellDeGovern.getEncodedRuta()}">
-				${informePrevi.autoritzacioConsellDeGovern.nom}
-			</a>	
-			<c:if test="${informePrevi.autoritzacioConsellDeGovern.signat}">
-					<span data-ruta="${informePrevi.autoritzacioConsellDeGovern.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
-			</c:if>
-			<br>
-			<div class="infoSign hidden">				
-			</div>	
-		</div>
-	</p>
+		<label>Autorització Consell De Govern:</label>
+	</p>	
+	<div class="row col-md-12">
+		<c:forEach items="${informePrevi.autoritzacioConsellDeGovern}" var="arxiu" >
+			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+		</c:forEach>
+		<br>					            		
+	</div>
 </c:if>	
 <c:if test="${informePrevi.autoritzacioConseller.ruta != null}">
 	<p>
@@ -208,7 +246,7 @@
 	</p>
 </c:if>	
 <c:choose>
-	<c:when test="${expedient.contracte == 'major'}">
+	<c:when test="${informePrevi.expcontratacio.contracte == 'major'}">
 		<c:if test="${informePrevi.documentBOIB.ruta != null}">
 			<p>
 				<div class="document">
@@ -245,11 +283,36 @@
 		</c:if>
 	</c:otherwise>
 </c:choose>
-<div class="col-md-12 margin_top30 margin_bottom30">
-	<div class="form-group">
-		<a target="_blanck" href="crearTascaActuacioDerivada?idInforme=${informePrevi.idInf}" class="btn btn-success">Sol. actuació derivada</a>							            
+<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra == 'conveni'}">	
+	<div class="row">
+		<div class="col-md-4">
+			<p>
+				<label>Publicació registre convenis:</label> ${informePrevi.getDataPublicacioRegitreConvenisString()}
+			</p>
+		</div>
 	</div>
-</div>	
+	<div class="row">
+		<div class="col-md-4">
+			<p>
+				<label>Publicació BOIB:</label> ${informePrevi.getPublicacioBOIBString()}
+			</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<p>
+				<label>Publicació Perfil del contractant:</label> ${informePrevi.getDataPublicacioPerfilContractantString()}
+			</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<p>
+				<label>Informació DG Tresoreria:</label> ${informePrevi.getDataPublicacioDGTresoreriaString()}
+			</p>
+		</div>
+	</div>
+</c:if>
 <p>
 	<label>Altre documentació prèvia:</label>
 </p>	
@@ -271,7 +334,7 @@
 			<input type="hidden" name="idIncidencia" value="${informePrevi.actuacio.idIncidencia}">
 			<input type="hidden" name="idInforme" value="${informePrevi.idInf}">			    
 			<div class="col-xs-2"> 
-				<input type="submit" class="btn btn-primary" value="Pujar" />
+				<input type="submit" class="btn btn-primary loadingButton" value="Pujar" />
 			</div>    						
 		</div>         				
 	</form>							

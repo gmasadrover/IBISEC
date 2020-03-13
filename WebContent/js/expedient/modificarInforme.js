@@ -69,7 +69,13 @@ $(document).ready(function() {
 		var tipus = $(this).val();
 		if (tipus != 'obr') {
 			$('.visibleObres').addClass('hidden');
+			if (tipus == 'conveni') {
+				$('.visibleConveni').removeClass('hidden');
+			} else {
+				$('.visibleConveni').addClass('hidden');
+			}
 		}else{
+			$('.visibleConveni').addClass('hidden');			
 			$('.visibleObres').removeClass('hidden');
 		}
 	});
@@ -103,8 +109,13 @@ $(document).ready(function() {
 	if ($('#tipusContractePrev').val() != '') {
 		if ($('#tipusContractePrev').val() != 'obr') {
 			$('.visibleObres').addClass('hidden');
+			if ($('#tipusContractePrev').val() == 'conveni') {
+				$('.visibleConveni').removeClass('hidden');
+			} else {
+				$('.visibleConveni').addClass('hidden');
+			}
 		}
-		else {
+		else {		
 			$('#reqLlicencia option[value="' + $('#reqLlicenciaPrev').val() + '"]').attr('selected', 'selected');
 			if ($('#reqLlicenciaPrev').val() != 'si') {
 				$('.visibleTipusLlicencia').addClass('hidden');

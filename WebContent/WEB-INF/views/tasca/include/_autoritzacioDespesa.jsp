@@ -13,6 +13,7 @@
 		        <tr>
 		            <th>Oferta (Sense IVA)</th>
 		            <th>Oferta</th>
+		            <th>Data</th>
 		            <th>Licitador</th>			                                        
 		        </tr>
 		    </thead>
@@ -20,7 +21,8 @@
 		    	<c:forEach items="${ofertes}" var="oferta" >
 					<tr ${oferta.seleccionada ? "class='success'" : ""}>	
 						<td>${oferta.getPbaseFormat()}</td>		
-						<td>${oferta.getPlicFormat()}</td>						          	
+						<td>${oferta.getPlicFormat()}</td>		
+						<td>${oferta.getDataCreacioString()}</td>					          	
 						<td><a href='empresa?cif=${oferta.cifEmpresa}'>${oferta.nomEmpresa} (${oferta.cifEmpresa})</a></td>
 		    		</tr>
 				</c:forEach>
@@ -49,28 +51,24 @@
 		</c:forEach>
 	</p>
 	<p>
-		<label>Import total adjudicat menor a l'empresa expedients iniciats després de 09/03/2018</label> ${totalAdjudicatEmpresa} € (SENSE IVA)
+		<label>Import total adjudicat menor a l'empresa expedients iniciats després de 01/01/2020</label> ${totalAdjudicatEmpresa} € (SENSE IVA)
 	</p>
 	<c:if test="${informePrevi.propostaTecnica.size() > 0}">
 		<div class="panel-body">										    		
     		<div class="col-md-12">
-    			<c:if test="${informePrevi.autoritzacioPropostaDespesa.ruta != null}">
+    			<c:if test="${informePrevi.autoritzacioPropostaDespesa != null}">
                		<div class="document">
 	               		<label>Autorització proposta despesa:</label>											                  	
-		           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.autoritzacioPropostaDespesa.getEncodedRuta()}">
-							${informePrevi.autoritzacioPropostaDespesa.nom}
-						</a>	
-						<c:if test="${informePrevi.autoritzacioPropostaDespesa.signat}">
-								<span data-ruta="${informePrevi.autoritzacioPropostaDespesa.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
-						</c:if><br>
-						<div class="infoSign hidden">							
-						</div>
+						<c:forEach items="${informePrevi.autoritzacioPropostaDespesa}" var="arxiu" >	
+							<c:set var="arxiu" value="${arxiu}" scope="request"/>											
+				        	<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+						</c:forEach>
 					</div>	
 				</c:if>            	
     		</div>
     	</div>
     </c:if>	
-    <c:if test="${informePrevi.autoritzacioPropostaDespesa.ruta == null && actuacio.activa}">		
+    <c:if test="${informePrevi.autoritzacioPropostaDespesa.size() == 0}">		
         <div class="row margin_bottom10">
 	   		<div class="col-md-12 panel">
 				<a target="_blanck" href="CrearDocument?tipus=autMen&idIncidencia=${incidencia.idIncidencia}&idActuacio=${actuacio.referencia}&idInforme=${informePrevi.idInf}" class="btn btn-success right" role="button">Generar autorització despesa actuació</a>
@@ -97,26 +95,18 @@
     		</div>															     											    		
  		</form>	
 	</c:if>	
-	<c:if test="${informePrevi.autoritzacioPropostaDespesa.ruta != null && actuacio.activa}">		
+	<c:if test="${informePrevi.autoritzacioPropostaDespesa.size() > 0 && actuacio.activa}">		
 		 <form class="form-horizontal" target="_blank" method="POST" enctype="multipart/form-data" action="DoCanvisActuacio" onsubmit="setTimeout(function () { window.location.reload(); }, 10)"> 	
 	     	<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
 			<input type="hidden" name="idIncidencia" value="${informePrevi.idIncidencia}">															
 			<input type="hidden" name="idInforme" value="${informePrevi.idInf}">
 			<input type="hidden" name="idTasca" value="${tasca.idTasca}">	
 			<div class="document">
-           		<label>Resolució d'adjudicació:</label>											                  	
-         			<a target="_blanck" href="downloadFichero?ruta=${informePrevi.autoritzacioPropostaDespesa.getEncodedRuta()}">
-					${informePrevi.autoritzacioPropostaDespesa.nom}
-				</a>	
-				<c:if test="${informePrevi.autoritzacioPropostaDespesa.signat}">
-					<span data-ruta="${informePrevi.autoritzacioPropostaDespesa.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
-				</c:if>
-				<c:if test="${informePrevi.autoritzacioPropostaDespesa.ruta != null}">
-					<span data-ruta="${informePrevi.autoritzacioPropostaDespesa.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
-				</c:if>
-				<br>
-				<div class="infoSign hidden">
-				</div>	
+           		<label>Resolució d'adjudicació:</label>			
+          		<c:forEach items="${informePrevi.autoritzacioPropostaDespesa}" var="arxiu" >	
+					<c:set var="arxiu" value="${arxiu}" scope="request"/>											
+		        	<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+				</c:forEach>	
 			</div>																
 			<div class="col-md-8">
 				<div class="row margin_top10">

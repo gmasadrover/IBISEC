@@ -56,9 +56,15 @@ $(document).ready(function() {
 	$('#tipusContracte').on('change', function(){
 		var tipus = $(this).val();
 		if (tipus != 'obr') {
-			$('.visibleObres').addClass('hidden');
+			$('.visibleObres').addClass('hidden');						
+			if (tipus == 'conveni') {
+				$('.visibleConveni').removeClass('hidden');
+			} else {
+				$('.visibleConveni').addClass('hidden');
+			}
 		}else{
 			$('.visibleObres').removeClass('hidden');
+			$('.visibleConveni').addClass('hidden');			
 		}
 	});
 	$('#reqLlicencia').on('change', function(){

@@ -26,7 +26,7 @@ public class EmpresaCore {
 	static final String SQL_CAMPS = "cif, nom, direccio, cp, ciutat, provincia, telefon, fax, email, usumod, datamod,"
 								+ " dataexpacreditacio1, dataexpacreditacio2, dataexpacreditacio3,"
 								+ " classificacio, dataconstitucio, informacioadicional, exercicieconomic, dataregistremercantil, ratioap,"
-								+ " datavigenciaclassificaciorolece, datavigenciaclassificaciojccaib, datavigenciaclassificaciojca, pime, activa, cifsuccesora, motiuextincio, prohibiciocontractar";
+								+ " datavigenciaclassificaciorolece, datavigenciaclassificaciojccaib, datavigenciaclassificaciojca, pime, activa, cifsuccesora, motiuextincio, prohibiciocontractar, prohibitcontractarfins, tipus";
 	
 	
 	private static Empresa initEmpresa(Connection conn, ResultSet rs) throws SQLException, NamingException{		
@@ -40,6 +40,7 @@ public class EmpresaCore {
 		empresa.setTelefon(rs.getString("telefon"));
 		empresa.setFax(rs.getString("fax"));
 		empresa.setEmail(rs.getString("email"));
+		empresa.setTipus(rs.getString("tipus"));
 		empresa.setDataConstitucio(rs.getTimestamp("dataconstitucio"));	
 		empresa.setDocumentsEscrituraList(getEscritures(empresa.getCif()));
 		empresa.setDocumentREA(getDocumentREA(empresa.getCif()));
@@ -65,9 +66,10 @@ public class EmpresaCore {
 		empresa.setPime(rs.getBoolean("pime"));
 		empresa.setActiva(rs.getBoolean("activa"));
 		empresa.setProhibicioContractar(rs.getBoolean("prohibiciocontractar"));
-		if (rs.getBoolean("prohibiciocontractar")) {
-			empresa.setDocumentsProhibicioContractarList(getDocumentsProhibicioContractar(rs.getString("cif")));
-		}
+		
+		empresa.setDocumentsProhibicioContractarList(getDocumentsProhibicioContractar(rs.getString("cif")));
+		empresa.setProhibitContractarFins(rs.getTimestamp("prohibitcontractarfins"));
+		
 		if (!rs.getBoolean("activa")) {
 			empresa.setSuccesora(findSuccesora(conn, rs.getString("cifsuccesora")));
 			empresa.setMotiuExtincio(rs.getString("motiuExtincio"));
@@ -130,9 +132,19 @@ public class EmpresaCore {
 		pstm.executeUpdate();
 	}
 	
+	public static void prohibicioContractarEmpresa(Connection conn, String cif, Date dataLimit) throws SQLException {
+		String sql = "UPDATE public.tbl_empreses"
+				+ " SET activa = false, prohibiciocontractar = true, prohibitcontractarfins = ?"
+				+ " WHERE cif= ?";		 
+		PreparedStatement pstm = conn.prepareStatement(sql); 
+		pstm.setDate(1, new java.sql.Date(dataLimit.getTime()));
+		pstm.setString(2, cif);
+		pstm.executeUpdate();
+	}
+	
 	public static void insertEmpresa(Connection conn, Empresa empresa, List<Empresa.Administrador> administradorsList, int idUsuari) throws SQLException {
-		String sql = "INSERT INTO public.tbl_empreses(cif, nom, direccio, cp, ciutat, provincia, telefon, fax, email, usumod, datamod, activa)"
-					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, localtimestamp, true)";		 
+		String sql = "INSERT INTO public.tbl_empreses(cif, nom, direccio, cp, ciutat, provincia, telefon, fax, email, usumod, datamod, activa, tipus)"
+					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, localtimestamp, true, ?)";		 
 		PreparedStatement pstm = conn.prepareStatement(sql);	 
 		pstm.setString(1, empresa.getCif());
 		pstm.setString(2, empresa.getName());
@@ -143,7 +155,8 @@ public class EmpresaCore {
 		pstm.setString(7, empresa.getTelefon());
 		pstm.setString(8, empresa.getFax());
 		pstm.setString(9, empresa.getEmail());
-		pstm.setInt(10, idUsuari);		
+		pstm.setInt(10, idUsuari);	
+		pstm.setString(11, empresa.getTipus());
 		pstm.executeUpdate();		
 	}
 	
@@ -152,7 +165,7 @@ public class EmpresaCore {
 				 	+ " SET cif=?, nom=?, direccio=?, cp=?, ciutat=?, provincia=?, telefon=?, fax=?, email=?, usumod=?, datamod=localtimestamp," 
 				 		+ " dataexpacreditacio1=?, dataexpacreditacio2=?, dataexpacreditacio3=?," 
 				 		+ " classificacio=?, dataconstitucio=?, informacioadicional=?, exercicieconomic=?,  dataregistremercantil=?,  ratioap=?,"
-				 		+ " datavigenciaclassificaciorolece=?, datavigenciaclassificaciojccaib=?, datavigenciaclassificaciojca=?, pime=?, prohibiciocontractar=?"
+				 		+ " datavigenciaclassificaciorolece=?, datavigenciaclassificaciojccaib=?, datavigenciaclassificaciojca=?, pime=?, prohibiciocontractar=?, prohibitcontractarfins=?, tipus=?"
 				 	+ " WHERE cif = ?";	 
 		 PreparedStatement pstm = conn.prepareStatement(sql);	
 		 pstm.setString(1, empresa.getCif());
@@ -217,7 +230,13 @@ public class EmpresaCore {
 		 }	
 		 pstm.setBoolean(23, empresa.isPime());
 		 pstm.setBoolean(24, empresa.isProhibicioContractar());
-		 pstm.setString(25, cifActual);
+		 if (empresa.getProhibitContractarFins() != null) {
+			 pstm.setDate(25, new java.sql.Date(empresa.getProhibitContractarFins().getTime()));
+		 } else {
+			 pstm.setDate(25, null);
+		 }	
+		 pstm.setString(26, empresa.getTipus());
+		 pstm.setString(27, cifActual);
 		 pstm.executeUpdate();		
 	 }
 	 
@@ -265,19 +284,20 @@ public class EmpresaCore {
 			 empresa.setEmail(rs.getString("email"));
 			 empresa.setPime(rs.getBoolean("pime"));
 			 empresa.setActiva(rs.getBoolean("activa"));
+			 empresa.setTipus(rs.getString("tipus"));
 			 list.add(empresa);
 		 }
 	     return list;
      }	
 	 
 	 public static List<Empresa> getDespesaEmpreses(Connection conn, Date dataIni, Date dataFi) throws SQLException {
-		 String sql = "SELECT e.cif AS cif, e.nom AS nom, e.direccio AS direccio, e.ciutat AS ciutat, e.provincia AS provincia, e.email AS email, e.activa AS activa, SUM(o.pbase) AS pbase, SUM(o.plic) AS plic"
+		 String sql = "SELECT e.cif AS cif, e.nom AS nom, e.direccio AS direccio, e.ciutat AS ciutat, e.provincia AS provincia, e.email AS email, e.activa AS activa, SUM(o.pbase) AS pbase, SUM(o.plic) AS plic, e.tipus AS tipus"
 				 	+ " FROM public.tbl_empresaoferta o"
 				 	+ " 	LEFT JOIN public.tbl_empreses e ON o.cifempresa = e.cif"
 				 	+ " 	LEFT JOIN public.tbl_informeactuacio i ON o.idinforme = i.idinf"
 				 	+ "		LEFT JOIN public.tbl_propostesinforme p ON p.idinf = i.idinf"
 				 	+ " 	LEFT JOIN public.tbl_expedient x ON x.expcontratacio = i.expcontratacio"
-				 	+ " WHERE x.anulat = false AND o.seleccionada = true AND p.seleccionada = true AND i.dataaprovacio >= '09/03/2018' AND o.datacre >= ? AND o.datacre <= ? AND ((o.pbase < 15000 AND p.tipusobra != 'obr') OR (o.pbase < 40000 AND p.tipusobra = 'obr'))"  
+				 	+ " WHERE x.anulat = false AND o.seleccionada = true AND p.seleccionada = true AND i.dataaprovacio >= '01/01/2020' AND o.datacre >= ? AND o.datacre <= ? AND ((o.pbase < 15000 AND p.tipusobra != 'obr') OR (o.pbase < 40000 AND p.tipusobra = 'obr'))"  
 					+ " GROUP BY e.cif"
 				 	+ " ORDER BY e.cif";
 		 PreparedStatement pstm = conn.prepareStatement(sql);	 
@@ -285,7 +305,6 @@ public class EmpresaCore {
 		 pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
 		 ResultSet rs = pstm.executeQuery();
 		 List<Empresa> list = new ArrayList<Empresa>();
-		 System.out.println(pstm.toString());
 		 while (rs.next()) {
 			 Empresa empresa = new Empresa();
 			 empresa.setCif(rs.getString("cif"));
@@ -294,27 +313,27 @@ public class EmpresaCore {
 			 empresa.setCiutat(rs.getString("ciutat"));
 			 empresa.setProvincia(rs.getString("provincia"));
 			 empresa.setEmail(rs.getString("email"));
+			 empresa.setTipus(rs.getString("tipus"));
 			 empresa.setActiva(rs.getBoolean("activa"));
 			 empresa.setTotalPbasePeriode(rs.getDouble("pbase"));
 			 empresa.setTotalPLicPeriode(rs.getDouble("plic"));
 			 empresa.setTotalPbasePeriodeAdjudicat(getTotalBaseAdjudicat(conn, rs.getString("cif"), dataIni, dataFi));
 			 list.add(empresa);
 		 }
-		 sql = "SELECT e.cif AS cif, SUM(m.pbase) AS pbase, e.nom AS nom, e.direccio AS direccio, e.ciutat AS ciutat, e.provincia AS provincia, e.email AS email, e.activa AS activa, SUM(m.plic) AS plic"
+		 sql = "SELECT e.cif AS cif, SUM(m.pbase) AS pbase, e.nom AS nom, e.direccio AS direccio, e.ciutat AS ciutat, e.provincia AS provincia, e.email AS email, e.activa AS activa, SUM(m.plic) AS plic, e.tipus AS tipus"
 				 + " FROM public.tbl_modificacioinforme m"
 				 + " 	LEFT JOIN public.tbl_empreses e ON m.cifempresa = e.cif"
 				 + " 	LEFT JOIN public.tbl_informeactuacio i ON m.idinforme = i.idinf"
 				 + " 	LEFT JOIN public.tbl_empresaoferta o ON i.idinf = o.idinforme" 
 				 + " 	LEFT JOIN public.tbl_propostesinforme p ON p.idinf = i.idinf"
 				 + " 	LEFT JOIN public.tbl_expedient x ON x.expcontratacio = i.expcontratacio"
-				 + " WHERE x.anulat = false AND o.seleccionada = true AND p.seleccionada = true AND i.dataaprovacio >= '09/03/2018' AND o.datacre >= ? AND o.datacre <= ? AND ((o.pbase < 15000 AND p.tipusobra != 'obr') OR (o.pbase < 40000 AND p.tipusobra = 'obr'))"
+				 + " WHERE x.anulat = false AND o.seleccionada = true AND p.seleccionada = true AND i.dataaprovacio >= '01/01/2020' AND o.datacre >= ? AND o.datacre <= ? AND ((o.pbase < 15000 AND p.tipusobra != 'obr') OR (o.pbase < 40000 AND p.tipusobra = 'obr'))"
 				 + " GROUP BY e.cif"
 				 + " ORDER BY e.cif";		 		
 		 pstm = conn.prepareStatement(sql);	 
 		 pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
 		 pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
 		 rs = pstm.executeQuery();
-		 System.out.println(pstm.toString());
 		 while (rs.next()) {
 			 Empresa empresa = new Empresa();
 			 empresa.setCif(rs.getString("cif"));
@@ -323,6 +342,7 @@ public class EmpresaCore {
 			 empresa.setCiutat(rs.getString("ciutat"));
 			 empresa.setProvincia(rs.getString("provincia"));
 			 empresa.setEmail(rs.getString("email"));
+			 empresa.setTipus(rs.getString("tipus"));
 			 empresa.setActiva(rs.getBoolean("activa"));
 			 empresa.setTotalPbasePeriode(rs.getDouble("pbase"));
 			 empresa.setTotalPLicPeriode(rs.getDouble("plic"));
@@ -339,7 +359,7 @@ public class EmpresaCore {
 				 	+ " 	LEFT JOIN public.tbl_informeactuacio i ON o.idinforme = i.idinf"
 				 	+ "		LEFT JOIN public.tbl_propostesinforme p ON p.idinf = i.idinf"
 				 	+ " 	LEFT JOIN public.tbl_expedient x ON x.expcontratacio = i.expcontratacio"
-				 	+ " WHERE e.cif = ? AND x.anulat = false AND o.seleccionada = true AND p.seleccionada = true AND i.dataaprovacio >= '09/03/2018' AND o.datacre >= ? AND o.datacre <= ? AND ((o.pbase < 15000 AND p.tipusobra != 'obr') OR (o.pbase < 40000 AND p.tipusobra = 'obr'))"  
+				 	+ " WHERE e.cif = ? AND x.anulat = false AND o.seleccionada = true AND p.seleccionada = true AND i.dataaprovacio >= '01/01/2020' AND o.datacre >= ? AND o.datacre <= ? AND ((o.pbase < 15000 AND p.tipusobra != 'obr') OR (o.pbase < 40000 AND p.tipusobra = 'obr'))"  
 					+ " GROUP BY e.cif"
 				 	+ " ORDER BY e.cif";
 		 PreparedStatement pstm = conn.prepareStatement(sql);	
@@ -356,7 +376,7 @@ public class EmpresaCore {
 				 + " 	LEFT JOIN public.tbl_empresaoferta o ON i.idinf = o.idinforme" 
 				 + " 	LEFT JOIN public.tbl_propostesinforme p ON p.idinf = i.idinf"
 				 + " 	LEFT JOIN public.tbl_expedient x ON x.expcontratacio = i.expcontratacio"
-				 + " WHERE  e.cif = ? AND x.anulat = false AND o.seleccionada = true AND p.seleccionada = true AND i.dataaprovacio >= '09/03/2018' AND o.datacre >= ? AND o.datacre <= ? AND ((o.pbase < 15000 AND p.tipusobra != 'obr') OR (o.pbase < 40000 AND p.tipusobra = 'obr'))"
+				 + " WHERE  e.cif = ? AND x.anulat = false AND o.seleccionada = true AND p.seleccionada = true AND i.dataaprovacio >= '01/01/2020' AND o.datacre >= ? AND o.datacre <= ? AND ((o.pbase < 15000 AND p.tipusobra != 'obr') OR (o.pbase < 40000 AND p.tipusobra = 'obr'))"
 				 + " GROUP BY e.cif"
 				 + " ORDER BY e.cif";		 		
 		 pstm = conn.prepareStatement(sql);	 
@@ -919,6 +939,13 @@ public class EmpresaCore {
 						}
 						fileName = ruta + "/documents/Empreses/" + cif + "/Successio/";
 					}
+					if (("documentProhibicioContractar").equals(fitxer.getNomCamp())) {
+						tmpFile = new File(ruta + "/documents/Empreses/" + cif + "/Prohibicio");
+						if (!tmpFile.exists()) {
+							tmpFile.mkdir();
+						}
+						fileName = ruta + "/documents/Empreses/" + cif + "/Prohibicio/";
+					}
 		            if (fitxer.getFitxer().getName() != "") {	
 		            	File archivo_server = new File(fileName + fitxer.getFitxer().getName());
 		               	try {
@@ -932,7 +959,7 @@ public class EmpresaCore {
 			}
 		}
 	 
-	 private static double getTotalBaseAdjudicat(Connection conn, String cif, Date dataIni, Date dataFi) throws SQLException {
+	 public static double getTotalBaseAdjudicat(Connection conn, String cif, Date dataIni, Date dataFi) throws SQLException {
 		 double total = 0;
 		 String sql = "SELECT SUM(o.pbase) AS total"
 				 	+ " FROM public.tbl_empresaoferta o"
@@ -940,13 +967,12 @@ public class EmpresaCore {
 				 	+ " 	LEFT JOIN public.tbl_informeactuacio i ON o.idinforme = i.idinf"
 				 	+ "		LEFT JOIN public.tbl_propostesinforme p ON p.idinf = i.idinf"
 				 	+ " 	LEFT JOIN public.tbl_expedient x ON x.expcontratacio = i.expcontratacio"
-				 	+ " WHERE x.anulat = false  AND o.seleccionada = true AND p.seleccionada = true AND (x.dataadjudicacio IS NOT null OR x.dataformalitzaciocontracte IS NOT null) AND i.dataaprovacio >= '09/03/2018' AND o.datacre >= ? AND o.datacre <= ? AND ((o.pbase < 15000 AND p.tipusobra != 'obr') OR (o.pbase < 40000 AND p.tipusobra = 'obr')) AND cif = ?";
+				 	+ " WHERE x.anulat = false  AND o.seleccionada = true AND p.seleccionada = true AND (x.dataadjudicacio IS NOT null OR x.dataformalitzaciocontracte IS NOT null) AND i.dataaprovacio >= '01/01/2020' AND o.datacre >= ? AND o.datacre <= ? AND ((o.pbase < 15000 AND p.tipusobra != 'obr') OR (o.pbase < 40000 AND p.tipusobra = 'obr')) AND cif = ?";
 		 PreparedStatement pstm = conn.prepareStatement(sql);	
 		 pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
 		 pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
 		 pstm.setString(3, cif);
 		 ResultSet rs = pstm.executeQuery();
-		 System.out.println(pstm.toString());
 		 if (rs.next()) {
 			 total = rs.getDouble("total");
 		 }
@@ -955,13 +981,12 @@ public class EmpresaCore {
 				 + "    LEFT JOIN public.tbl_informeactuacio i ON m.idinforme = i.idinf"	
 				 + "	LEFT JOIN public.tbl_propostesinforme p ON p.idinf = i.idinf"
 				 + " 	LEFT JOIN public.tbl_empresaoferta o ON  i.idinf = o.idinforme"
-				 + " WHERE i.dataaprovacio >= '09/03/2018' AND o.seleccionada = true AND p.seleccionada = true AND m.datacre >= ? AND m.datacre <= ? AND ((o.pbase < 15000 AND p.tipusobra != 'obr') OR (o.pbase < 40000 AND p.tipusobra = 'obr')) AND m.cifempresa = ?"; 
+				 + " WHERE i.dataaprovacio >= '01/01/2020' AND o.seleccionada = true AND p.seleccionada = true AND m.datacre >= ? AND m.datacre <= ? AND ((o.pbase < 15000 AND p.tipusobra != 'obr') OR (o.pbase < 40000 AND p.tipusobra = 'obr')) AND m.cifempresa = ?"; 
 		 pstm = conn.prepareStatement(sql);	
 		 pstm.setDate(1, new java.sql.Date(dataIni.getTime()));
 		 pstm.setDate(2, new java.sql.Date(dataFi.getTime()));
 		 pstm.setString(3, cif);
 		 rs = pstm.executeQuery();
-		 System.out.println(pstm.toString());
 		 if (rs.next()) {
 			 total += rs.getDouble("total");
 		 }		

@@ -53,6 +53,24 @@
                                 	<input class="hidden" name="idActuacio" value="${idActuacio}">
                                 </div>
                             </div>
+                            <c:if test="${NovaLLei}">
+	                            <div class="form-group">
+	                            	 <div class="row">
+	                            	 	<div class="col-md-3">
+					               		</div>
+					                	<div class="col-md-9">
+					               			<p style="color: red;">Recordau indicar si la certificació és ordinària o final.</p>
+					               		</div>
+					               	 </div>
+	                                <label class="col-xs-3 control-label">Tipus de certificació</label> 
+	                                <div class="col-xs-3">
+	                                	<select class="selectpicker" name="tipusCertificacio" id="tipusCertificacio">						                                					                                	
+						               		<option value="ordinaria">Ordinària</option>
+						               		<option value="final">Final</option>					                   		
+						                </select>	
+	                                </div>
+	                            </div>	
+                            </c:if> 
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">Proveidor</label>
                                 <input class="hidden" name="nifProveidor" id=nifProveidor value="${nifProveidor}"> 

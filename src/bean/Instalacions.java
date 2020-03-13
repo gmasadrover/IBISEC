@@ -23,6 +23,9 @@ public class Instalacions {
 	private Date dataRegistreEficienciaEnergetica;
 	private String expedientPlaAutoproteccio;
 	private Date dataCedulaHabitabilitat;
+	private String expedientInstalacioGas;
+	private String tipusInstalacioGas;
+	private Date dataInstalacioGas;
 	
 	public String getIdInf() {
 		return idInf;
@@ -161,5 +164,31 @@ public class Instalacions {
 	}
 	public void setCapTotalPetrolifers(String capTotalPetrolifers) {
 		this.capTotalPetrolifers = capTotalPetrolifers;
+	}
+	public String getExpedientInstalacioGas() {
+		return expedientInstalacioGas;
+	}
+	public void setExpedientInstalacioGas(String expedientInstalacioGas) {
+		this.expedientInstalacioGas = expedientInstalacioGas;
+	}
+	public String getTipusInstalacioGas() {
+		return tipusInstalacioGas;
+	}
+	public void setTipusInstalacioGas(String tipusInstalacioGas) {
+		this.tipusInstalacioGas = tipusInstalacioGas;
+	}
+	public Date getDataInstalacioGas() {
+		return dataInstalacioGas;
+	}
+	
+	public String getDataInstalacioGasString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+		String dataString = "";
+		if (this.dataInstalacioGas != null) dataString = df.format(this.dataInstalacioGas);
+		return dataString;
+	}
+	
+	public void setDataInstalacioGas(Date dataInstalacioGas) {
+		this.dataInstalacioGas = dataInstalacioGas;
 	}
 }

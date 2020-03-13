@@ -3,6 +3,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="m"  %>
 <c:set var="language" value="${not empty param.language ? param.language : not empty language ? language : pageContext.request.locale}" scope="session" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <m:setLocale value="${language}" />
 <m:setBundle basename="i18n.base"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -97,7 +99,7 @@
 	                </div>
 	                </c:forEach>
 	            </div> --%>
-	             <div class="row">					
+	  <%--            <div class="row">					
 						<div class="col-md-12">
 		                        <h2>Informes usuari</h2>
 		                        <div class="table-responsive">                        
@@ -156,7 +158,90 @@
 		                            </table>
 		                        </div>
 		                    </div>
-	        </div>	        
+	        </div> --%>	
+	       <div class="row">
+	      		<div class="col-md-12">
+	      			<h2>Estat actuacions</h2>
+	      			<div class="table-responsive">                        
+                         <table class="table table-striped table-bordered filerTable informes">
+                             <thead>
+                                 <tr>                                        
+                                     <th>Actuació</th>
+                                     <th>Illa</th>
+                                     <th>Municipi</th>
+                                     <th>Centre</th>
+                                     <th>Descripció</th>
+                                     <th>Pressupost</th>
+                                     <th>Tècnic</th>
+                                     <th>Tasca</th>
+                                     <th>Creació</th>
+                                     <th>Últim canvi</th>
+                                     <th>Data últim canvi</th>
+                                     <th>Estat</th>
+                                     <th>Usuari</th>
+                                 </tr>
+                             </thead>
+                             <tbody>
+                             	<c:forEach items="${tasques}" var="tasca" >
+				          	<tr>							          	
+				           		<td>${tasca.actuacio.referencia}</td>	
+				           		<td>${tasca.actuacio.centre.illa}</td>	
+				           		<td>${tasca.actuacio.centre.municipi}</td>	
+				           		<td>${tasca.actuacio.centre.nom}</td>	
+				           		<td>${tasca.actuacio.descripcio} - ${tasca.informe.getPropostaInformeSeleccionada().getObjecte()}</td>	
+				           		<td>${tasca.informe.getPropostaInformeSeleccionada().getPlicFormat()}</td>
+				           		<td>${tasca.informe.usuari.getNomComplet()}</td>
+				           		<td>${tasca.primerComentari}</td>	
+				           		<td>${tasca.getDataCreacioString()}</td>	
+				           		<td>${tasca.darrerComentari}</td>	
+				           		<td>${tasca.getDarreraModificacioString()}</td>	
+				           		<td>${tasca.tipus}</td>	
+				           		<td>${tasca.usuari.getNomComplet()}</td>							            	
+				          	</tr>
+				       	</c:forEach>
+                             </tbody>
+                         </table>
+                     </div>
+	      		</div>					
+						<%-- <div class="col-md-12">
+		                        <h2>Historial usuari</h2>
+		                        <div class="table-responsive">                        
+		                            <table class="table table-striped table-bordered filerTable informes">
+		                                <thead>
+		                                    <tr>                                        
+		                                        <th>Responsable</th>
+		                                        <th>Comentari</th>
+		                                        <th>Data</th>
+		                                        <th>Tipus</th>
+		                                        <th>Descripcio tasca</th> 
+		                                        <th>Descripcio actuacio</th>  
+		                                        <th>Centre</th>  
+		                                    </tr>
+		                                </thead>
+		                                <tbody>
+		                                	<c:forEach items="${controlHistoric}" var="historic" >
+									          	<tr>							          	
+									           		<td>${historic.usuari.getNomComplet()}</td>	
+													<td>${historic.comentari}</td>													
+									            	<td>${historic.getDataString()}</td>
+									            	<td>${historic.tipus}</td>
+									            	<td>${historic.tasca.descripcio}</td>
+									            	<td>${historic.actuacio.descripcio}</td>										            	
+									            	<td>${historic.actuacio.centre.getNomComplet()}</td>									            	
+									          	</tr>
+									       	</c:forEach>
+		                                </tbody>
+		                            </table>
+		                        </div>
+		                    </div> --%>
+	        </div> 
+	       <%--  <div>
+	        		
+				<c:forEach items="${dictionary}" var="informe" >	
+				
+				 ${informe}<br>
+				</c:forEach>
+	        </div>     --%>	           
         </div>
         <!-- /#page-wrapper -->
 

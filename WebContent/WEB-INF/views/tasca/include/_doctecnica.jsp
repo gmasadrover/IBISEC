@@ -6,7 +6,7 @@
 <m:setLocale value="${language}" />
 <m:setBundle basename="i18n.base"/>
 <div class="panel-body">
- 	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddPA"> 	
+ 	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoTasca"> 	
 		<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
 		<input type="hidden" name="idIncidencia" value="${actuacio.idIncidencia}">	
 		<input type="hidden" id="infPrev" name=infPrev value="${propostesInformeList.size()}">														
@@ -112,8 +112,19 @@
 					<div class="form-group">
 						<div class="col-md-12">		
 							<div class="row">	 
+								<label>Comentari Cap:</label>
 								<div class="col-md-12">						                    						
-				          			<textarea class="form-control" name="comentariTecnic" placeholder="comentari tècnic" rows="3">${propostaActuacio.comentari}</textarea> 
+				          			<textarea class="form-control" name="comentariCap" placeholder="comentari cap" rows="3">${informePrevi.comentariCap}</textarea> 
+				            	</div>
+				        	</div>	        	
+						</div>						                       		
+					</div>
+					<div class="form-group">
+						<div class="col-md-12">		
+							<div class="row">	 
+								<label>Comentari Administratiu:</label>
+								<div class="col-md-12">						                    						
+				          			<textarea class="form-control" name="comentariAdministratiu" placeholder="comentari administratiu" rows="3">${propostaActuacio.comentariAdministratiu}</textarea> 
 				            	</div>
 				        	</div>	        	
 						</div>						                       		

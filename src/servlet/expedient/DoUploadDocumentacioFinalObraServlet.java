@@ -2,6 +2,7 @@ package servlet.expedient;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -13,8 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileUploadException;
 
 import bean.User;
+import core.TascaCore;
+import core.UsuariCore;
 import utils.Fitxers;
 import utils.MyUtils;
+import utils.Fitxers.Fitxer;
 
 /**
  * Servlet implementation class DoUploadDocumentacioFinalObraServlet
@@ -43,7 +47,8 @@ public class DoUploadDocumentacioFinalObraServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		User Usuari = MyUtils.getLoginedUser(request.getSession());	   
+		User Usuari = MyUtils.getLoginedUser(request.getSession());	  
+		String ipRemote = request.getRemoteAddr();
 		String idActuacio = multipartParams.getParametres().get("idActuacio");
 	    String idIncidencia = multipartParams.getParametres().get("idIncidencia");
 	    String idInforme = multipartParams.getParametres().get("idInforme"); 		
@@ -54,7 +59,20 @@ public class DoUploadDocumentacioFinalObraServlet extends HttpServlet {
 			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentMedicioGeneral"), idIncidencia, idActuacio, "", "", "", idInforme, "Medició general", Usuari.getIdUsuari());
 			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentRepresentacioRecepcio"), idIncidencia, idActuacio, "", "", "", idInforme, "Representació Recepció", Usuari.getIdUsuari());
 			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentConvocatoriaRecepcio"), idIncidencia, idActuacio, "", "", "", idInforme, "Convocatòria recepció", Usuari.getIdUsuari());
-		} catch (NamingException e) {
+			String documents = "";
+			Fitxer fitxer = null;
+			for(int i=0;i<multipartParams.getFitxers().size();i++){
+				 fitxer = (Fitxer) multipartParams.getFitxers().get(i);
+				 documents += fitxer.getFitxer().getName() + "<br>";
+			}
+			if (Usuari.getIdUsuari() != 4) {
+				if (Usuari.getRol().contains("CAP")) {
+					TascaCore.novaTasca(conn, "generic", UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari(), Usuari.getIdUsuari(), idActuacio, idIncidencia,  Usuari.getNomCompletReal() + ": S'ha afegit nova documentació tècnica <br>" + documents, "Nova documentació", idInforme, null, ipRemote, "automatic");
+				} else {
+					TascaCore.novaTasca(conn, "generic", UsuariCore.finCap(conn, Usuari.getDepartament()).getIdUsuari(), Usuari.getIdUsuari(), idActuacio, idIncidencia,  Usuari.getNomCompletReal() + ": S'ha afegit nova documentació tècnica <br>" + documents, "Nova documentació", idInforme, null, ipRemote, "automatic");
+				}
+			}
+		} catch (NamingException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

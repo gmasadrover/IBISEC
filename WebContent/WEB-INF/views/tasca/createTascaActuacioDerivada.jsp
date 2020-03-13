@@ -54,9 +54,9 @@
 	                             </div>
                             </div>
 						    <div class="form-group">
-                                <label>Comentari</label>
+                                <label>Comentari Tècnic</label>
                                 <div class="col-xs-12">                                	
-                               		<textarea class="form-control" name="comentari" placeholder="" rows="3"></textarea>	                            
+                               		<textarea class="form-control" name="comentari" placeholder="comentari tècnic" rows="3"></textarea>	                            
 								</div>
                             </div>
                             <div class="form-group">
@@ -107,10 +107,11 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<div class="col-md-12">		
-									<div class="row">	 
+								<div class="col-md-12">											
+									<div class="row">	
+										<label>Comentari Cap</label> 
 										<div class="col-md-12">						                    						
-						          			<textarea class="form-control" name="comentariTecnic" placeholder="comentari tècnic" rows="3">${propostaActuacio.comentari}</textarea> 
+						          			<textarea class="form-control" name="comentariCap" placeholder="comentari cap" rows="3"></textarea> 
 						            	</div>
 						        	</div>	        	
 								</div>						                       		

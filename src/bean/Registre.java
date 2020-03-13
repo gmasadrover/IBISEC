@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import utils.Fitxers.Fitxer;
+
 public class Registre {
 	
 	private String id;
@@ -21,6 +23,9 @@ public class Registre {
 	private int idUsuari;
 	private Date usuMod;
 	private boolean actiu;
+	private List<Fitxer> documents;
+	private Fitxer resguard;
+	private List<Fitxer> confirmacioRecepcio;
 	 
 	public Registre() {
 		 
@@ -142,6 +147,17 @@ public class Registre {
 		return list;
 	}
 	
+	public String getPrimeraActuacio() {
+		String idActuacio = "";
+		if (!this.getIdActuacionsList().isEmpty()){
+			idActuacio = this.getIdActuacionsList().get(0);
+		}else{
+			idActuacio = "-1";
+		}
+		return idActuacio;	
+	}
+
+	
 	public List<String> getIdIncidenciesList() {
 		List<String> list = new ArrayList<String>();
 		if (this.idIncidencies != null && !this.idIncidencies.isEmpty()) {
@@ -230,6 +246,40 @@ public class Registre {
 			list += idInforme + "</br>";
 		}
 		return list;
+	}
+	
+	public String getPrimerInforme() {
+		String idInforme = "";
+		if (!this.getIdInformeList().isEmpty()){
+			idInforme = this.getIdInformeList().get(0);
+		}else{
+			idInforme = "-1";
+		}
+		return idInforme;	
+	}
+
+	public Fitxer getResguard() {
+		return resguard;
+	}
+
+	public void setResguard(Fitxer resgurad) {
+		this.resguard = resgurad;
+	}
+
+	public List<Fitxer> getConfirmacioRecepcio() {
+		return confirmacioRecepcio;
+	}
+
+	public void setConfirmacioRecepcio(List<Fitxer> confirmacioRecepcio) {
+		this.confirmacioRecepcio = confirmacioRecepcio;
+	}
+
+	public List<Fitxer> getDocuments() {
+		return documents;
+	}
+
+	public void setDocuments(List<Fitxer> documents) {
+		this.documents = documents;
 	}
 
 }

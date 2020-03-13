@@ -19,9 +19,13 @@ import org.apache.commons.fileupload.FileUploadException;
 
 import bean.Actuacio;
 import bean.Factura;
+import bean.InformeActuacio;
+import bean.Oferta;
 import bean.User;
+import bean.InformeActuacio.PropostaInforme;
 import core.ActuacioCore;
 import core.FacturaCore;
+import core.InformeCore;
 import core.TascaCore;
 import core.UsuariCore;
 import utils.Fitxers;
@@ -77,7 +81,9 @@ public class DoCreateCertificacioServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-	    
+		
+		
+		
 	    int idUsuari = MyUtils.getLoginedUser(request.getSession()).getIdUsuari();	    
 	    Factura certificacio = new Factura();
 	    certificacio.setIdFactura(idCertificacio);
@@ -91,9 +97,13 @@ public class DoCreateCertificacioServlet extends HttpServlet {
 	    certificacio.setNombreFactura(nombreFactura);
 	    certificacio.setNotes(notes);
 	    
+	   
+		
 	    String errorString = null;	 	      
 	   	if (errorString == null) {
-	   		try {
+	   		try {		   				
+	 			String tipusCertificacio = multipartParams.getParametres().get("tipusCertificacio");
+	 			certificacio.setTipus(tipusCertificacio);
 	   			Actuacio actuacio = ActuacioCore.findActuacio(conn, idActuacio);
 	   			certificacio.setUsuariConformador(UsuariCore.findUsuariByID(conn, idUsuariConformador));
 	   			certificacio.setDataEnviatConformador(dataPasadaConformar);

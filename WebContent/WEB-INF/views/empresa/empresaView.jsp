@@ -45,20 +45,22 @@
 	                	<div class="row">
 		                	<div class="col-md-12">
 		               			<p style="color: red;">
-									<c:if test="${!empresa.activa}">
-										Aquesta empresa está extingida.
-										<c:if test="${empresa.succesora.name.isEmpty()}">
-											<br/>La seva succesora és: ${empresa.succesora.name} (${empresa.succesora.cif})
-										</c:if>
-									</c:if>
-									<c:if test="${empresa.prohibicioContractar}">
-										Aquesta empresa té prohibida la contratació.	
-										<br/>
-										<c:forEach items="${empresa.documentsProhibicioContractarList}" var="arxiu" >
-				                			<c:set var="arxiu" value="${arxiu}" scope="request"/>
-						            		<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
-										</c:forEach>										
-									</c:if>
+		               				<c:choose>
+		               					<c:when test="${empresa.prohibicioContractar}">
+											Aquesta empresa té prohibida la contratació. Fins ${empresa.getProhibitContractarFinsString()}
+											<br/>
+											<c:forEach items="${empresa.documentsProhibicioContractarList}" var="arxiu" >
+					                			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+							            		<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+											</c:forEach>										
+										</c:when>
+		               					<c:when test="${!empresa.activa}">
+											Aquesta empresa está extingida.
+											<c:if test="${empresa.succesora.name.isEmpty()}">
+												<br/>La seva succesora és: ${empresa.succesora.name} (${empresa.succesora.cif})
+											</c:if>
+										</c:when>
+		               				</c:choose>									
 								</p>
 		               		</div>
 		               	 </div>     
@@ -110,6 +112,9 @@
 					                            </p>     
 						                        <p> 
 						                        	<label>Data constitució: </label> ${empresa.getDataConstitucioString()}
+					                            </p>
+					                            <p> 
+						                        	<label>Tipus: </label> ${empresa.tipus}
 					                            </p>
 					                    	</c:if> 		                                                	
 					                    </div>		            	
@@ -482,8 +487,7 @@
 								                                <th>Centre</th>
 								                                <th>Valor</th>
 								                                <th>Data</th>	
-								                                <th>Data</th>	
-								                                <th>Facturat</th>			                                        							                                       
+								                                <th>Data</th>			                                        							                                       
 								                            </tr>
 								                        </thead>
 								                        <tbody>	
@@ -502,21 +506,10 @@
 													           		</td>
 													           		<td><a href="actuacionsDetalls?ref=${informe.actuacio.referencia}&exp=${informe.idInf}">${informe.actuacio.referencia}</a></td>
 													            	<td>${informe.actuacio.descripcio}</td>
-													            	<td>${informe.actuacio.centre.getNomComplet()}</td>
-													            	<c:choose>
-													            		<c:when test="${informe.ofertaSeleccionada.cifEmpresa == empresa.cif}">
-													            			<td>${informe.ofertaSeleccionada.getPlicFormat()}</td>
-															            	<td>${informe.ofertaSeleccionada.getDataCreacioString()}</td>
-															            	<td>${informe.ofertaSeleccionada.getDataCreacio()}</td>
-															            	<td>${informe.getTotalFacturatFormat()}</td>
-													            		</c:when>
-													            		<c:otherwise>
-													            			<td></td>
-															            	<td></td>
-															            	<td></td>
-															            	<td></td>
-													            		</c:otherwise>
-													            	</c:choose>
+													            	<td>${informe.actuacio.centre.getNom()}</td>
+													            	<td>${informe.ofertaSeleccionada.getPlicFormat()}</td>
+													            	<td>${informe.ofertaSeleccionada.getDataAprovacioString()}</td>
+													            	<td>${informe.ofertaSeleccionada.getDataAprovacio()}</td>
 													            </tr>
 												       		</c:forEach>							                                	                              	
 								                        </tbody>

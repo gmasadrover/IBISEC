@@ -60,18 +60,18 @@ public class DoDownloadExpedientServlet extends HttpServlet {
 		    List<String> filenames = new ArrayList<String>();
 		    try {
 		    	informe = InformeCore.getInformePrevi(conn, request.getParameter("idInforme"), true);
-				if (informe.getInformeSupervisio() != null && informe.getInformeSupervisio().getRuta() != null) {
+				/*if (informe.getInformeSupervisio() != null && informe.getInformeSupervisio().getRuta() != null) {
 					filenames.add(informe.getInformeSupervisio().getRuta());
-				}
+				}*/
 				if (informe.getConformeAreaEconomivaPropostaActuacio() != null && informe.getConformeAreaEconomivaPropostaActuacio().getRuta() != null) {
 					filenames.add(informe.getConformeAreaEconomivaPropostaActuacio().getRuta());
 				}
 				if (informe.getAutoritzacioConseller() != null && informe.getAutoritzacioConseller().getRuta() != null) {
 					filenames.add(informe.getAutoritzacioConseller().getRuta());
 				}
-				if (informe.getAutoritzacioConsellDeGovern() != null && informe.getAutoritzacioConsellDeGovern().getRuta() != null) {
+				/*if (informe.getAutoritzacioConsellDeGovern() != null && informe.getAutoritzacioConsellDeGovern().getRuta() != null) {
 					filenames.add(informe.getAutoritzacioConsellDeGovern().getRuta());
-				}
+				}*/
 				if (informe.getMemoriaOrdreInici() != null && informe.getMemoriaOrdreInici().getRuta() != null) {
 					filenames.add(informe.getMemoriaOrdreInici().getRuta());
 				}
@@ -84,9 +84,9 @@ public class DoDownloadExpedientServlet extends HttpServlet {
 				if (informe.getAprovacioEXPPlecsDespesa() != null && informe.getAprovacioEXPPlecsDespesa().getRuta() != null) {
 					filenames.add(informe.getAprovacioEXPPlecsDespesa().getRuta());
 				}
-				if (informe.getAutoritzacioPropostaDespesa() != null && informe.getAutoritzacioPropostaDespesa().getRuta() != null) {
-					filenames.add(informe.getAutoritzacioPropostaDespesa().getRuta());
-				}
+				//if (informe.getAutoritzacioPropostaDespesa() != null && informe.getAutoritzacioPropostaDespesa().getRuta() != null) {
+				//	filenames.add(informe.getAutoritzacioPropostaDespesa().getRuta());
+				//}
 				if (informe.getContracteSignat() != null && informe.getContracteSignat().getRuta() != null) {
 					filenames.add(informe.getContracteSignat().getRuta());
 				}

@@ -64,9 +64,7 @@ public class DoCreateTascaPagamentTramitacioServlet extends HttpServlet {
 	    int idTasca = -1;
 	    String idProcediment = multipartParams.getParametres().get("procediment");
 	   	String comentari = multipartParams.getParametres().get("descripcio");
-		String partida = multipartParams.getParametres().get("llistaPartides");
-		
-		double valor = Double.parseDouble(multipartParams.getParametres().get("valor").replace(',','.'));
+		String valor = multipartParams.getParametres().get("valor").replace(',','.');
 		Tramitacio tramitacio = new Judicial().new Tramitacio();
 		
 	   	String errorString = null;	   		   	
@@ -74,15 +72,12 @@ public class DoCreateTascaPagamentTramitacioServlet extends HttpServlet {
 	   		//Cream Tramitació	
 			tramitacio.setQuantia(multipartParams.getParametres().get("valor"));
 			tramitacio.setTipus("Pagament");
-			tramitacio.setDescripcio(comentari);			
+			tramitacio.setDescripcio(comentari);
+			tramitacio.setQuantia(valor);
 			int idTramitacio = JudicialCore.novaTramitacio(conn, tramitacio, idProcediment, Usuari.getIdUsuari(), request.getRemoteAddr());
 			JudicialCore.guardarFitxerTramitacio(conn, multipartParams.getFitxers(), idProcediment, idTramitacio, Usuari.getIdUsuari());
 			
-	   		//Reservam Partida
-	   		CreditCore.reservar(conn, partida, "-1", String.valueOf(idTramitacio), valor, "Pagament judicial", Usuari.getIdUsuari());
-	   		CreditCore.assignar(conn, String.valueOf(idTramitacio), valor);
-	   		
-   			int idUsuariTasca = UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari();   				
+	   		int idUsuariTasca = UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari();   				
    			idTasca = TascaCore.novaTasca(conn, "pagamentJudicial", idUsuariTasca, Usuari.getIdUsuari(), String.valueOf(idTramitacio), "-1", comentari, "Despesa judicial", idProcediment, multipartParams.getFitxers(), request.getRemoteAddr(), "manual");
 	   	} catch (SQLException | NamingException e) {
 			// TODO Auto-generated catch block

@@ -3,6 +3,7 @@ package servlet.registre;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.NamingException;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import bean.Judicial;
 import bean.Registre;
+import bean.Tasca;
 import bean.User;
 import bean.ControlPage.SectionPage;
 import core.ControlPageCore;
@@ -59,8 +61,10 @@ public class RegistreDetailsServlet extends HttpServlet {
 		       String errorString = null;
 		       String numAutosProcediment = "";
 		       Registre registre = new Registre();
+		       List<Tasca> tasques = new ArrayList<Tasca>();
 		       try {
-		    	   registre = RegistreCore.findRegistre(conn, tipus, referencia);			
+		    	   registre = RegistreCore.findRegistre(conn, tipus, referencia);	
+		    	   tasques = TascaCore.findTasquesRegistre(conn, referencia);
 		    	   if (from != null || "notificacio".equals(from)) {
 		    		   idTasca = Integer.parseInt(request.getParameter("idTasca"));
 		    		   TascaCore.llegirNotificacio(conn, idTasca);
@@ -72,20 +76,13 @@ public class RegistreDetailsServlet extends HttpServlet {
 		       } catch (SQLException | NamingException e) {
 		           e.printStackTrace();
 		           errorString = e.getMessage();
-		       }
-		       List<Fitxers.Fitxer> arxius;
-			try {
-				arxius = Fitxers.ObtenirFitxers(registre.getPrimeraIncidencia(), "", "RegistreE", registre.getId(), "");
-				request.setAttribute("arxius", arxius);
-			} catch (NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		       }			
 		      
 		       // Store info in request attribute, before forward to views
 		       request.setAttribute("errorString", errorString);
 		       request.setAttribute("registre", registre);
 		       request.setAttribute("tipus", tipus);
+		       request.setAttribute("tasques", tasques);
 		       request.setAttribute("numAutosProcediment", numAutosProcediment);
 		       request.setAttribute("canViewPersonal", UsuariCore.hasPermision(conn, usuari, SectionPage.personal));
 		       request.setAttribute("canCreateRegistre", UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_crear));

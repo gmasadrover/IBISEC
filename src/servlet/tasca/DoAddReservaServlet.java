@@ -46,20 +46,22 @@ public class DoAddReservaServlet extends HttpServlet {
 	    String idActuacio = request.getParameter("idActuacio");
 	    String idIncidencia = request.getParameter("idIncidencia");
 	    String idPartida = request.getParameter("llistaPartides");
+	    String idTramit = "";
 	    double valor = Double.parseDouble(request.getParameter("importReserva"));
 	    String reservar = request.getParameter("reservar");
 	    String rebutjar = request.getParameter("rebutjar");
 	    User Usuari = MyUtils.getLoginedUser(request.getSession());	   
-	    String comentari = request.getParameter("comentariFinancer");	  
-	    InformeActuacio informe = new InformeActuacio();
+	    String comentari = request.getParameter("comentariFinancer");
 	    String errorString = null;
+	    String tipus = "financeraMajor";
 	   	//Registrar comentari;	   
 	   	try {
-	   		if (idInforme.contains("-MOD-")) {
-	   			informe = InformeCore.getMoficacioInforme(conn, idInforme);
-	   		} else {
-	   			informe = InformeCore.getInformePrevi(conn, idInforme, false);
-	   		}
+	   		if (idInforme.contains("PRO-")) {
+	   			idActuacio = idInforme;	   
+	   			tipus = "procedimentJudicial";
+	   			idInforme = request.getParameter("idTramit");
+	   			idTramit = request.getParameter("idTramit");
+	   		} 
 	   		if (reservar != null) {
 		   		//Reservem el crèdit
 		   		CreditCore.reservar(conn, idPartida, idActuacio, idInforme, valor, comentari, Usuari.getIdUsuari());
@@ -82,7 +84,9 @@ public class DoAddReservaServlet extends HttpServlet {
 	   		dispatcher.forward(request, response);
 	   	}// If everything nice. Redirect to the product listing page.            
 	   	else {	
-	   		response.sendRedirect(request.getContextPath() + "/CrearDocument?tipus=financeraMajor&idIncidencia=" + idIncidencia + "&idActuacio=" + idActuacio + "&idInforme=" + idInforme);  		
+	   		String redirect = request.getContextPath() + "/CrearDocument?tipus=" + tipus + "&idIncidencia=" + idIncidencia + "&idActuacio=" + idActuacio + "&idInforme=" + idInforme;
+	   		if (!idTramit.isEmpty()) redirect += "&idTramit=" + idTramit + "&idPartida=" + idPartida;
+	   		response.sendRedirect(redirect);  		
 		}
 	}
 

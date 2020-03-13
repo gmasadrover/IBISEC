@@ -88,11 +88,16 @@ public class InformeActuacio {
 		private double pbase;
 		private double iva;
 		private double plic;
+		private double vec;
 		private String termini;
 		private String comentari;
+		private String comentariAdministratiu;
 		private boolean seleccionada;
 		private boolean ebss;
 		private boolean coordinacio;
+		private boolean ocults;
+		private boolean retencio;
+		private Date dataFirmaModificacio;
 				
 		public PropostaInforme() {
 			
@@ -140,7 +145,7 @@ public class InformeActuacio {
 		}
 		
 		public String getTipusLlicenciaFormat() {
-			if ("llicencia".equals(this.tipusLlicencia)) return "Llicència";
+			if ("llicencia".equals(this.tipusLlicencia) || "major".equals(this.tipusLlicencia)) return "Llicència";
 			if ("comun".equals(this.tipusLlicencia)) return "Comunicació prèvia";
 			return "";
 		}
@@ -243,7 +248,52 @@ public class InformeActuacio {
 		public void setCoordinacio(boolean coordinacio) {
 			this.coordinacio = coordinacio;
 		}
-		
+
+		public boolean isOcults() {
+			return ocults;
+		}
+
+		public void setOcults(boolean ocults) {
+			this.ocults = ocults;
+		}
+
+		public String getComentariAdministratiu() {
+			return comentariAdministratiu;
+		}
+
+		public void setComentariAdministratiu(String comentariAdministratiu) {
+			this.comentariAdministratiu = comentariAdministratiu;
+		}
+
+		public boolean isRetencio() {
+			return retencio;
+		}
+
+		public void setRetencio(boolean retencio) {
+			this.retencio = retencio;
+		}
+
+		public Date getDataFirmaModificacio() {
+			return dataFirmaModificacio;
+		}
+
+		public void setDataFirmaModificacio(Date dataFirmaModificacio) {
+			this.dataFirmaModificacio = dataFirmaModificacio;
+		}
+		public String getDataFirmaModificacioString() {
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+			String dataString = "";
+			if (this.dataFirmaModificacio != null) dataString = df.format(this.dataFirmaModificacio);
+			return dataString;
+		}
+
+		public double getVec() {
+			return vec;
+		}
+
+		public void setVec(double vec) {
+			this.vec = vec;
+		}
 	}
 	
 	public class Personal {
@@ -312,6 +362,7 @@ public class InformeActuacio {
 	
 	private String idInf;
 	private String idInfOriginal;
+	private String idInfEspecific;
 	private int idTasca;
 	private Actuacio actuacio;
 	private String idIncidencia;	
@@ -325,7 +376,7 @@ public class InformeActuacio {
 	private Date dataCreacio;
 	private String partidaRebutjadaMotiu;
 	private Date dataRebujada;
-	private AssignacioCredit assignacioCredit;
+	private List<AssignacioCredit> assignacioCredit;
 	private String comentariPartida;
 	private User usuariCapValidacio;
 	private Date dataCapValidacio;
@@ -338,8 +389,11 @@ public class InformeActuacio {
 	private double totalFacturat;
 	private List<Factura> llistaCertificacions;
 	private List<InformeActuacio> llistaModificacions;
+	private List<Fitxer> tramitsModificacio;
 	private List<InformeActuacio> llistaPenalitzacions;
 	private String tipusModificacio;
+	private boolean anulat;
+	private String motiuAnulat;
 	private Date dataTancament;
 	private Date dataRecepcio;
 	private String notes;
@@ -352,13 +406,13 @@ public class InformeActuacio {
 	private String estat;
 	private Fitxer propostaActuacio;
 	private Fitxer vistiplauPropostaActuacio;
-	private Fitxer informeSupervisio;
+	
 	private Fitxer conformeAreaEconomivaPropostaActuacio;
 	private Fitxer autoritzacioPropostaAutoritzacio;
-	private Fitxer autoritzacioConsellDeGovern;
+	private List<Fitxers.Fitxer> autoritzacioConsellDeGovern;
 	private Fitxer autoritzacioConseller;
 	private List<Fitxer> propostaTecnica;
-	private Fitxer autoritzacioPropostaDespesa;
+	private List<Fitxer> autoritzacioPropostaDespesa;
 	private Fitxer resolucioModificacio;
 	private Fitxer contracteSignat;
 	private Fitxer memoriaOrdreInici;
@@ -394,6 +448,8 @@ public class InformeActuacio {
 	private List<Fitxers.Fitxer> documentsPlaAutoproteccio;
 	private List<Fitxers.Fitxer> documentsCedulaDeHabitabilitat;
 	private List<Fitxers.Fitxer> documentsInstalacioPetrolifera;
+	private List<Fitxers.Fitxer> documentsInstalacioGas;
+	private List<Fitxers.Fitxer> documentsIniciActivitat;
 	
 	private List<Fitxers.Fitxer> documentActaReplanteig;
 	private List<Fitxers.Fitxer> documentActaComprovacioReplanteig;
@@ -415,13 +471,35 @@ public class InformeActuacio {
 	private List<Fitxers.Fitxer> documentInformeDevolucio;
 	private List<Fitxers.Fitxer> documentLiquidacioAval;
 	
+	private List<Fitxers.Fitxer> informeSupervisio;
+	private List<Fitxers.Fitxer> projecte;	
+	private List<Fitxers.Fitxer> documentNomenamentDF;
+	private List<Fitxers.Fitxer> documentPSS;
+	private List<Fitxers.Fitxer> documentPGR;
+	private List<Fitxers.Fitxer> documentPlaTreball;
+	private List<Fitxers.Fitxer> documentCertificacioFinal;
+	private List<Fitxers.Fitxer> documentDevolucioAval;
 	
+	private List<Fitxers.Fitxer> informeDF;
+	private List<Fitxers.Fitxer> informeJuridic;
+	private Fitxers.Fitxer formalitzacioSignat;	
+	
+	private List<Fitxers.Fitxer> resInici;
+	private List<Fitxers.Fitxer> tramits;
+	private List<Fitxers.Fitxer> resFinal;
+	
+	private Date dataPublicacioRegitreConvenis;
+	private Date dataPublicacioPerfilContractant;
+	private Date dataPublicacioDGPressuposts;
+	private Date dataPublicacioDGTresoreria;
 	
 	private List<Registre> entrades;
 	private List<Registre> sortides;
 	private List<Tasca> tasques;
 	private List<Personal> personal;
 		
+	private String organismeDependencia;
+	private boolean cessioCredit;
 	
 	public InformeActuacio() {	
 		this.llistaPropostes = new ArrayList<PropostaInforme>();
@@ -474,11 +552,11 @@ public class InformeActuacio {
 		return dataString;
 	}
 
-	public AssignacioCredit getAssignacioCredit() {
+	public List<AssignacioCredit> getAssignacioCredit() {
 		return assignacioCredit;
 	}
 
-	public void setAssignacioCredit(AssignacioCredit assignacioCredit) {
+	public void setAssignacioCredit(List<AssignacioCredit> assignacioCredit) {
 		this.assignacioCredit = assignacioCredit;
 	}
 
@@ -529,6 +607,16 @@ public class InformeActuacio {
 		this.llistaOfertes = llistaOfertes;
 	}
 
+	public int getEmpresesPresentades() {
+		int empresesPresentades = 0;
+		if (this.llistaOfertes != null) {
+			for (Oferta oferta: this.llistaOfertes) {
+				if (oferta.getPbase() > 0) empresesPresentades += 1;
+			}
+		}
+		return empresesPresentades;
+	}
+	
 	public Oferta getOfertaSeleccionada() {
 		return ofertaSeleccionada;
 	}
@@ -745,11 +833,11 @@ public class InformeActuacio {
 		this.propostaTecnica = propostaTecnica;
 	}
 
-	public Fitxer getAutoritzacioPropostaDespesa() {
+	public List<Fitxer> getAutoritzacioPropostaDespesa() {
 		return autoritzacioPropostaDespesa;
 	}
 
-	public void setAutoritzacioPropostaDespesa(Fitxer autoritzacioPropostaDespesa) {
+	public void setAutoritzacioPropostaDespesa(List<Fitxer> autoritzacioPropostaDespesa) {
 		this.autoritzacioPropostaDespesa = autoritzacioPropostaDespesa;
 	}
 
@@ -802,12 +890,12 @@ public class InformeActuacio {
 	
 	public String getEstatEconomic() {
 		String estat = "Sense partida";
-		if (this.assignacioCredit != null && this.assignacioCredit.getIdAssignacio() != null) {
+		if (this.assignacioCredit != null && this.assignacioCredit.size() > 0) {
 			//RF (Reserva de fons)
 			estat = "RF";			
 		}
 		//Contractat (PD i Contracte)
-		if (this.autoritzacioPropostaDespesa.getRuta() != null || this.contracteSignat.getRuta() != null) {
+		if (this.autoritzacioPropostaDespesa.size() > 0 || this.contracteSignat.getRuta() != null) {
 			estat = "Contractat";
 		}
 		//Facturat (factures i certificacions)
@@ -817,11 +905,11 @@ public class InformeActuacio {
 		return estat;
 	}
 
-	public Fitxer getAutoritzacioConsellDeGovern() {
+	public List<Fitxer> getAutoritzacioConsellDeGovern() {
 		return autoritzacioConsellDeGovern;
 	}
 
-	public void setAutoritzacioConsellDeGovern(Fitxer autoritzacioConsellDeGovern) {
+	public void setAutoritzacioConsellDeGovern(List<Fitxer> autoritzacioConsellDeGovern) {
 		this.autoritzacioConsellDeGovern = autoritzacioConsellDeGovern;
 	}
 
@@ -833,11 +921,11 @@ public class InformeActuacio {
 		this.autoritzacioConseller = autoritzacioConseller;
 	}
 
-	public Fitxer getInformeSupervisio() {
+	public List<Fitxer> getInformeSupervisio() {
 		return informeSupervisio;
 	}
 
-	public void setInformeSupervisio(Fitxer informeSupervisio) {
+	public void setInformeSupervisio(List<Fitxer> informeSupervisio) {
 		this.informeSupervisio = informeSupervisio;
 	}
 
@@ -927,11 +1015,11 @@ public class InformeActuacio {
 	public void setPublicacioBOIB(Date publicacioBOIB) {
 		this.publicacioBOIB = publicacioBOIB;
 	}
-
+	
 	public double getTotalModificacions() {
 		double total = 0;
 		for (InformeActuacio modificacio:  this.llistaModificacions) {
-			if (modificacio.getAutoritzacioPropostaDespesa().getRuta() != null) {				
+			if (modificacio.getAutoritzacioPropostaDespesa().size() > 0 || modificacio.formalitzacioSignat.getRuta() != null) {				
 				total += modificacio.getOfertaSeleccionada().getPlic();
 			}
 		}
@@ -1223,12 +1311,20 @@ public class InformeActuacio {
 			estat = "Modificació";
 		} else if (this.tipusModificacio.equals("preusContradictoris")) {
 			estat = "Preus contradictoris";
+		} else if (this.tipusModificacio.equals("termini")) {
+			estat = "Ampliació termini";				
 		} else if(this.tipusModificacio.equals("penalitzacio")) {
 			estat = "Penalització";
 		} else if(this.tipusModificacio.equals("certfinal")) {
 			estat = "Certificació final";
+		} else if(this.tipusModificacio.equals("resolucioContracte")) {
+			estat = "Resolució Contracte";
+		} else if(this.tipusModificacio.equals("informeExecucio")) {
+			estat = "Informe d'execució";
+		} else if(this.tipusModificacio.equals("enriquimentInjust")) {
+			estat = "Enriquiment injust";
 		}
-				
+		
 		return estat;
 	}
 
@@ -1387,4 +1483,238 @@ public class InformeActuacio {
 	public void setInformeInsuficienciaMitjans(Fitxer informeInsuficienciaMitjans) {
 		this.informeInsuficienciaMitjans = informeInsuficienciaMitjans;
 	}
+
+	public List<Fitxers.Fitxer> getProjecte() {
+		return projecte;
+	}
+
+	public void setProjecte(List<Fitxers.Fitxer> projecte) {
+		this.projecte = projecte;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentNomenamentDF() {
+		return documentNomenamentDF;
+	}
+
+	public void setDocumentNomenamentDF(List<Fitxers.Fitxer> documentNomenamentDF) {
+		this.documentNomenamentDF = documentNomenamentDF;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentPSS() {
+		return documentPSS;
+	}
+
+	public void setDocumentPSS(List<Fitxers.Fitxer> documentPSS) {
+		this.documentPSS = documentPSS;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentPGR() {
+		return documentPGR;
+	}
+
+	public void setDocumentPGR(List<Fitxers.Fitxer> documentPGR) {
+		this.documentPGR = documentPGR;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentPlaTreball() {
+		return documentPlaTreball;
+	}
+
+	public void setDocumentPlaTreball(List<Fitxers.Fitxer> documentPlaTreball) {
+		this.documentPlaTreball = documentPlaTreball;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentCertificacioFinal() {
+		return documentCertificacioFinal;
+	}
+
+	public void setDocumentCertificacioFinal(List<Fitxers.Fitxer> documentCertificacioFinal) {
+		this.documentCertificacioFinal = documentCertificacioFinal;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentDevolucioAval() {
+		return documentDevolucioAval;
+	}
+
+	public void setDocumentDevolucioAval(List<Fitxers.Fitxer> documentDevolucioAval) {
+		this.documentDevolucioAval = documentDevolucioAval;
+	}
+
+	public String getOrganismeDependencia() {
+		return organismeDependencia;
+	}
+
+	public String getOrganismeDependenciaString() {
+		String organisme = "";
+		if (organismeDependencia != null) organisme = organismeDependencia;
+		return organisme.replace("#", "");
+	}
+	
+	public void setOrganismeDependencia(String organismeDependencia) {
+		this.organismeDependencia = organismeDependencia;
+	}
+
+	public List<Fitxer> getTramitsModificacio() {
+		return tramitsModificacio;
+	}
+
+	public void setTramitsModificacio(List<Fitxer> tramitsModificacio) {
+		this.tramitsModificacio = tramitsModificacio;
+	}
+
+	public boolean isAnulat() {
+		return anulat;
+	}
+
+	public void setAnulat(boolean anulat) {
+		this.anulat = anulat;
+	}
+
+	public String getMotiuAnulat() {
+		return motiuAnulat;
+	}
+
+	public void setMotiuAnulat(String motiuAnulat) {
+		this.motiuAnulat = motiuAnulat;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsInstalacioGas() {
+		return documentsInstalacioGas;
+	}
+
+	public void setDocumentsInstalacioGas(List<Fitxers.Fitxer> documentsInstalacioGas) {
+		this.documentsInstalacioGas = documentsInstalacioGas;
+	}
+
+	public List<Fitxers.Fitxer> getInformeDF() {
+		return informeDF;
+	}
+
+	public void setInformeDF(List<Fitxers.Fitxer> informeDF) {
+		this.informeDF = informeDF;
+	}
+
+	public List<Fitxers.Fitxer> getInformeJuridic() {
+		return informeJuridic;
+	}
+
+	public void setInformeJuridic(List<Fitxers.Fitxer> informeJuridic) {
+		this.informeJuridic = informeJuridic;
+	}
+
+	public Fitxers.Fitxer getFormalitzacioSignat() {
+		return formalitzacioSignat;
+	}
+
+	public void setFormalitzacioSignat(Fitxers.Fitxer formalitzacioSignat) {
+		this.formalitzacioSignat = formalitzacioSignat;
+	}
+
+	public Date getDataPublicacioRegitreConvenis() {
+		return dataPublicacioRegitreConvenis;
+	}
+
+	public String getDataPublicacioRegitreConvenisString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+		String dataString = "";
+		if (this.dataPublicacioRegitreConvenis != null) dataString = df.format(this.dataPublicacioRegitreConvenis);
+		return dataString;
+	}
+	
+	public void setDataPublicacioRegitreConvenis(Date dataPublicacioRegitreConvenis) {
+		this.dataPublicacioRegitreConvenis = dataPublicacioRegitreConvenis;
+	}
+
+	public Date getDataPublicacioPerfilContractant() {
+		return dataPublicacioPerfilContractant;
+	}
+	
+	public String getDataPublicacioPerfilContractantString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+		String dataString = "";
+		if (this.dataPublicacioPerfilContractant != null) dataString = df.format(this.dataPublicacioPerfilContractant);
+		return dataString;
+	}
+
+	public void setDataPublicacioPerfilContractant(Date dataPublicacioPerfilContractant) {
+		this.dataPublicacioPerfilContractant = dataPublicacioPerfilContractant;
+	}
+
+	public Date getDataPublicacioDGPressuposts() {
+		return dataPublicacioDGPressuposts;
+	}
+
+	public String getDataPublicacioDGPressupostsString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+		String dataString = "";
+		if (this.dataPublicacioDGPressuposts != null) dataString = df.format(this.dataPublicacioDGPressuposts);
+		return dataString;
+	}
+	
+	public void setDataPublicacioDGPressuposts(Date dataPublicacioDGPressuposts) {
+		this.dataPublicacioDGPressuposts = dataPublicacioDGPressuposts;
+	}
+
+	public Date getDataPublicacioDGTresoreria() {
+		return dataPublicacioDGTresoreria;
+	}
+
+	public String getDataPublicacioDGTresoreriaString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+		String dataString = "";
+		if (this.dataPublicacioDGTresoreria != null) dataString = df.format(this.dataPublicacioDGTresoreria);
+		return dataString;
+	}
+	
+	public void setDataPublicacioDGTresoreria(Date dataPublicacioDGTresoreria) {
+		this.dataPublicacioDGTresoreria = dataPublicacioDGTresoreria;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsIniciActivitat() {
+		return documentsIniciActivitat;
+	}
+
+	public void setDocumentsIniciActivitat(List<Fitxers.Fitxer> documentsIniciActivitat) {
+		this.documentsIniciActivitat = documentsIniciActivitat;
+	}
+
+	public boolean isCessioCredit() {
+		return cessioCredit;
+	}
+
+	public void setCessioCredit(boolean cessioCredit) {
+		this.cessioCredit = cessioCredit;
+	}
+
+	public String getIdInfEspecific() {
+		return idInfEspecific;
+	}
+
+	public void setIdInfEspecific(String idInfEspecific) {
+		this.idInfEspecific = idInfEspecific;
+	}
+
+	public List<Fitxers.Fitxer> getResInici() {
+		return resInici;
+	}
+
+	public void setResInici(List<Fitxers.Fitxer> resInici) {
+		this.resInici = resInici;
+	}
+
+	public List<Fitxers.Fitxer> getTramits() {
+		return tramits;
+	}
+
+	public void setTramits(List<Fitxers.Fitxer> tramits) {
+		this.tramits = tramits;
+	}
+
+	public List<Fitxers.Fitxer> getResFinal() {
+		return resFinal;
+	}
+
+	public void setResFinal(List<Fitxers.Fitxer> resFinal) {
+		this.resFinal = resFinal;
+	}	
 }

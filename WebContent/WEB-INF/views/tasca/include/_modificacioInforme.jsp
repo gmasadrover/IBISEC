@@ -67,12 +67,12 @@
 	</div>
 	<p>			                     				
 		<label>Comentari tècnic:</label> ${informePrevi.ofertaSeleccionada.comentari}
-	</p>
-		<label>Informe justificatiu:</label>	
-		<c:forEach items="${informePrevi.propostaTecnica}" var="arxiu" >	
-			<c:set var="arxiu" value="${arxiu}" scope="request"/>				
-            <jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-	 	</c:forEach>
+	</p>	
+	<label>Informe justificatiu:</label>	
+	<c:forEach items="${informePrevi.propostaTecnica}" var="arxiu" >	
+		<c:set var="arxiu" value="${arxiu}" scope="request"/>				
+           <jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+ 	</c:forEach>
  </div>
 
 

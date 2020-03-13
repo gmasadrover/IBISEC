@@ -87,35 +87,32 @@
 			                        	</div>	
 			                        	<div class="row panel-body">
 			                        		<p>Arxius adjunts:</p>
-			                        		<c:forEach items="${arxius}" var="arxiu" >
+			                        		<c:forEach items="${registre.documents}" var="arxiu" >
 							            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
 													${arxiu.getDataString()} - ${arxiu.nom}
 												</a>
 												<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
 												<br>
 											</c:forEach>
-			                        	</div>								        
+			                        	</div>					
+			                        	<div class="row panel-body">
+			                        		<p>Resguard:</p>			                        		
+						            		<a target="_blanck" href="downloadFichero?ruta=${registre.resguard.getEncodedRuta()}">
+												${registre.resguard.nom}
+											</a>											
+			                        	</div>	
+			                        	<div class="row panel-body">
+			                        		<p>Confirmacions de recepció:</p>			                        		
+						            		<c:forEach items="${registre.confirmacioRecepcio}" var="arxiu" >
+							            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
+													${arxiu.getDataString()} - ${arxiu.nom}
+												</a>
+												<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
+												<br>
+											</c:forEach>										
+			                        	</div>									        
 				            	    </c:otherwise>
-								</c:choose>		                        	
-	                        	<c:if test="${canCreateRegistre}">	  
-		                        	<div class="row">            			
-										<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadFichero">
-											<div class="form-group">
-												<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-					                            <div class="col-xs-5">   
-					                                <input type="file" class="btn" name="file" /><br/>
-												</div> 
-												<input type="hidden" name="idIncidencies" value="${registre.idIncidencies}">
-												<input type="hidden" name="tipus" value="RegistreE">
-												<input type="hidden" name="idTipus" value="${registre.id}">
-												<input type="hidden" name="redirect" value="/registre?tipus=${tipus}&referencia=${registre.id}">				    
-												<div class="col-xs-2"> 
-					         						<input type="submit" class="btn btn-primary" value="Pujar" />
-					         					</div>    						
-					         				</div>         				
-										</form>							
-					            	</div>     
-					            </c:if>                     
+								</c:choose>	
 	                        </div>
 	                        <div class="panel-footer">
 	                        	<div class="row">
@@ -146,7 +143,7 @@
 	                        </div>
 	                    </div>
 	                </div>
-            	</div>            	
+            	</div>  
             	<c:if test="${canCreateRegistre}">
 	            	<div class="row">
 	            		<div class="col-xs-offset-10 col-xs-2"> 
@@ -154,14 +151,21 @@
 	   					</div>
 	            	</div>	            	
             	</c:if>
+            	<div class="row panel-body">
+					<c:set var="tasquesList" value="${tasques}" scope="request"/>
+					<c:set var="tipus" value="notificacio" scope="request"/>
+					<c:set var="idInfActual" value="-1" scope="request"/>
+					<jsp:include page="../tasca/include/_tasquesListResum.jsp"></jsp:include>
+               	</div> 
             </div>
             <!-- /.container-fluid -->
 
         </div>
         <!-- /#page-wrapper -->
 
-    </div>
+    </div>   
     <jsp:include page="../_footer.jsp"></jsp:include>
+    <script src="js/tasca/llistat.js?<%=application.getInitParameter("datakey")%>"></script>
     <!-- /#wrapper -->
 </body>
 </html>

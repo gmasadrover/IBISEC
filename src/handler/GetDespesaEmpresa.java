@@ -70,7 +70,7 @@ public class GetDespesaEmpresa extends HttpServlet {
 		try {	
 	        Date dataInici = df.parse(request.getParameter("dataIni")); 
 	        Date dataFi  = cal.getTime();
-			importAdjudicat = EmpresaCore.getDespesaEmpresa(conn, cif, dataInici, dataFi);							
+			importAdjudicat = EmpresaCore.getTotalBaseAdjudicat(conn, cif, dataInici, dataFi);							
 			myObj.addProperty("success", true);
 			JsonElement llistatObj = gson.toJsonTree(importAdjudicat);
 			myObj.add("importAdjudicat", llistatObj);

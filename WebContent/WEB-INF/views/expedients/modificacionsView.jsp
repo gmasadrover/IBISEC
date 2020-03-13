@@ -45,8 +45,10 @@
                                 <thead>
                                     <tr>
                                     	<th>Modificat</th>
-                                        <th>Expedient</th>
+                                        <th>Expedient</th>                                        
                                         <th>Data Creacio</th>
+                                        <th>Tipus</th>
+                                        <th>Data Aprovacio</th>  
                                         <th>Data Aprovacio</th>                                        
                                         <th>Centre</th>
                                         <th>Descripció</th>
@@ -56,11 +58,25 @@
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${modificacionsList}" var="informe" >
-							          	<tr class=${informe.expcontratacio.anulat ? "danger" : informe.llistaModificacions.size() > 0 ? "warning" : "success"}>							          	
-							           		<td>${informe.idInf}</td>
-							           		<td><a href="expedient?ref=${informe.expcontratacio.expContratacio}" class="loadingButton"  data-msg="obrint expedient...">${informe.expcontratacio.expContratacio}</a></td>
-							           		<td>${informe.expcontratacio.dataCreacio}</td>
-							           		<td>${informe.autoritzacioPropostaDespesa.firmesList.size() >= 1 ? informe.autoritzacioPropostaDespesa.firmesList.get(0).dataFirma : ''}</td>
+							          	<tr class=${informe.anulat ? "danger" : "success"}>							          	
+							           		<td>${informe.idInfEspecific != null ?  informe.idInfEspecific : informe.idInf}</td>
+							           		<td><a href="actuacionsDetalls?ref=${informe.actuacio.referencia}&exp=${informe.idInfOriginal}" class="loadingButton"  data-msg="obrint expedient...">${informe.expcontratacio.expContratacio}</a></td>
+							           		<td>${informe.dataCreacio}</td>
+							           		<td>${informe.getTipusModificacioFormat()}
+							           		<c:choose>
+							           			<c:when test="${informe.anulat}">
+							           				<td>Anul·lat: ${informe.motiuAnulat}</td>
+							           				<td>Anul·lat: ${informe.motiuAnulat}</td>
+							           			</c:when>
+							           			<c:when test="${informe.propostaInformeSeleccionada.getDataFirmaModificacio()==null}">
+							           				<td>En tramit</td>
+							           				<td>En tramit</td>
+							           			</c:when>
+							           			<c:otherwise>
+							           				<td>${informe.propostaInformeSeleccionada.getDataFirmaModificacioString()}</td>
+							           				<td>${informe.propostaInformeSeleccionada.getDataFirmaModificacio()}</td>
+							           			</c:otherwise>
+							           		</c:choose>
 							            	<td>${informe.actuacio.centre.getNomComplet()}</td>
 							            	<td>${informe.getPropostaInformeSeleccionada().objecte}</td>
 							            	<td>${informe.getOfertaSeleccionada().nomEmpresa}</td>

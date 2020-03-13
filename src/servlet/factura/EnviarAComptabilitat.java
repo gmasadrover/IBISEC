@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.BaseFont;
@@ -67,8 +68,10 @@ public class EnviarAComptabilitat extends HttpServlet {
 	   	if (errorString == null) {
 	   		try {
 	   			factura = FacturaCore.getFactura(conn, idFactura);	
+	   			InformeActuacio informeActual = InformeCore.getInformePrevi(conn, factura.getIdInforme(), false);
 	   			Date date = new Date();
-	   			if (factura.getDataConformacio() == null) {
+	   			System.out.println("entra ->" + factura.getDataConformacio());
+	   			if (factura.getDataEnviatComptabilitat() == null) {
 	   				Context env;
 	   				String ruta = "";
 	   				try {
@@ -89,38 +92,47 @@ public class EnviarAComptabilitat extends HttpServlet {
 	    	          overContent.saveState();
 	    	          overContent.beginText();
 	    	          overContent.setFontAndSize( font, 10.0f );
-	    	          overContent.setTextMatrix( 24, 24 );
+	    	          overContent.setTextMatrix( 24, 35 );
 	    	          overContent.showText("Data passat a comptabilitat " + dateFormat.format(date));
 	    	          overContent.endText();
 	    	          overContent.restoreState();
+	    	          
+	    	          overContent = stamper.getOverContent( i + 1 );
+	    	          overContent.saveState();
+	    	          overContent.beginText();
+	    	          overContent.setFontAndSize( font, 10.0f );
+	    	          overContent.setTextMatrix( 24, 24 );
+	    	          overContent.showText(informeActual.getActuacio().getCentre().getNom() + " - " + informeActual.getExpcontratacio().getExpContratacio());
+	    	          overContent.endText();
+	    	          overContent.restoreState();
+	    	          
+	    	          overContent = stamper.getOverContent( i + 1 );
+	    	          overContent.saveState();
+	    	          overContent.beginText();
+	    	          overContent.setFontAndSize( font, 10.0f );
+	    	          overContent.setTextMatrix( 350, 50 );
+	    	          overContent.showText("Vist, el cap d'Administració i Comptabilitat");
+	    	          overContent.endText();
+	    	          overContent.restoreState();
+	    	          
 	    	        }
 	    	        stamper.close();
 	    	        reader.close();
-	    	        System.out.println(rutaFactua);
+	    	        System.out.println("entra ->" + rutaFactua);
 	    	        Fitxers.eliminarFitxer(conn, idUsuari, rutaFactua);
 	   			}
 	   			factura.setDataEnviatComptabilitat(date);
 	   			factura.setDataConformacio(date);
 	   			FacturaCore.modificarFactura(conn, factura, idUsuari);
-	   			InformeActuacio informeActual = InformeCore.getInformePrevi(conn, factura.getIdInforme(), false);
-   				boolean totFacturat = true;   				
-   				if (informeActual.getOfertaSeleccionada().getPlic() > informeActual.getTotalFacturat()) {
-   					totFacturat = false;	   				
-   				} else {
-   					InformeCore.modificarEstat(conn, factura.getIdInforme(), "garantia");
-   					InformeCore.tancar(conn, factura.getIdInforme());
-   				}
-   				if (totFacturat) {
-   					List<InformeActuacio> informesList = InformeCore.getInformesActuacio(conn, factura.getIdInforme());
-	   				for (InformeActuacio informe : informesList) {
-	   					if (!informe.getIdInf().equals(factura.getIdInforme()) && !informe.getEstatEconomic().equals("Facturat")) {
-	   						totFacturat = false;
-	   					}
+	   			if (informeActual.getOfertaSeleccionada().getPlic() < Double.parseDouble(getServletContext().getInitParameter("importObraMajor"))) {
+	   				boolean totFacturat = true;   				
+	   				if (informeActual.getOfertaSeleccionada().getPlic() > informeActual.getTotalFacturat()) {
+	   					totFacturat = false;	   				
+	   				} else {
+	   					InformeCore.modificarEstat(conn, factura.getIdInforme(), "garantia");
+	   					InformeCore.tancar(conn, factura.getIdInforme());
 	   				}
-   				}
-   				if (totFacturat) {
-   					ActuacioCore.tancar(conn, informeActual.getActuacio().getReferencia(), "facturat", idUsuari);
-   				}
+	   			}
 	   		} catch (SQLException | NamingException | DocumentException e) {
 	  			e.printStackTrace();
 	  			errorString = e.getMessage();

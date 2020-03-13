@@ -121,12 +121,13 @@ public class ExpedientCore {
 		if (informe.getPropostaInformeSeleccionada() != null) {
 			if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("conveni")) {
 				tipusContracte = "conveni";		
-			}
-			if (informe.getPropostaInformeSeleccionada().getPbase() < importObraMajor) { // Contractes menors		
-				tipusContracte = "menor";				
-			} else {																   // Contractes majors
-				tipusContracte = "major";
-			}					
+			} else {
+				if (informe.getPropostaInformeSeleccionada().getPbase() < importObraMajor) { // Contractes menors		
+					tipusContracte = "menor";				
+				} else {																   // Contractes majors
+					tipusContracte = "major";
+				}	
+			}							
 			if (informe.getPropostaInformeSeleccionada().getTipusObra() != null) {
 				if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("obr")) {
 					tipus = "obra";				
@@ -163,7 +164,7 @@ public class ExpedientCore {
 		int year = now.get(Calendar.YEAR);
 		String yearInString = String.valueOf(year);
 		pstm.setString(5, yearInString);
-	
+	  System.out.println(pstm.toString());
 		pstm.executeUpdate();
 		
 		InformeCore.assignarExpedient(conn, informe.getIdInf(), nouCodi);
@@ -206,6 +207,17 @@ public class ExpedientCore {
 		pstm = conn.prepareStatement(sql);	
 		pstm.setString(1, motiuAnulacio);
 		pstm.setString(2, refExp);
+		pstm.executeUpdate();
+	}
+	
+	public static void anularModificacioExpedient(Connection conn, String idModificacio, String motiuAnulacio) throws SQLException {
+		String sql = "UPDATE public.tbl_modificacioinforme"
+				+ " SET anulat = true, motiuanulat = ?"
+				+ " WHERE idmodificacio = ?";
+		PreparedStatement pstm;
+		pstm = conn.prepareStatement(sql);	
+		pstm.setString(1, motiuAnulacio);
+		pstm.setString(2, idModificacio);
 		pstm.executeUpdate();
 	}
 	
@@ -280,12 +292,7 @@ public class ExpedientCore {
 		String yearInString = String.valueOf(year);
 		String nouCodi = "";		
 		String contracte = "";
-		if (informe.getPropostaInformeSeleccionada().getPbase() < importObraMajor) { // Contractes menors		
-			contracte = "menor";			
-		} else {																   // Contractes majors
-			contracte = "major";
-			yearInString = yearInString.substring(2,4);
-		}		
+		
 		String tipus = "";
 		if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("obr")) {
 			tipus = "OBM";				
@@ -295,7 +302,20 @@ public class ExpedientCore {
 			tipus = "SBM";			
 		} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("conveni")) {
 			tipus = "Conveni";			
-		}				
+		}		
+		
+		if (tipus.equals("Conveni")) {
+			contracte = "conveni";
+			yearInString = yearInString.substring(2,4);
+		} else {		
+			if (informe.getPropostaInformeSeleccionada().getPbase() < importObraMajor) { // Contractes menors		
+				contracte = "menor";			
+			} else {																   // Contractes majors
+				contracte = "major";
+				yearInString = yearInString.substring(2,4);
+			}	
+		}
+		
 		String sql = "SELECT expcontratacio"
 					+ " FROM public.tbl_expedient"
 					+ " WHERE expcontratacio like '%/" + yearInString + "%' AND contracte = '" + contracte + "'"
@@ -312,16 +332,18 @@ public class ExpedientCore {
 					+ " WHERE expcontratacio like '" + tipus + "%/" + yearInString + "%'"
 					+ " ORDER BY expcontratacio DESC LIMIT 1;";	 
 		}
+		
 		PreparedStatement pstm = conn.prepareStatement(sql);
+		 System.out.println(pstm.toString());
 		ResultSet rs = pstm.executeQuery();
 		if (rs.next()) { //Codis nous
 			String actualCode = rs.getString("expcontratacio");			
 			int num = 0;
 			String numFormatted = String.format("%03d", num + 1);	
 			if (tipus.equals("Conveni")) {
-				num = Integer.valueOf(actualCode.replace("Conveni", "").trim());
+				num = Integer.valueOf(actualCode.split("/")[0].replace("Conveni", "").trim());
 				numFormatted = String.format("%03d", num + 1);		
-				nouCodi = "Conveni " + numFormatted + "/" + yearInString;			
+				nouCodi = "Conveni " + numFormatted + "/" + yearInString;
 			} else {
 				if (informe.getPropostaInformeSeleccionada().getPbase() < importObraMajor) {
 					if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("obr")) {				
@@ -355,7 +377,7 @@ public class ExpedientCore {
 			} else {				
 				nouCodi = "001/" + yearInString;
 			}
-		}
+		}		
 		return nouCodi;
 	}
 }

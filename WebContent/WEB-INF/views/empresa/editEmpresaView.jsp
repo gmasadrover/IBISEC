@@ -45,12 +45,22 @@
                 	<div class="row">
 	                	<div class="col-md-12">
 	               			<p style="color: red;">
-								<c:if test="${!empresa.activa}">
-									Aquesta empresa está extingida.
-									<c:if test="${empresa.succesora.name.isEmpty()}">
-										<br/>La seva succesora és: ${empresa.succesora.name} (${empresa.succesora.cif})
-									</c:if>
-								</c:if>
+								<c:choose>
+	               					<c:when test="${empresa.prohibicioContractar}">
+										Aquesta empresa té prohibida la contratació. Fins ${empresa.getProhibitContractarFinsString()}
+										<br/>
+										<c:forEach items="${empresa.documentsProhibicioContractarList}" var="arxiu" >
+				                			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+						            		<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+										</c:forEach>										
+									</c:when>
+	               					<c:when test="${!empresa.activa}">
+										Aquesta empresa está extingida.
+										<c:if test="${empresa.succesora.name.isEmpty()}">
+											<br/>La seva succesora és: ${empresa.succesora.name} (${empresa.succesora.cif})
+										</c:if>
+									</c:when>
+	               				</c:choose>	
 							</p>
 	               		</div>
 	               	 </div>
@@ -137,6 +147,12 @@
 		                                <div class="input-group date col-xs-6 datepicker">
 										  	<input type="text" class="form-control" name="constitucio" value="${empresa.getDataConstitucioString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 										</div>
+		                            </div>
+		                            <div class="form-group">
+		                                <label class="col-xs-3 control-label">Tipus</label>
+		                                <div class="col-xs-6">
+		                                	<input class="form-control" name="tipus" value="${empresa.tipus}">
+		                                </div>
 		                            </div>
 		                    	</c:if>			                                                	
 		                    </div>		            	
@@ -628,6 +644,32 @@
                             </div>	                		
 	                	</div>	
 	                	<h2 class="margin_bottom30">Modificació estat empresa</h2>
+	                	<div class="row">
+	                		<h4>Prohibició contractar</h4>
+	                		<c:if test="${empresa.documentsProhibicioContractarList.size() > 0}">			                	   
+			                	<c:forEach items="${empresa.documentsProhibicioContractarList}" var="arxiu" >
+		                			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+				            		<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+								</c:forEach>	         	
+		                	</c:if>	                		
+	                		<div class="form-group">	                		
+	                			<label class="col-xs-2 control-label">Document:</label>	                	
+		                        <div class="col-xs-5">   
+		                            <input type="file" class="btn" name="documentProhibicioContractar" /><br/>
+								</div>
+							</div>
+							<div class="form-group">
+	                			<label class="col-md-3 control-label">Prohibició contractar fins:</label>
+                                <div class="input-group date col-md-2 datepicker">
+								  	<input type="text" class="form-control" name="dateLimitProhibicio" value="${empresa.getProhibitContractarFinsString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+								</div>
+							</div> 
+							<div class="form-group">	                            
+						       	<div class="col-xs-offset-6 col-xs-9">
+						            <input type="submit" class="btn btn-danger" name="prohibicio" value="Prohibició contractar">							            
+						        </div>													        
+						    </div>
+	                	</div>    	
 	                	<div class="row">
 	                		<h4>Extinció</h4>
 	                		<c:if test="${empresa.extincioFile.ruta != null}">

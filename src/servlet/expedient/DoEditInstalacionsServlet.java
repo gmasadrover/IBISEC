@@ -63,8 +63,12 @@ public class DoEditInstalacionsServlet extends HttpServlet {
 	    	} else {
 	    		instalacions.setDataOCABaixaTensio(null);
 	    	}
-			instalacions.setExpedientFotovoltaica(multipartParams.getParametres().get("expedient"));
-			//instalacions.setDataOCAFotovoltaica(rs.getTimestamp("fotovoltaicadataoca"));
+			instalacions.setExpedientFotovoltaica(multipartParams.getParametres().get("expedientFotovoltaica"));
+			if (multipartParams.getParametres().get("dataOCAFotovoltaica") != null && ! multipartParams.getParametres().get("dataOCAFotovoltaica").isEmpty()) {
+	    	    	instalacions.setDataOCAFotovoltaica(formatter.parse(multipartParams.getParametres().get("dataOCAFotovoltaica")));
+	    	} else {
+	    		instalacions.setDataOCAFotovoltaica(null);
+	    	}
 			instalacions.setExpedientContraincendis(multipartParams.getParametres().get("expedientContraincendis"));
 			instalacions.setExpedientTermiques(multipartParams.getParametres().get("expedientTermiques"));
 			instalacions.setExpedientPetrolifers(multipartParams.getParametres().get("expedientPetrolifers"));
@@ -91,9 +95,17 @@ public class DoEditInstalacionsServlet extends HttpServlet {
 	    		instalacions.setDataCedulaHabitabilitat(null);
 	    	}	
 			
+			instalacions.setExpedientInstalacioGas(multipartParams.getParametres().get("expedientInstalacioGas"));
+			instalacions.setTipusInstalacioGas(multipartParams.getParametres().get("tipusInstalacioGas"));
+			if (multipartParams.getParametres().get("dataInstalacioGas") != null && ! multipartParams.getParametres().get("dataInstalacioGas").isEmpty()) {
+    	    	instalacions.setDataInstalacioGas(formatter.parse(multipartParams.getParametres().get("dataInstalacioGas")));
+			} else {
+				instalacions.setDataInstalacioGas(null);
+	    	}	
+			
 			InformeCore.actualitzarInstalacions(conn, idInforme, instalacions);
 			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsIntalacioBaixaTensio"), idIncidencia, idActuacio, "", "", "", idInforme, "Instalacio baixa tensio", Usuari.getIdUsuari());
-			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsIntalacioBaixaTensio"), idIncidencia, idActuacio, "", "", "", idInforme, "Instalacio fotovoltaica", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsIntalacioFotovoltaica"), idIncidencia, idActuacio, "", "", "", idInforme, "Instalacio fotovoltaica", Usuari.getIdUsuari());
 			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsIntalacioContraincendis"), idIncidencia, idActuacio, "", "", "", idInforme, "Instalacio contraincencis", Usuari.getIdUsuari());
 			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsCertificatEficienciaEnergetica"), idIncidencia, idActuacio, "", "", "", idInforme, "Certificat eficiència energètica", Usuari.getIdUsuari());
 			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsIntalacioTermica"), idIncidencia, idActuacio, "", "", "", idInforme, "Instalacio termica", Usuari.getIdUsuari());
@@ -103,6 +115,8 @@ public class DoEditInstalacionsServlet extends HttpServlet {
 			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsPlaAutoproteccio"), idIncidencia, idActuacio, "", "", "", idInforme, "Pla autoproteccio", Usuari.getIdUsuari());
 			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsCedulaDeHabitabilitat"), idIncidencia, idActuacio, "", "", "", idInforme, "Cedula habitabilitat", Usuari.getIdUsuari());
 			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsInstalacioPetrolifera"), idIncidencia, idActuacio, "", "", "", idInforme, "Instalació petrolifers", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsInstalacioGas"), idIncidencia, idActuacio, "", "", "", idInforme, "Instalació gas", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsIniciActivitat"), idIncidencia, idActuacio, "", "", "", idInforme, "Inici activitat", Usuari.getIdUsuari());
 		} catch (NamingException | SQLException | ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

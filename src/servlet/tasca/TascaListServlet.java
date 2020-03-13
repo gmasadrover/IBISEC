@@ -58,7 +58,7 @@ public class TascaListServlet extends HttpServlet {
 	        List<Tasca> listSeguiment = new ArrayList<Tasca>();
 	        List<Actuacio> seguimentActuacionsList = new ArrayList<Actuacio>();
 	        List<User> llistaUsuaris = new ArrayList<User>();
-	        List<InformeActuacio> informesUsuari = new ArrayList<InformeActuacio>();
+	        List<InformeActuacio> obresAssignades = new ArrayList<InformeActuacio>();
 	        String[] usuarisValues = null; 	  
 	        String usuarisSeleccionats = String.valueOf(usuari.getIdUsuari());
 	        boolean veureTotes = usuari.getDepartament().equals("gerencia");
@@ -74,22 +74,29 @@ public class TascaListServlet extends HttpServlet {
 	     		        	usuarisSeleccionats += idUsuari + "#";
 	     		        	if (NumberUtils.isNumber(idUsuari)) {
 	    	        			list = TascaCore.llistaTasquesUsuari(conn, Integer.parseInt(idUsuari), null, "on".equals(filterWithClosed));
-	    	        			informesUsuari = InformeCore.getInformesResumUsuari(conn, Integer.parseInt(idUsuari));  	    	        			
+	    	        			obresAssignades = InformeCore.getObresUsuari(conn, Integer.parseInt(idUsuari));  	    	        			
 	     		        	}else{
 	    	        			if ("totes".equals(idUsuari)) {
 	    	        				list = TascaCore.llistaTasquesUsuari(conn, -1, null, "on".equals(filterWithClosed));
-	    	        				informesUsuari = InformeCore.getInformesResumUsuari(conn, -1);    
+	    	        				obresAssignades = InformeCore.getObresUsuari(conn, -1);    
 	    	        			} else {
 	    	        				list = TascaCore.llistaTasquesUsuari(conn, -1, idUsuari, "on".equals(filterWithClosed));
-	    	        				informesUsuari = InformeCore.getInformesResumArea(conn, idUsuari);	    	        				
+	    	        				obresAssignades = InformeCore.getInformesResumArea(conn, idUsuari);	    	        				
 	    	        			}	        			
 	    	        		}	
 	     		        }
 	     	        }
 	        		
 	        	}else{
+	        		Calendar avui = Calendar.getInstance();
+	        		if (usuari.getRol().contains("LLICENCIA") && avui.get(Calendar.DATE) == 10 && avui.get(Calendar.DATE) <= 15) {
+	        			//Avisar Tasca llicències
+	        			if (!TascaCore.existTascaPrevisioLlicencies(conn, avui.get(Calendar.MONTH) + 1)) {
+	        				TascaCore.novaTasca(conn, "previsioLlicencies", usuari.getIdUsuari(), usuari.getIdUsuari(), "-1", "-1", "Previsió fons llicències", "Previsió fons llicències", String.valueOf(avui.get(Calendar.MONTH) + 1), null, request.getRemoteAddr(), "automàtica");
+	        			}
+	        		}
 	        		list = TascaCore.llistaTasquesUsuari(conn, usuari.getIdUsuari(), null, false);
-	        		informesUsuari = InformeCore.getInformesResumUsuari(conn, usuari.getIdUsuari());       		
+	        		obresAssignades = InformeCore.getObresUsuari(conn, usuari.getIdUsuari());       		
 	        		if (usuari.getRol().contains("GERENT")) usuarisSeleccionats = "totes#";
 	        	}
 	        	llistaUsuaris =  UsuariCore.findUsuarisByRol(conn, "");
@@ -105,7 +112,7 @@ public class TascaListServlet extends HttpServlet {
 	        request.setAttribute("canCreateTasca", canCreateTasca);
 	        request.setAttribute("llistaUsuaris", llistaUsuaris);
 	        request.setAttribute("errorString", errorString);
-	        request.setAttribute("informesUsuari", informesUsuari);
+	        request.setAttribute("obresAssignades", obresAssignades);
 	        request.setAttribute("tasquesList", list);  
 	        request.setAttribute("infPrevList", list.get(0));  // 0
 	        request.setAttribute("solInfPrevList", list.get(1));  // 1

@@ -72,8 +72,8 @@ public class IncidenciaDetailsServlet extends HttpServlet {
 	    	   incidencia = IncidenciaCore.findIncidencia(conn, referencia);
 	    	   tasques = TascaCore.findTasquesIncidencia(conn, referencia);	    
 	    	   notificacions = TascaCore.findNotificacionsIncidencia(conn, referencia);
-	    	   entrades = RegistreCore.searchEntradesIncidencia(conn, referencia);
-	    	   sortides = RegistreCore.searchSortidesIncidencia(conn, referencia);
+	    	   entrades = RegistreCore.searchEntradesIncidencia(conn, referencia, incidencia.getIdCentre());
+	    	   sortides = RegistreCore.searchSortidesIncidencia(conn, referencia, incidencia.getIdCentre());
 	    	   arxius = Fitxers.ObtenirTotsFitxers(referencia);	    
 	    	   canCreateActuacio = UsuariCore.hasPermision(conn, usuari, SectionPage.actuacio_modificar);
 	    	   canCreateRegistre = UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_crear);

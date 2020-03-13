@@ -65,6 +65,7 @@ public class DoCreateTascaDerivadaServlet extends HttpServlet {
 	   	
 	   	String comentari = multipartParams.getParametres().get("comentari");
 		String assumpte = multipartParams.getParametres().get("assumpte");
+		String comentariCap =  multipartParams.getParametres().get("comentariCap");
 	   	
 	   	int idTecnic = Integer.parseInt(multipartParams.getParametres().get("llistaUsuaris"));
 	   	if (idTecnic == -1 ) {
@@ -84,7 +85,7 @@ public class DoCreateTascaDerivadaServlet extends HttpServlet {
 	 	    InformeActuacio informe = new InformeActuacio();
 	 	    informe.setIdTasca(idTasca);
 			informe.setIdIncidencia(idIncidencia);
-			informe.setActuacio(informeOriginal.getActuacio());
+			informe.setActuacio(informeOriginal.getActuacio());			
 			String idInformePrevi = InformeCore.nouInforme(conn, informe, Usuari.getIdUsuari());
 			informe = InformeCore.getInformePrevi(conn, idInformePrevi, false);
 		    PropostaInforme proposta = informe.new PropostaInforme();
@@ -107,6 +108,7 @@ public class DoCreateTascaDerivadaServlet extends HttpServlet {
 		    llistaPropostes.add(proposta);
 		    informe.setLlistaPropostes(llistaPropostes);
 		    informe.setPropostaInformeSeleccionada(proposta);	
+		    informe.setComentariCap(comentariCap);
 		    InformeCore.modificarInforme(conn, informe, idTecnic);	 
 		    informe = InformeCore.getInformePrevi(conn, idInformePrevi, false);
 		    InformeCore.seleccionarProposta(conn, informe.getLlistaPropostes().get(0).getIdProposta(), idInformePrevi);	   
@@ -114,12 +116,12 @@ public class DoCreateTascaDerivadaServlet extends HttpServlet {
 		    Fitxers.guardarFitxer(conn, multipartParams.getFitxers(), idIncidencia, idActuacio, "", "", "", idInformePrevi, "Informe previ", Usuari.getIdUsuari());
 		    
    			int idUsuariTasca = -1;
-   			String tipusTasca = "docprelicitacio";
+   			String tipusTasca = "infPrev";
    			if (Usuari.getRol().contains("CAP")) {
    				idUsuariTasca = UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari();
    			}else{
    				idUsuariTasca = UsuariCore.finCap(conn, Usuari.getDepartament()).getIdUsuari();
-   				tipusTasca = "vistDocTecnica";
+   				tipusTasca = "vistInfPrev";
    			}	
    			
    			idTasca = TascaCore.novaTasca(conn, tipusTasca, idUsuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, comentari, assumpte, idInformePrevi, null, request.getRemoteAddr(), "manual");

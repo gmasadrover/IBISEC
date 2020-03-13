@@ -57,7 +57,7 @@ public class DoCreateProcedimentServlet extends HttpServlet {
 			procediment.setQuantia(multipartParams.getParametres().get("quantia"));
 			procediment.setEstat("obert");
 			procediment.setNotes(multipartParams.getParametres().get("notes"));
-			ref = JudicialCore.nouProcediement(conn, procediment, "", null);
+			ref = JudicialCore.nouProcediment(conn, procediment, "", null);
 		} catch (SQLException e) {
 			errorString = e.toString();
 		}

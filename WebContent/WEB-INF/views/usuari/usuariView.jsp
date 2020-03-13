@@ -108,6 +108,22 @@
 								</form>
 							</div>
 						</c:if>
+						<c:if test="${isAdmin}"> 
+						 	<div class="panel-body">
+								<form class="form-horizontal" method="POST" action="DoResetPassword">
+									<input type="hidden" name="idUsuari" value="${usuari.idUsuari}">
+									<div class="form-group">
+										<div class="col-md-6">
+								    		<div class="row">
+								        		<div class="col-md-12">
+								              		<input class="btn btn-primary" type="submit" name="reset" value="Resetetjar password">
+												</div>
+								     		</div>
+								 		</div>							 		
+									</div>	                       	
+								</form>
+							</div>
+						</c:if>
                     </div>
                 </div>
             </div>

@@ -13,8 +13,10 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import bean.AssignacioCredit;
 import bean.Judicial;
 import bean.Judicial.Tramitacio;
+import bean.Partida;
 import utils.Fitxers;
 import utils.Fitxers.Fitxer;
 
@@ -65,7 +67,7 @@ public class JudicialCore {
 		return tramitacio;
 	}
 	
-	public static String nouProcediement(Connection conn, Judicial judicial, String refOriginal, String tipus) throws SQLException {
+	public static String nouProcediment(Connection conn, Judicial judicial, String refOriginal, String tipus) throws SQLException {
 		String newCode = getNewCodeProcediment(conn);
 		String sql = "INSERT INTO public.tbl_judicial(" + SQL_CAMPS + ")"
 					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";		
@@ -154,8 +156,26 @@ public class JudicialCore {
 		return new Judicial().new Tramitacio();
 	}
 	
+	public static AssignacioCredit getPartidaTramit(Connection conn, String idProcediment, String idTramit) throws SQLException {
+		AssignacioCredit assignacio = new AssignacioCredit();
+		Partida partida = new Partida();
+		String sql = "SELECT idpartida"
+				+ " FROM public.tbl_assignacionscredit"
+				+ " WHERE idactuacio = ? AND idinf = ?";
+ 
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setString(1, idProcediment);	
+		pstm.setString(2, idTramit);	
+		ResultSet rs = pstm.executeQuery();
+		if (rs.next()) {
+			partida.setCodi(rs.getString("idpartida"));
+			assignacio.setPartida(partida)	;	
+		}
+		return assignacio;
+	}
+	
 	public static List<Judicial> getProcediments(Connection conn, String estat, String year) throws SQLException, NamingException{
-		List<Judicial> procediementsList = new ArrayList<Judicial>();
+		List<Judicial> procedimentsList = new ArrayList<Judicial>();
 		String sql = "SELECT " + SQL_CAMPS
 				+ " FROM public.tbl_judicial"
 				+ " WHERE tipus IS NULL";					
@@ -170,9 +190,9 @@ public class JudicialCore {
 		pstm = conn.prepareStatement(sql);	
 		ResultSet rs = pstm.executeQuery();
 		while (rs.next()) {		
-			procediementsList.add(initProcediment(conn, rs));
+			procedimentsList.add(initProcediment(conn, rs));
 		}
-		return procediementsList;
+		return procedimentsList;
 	}
 	
 	public static List<Tramitacio> getTramitacions(Connection conn, String referencia) throws SQLException, NamingException {

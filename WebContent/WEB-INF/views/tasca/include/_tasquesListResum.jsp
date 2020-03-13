@@ -6,10 +6,17 @@
 <m:setLocale value="${language}" />
 <m:setBundle basename="i18n.base"/>
 <div class="col-md-12">
-	<h2>Tasques</h2>
-	<div class="">
-  		<input type="checkbox" data-idactuacio="${actuacio.referencia}" data-idinforme="${idInfActual}" class="filterWithClosed"> Mostrar tancades
-  	</div>	
+	<c:choose>
+		<c:when test="${tipus=='notificacio'}">
+			<h2>Notificació</h2>
+		</c:when>
+		<c:otherwise>
+			<h2>Tasques</h2>
+			<div class="">
+		  		<input type="checkbox" data-idactuacio="${actuacio.referencia}" data-idinforme="${idInfActual}" class="filterWithClosed"> Mostrar tancades
+		  	</div>	
+		</c:otherwise>
+	</c:choose>
   	<br />
 	<div class="table-responsive">                        
 	    <div class="table-responsive">                        

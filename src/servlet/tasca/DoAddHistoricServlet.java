@@ -53,14 +53,15 @@ public class DoAddHistoricServlet extends HttpServlet {
 		
 	    String idTasca = multipartParams.getParametres().get("idTasca");
 	   
-	    String idIncidencia = multipartParams.getParametres().get("idIncidencia");
-	    String idActuacio = multipartParams.getParametres().get("idActuacio");
+	    String idIncidencia = "-1";
+	    if (multipartParams.getParametres().get("idIncidencia") != null) idIncidencia = multipartParams.getParametres().get("idIncidencia");
+	    String idActuacio = "-1";
+	    if (multipartParams.getParametres().get("idActuacio") != null) idActuacio = multipartParams.getParametres().get("idActuacio");
 	    String reasignar = multipartParams.getParametres().get("reasignar");
 	    boolean urgent = "on".equals(multipartParams.getParametres().get("urgent"));
 	    String tancar = multipartParams.getParametres().get("tancar");
 	    User Usuari = MyUtils.getLoginedUser(request.getSession());	 
 	    String comentari = multipartParams.getParametres().get("comentari");
-	    String idComentari = "0000";
 	    String errorString = null;
 	    Tasca tasca = new Tasca();
 	    String tipus = "generic";
@@ -71,7 +72,7 @@ public class DoAddHistoricServlet extends HttpServlet {
 	   		}else if (tancar != null) {
 	   			comentari = comentari + "<br><span class='missatgeAutomatic'>Es tanca la tasca</span>";
 	   		}
-			idComentari = TascaCore.nouHistoric(conn, idTasca, comentari, Usuari.getIdUsuari(), request.getRemoteAddr(), "manual");
+			TascaCore.nouHistoric(conn, idTasca, comentari, Usuari.getIdUsuari(), request.getRemoteAddr(), "manual");
 			tasca = TascaCore.findTascaId(conn, Integer.parseInt(idTasca), Usuari.getIdUsuari());
 			tipus = tasca.getTipus();
 		} catch (SQLException | NumberFormatException | NamingException e) {
@@ -81,7 +82,7 @@ public class DoAddHistoricServlet extends HttpServlet {
 		}
 	   	//Guardar adjunts
 	   	try {
-			Fitxers.guardarFitxer(conn, multipartParams.getFitxers(), idIncidencia, idActuacio, "Tasca", idTasca, "", "", "", Usuari.getIdUsuari());
+			TascaCore.guardarFitxer(conn, idTasca, multipartParams.getFitxers(), Usuari.getIdUsuari());	   		
 		} catch (NamingException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -97,7 +98,7 @@ public class DoAddHistoricServlet extends HttpServlet {
 	   	}// If everything nice. Redirect to the product listing page.            
 	   	else {
 	   		if (reasignar != null) { //reassignem la incid�ncia
-	   			String idUsuariNou = multipartParams.getParametres().get("idUsuari");	
+	   			String idUsuariNou = multipartParams.getParametres().get("idUsuari");
 	   			if (idUsuariNou.equals("-1") ) {
 	   				idUsuariNou = String.valueOf(Usuari.getIdUsuari());		
 	   			}
@@ -166,7 +167,13 @@ public class DoAddHistoricServlet extends HttpServlet {
 					e.printStackTrace();
 				}
 	   			response.sendRedirect(request.getContextPath() + "/tascaList");
-	   		}else {
+	   		}else {	   		
+	   			try {
+					TascaCore.marcarNoLlegida(conn,  Integer.parseInt(idTasca));
+				} catch (NumberFormatException | SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 	   			response.sendRedirect(request.getContextPath() + "/tasca?id=" + idTasca);
 	   		}	   		
 	   	}

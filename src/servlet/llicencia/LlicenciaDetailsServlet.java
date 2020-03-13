@@ -61,7 +61,7 @@ public class LlicenciaDetailsServlet extends HttpServlet {
 		       Boolean canModificar = false;
 		       try {
 		    	   actuacio = ActuacioCore.findActuacio(conn, InformeCore.getInformePrevi(conn, llicencia.getCodiExpedient(), false).getActuacio().getReferencia());
-		    	   llicencia = LlicenciaCore.findLlicencia(conn, codi, actuacio.getIdIncidencia(), llicencia.getCodiExpedient());
+		    	   llicencia = LlicenciaCore.findLlicencia(conn, codi);
 		    	   actuacio.setSeguiment(ActuacioCore.isSeguimentActuacio(conn, actuacio.getReferencia(), usuari.getIdUsuari()));	  
 		    	   incidencia = IncidenciaCore.findIncidencia(conn, actuacio.getIdIncidencia());
 		    	   actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia()));

@@ -24,7 +24,7 @@
                         </h1>
                         <ol class="breadcrumb">
                             <li class="active">
-                                <i class="fa fa-dashboard"></i> Procediement Judicial
+                                <i class="fa fa-dashboard"></i> Procediment Judicial
                             </li>
                             <li class="active">
                                 <i class="fa fa-table"></i> Nou

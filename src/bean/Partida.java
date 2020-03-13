@@ -15,6 +15,7 @@ public class Partida {
 	private double pagatPartida;
 	private String tipus;
 	private boolean estat;
+	private boolean perdefecte;
 	 
 	public Partida() {
  
@@ -134,5 +135,13 @@ public class Partida {
 	public String getPartidaPagatFormat(){
 		DecimalFormat num = new DecimalFormat("#,##0.00");
 	    return num.format(this.pagatPartida ) + '€';
+	}
+
+	public boolean isPerdefecte() {
+		return perdefecte;
+	}
+
+	public void setPerdefecte(boolean perdefecte) {
+		this.perdefecte = perdefecte;
 	}
 }

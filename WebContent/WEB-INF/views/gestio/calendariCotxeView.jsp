@@ -57,7 +57,7 @@
 		                                <select class="form-control selectpicker" name="vehicle" id="vehicle">
 		                                	<option value="cotxe">Cotxe</option>
 		                                	<option value="cotxeElectric">Cotxe Elèctric</option>
-		                                	<option value="furgoneta">Furgoneta</option>
+<!-- 		                                	<option value="furgoneta">Furgoneta</option> -->
 		                                </select>
 	                             	</div>
 							    </div>						    
@@ -357,7 +357,7 @@
                         </div>
                     </div>
                 </div>    
-                <div class="row">
+                <%-- <div class="row">
                     <div class="col-md-12">
                     	<div class="setmana">
 	                        <h2>Furgoneta</h2>
@@ -476,7 +476,7 @@
                         	</div>
                         </div>
                     </div>
-                </div>          
+                </div>  --%>         
             </div>
             <!-- /.container-fluid -->
 

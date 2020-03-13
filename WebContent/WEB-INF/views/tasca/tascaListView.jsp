@@ -320,10 +320,10 @@
 					</div>                    
                 </div>
                 <br/>
-                <c:if test="${informesUsuari.size() > 0}">
+                <c:if test="${obresAssignades.size() > 0}">
 	                <div class="row">					
 						<div class="col-md-12">
-		                        <h2>Informes usuari</h2>
+		                        <h2>Obres assignades</h2>
 		                        <div class="table-responsive">                        
 		                            <table class="table table-striped table-bordered filerTable informes">
 		                                <thead>
@@ -337,7 +337,7 @@
 		                                    </tr>
 		                                </thead>
 		                                <tbody>
-		                                	<c:forEach items="${informesUsuari}" var="informe" >	  
+		                                	<c:forEach items="${obresAssignades}" var="informe" >	  
 		                                		<c:if test="${informe.getEstatExpedientFormat() != 'Garantia'}">                              		
 										          	<tr>							          	
 										           		<td>
@@ -367,7 +367,7 @@
 										            			</c:otherwise>
 										            		</c:choose>
 														</td>
-														<td>${informe.usuari.getNomComplet()}</td>
+														<td>${informe.usuari.getNomComplet()} (${informe.personal.get(0).funcio})</td>
 										            	<td>${informe.actuacio.descripcio}</td>										            	
 										            	<td>${informe.actuacio.centre.getNomComplet()}</td>
 										            	<td>${informe.getEstatExpedientFormat()}</td>

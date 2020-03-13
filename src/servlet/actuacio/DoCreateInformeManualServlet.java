@@ -70,6 +70,10 @@ public class DoCreateInformeManualServlet extends HttpServlet {
 			double plic = 0;
 			String termini = "";
 			String comentari = "";
+			boolean tramitacioIBISEC = "on".equals(request.getParameter("tramitacioIBISEC"));
+			boolean tramitacioConselleria = "on".equals(request.getParameter("tramitacioConselleria"));
+			boolean tramitacioAltres = "on".equals(request.getParameter("tramitacioAltres"));
+			boolean cessioCredit = "on".equals(request.getParameter("esCessioDeCredit"));
 		   	if (errorString == null) {
 		   		try {	
 		   			User tecnic = UsuariCore.findUsuariByID(conn, idTecnic);
@@ -104,7 +108,15 @@ public class DoCreateInformeManualServlet extends HttpServlet {
 				    proposta.setSeleccionada(true);			    
 				    llistaPropostes.add(proposta);
 				    informe.setLlistaPropostes(llistaPropostes);
-				    informe.setPropostaInformeSeleccionada(proposta);			    
+				    informe.setPropostaInformeSeleccionada(proposta);	
+				    if (tipusObra.equals("conveni")) {
+				    	String dependencies = "";				    	
+				    	if (tramitacioIBISEC) dependencies += "IBISEC#";
+				    	if (tramitacioConselleria) dependencies += "Conselleria#";
+				    	if (tramitacioAltres) dependencies += "Altres#";
+				    	informe.setOrganismeDependencia(dependencies);
+				    	informe.setCessioCredit(cessioCredit);
+				    }
 				    String idinforme =  InformeCore.nouInforme(conn, informe, idTecnic);
 				    informe = InformeCore.getInformePrevi(conn, idinforme, false);
 				    InformeCore.seleccionarProposta(conn, informe.getLlistaPropostes().get(0).getIdProposta(), idinforme);
@@ -119,7 +131,7 @@ public class DoCreateInformeManualServlet extends HttpServlet {
 		   					importMajor = Double.parseDouble(getServletContext().getInitParameter("importSubministramentMajor"));
 		   				}
 		   				String nouCodi = ExpedientCore.crearExpedient(conn, informe, importMajor, false, "");
-		   				if (llicencia) LlicenciaCore.novaLlicencia(conn, nouCodi, tipusLlicencia);
+		   				//if (llicencia) LlicenciaCore.novaLlicencia(conn, nouCodi, tipusLlicencia);
 				    }
 		   		} catch (SQLException | NamingException e) {
 		  			e.printStackTrace();

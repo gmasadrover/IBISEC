@@ -11,6 +11,8 @@ public class Historic {
 	private int idHistoric;
 	private int idTasca;
 	private String comentari;
+	private Actuacio actuacio;
+	private Tasca tasca;
 	private User usuari;
 	private Date data;
 	private String ipRemota;
@@ -95,5 +97,21 @@ public class Historic {
 
 	public void setTipus(String tipus) {
 		this.tipus = tipus;
+	}
+
+	public Actuacio getActuacio() {
+		return actuacio;
+	}
+
+	public void setActuacio(Actuacio actuacio) {
+		this.actuacio = actuacio;
+	}
+
+	public Tasca getTasca() {
+		return tasca;
+	}
+
+	public void setTasca(Tasca tasca) {
+		this.tasca = tasca;
 	}
 }

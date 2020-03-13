@@ -61,8 +61,13 @@
 						</div>
 					</div>
 				</div>
-				<div class="row">			
-					<div class="col-md-offset-6 col-md-2">
+				<div class="row">	
+					<div class="col-md-offset-4 col-md-2">
+					<c:if test="${esCap && !tasca.activa}">
+						<div><a href="obrirTasca?idtasca=${tasca.idTasca}" class="btn btn-success">Obrir</a></div>	
+					</c:if>	
+					</div>
+					<div class="col-md-2">
 				        <c:if test="${canBorrarTasca}">
 				            <div><a href="eliminarTasca?idtasca=${tasca.idTasca}" class="btn btn-danger">Borrar</a></div>
 				        </c:if>	
@@ -75,7 +80,7 @@
 	                	</div> 
 	                </div>
 	                <div class="col-md-2">	
-	                	<c:if test="${tasca.tipus!='notificacio' && tasca.tipus!='vacances' && tasca.tipus!='judicial' && tasca.tipus!='pagamentJudicial' && tasca.tipus!='factura'}">
+	                	<c:if test="${tasca.tipus!='notificacio' && tasca.tipus!='vacances' && tasca.tipus!='judicial' && tasca.tipus!='pagamentJudicial'  && tasca.tipus!='partidaJudicial' && tasca.tipus!='factura'}">
 		                	<div class="checkbox">
 		                        <label>
 		                          	<input id="seguimentActuacio" data-idactuacio="${actuacio.referencia}" data-idusuari="${idUsuariLogg}" data-seguir="${!actuacio.seguiment}" type="checkbox" ${actuacio.seguiment ? 'checked' : ''}> Seguir Actuació
@@ -89,14 +94,14 @@
                			<p style="color: red;">${errorString}</p>
                		</div>
                	</div>
-	            <c:if test="${tasca.tipus!='notificacio' && tasca.tipus!='vacances' && tasca.tipus!='judicial' && tasca.tipus!='pagamentJudicial' && tasca.tipus!='factura'}">					
+	            <c:if test="${tasca.tipus!='vacances' && tasca.tipus!='judicial' && tasca.tipus!='pagamentJudicial'  && tasca.tipus!='partidaJudicial' && tasca.tipus!='factura'}">					
 					<div class="row">					
-		                <div class="col-md-12">	                	
+		                <div class="col-md-12">	  
 		                	<jsp:include page="../actuacio/include/_resumActuacio.jsp"></jsp:include>		                	
 		                </div>				            	
 					</div>						
 				</c:if>
-				<c:if test="${tasca.tipus=='judicial' || tasca.tipus=='pagamentJudicial'}">					
+				<c:if test="${tasca.tipus=='judicial' || tasca.tipus=='pagamentJudicial' || tasca.tipus=='partidaJudicial'}">					
 					<div class="row">					
 		                <div class="col-md-12">	                	
 		                	<a target="_blanck" href="procediment?ref=${tasca.idinforme}">Anar al procediment -></a><br>              	
@@ -125,7 +130,7 @@
 	                         		</c:choose>	                         		
 	                         	</div>
 	                         	<div class="panel-body">
-	                         		<div class="row panel-body">${historic.comentari}</div>		
+	                         		<div class="row panel-body"><p>${historic.comentari}</p></div>		
 					            </div>					          	
 				    		</div>
 	       				</c:forEach>   
@@ -267,6 +272,9 @@
 										    <c:when test="${tasca.tipus=='autoritzacioModificacio'}">
 										    	<jsp:include page="include/_autoritzarDespesaModificacio.jsp"></jsp:include>
 										    </c:when>
+										     <c:when test="${tasca.tipus=='autoritacioPenalitzacio'}">
+										    	<jsp:include page="include/_autoritzarDespesaPenalitzacio.jsp"></jsp:include>
+										    </c:when>
 										    <c:when test="${tasca.tipus=='vacances'}">
 										    	<jsp:include page="include/_solicitudVacances.jsp"></jsp:include>
 										    </c:when>
@@ -335,7 +343,7 @@
 											        	<div class="col-md-6"></div>
 											            <div><input class="btn btn-primary" type="submit" name="afegirComentari" value="Només afegir comentari"></div>
 											        </div>
-											        <c:if test="${esCap || tasca.tipus=='vacances' || tasca.tipus=='generic' || tasca.tipus=='certificacioFirmada' || tasca.tipus=='firmaContracte'}">
+											        <c:if test="${esCap || tasca.tipus=='vacances' || tasca.tipus=='generic' || tasca.tipus=='previs' || tasca.tipus=='execucio' || tasca.tipus=='garantia' || tasca.tipus=='certificacioFirmada' || tasca.tipus=='firmaContracte' || tasca.tipus=='contracte'}">
 												        <div class="row margin_top10">
 												        	<div class="col-md-6"></div>
 												            <div><input class="btn btn-danger" type="submit" name="tancar" value="Tancar"></div>
@@ -344,7 +352,7 @@
 											    </div>
 					                       	</div>		                       	
 				                       	</form>	
-				                       	<c:if test="${isGerencia && tasca.tipus != 'notificacio'}">	
+				                       	<c:if test="${isGerencia}">	
 			                    			<div class="separator"></div>		                    			
 			                    			<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoCanvisTasca">
 				                    			<input class="hidden" name="idTasca" value="${tasca.idTasca}">	
@@ -357,7 +365,7 @@
 								                           	<option value='modificacio'>Sol·licitud modificació</option>
 								                           	<option value='vistInfPrev'>Vistiplau informe previ</option>
 								                           	<option value='infPrev'>Informe previ gerència</option>
-								                            <option value='doctecnica'>Redacció documentació tècnia</option>
+								                            <option value='doctecnica'>Redacció documentació tècnica</option>
 								                            <option value='vistDocTecnica'>Vistiplau documentació tècnica</option>
 								                           	<option value='docprelicitacio'>Preparar documentació licitació</option>
 					                                		<option value='resPartida'>Reserva de crèdit</option>
@@ -369,7 +377,11 @@
 															<option value='contracte'>Redacció contractes</option>
 															<option value='conformarFactura'>Conformar factura</option>
 					                                		<option value='facturaConformada'>Factura conformada</option>
-															<option value='judicial'>Judicial</option>
+					                                		<option value='conformarFactura'>Firmar certificació</option>
+					                                		<option value='firmaCertificacio'>Certificació firmada</option>
+															<option value='certificacioFirmada'>Judicial</option>
+															<option value='pagamentJudicial'>Pagament Judicial</option>															
+															<option value='notificacio'>Notificacio</option>	
 						                                </select>
 					                             	</div>
 					                       			<input class="btn btn-success" type="submit" name="modificar" value="Modificar">

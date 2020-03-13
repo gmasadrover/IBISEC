@@ -57,6 +57,7 @@ public class UsuariDetailsServlet extends HttpServlet {
 		  	request.setAttribute("errorString", errorString);
 		  	request.setAttribute("usuari", usuari);
 		  	request.setAttribute("potModificar", usuari.getIdUsuari() == usuariLogetjat.getIdUsuari());
+		  	request.setAttribute("isAdmin", usuariLogetjat.getRol().contains("ADMIN"));
 		  	request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuariLogetjat,"Usuaris"));    
 		  	// Forward to /WEB-INF/views/homeView.jsp
 		  	// (Users can not access directly into JSP pages placed in WEB-INF)

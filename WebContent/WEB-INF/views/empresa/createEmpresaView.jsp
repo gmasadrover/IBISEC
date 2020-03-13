@@ -101,6 +101,12 @@
                                 	<input class="form-control" type="email" name="email" placeholder="test@test.es">
                                 </div>
                             </div>	
+                             <div class="form-group">
+                                <label class="col-xs-3 control-label">Tipus</label>
+                                <div class="col-xs-3">
+                                	<input class="form-control" name="tipus" >
+                                </div>
+                            </div>	
 		    				<br>
 						    <div class="form-group">
 						        <div class="col-xs-offset-3 col-xs-9">

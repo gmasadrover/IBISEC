@@ -57,7 +57,7 @@ public class DoAnularExpedient extends HttpServlet {
 			//Anular Expedient			
 			ExpedientCore.anularExpedient(conn, refExp, motiuAnulacio);
 			//Anular Reserva crèdit
-			CreditCore.anularReserva(conn, idInforme);
+			//CreditCore.anularReserva(conn, idInforme);
 		} catch (SQLException e2) {
 			errorString = e2.toString();
 		}		

@@ -102,7 +102,7 @@
 							           	<option value="conveni">Conveni</option>
 						            </select>
 					        	</div>	
-					       		<div class="visibleObres visibleObres">					                             	
+					       		<div class="visibleObres">					                             	
 						        	<div class="col-md-3">
 							      	 	<label>Autorització urbanística</label>
 							      	 	<input type="hidden" id="reqLlicenciaPrev" value="" >
@@ -119,8 +119,39 @@
 						                	<option value="comun">Comunicació prèvia</option>
 						                </select>
 						           	</div>
-						        </div>						        						                       																
-							</div>								
+						        </div>							       		        						                       																
+							</div>	
+							 <div class="visibleConveni hidden">
+							 	<label>Tramitació</label>
+						        <div class="form-group">									   	
+						          	<label class="col-xs-2 control-label">IBISEC</label> 
+			                		<div class="checkbox">
+				                        <label>
+				                          	<input name="tramitacioIBISEC" type="checkbox">
+				                        </label>
+				                	</div> 
+							     	<label class="col-xs-2 control-label">Conselleria</label> 
+			                		<div class="checkbox">
+				                        <label>
+				                          	<input name="tramitacioConselleria" type="checkbox">
+				                        </label>
+				                	</div>
+									<label class="col-xs-2 control-label">Altres</label> 
+			                		<div class="checkbox">
+				                        <label>
+				                          	<input name="tramitacioAltres" type="checkbox">
+				                        </label>
+				                	</div>
+	                            </div> 
+	                             <div class="form-group">									   	
+						          	<label class="col-xs-2 control-label">Cessió de crèdit</label> 
+			                		<div class="checkbox">
+				                        <label>
+				                          	<input name="esCessioDeCredit" type="checkbox">
+				                        </label>
+				                	</div> 
+				                </div>
+					        </div>										
 							<div class="form-group">
 								<div class="col-md-6">
 									<label>Termini d'execució</label>

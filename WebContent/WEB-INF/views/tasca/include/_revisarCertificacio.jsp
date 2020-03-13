@@ -12,6 +12,9 @@
 	    	<p>
 	    		<label>Certificació: </label> <a target="_blanck" href="certificacioDetalls?ref=${factura.idFactura}">${factura.idFactura}</a>
 	    	</p>	
+	    	<p>
+	    		<label>Tipus:</label>  ${factura.tipus}
+	    	</p>
 		    <p>
 				<label>Import certificació:</label> ${factura.valor}
 			</p>
@@ -32,7 +35,7 @@
     </div>
     <c:choose>
     	<c:when test="${canModificarFactura && tasca.tipus=='revisarCertificacio'}">
-			<form class="form-horizontal" target="_blank" method="POST" enctype="multipart/form-data" action="DoAddPA" onsubmit="setTimeout(function () { window.location.reload(); }, 10)"> 	
+			<form class="form-horizontal" target="_blank" method="POST" enctype="multipart/form-data" action="DoTasca" onsubmit="setTimeout(function () { window.location.reload(); }, 10)"> 	
 		     	<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
 				<input type="hidden" name="idIncidencia" value="${informePrevi.idIncidencia}">															
 				<input type="hidden" name="idInforme" value="${informePrevi.idInf}">
@@ -49,7 +52,7 @@
 			</form>    
 		</c:when>
 		<c:when test="${tasca.tipus=='firmaCertificacio'}">
-			<form class="form-horizontal" target="_blank" method="POST" enctype="multipart/form-data" action="DoAddPA" onsubmit="setTimeout(function () { window.location.reload(); }, 10)"> 	
+			<form class="form-horizontal" target="_blank" method="POST" enctype="multipart/form-data" action="DoTasca" onsubmit="setTimeout(function () { window.location.reload(); }, 10)"> 	
 		     	<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
 				<input type="hidden" name="idIncidencia" value="${informePrevi.idIncidencia}">															
 				<input type="hidden" name="idInforme" value="${informePrevi.idInf}">

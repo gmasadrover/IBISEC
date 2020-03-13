@@ -56,9 +56,9 @@ public class PartidaDetailsServlet extends HttpServlet {
 			List<AssignacioCredit> llistaAssignacions = new ArrayList<AssignacioCredit>();
 			boolean canEditPartida = false;
 	       	try {
-	       		partida = CreditCore.getPartida(conn,codi);	  
-	       		llistaAssignacions = CreditCore.findAssignacionsPartida(conn, codi, estat);
-	       		canEditPartida = UsuariCore.hasPermision(conn, usuari, SectionPage.partides_crear);
+	       		partida = CreditCore.getPartida(conn,codi);	
+	       		if (estat != null) llistaAssignacions = CreditCore.findAssignacionsPartida(conn, codi, estat);
+	       		canEditPartida = UsuariCore.hasPermision(conn, usuari, SectionPage.partides_crear);	       		
 	       	} catch (SQLException | NamingException  e) {
 	       		e.printStackTrace();
 	       		errorString = e.getMessage();

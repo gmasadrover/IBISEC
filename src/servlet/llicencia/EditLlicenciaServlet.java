@@ -58,11 +58,8 @@ public class EditLlicenciaServlet extends HttpServlet {
 	        Actuacio actuacio = new Actuacio();	
 	        String errorString = null;	 
 	        try {
-	        	if (codi == null || codi.isEmpty()) {
-	        		codi = LlicenciaCore.novaLlicencia(conn, idInforme, "");
-	        	}
 	        	actuacio = InformeCore.getInformePrevi(conn, idInforme, false).getActuacio();
-	            llicencia = LlicenciaCore.findLlicencia(conn, codi, actuacio.getIdIncidencia(), idInforme);	            
+	            llicencia = LlicenciaCore.findLlicencia(conn, codi);	            
 	        } catch (SQLException | NamingException e) {
 	            e.printStackTrace();
 	            errorString = e.getMessage();

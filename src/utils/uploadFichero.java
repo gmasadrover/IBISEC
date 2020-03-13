@@ -126,12 +126,12 @@ public class uploadFichero extends HttpServlet {
 	        				idTipusFile.mkdir();
 	        			}    
 	    	    	}
-	    	        File archivo_server = new File(ruta + "/documents/" + fileName + "temp_" + arxiu.getName());
 	    	        /*y lo escribimos en el servido*/
 	    	        try {
-	    				arxiu.write(archivo_server);
-	    				Fitxers.guardarRegistreFitxer(conn, arxiu.getName(), ruta + "/documents/" + fileName + "temp_" + arxiu.getName(), Usuari.getIdUsuari());
-	    		        if (tipus.equals("RegistreE")) {
+	    	        	if (tipus.equals("RegistreE")) {
+	    		        	File archivo_server = new File(ruta + "/documents/" + fileName + "temp_" + arxiu.getName());
+	    		        	arxiu.write(archivo_server);
+	    		        	Fitxers.guardarRegistreFitxer(conn, arxiu.getName(), ruta + "/documents/" + fileName + "temp_" + arxiu.getName(), Usuari.getIdUsuari());
 	    		        	String tipusRegistre = "E";
 	    		        	if (idTipus.contains("RS")) tipusRegistre = "S";
 	    		        	Registre reg = RegistreCore.findRegistre(conn, tipusRegistre, idTipus);
@@ -155,9 +155,14 @@ public class uploadFichero extends HttpServlet {
 			    	        }		    	       
 		    		        stamper.close();
 		    		        reader.close();
-	    		        }	    				
-	    		        //Delete Temp file
-	    		        archivo_server.delete();
+		    		        //Delete Temp file
+		    		        archivo_server.delete();
+	    		        } else {
+	    		        	File archivo_server = new File(ruta + "/documents/" + fileName + arxiu.getName());
+	    		        	arxiu.write(archivo_server);
+	    		        	Fitxers.guardarRegistreFitxer(conn, arxiu.getName(), ruta + "/documents/" + fileName + arxiu.getName(), Usuari.getIdUsuari());
+	    		        }
+	    		        
 	    		        
 	    			} catch (Exception e) {
 	    				// TODO Auto-generated catch block

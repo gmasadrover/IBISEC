@@ -70,14 +70,19 @@
 	                        	<label>Localitat: </label> ${centre.localitat}
                             </p>                                            	
 	                    </div>		            	
-                	</div>  
-                	<c:if test="${canCreateTasca}">
-			      		<div class="row margin_bottom10">
-				    		<div class="col-md-12 panel">
+                	</div>
+                	<div class="row margin_bottom10">  
+	                	<c:if test="${canCreateTasca}">
+				      		<div class="col-md-6 panel">
 								<a href="createTasca?centre=${centre.idCentre}&tipus=centre" class="btn btn-primary loadingButton"  data-msg="obrint formulari..." role="button">Nova incidència</a>
 							</div>
-			    		</div>
-			    	</c:if>
+				    	</c:if>
+				    	<c:if test="${canEditCentre}">
+						    <div class="col-md-6 panel">
+								<a href="editCentre?codi=${centre.idCentre}" class="btn btn-success loadingButton"  data-msg="obrint centre..." role="button">Editar Centre</a>
+							</div>
+				    	</c:if>
+			    	</div>
                 	<c:if test="${canViewIncidencies}">              	
 	                	<h2 class="margin_bottom30">Incidencies</h2>
 	                	<div class="row">

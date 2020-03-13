@@ -49,10 +49,27 @@
                                 <div class="col-xs-3">
                                 	<input class="form-control" placeholder="codi certificació" value="${certificacio.idFactura}" disabled>
                                 	<input class="hidden" name="idCertificacio" value="${certificacio.idFactura}">
-                                	<input class="hidden" name="idInforme" value="${certificacio.idInforme}">
-                                	<input class="hidden" name="idActuacio" value="${certificacio.idActuacio}">
+                                	<input class="hidden" name="idInforme" id="idInforme" value="${certificacio.idInforme}">
+                                	<input class="hidden" name="idActuacio" id="idActuacio" value="${certificacio.idActuacio}">
                                 </div>
                             </div>
+                            <div class="form-group">
+                            	 <div class="row">
+                            	 	<div class="col-md-3">
+				               		</div>
+				                	<div class="col-md-9">
+				               			<p style="color: red;">Recordau indicar si la certificació és ordinària o final.</p>
+				               		</div>
+				               	 </div>				               	 
+                                <label class="col-xs-3 control-label">Tipus de certificació</label>
+                                <input class="hidden" name="tipusCert" id=tipusCert value="${certificacio.tipus}">  
+                                <div class="col-xs-3">
+                                	<select class="selectpicker" name="tipusCertificacio" id="tipusCertificacio">						                                					                                	
+					               		<option value="ordinaria">Ordinària</option>
+					               		<option value="final">Final</option>					                   		
+					                </select>	
+                                </div>
+                            </div>	
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">Proveidor</label>
                                 <input class="hidden" name="nifProveidor" id=nifProveidor value="${certificacio.idProveidor}"> 

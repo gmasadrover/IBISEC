@@ -18,11 +18,13 @@ import bean.Judicial;
 import bean.Registre;
 import bean.Tasca;
 import bean.Empresa;
+import bean.Factura;
 import bean.User;
 import bean.ControlPage.SectionPage;
 import core.BastanteosCore;
 import core.ControlPageCore;
 import core.EmpresaCore;
+import core.FacturaCore;
 import core.JudicialCore;
 import core.RegistreCore;
 import core.TascaCore;
@@ -61,12 +63,14 @@ public class EditJudicialServlet extends HttpServlet {
 	        List<Tasca> tasquesList = new ArrayList<Tasca>();
 	        List<Registre> entrades = new ArrayList<Registre>();
 	        List<Registre> sortides = new ArrayList<Registre>();
+	        List<Factura> llistaFactures = new ArrayList<Factura>();
 	        boolean canModificarProcediment = false;
 	        try {
 	        	procediment = JudicialCore.findProcediment(conn, ref);
 	        	tasquesList = TascaCore.findTasquesJudicial(conn, ref);
-	        	entrades = RegistreCore.searchEntradesIncidencia(conn, ref);
-	        	sortides = RegistreCore.searchSortidesIncidencia(conn, ref);
+	        	entrades = RegistreCore.searchEntradesIncidencia(conn, ref, null);
+	        	sortides = RegistreCore.searchSortidesIncidencia(conn, ref, null);
+	        	llistaFactures = FacturaCore.getFacturesActuacio(conn, ref);
 	        	canModificarProcediment = UsuariCore.hasPermision(conn, usuari, SectionPage.judicials_modificar);
 	        } catch (SQLException | NamingException e) {
 	            e.printStackTrace();
@@ -84,6 +88,7 @@ public class EditJudicialServlet extends HttpServlet {
 	        request.setAttribute("canModificarProcediment", canModificarProcediment);
 	        request.setAttribute("entrades", entrades);
 	        request.setAttribute("sortides", sortides);
+	        request.setAttribute("llistaFactures", llistaFactures);
 	        request.setAttribute("tasquesList", tasquesList);
 	        request.setAttribute("errorString", errorString);
 	        request.setAttribute("procediment", procediment);

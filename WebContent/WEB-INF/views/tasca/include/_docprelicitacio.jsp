@@ -7,7 +7,7 @@
 <m:setBundle basename="i18n.base"/>
 <c:if test="${canRealitzarTasca}">
 	<div class="panel-body">
-		<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddPA">
+		<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoTasca">
 			<input type="hidden" name="document" value="paTecnic">
 			<input type="hidden" id="infPrev" name=infPrev value="${propostesInformeList.size()}">
 			<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
@@ -124,6 +124,15 @@
 				        	</div>	        	
 						</div>						                       		
 					</div>
+					<div class="form-group">
+						<div class="col-md-12">		
+							<div class="row">	 
+								<div class="col-md-12">						                    						
+				          			<textarea class="form-control" name="comentariAdministratiu" placeholder="comentari administratiu" rows="3">${propostaActuacio.comentariAdministratiu}</textarea> 
+				            	</div>
+				        	</div>	        	
+						</div>						                       		
+					</div>
 				</div>																		    	
 			</div>
 			<c:choose>
@@ -166,7 +175,7 @@
 	</div>
 	<c:if  test="${areaJuridica}">
 		<div class="panel-body">
-			<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddPA">
+			<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoTasca">
 				<input type="hidden" name="document" value="memoriaInici">
 				<input type="hidden" name="idInforme" value="${informePrevi.idInf}">
 				<input type="hidden" name="idActuacio" value="${actuacio.referencia}">

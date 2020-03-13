@@ -105,15 +105,24 @@ public class DoEditLicitacio extends HttpServlet {
     	    if (multipartParams.getFitxersByName().get("ratificacioClassificacio") != null) {
     	    	Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("ratificacioClassificacio")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Ratificació classificació", Usuari.getIdUsuari());
     	    }  
+    	    
+    	    if (multipartParams.getParametres().get("dataPerfilContratant") != null && ! multipartParams.getParametres().get("dataPerfilContratant").isEmpty()) {
+				expedient.setDataPublicacioPerfilContratant(formatter.parse(multipartParams.getParametres().get("dataPerfilContratant")));
+				ExpedientCore.updateExpedient(conn, expedient);
+    	    }	
     	   
     	    if (multipartParams.getFitxersByName().get("propostaTecnica") != null) Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("propostaTecnica")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Proposta tècnica", Usuari.getIdUsuari());
     	    if (multipartParams.getParametres().get("dataAdjudicacio") != null && ! multipartParams.getParametres().get("dataAdjudicacio").isEmpty()) {
 	    		expedient.setDataAdjudicacio(formatter.parse(multipartParams.getParametres().get("dataAdjudicacio")));  
-	    		 ExpedientCore.updateExpedient(conn, expedient);
+	    		if (informe.getAssignacioCredit() != null && !informe.getAssignacioCredit().get(0).getIdAssignacio().isEmpty()) CreditCore.assignar(conn, idInforme, OfertaCore.findOfertaById(conn, seleccionada).getPlic());   
+    	    	ExpedientCore.updateExpedient(conn, expedient);
+    	    	ActuacioCore.aprovar(conn, informe.getActuacio().getReferencia(), Usuari.getIdUsuari());
+				OfertaCore.aprovarOferta(conn, idInforme, Usuari.getIdUsuari());
+				InformeCore.modificarEstat(conn, idInforme, "execucio");
 	    	}
     	    if (multipartParams.getFitxersByName().get("autoritzacioDespesa") != null) {    	    	
-    	    	if (informe.getAssignacioCredit() != null && !informe.getAssignacioCredit().getIdAssignacio().isEmpty()) CreditCore.assignar(conn, idInforme, OfertaCore.findOfertaById(conn, seleccionada).getPlic());   
     	    	Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("autoritzacioDespesa")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Autorització  Proposta despesa", Usuari.getIdUsuari());
+    	    	if (informe.getAssignacioCredit() != null && !informe.getAssignacioCredit().get(0).getIdAssignacio().isEmpty()) CreditCore.assignar(conn, idInforme, OfertaCore.findOfertaById(conn, seleccionada).getPlic());   
     	    	ActuacioCore.aprovar(conn, informe.getActuacio().getReferencia(), Usuari.getIdUsuari());
 				ActuacioCore.actualitzarActuacio(conn, informe.getActuacio().getReferencia(), "Autorització generada");
 				OfertaCore.aprovarOferta(conn, idInforme, Usuari.getIdUsuari());

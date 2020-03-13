@@ -33,24 +33,12 @@
 				<c:set var="arxiu" value="${arxiu}" scope="request"/>
 				<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 			</c:forEach>
-			<p></p>			
-			<c:if test="${propostaModificacio.autoritzacioPropostaDespesa.ruta != null}">		
-				<div class="document">			
-	               	<label>Autorització proposta despesa:</label>													                  	
-	           		<a target="_blanck" href="downloadFichero?ruta=${propostaModificacio.autoritzacioPropostaDespesa.getEncodedRuta()}">
-						${propostaModificacio.autoritzacioPropostaDespesa.nom}
-					</a>
-					<c:if test="${propostaModificacio.autoritzacioPropostaDespesa.signat}">
-							<span data-ruta="${propostaModificacio.autoritzacioPropostaDespesa.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
-					</c:if><br>
-					<div class="infoSign hidden">
-						<c:forEach items="${propostaModificacio.autoritzacioPropostaDespesa.firmesList}" var="firma" >
-							<span>Signat per: ${firma.nomFirmant} - ${firma.dataFirma}</span>
-							<br>
-						</c:forEach>
-					</div>
-				</div>
-			</c:if>		
+			<p></p>		
+			<label>Tramits:</label>	
+			<c:forEach items="${propostaModificacio.tramitsModificacio}" var="arxiu" >		
+				<c:set var="arxiu" value="${arxiu}" scope="request"/>
+				<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+			</c:forEach>	
 			<p></p>
 		</div>
 	

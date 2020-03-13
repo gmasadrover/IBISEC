@@ -24,7 +24,7 @@
                         </h1>
                         <ol class="breadcrumb">
                             <li class="active">
-                                <i class="fa fa-dashboard"></i> Procediement Judicial
+                                <i class="fa fa-dashboard"></i> Procediment Judicial
                             </li>
                             <li class="active">
                                 <i class="fa fa-table"></i> Modificar
@@ -313,6 +313,55 @@
 						<c:set var="tipus" value="sortida" scope="request"/>
                 		<jsp:include page="../registre/include/_registresList.jsp"></jsp:include>
 					</div>
+					<div class="row panel-body">
+						<h4>Factures</h4>
+						<div class="table-responsive">                        
+				        	<table class="table table-striped table-bordered filerTable factures">
+				            	<thead>
+				                	<tr>                                        
+				                    	<th>Factura</th>				                  		
+				                      	<th>Data entrada</th>
+				                      	<th>Data entrada</th>
+				                       	<th>Data factura</th>
+				                      	<th>Data factura</th>
+				                      	<th>Data pasada a conf</th>
+				                      	<th>Data pasada a conf</th>
+				                      	<th>Data conformada</th>
+				                      	<th>Data conformada</th>
+				                      	<th>Data contabilitat</th>
+				                      	<th>Data contabilitat</th>
+				                       	<th>Import</th>
+				                       	<th>Nombre factura</th>
+				                      	<th>Tipus</th>				                        
+				                      	<th>notes</th>  
+				                      	<th>Arxiu</th>
+				                   	</tr>
+				               	</thead>
+				              	<tbody>
+				                 	<c:forEach items="${llistaFactures}" var="factura" >
+					          			<tr class="${factura.anulada ? 'danger' : ''}">							          	
+							           		<td><a href="facturaDetalls?ref=${factura.idFactura}">${factura.idFactura}</a></td>							            	
+							            	<td>${factura.getDataEntradaString()}</td>
+							            	<td>${factura.dataEntrada}</td>
+							            	<td>${factura.getDataFacturaString()}</td>
+							            	<td>${factura.dataFactura}</td>
+							            	<td>${factura.getDataEnviatConformadorString()}</td>
+							            	<td>${factura.dataEnviatConformador}</td>
+							            	<td>${factura.getDataConformacioString()}</td>
+							            	<td>${factura.dataConformacio}</td>
+							            	<td>${factura.getDataEnviatComptabilitatString()}</td>
+							            	<td>${factura.dataEnviatComptabilitat}</td>
+							            	<td>${factura.valor}</td>
+							            	<td>${factura.nombreFactura}</td>
+							            	<td>${factura.tipusFactura}</td>
+							            	<td>${factura.notes}</td>	 	
+							            	<td><a target="_blanck" href="downloadFichero?ruta=${factura.factura.getEncodedRuta()}">${factura.factura.nom}</a></td>				            	
+							          	</tr>
+							       	</c:forEach>
+			              		</tbody>
+			             	</table>
+			       		</div>															
+					</div>
                 </c:if>
                 <!-- /.row -->     
            	</div>
@@ -322,5 +371,6 @@
 	</div>
     <jsp:include page="../_footer.jsp"></jsp:include>   
     <script src="js/judicial/modificar.js?<%=application.getInitParameter("datakey")%>"></script>
+    <script src="js/registre/llistat.js?<%=application.getInitParameter("datakey")%>"></script>
 </body>
 </html>

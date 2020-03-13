@@ -59,14 +59,16 @@
                                 <thead>
                                     <tr>
                                         <th>Codi</th>
-                                        <th>Nom</th>                                                          
+                                        <th>Nom</th>   
+                                        <th>Tipus</th>                                                       
                                     </tr>
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${centresList}" var="centre" >
 							          	<tr>							          	
 							           		<td><a href="centreDetalls?codi=${centre.idCentre}" class="loadingButton"  data-msg="obrint centre...">${centre.idCentre}</a></td>
-							            	<td>${centre.getNomComplet()}</td>					            						            	
+							            	<td>${centre.getNomComplet()}</td>		
+							            	<td>${centre.tipo}</td>					            						            	
 							          	</tr>
 							       	</c:forEach>                                	
                                 </tbody>

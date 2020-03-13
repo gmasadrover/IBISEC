@@ -38,12 +38,15 @@ import bean.Actuacio;
 import bean.Empresa;
 import bean.Expedient;
 import bean.InformeActuacio;
+import bean.Judicial;
+import bean.Judicial.Tramitacio;
 import bean.Oferta;
 import bean.User;
 import core.ActuacioCore;
 import core.CreditCore;
 import core.EmpresaCore;
 import core.InformeCore;
+import core.JudicialCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
@@ -75,23 +78,25 @@ public class DoCrearDocument extends HttpServlet {
     	InformeActuacio informe = new InformeActuacio();
     	Actuacio actuacio = new Actuacio();
     	Oferta oferta = new Oferta();
-    	try {
-    		if (idInforme.contains("-MOD-")) {
-    			informe = InformeCore.getMoficacioInforme(conn, idInforme);
-    		} else {
-    			informe = InformeCore.getInformePrevi(conn, idInforme, false);
-    		}    		
-			actuacio = ActuacioCore.findActuacio(conn, idActuacio);	
-		} catch (NumberFormatException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    	if (idInforme != null) {
+	    	try {
+	    		if (idInforme.contains("-MOD-")) {
+	    			informe = InformeCore.getMoficacioInforme(conn, idInforme, false);
+	    		} else {
+	    			informe = InformeCore.getInformePrevi(conn, idInforme, false);
+	    		}    		
+				actuacio = ActuacioCore.findActuacio(conn, idActuacio);	
+			} catch (NumberFormatException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (NamingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
     	String filePath = "";
     	File downloadFile = null;
     	Context env;
@@ -120,14 +125,15 @@ public class DoCrearDocument extends HttpServlet {
     		
     		filePath = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio +"/autoritzacio_informe_"+ idInforme +".pdf";
             try {
-            	PdfReader reader = new PdfReader(ruta + "/base/MODELLICIMEN2v5.pdf"); // input PDF
+            	PdfReader reader = new PdfReader(ruta + "/base/MODELLICIMEN2v6.pdf"); // input PDF
     			PdfStamper stamper = new PdfStamper(reader,
     			  new FileOutputStream("/autoritzacio_informe_"+ idInforme +".pdf"));			
     			            
                 AcroFields fields = stamper.getAcroFields();    	        
+                fields.setField("numExpedient",informe.getExpcontratacio().getExpContratacio());
     	        fields.setField("tipusContracte",informe.getPropostaInformeSeleccionada().getTipusObraFormat());
-    	        fields.setField("data",getData());
-    	        fields.setField("adjudicatari","Adjudica l'execució d'aquesta actuació a " + informe.getOfertaSeleccionada().getNomEmpresa());
+    	        fields.setField("dataTecnic", informe.getOfertaSeleccionada().getDataCapValidacioString());
+    	        fields.setField("data",getData());    	      
     	        fields.setField("pbase", informe.getOfertaSeleccionada().getPbaseFormat());
     	        fields.setField("iva", informe.getOfertaSeleccionada().getIvaFormat());
     	        fields.setField("plic", informe.getOfertaSeleccionada().getPlicFormat());
@@ -251,7 +257,7 @@ public class DoCrearDocument extends HttpServlet {
    	            AcroFields fields = stamper.getAcroFields();
    	            fields.setField("informe",informe.getIdInf());
    	        	fields.setField("capFinancera", Usuari.getNomCompletReal());
-   	        	fields.setField("partida", informe.getAssignacioCredit().getPartida().getNom());	   	       
+   	        	fields.setField("partida", informe.getAssignacioCredit().get(0).getPartida().getNom());	   	       
    	   	       	fields.setField("observacions", CreditCore.getComentariPartida(conn, idInforme));	
    	   	       	String resolucio = "El cap de l'àrea econòmica financera dóna el seu vistiplau a l'informe i procedeix a l'assignació de la partida pressupostària";
 	   	        if (informe.getDataRebujada() != null) {
@@ -292,19 +298,62 @@ public class DoCrearDocument extends HttpServlet {
   	            AcroFields fields = stamper.getAcroFields();
   	            fields.setField("expedient",expedient.getExpContratacio());
   	        	fields.setField("tipus", expedient.getTipus());
-  	        	fields.setField("objecte", informe.getPropostaInformeSeleccionada().getObjecte());	   	       
-  	   	       	fields.setField("partida", informe.getAssignacioCredit().getPartida().getCodi());	
+  	        	String objecte = informe.getPropostaInformeSeleccionada().getObjecte();
+  	        	if (informe.getIdInf().contains("-MOD-")) {
+  	        		objecte = InformeCore.getInformePrevi(conn, informe.getIdInfOriginal(), false).getPropostaInformeSeleccionada().getObjecte();
+  	        		objecte += " Incidència: " + informe.getIdInf();
+  	        	}
+  	        	fields.setField("objecte", objecte);	   	       
+  	   	       	fields.setField("partida", informe.getAssignacioCredit().get(0).getPartida().getCodi());	
   	   	       	fields.setField("PBase", informe.getPropostaInformeSeleccionada().getPbaseFormat());
   	   	       	fields.setField("IVA", informe.getPropostaInformeSeleccionada().getIvaFormat());
   	   	       	fields.setField("PLic", informe.getPropostaInformeSeleccionada().getPlicFormat());
   	   	       	stamper.close();
   	   	       	reader.close();
      		                
-  	   		} catch (DocumentException e1) {
+  	   		} catch (DocumentException | SQLException | NamingException e1) {
   	   			// TODO Auto-generated catch block
   	   			e1.printStackTrace();
   	   		} // output PDF
   			downloadFile = new File("/certificat_existència_crèdit_"+ informe.getExpcontratacio().getExpContratacio().replace("/", "_") +".pdf");
+       } else if ("procedimentJudicial".equals(tipus)) {
+    	    // Crear directoris si no existeixen
+  		   	String idTramit =  request.getParameter("idTramit");
+  		   	String idPartida =  request.getParameter("idPartida");
+    	   	/*File tmpFile = new File(ruta + "/documents/Procediments");
+  			if (!tmpFile.exists()) {
+  				tmpFile.mkdir();
+  			}
+  			tmpFile = new File(ruta + "/documents/Procediments/" + idInforme);
+  			if (!tmpFile.exists()) {
+  				tmpFile.mkdir();
+  			}
+  			tmpFile = new File(ruta + "/documents/Procediments/" + idInforme + "/" + idTramit);
+  			if (!tmpFile.exists()) {
+  				tmpFile.mkdir();
+  			}     		
+  			filePath = ruta + "/documents/Procediments/" + idActuacio +"/certificat_existència_crèdit_"+ idInforme.replace("/", "_") +".pdf";*/
+  			try {
+  				Judicial procediment = JudicialCore.findProcediment(conn, idInforme);	    
+	    		Tramitacio tramitacio = JudicialCore.findTramitacio(conn, idTramit);	
+  				PdfReader reader = new PdfReader(ruta + "/base/certCredit.pdf"); // input PDF
+  				PdfStamper stamper = new PdfStamper(reader,
+  				  new FileOutputStream("/certificat_existència_crèdit_"+ idActuacio.replace("/", "_") +".pdf"));			
+  				            
+  	            AcroFields fields = stamper.getAcroFields();
+  	            fields.setField("expedient",procediment.getReferencia());
+  	        	fields.setField("tipus", "Judicial");	        	
+  	        	fields.setField("objecte", tramitacio.getDescripcio());	   	       
+  	   	       	fields.setField("partida", idPartida);	
+  	   	       	fields.setField("PLic", tramitacio.getQuantia() + " €");
+  	   	       	stamper.close();
+  	   	       	reader.close();
+     		                
+  	   		} catch (DocumentException | SQLException | NamingException e1) {
+  	   			// TODO Auto-generated catch block
+  	   			e1.printStackTrace();
+  	   		} // output PDF
+  			downloadFile = new File("/certificat_existència_crèdit_"+ idActuacio.replace("/", "_") +".pdf");
        } else if ("AutoritzacioPAObres".equals(tipus)) {
      		// Crear directoris si no existeixen
   			File tmpFile = new File(ruta + "/documents/" + idIncidencia);

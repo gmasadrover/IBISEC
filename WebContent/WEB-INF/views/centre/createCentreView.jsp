@@ -87,7 +87,7 @@
                     <br>
 				    <div class="form-group">
 				        <div class="col-xs-offset-3 col-xs-9">
-				            <input type="submit" class="btn btn-primary" value="Guardar">
+				            <input type="submit" class="btn btn-primary loadingButton" value="Guardar">
 				            <input type="reset" class="btn btn-default" value="Reiniciar">
 				        </div>
 				    </div>    		            	

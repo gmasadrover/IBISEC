@@ -65,7 +65,7 @@ public class CalendariCotxeServlet extends HttpServlet {
 	        int diaSetmana = cal.get(Calendar.DAY_OF_WEEK);
 	        String reservesPropies = "";
 			try {
-				reservesPropies = CalendarCore.pintarReservesUsuari(CalendarCore.getReservesUsuari(conn, cal.get(Calendar.WEEK_OF_YEAR), usuariLogetjat.getIdUsuari()));
+				reservesPropies = CalendarCore.pintarReservesUsuari(CalendarCore.getReservesUsuari(conn, cal.get(Calendar.WEEK_OF_YEAR), usuariLogetjat.getIdUsuari(), cal.get(Calendar.YEAR)));
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -73,11 +73,11 @@ public class CalendariCotxeServlet extends HttpServlet {
 			
 	        ReservaVehicle setmanaCotxe = CalendarCore.getSetmana(conn, cal, "cotxe");
 	        ReservaVehicle setmanaCotxeElectric = CalendarCore.getSetmana(conn, cal, "cotxeElectric");
-	        ReservaVehicle setmanaFurgoneta = CalendarCore.getSetmana(conn, cal, "furgoneta");
+	       // ReservaVehicle setmanaFurgoneta = CalendarCore.getSetmana(conn, cal, "furgoneta");
 	        cal.add(Calendar.DATE, 7);
 	        ReservaVehicle seguentSetmanaCotxe = CalendarCore.getSetmana(conn, cal, "cotxe");
 	        ReservaVehicle seguentSetmanaCotxeElectric = CalendarCore.getSetmana(conn, cal, "cotxeElectric");
-	        ReservaVehicle seguentSetmanaFurgoneta = CalendarCore.getSetmana(conn, cal, "furgoneta");
+	       // ReservaVehicle seguentSetmanaFurgoneta = CalendarCore.getSetmana(conn, cal, "furgoneta");
 	        String optionDies = CalendarCore.getDiesPossibles();
 	        	        
 	        request.setAttribute("reservesPropies", reservesPropies);
@@ -89,8 +89,8 @@ public class CalendariCotxeServlet extends HttpServlet {
 	        request.setAttribute("setmanaCotxeElectric", setmanaCotxeElectric);
 	        request.setAttribute("seguentSetmanaCotxeElectric", seguentSetmanaCotxeElectric);
 	        request.setAttribute("horesFurgoneta", ReservaVehicle.horesFurgoneta);
-	        request.setAttribute("setmanaFurgoneta", setmanaFurgoneta);
-	        request.setAttribute("seguentSetmanaFurgoneta", seguentSetmanaFurgoneta);
+	       // request.setAttribute("setmanaFurgoneta", setmanaFurgoneta);
+	       // request.setAttribute("seguentSetmanaFurgoneta", seguentSetmanaFurgoneta);
 	        request.setAttribute("diaSetmana", diaSetmana);
 	        request.setAttribute("errorString", errorString);
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuariLogetjat, "Usuari"));

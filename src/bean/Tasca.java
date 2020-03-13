@@ -22,12 +22,15 @@ public class Tasca {
 	private InformeActuacio informe;
 	private boolean llegida;
 	private String primerComentari;
+	private String darrerComentari;
 	private Date darreraModificacio;
 	private String duradaTasca;
 	private String departament;
 	private boolean seguiment;
 	private int prioritat;
 	private List<Fitxer> documents;
+	private String registre;
+	private String usuCre;
 	
 	public Tasca() {
 
@@ -235,5 +238,29 @@ public class Tasca {
 
 	public void setDuradaTasca(String duradaTasca) {
 		this.duradaTasca = duradaTasca;
+	}
+
+	public String getRegistre() {
+		return registre;
+	}
+
+	public void setRegistre(String registre) {
+		this.registre = registre;
+	}
+
+	public String getDarrerComentari() {
+		return darrerComentari;
+	}
+
+	public void setDarrerComentari(String darrerComentari) {
+		this.darrerComentari = darrerComentari;
+	}
+
+	public String getUsuCre() {
+		return usuCre;
+	}
+
+	public void setUsuCre(String usuCre) {
+		this.usuCre = usuCre;
 	}
 }

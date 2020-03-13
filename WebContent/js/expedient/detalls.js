@@ -1,4 +1,875 @@
-$(document).ready(function() {
+$(document).ready(function() {	
+	//Carregar els documents
+	
+	$('.carregarDocTecnica').on('click', function(){
+		var mainContent = $(this);
+		var content = $(this);
+		content = mainContent.parent().parent().parent().find('.documentacioTecnica');
+    	content.html('');	
+    	content.append('<div class="loader"></div>');	
+		var html = '';
+		var isCap = $(this).data('iscap');
+		$.ajax({
+	        type: "POST",
+	        url: "getDocumentacioTecnica",
+	        headers: {
+	            'Cache-Control': 'no-cache, no-store, must-revalidate', 
+	            'Pragma': 'no-cache', 
+	            'Expires': '0'
+	          },
+	        dataType: "json",
+	        data: {"idIncidencia": $(this).data('idincidencia'), "idActuacio": $(this).data('idactuacio'), "idInf": $(this).data('idinf'), "idTasca": $(this).data('idtasca')},
+	        //if received a response from the server
+	        success: function( data, textStatus, jqXHR) {	
+	        	content.parent().find('.docTecnica').html('');
+	        	$.each(data.documentacioTecnica, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.docTecnica').append(html);
+	        		numDocument++;
+	        	 });  
+	        	content.parent().find('.informeSupervisio').html('');
+	        	$.each(data.informeSupervisio, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.informeSupervisio').append(html);
+	        		numDocument++;
+	        	 });  
+	        	content.parent().find('.projecte').html('');
+	        	$.each(data.projecte, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.projecte').append(html);
+	        		numDocument++;
+	        	 });  
+	        	content.parent().find('.nomenamentDF').html('');
+	        	$.each(data.nomenamentDF, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.nomenamentDF').append(html);
+	        		numDocument++;
+	        	 }); 
+	        	content.parent().find('.documentPSS').html('');
+	        	$.each(data.documentPSS, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.documentPSS').append(html);
+	        		numDocument++;
+	        	 }); 
+	        	content.parent().find('.documentPGR').html('');
+	        	$.each(data.documentPGR, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.documentPGR').append(html);
+	        		numDocument++;
+	        	 });
+	        	content.parent().find('.documentPlaTreball').html('');
+	        	$.each(data.documentPlaTreball, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.documentPlaTreball').append(html);
+	        		numDocument++;
+	        	 }); 
+	        	content.parent().find('.documentFinalitzacioContratista').html('');
+	        	$.each(data.documentFinalitzacioContratista, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.documentFinalitzacioContratista').append(html);
+	        		numDocument++;
+	        	 }); 
+	        	content.parent().find('.documentInformeDO').html('');
+	        	$.each(data.documentInformeDO, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.documentInformeDO').append(html);
+	        		numDocument++;
+	        	 }); 
+	        	content.parent().find('.documentCFO').html('');
+	        	$.each(data.documentCFO, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.documentCFO').append(html);
+	        		numDocument++;
+	        	 }); 
+	        	content.parent().find('.documentRepresentacioRecepcio').html('');
+	        	$.each(data.documentRepresentacioRecepcio, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.documentRepresentacioRecepcio').append(html);
+	        		numDocument++;
+	        	 }); 
+	        	content.parent().find('.documentCertificacioFinal').html('');
+	        	$.each(data.documentCertificacioFinal, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.documentCertificacioFinal').append(html);
+	        		numDocument++;
+	        	 }); 
+	        	content.parent().find('.documentDevolucioAval').html('');
+	        	$.each(data.documentDevolucioAval, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';	        		
+	        		content.parent().find('.documentDevolucioAval').append(html);
+	        		numDocument++;
+	        	 }); 
+	        	content.find('.loader').remove();
+	        },        
+	        //If there was no resonse from the server
+	        error: function(jqXHR, textStatus, errorThrown){
+	             console.log("Something really bad happened " + jqXHR.responseText);
+	             content.find('.loader').remove();
+	        }  
+	    });
+	});
+	
+	
+	$('.carregarDocumentsUrbanisme').on('click', function(){
+		var mainContent = $(this);
+		var content = $(this);
+		content = mainContent.parent().parent().parent().find('.documentsAltresAutUrbanistica');
+    	content.html('');	
+    	content.append('<div class="loader"></div>');	
+		var html = '';
+		var isCap = $(this).data('iscap');
+		$.ajax({
+	        type: "POST",
+	        url: "getDocumentacioUrbanisme",
+	        headers: {
+	            'Cache-Control': 'no-cache, no-store, must-revalidate', 
+	            'Pragma': 'no-cache', 
+	            'Expires': '0'
+	          },
+	        dataType: "json",
+	        data: {"idIncidencia": $(this).data('idincidencia'), "idActuacio": $(this).data('idactuacio'), "idInf": $(this).data('idinf')},
+	        //if received a response from the server
+	        success: function( data, textStatus, jqXHR) {	        	        	
+	        	$.each(data.documentsAltresAutUrbanistica, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		content.append(html);
+	        		numDocument++;
+	        	 });  	  
+	        	content.find('.loader').remove();
+	        },        
+	        //If there was no resonse from the server
+	        error: function(jqXHR, textStatus, errorThrown){
+	             console.log("Something really bad happened " + jqXHR.responseText);
+	             content.find('.loader').remove();
+	        }  
+	    });
+	});
+	
+	
+	$('.carregarAltresDocuments').on('click', function(){
+		var mainContent = $(this);
+		var content = $(this);
+		content = mainContent.parent().parent().parent().find('.documentsAltres');
+    	content.html('');	
+    	content.append('<div class="loader"></div>');	
+		var html = '';
+		var isCap = $(this).data('iscap');
+		$.ajax({
+	        type: "POST",
+	        url: "getAltreDocumentacio",
+	        headers: {
+	            'Cache-Control': 'no-cache, no-store, must-revalidate', 
+	            'Pragma': 'no-cache', 
+	            'Expires': '0'
+	          },
+	        dataType: "json",
+	        data: {"idIncidencia": $(this).data('idincidencia'), "idActuacio": $(this).data('idactuacio'), "idInf": $(this).data('idinf'), "idTasca": $(this).data('idtasca')},
+	        //if received a response from the server
+	        success: function( data, textStatus, jqXHR) {	        	        	
+	        	$.each(data.documentsAtres, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		content.append(html);
+	        		numDocument++;
+	        	 });  	  
+	        	content.find('.loader').remove();
+	        },        
+	        //If there was no resonse from the server
+	        error: function(jqXHR, textStatus, errorThrown){
+	             console.log("Something really bad happened " + jqXHR.responseText);
+	             content.find('.loader').remove();
+	        }  
+	    });
+	});
+	
+	
+	$('.carregarActes').on('click', function(){
+		var mainContent = $(this);
+		var content = $(this);
+		content = mainContent.parent().parent().parent().find('.documentacioActes');
+    	content.html('');	
+    	content.append('<div class="loader"></div>');	
+		var html = '';
+		var isCap = $(this).data('iscap');
+		$.ajax({
+	        type: "POST",
+	        url: "getActes",
+	        headers: {
+	            'Cache-Control': 'no-cache, no-store, must-revalidate', 
+	            'Pragma': 'no-cache', 
+	            'Expires': '0'
+	          },
+	        dataType: "json",
+	        data: {"idIncidencia": $(this).data('idincidencia'), "idActuacio": $(this).data('idactuacio'), "idInf": $(this).data('idinf')},
+	        //if received a response from the server
+	        success: function( data, textStatus, jqXHR) {	
+	        	content.parent().find('.actaReplanteig').html('');
+	        	$.each(data.actaReplanteig, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.actaReplanteig').append(html);
+	        		numDocument++;
+	        	 });  
+	        	content.parent().find('.actaComprovacioReplanteig').html('');
+	        	$.each(data.actaComprovacioReplanteig, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.actaComprovacioReplanteig').append(html);
+	        		numDocument++;
+	        	 });  
+	        	content.parent().find('.actaIniciObra').html('');
+	        	$.each(data.actaIniciObra, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.actaIniciObra').append(html);
+	        		numDocument++;
+	        	 });  
+	        	content.parent().find('.actaAprovacioPlaSeguretat').html('');
+	        	$.each(data.actaAprovacioPlaSeguretat, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.actaAprovacioPlaSeguretat').append(html);
+	        		numDocument++;
+	        	 }); 
+	        	content.parent().find('.actaAprovacioResidus').html('');
+	        	$.each(data.actaAprovacioResidus, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.actaAprovacioResidus').append(html);
+	        		numDocument++;
+	        	 }); 
+	        	content.parent().find('.actaAprovacioProgramaTreball').html('');
+	        	$.each(data.actaAprovacioProgramaTreball, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.actaAprovacioProgramaTreball').append(html);
+	        		numDocument++;
+	        	 });
+	        	content.parent().find('.actaRecepcio').html('');
+	        	$.each(data.actaRecepcio, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.actaRecepcio').append(html);
+	        		numDocument++;
+	        	 }); 
+	        	content.parent().find('.actaMedicioGeneral').html('');
+	        	$.each(data.actaMedicioGeneral, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.actaMedicioGeneral').append(html);
+	        		numDocument++;
+	        	}); 
+	        	
+	        	content.find('.loader').remove();
+	        },        
+	        //If there was no resonse from the server
+	        error: function(jqXHR, textStatus, errorThrown){
+	             console.log("Something really bad happened " + jqXHR.responseText);
+	             content.find('.loader').remove();
+	        }  
+	    });
+	});
+	
+	$('.carregarDocInstalacions').on('click', function(){
+		var mainContent = $(this);
+		var content = $(this);
+		content = mainContent.parent().parent().parent().find('.documentacioInstalacions');
+    	content.html('');	
+    	content.append('<div class="loader"></div>');	
+		var html = '';
+		var isCap = $(this).data('iscap');
+		$.ajax({
+	        type: "POST",
+	        url: "getDocumentacioInstalacions",
+	        headers: {
+	            'Cache-Control': 'no-cache, no-store, must-revalidate', 
+	            'Pragma': 'no-cache', 
+	            'Expires': '0'
+	          },
+	        dataType: "json",
+	        data: {"idIncidencia": $(this).data('idincidencia'), "idActuacio": $(this).data('idactuacio'), "idInf": $(this).data('idinf'), "idTasca": $(this).data('idtasca')},
+	        //if received a response from the server
+	        success: function( data, textStatus, jqXHR) {	
+	        	content.parent().find('.documentsIntalacioBaixaTensio').html('');
+	        	$.each(data.documentsIntalacioBaixaTensio, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.documentsIntalacioBaixaTensio').append(html);
+	        		numDocument++;
+	        	 });  
+	        	content.parent().find('.documentsIntalacioFotovoltaica').html('');
+	        	$.each(data.documentsIntalacioFotovoltaica, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.documentsIntalacioFotovoltaica').append(html);
+	        		numDocument++;
+	        	 });  
+	        	content.parent().find('.documentsIntalacioContraincendis').html('');
+	        	$.each(data.documentsIntalacioContraincendis, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.documentsIntalacioContraincendis').append(html);
+	        		numDocument++;
+	        	 });  
+	        	content.parent().find('.documentsCertificatEficienciaEnergetica').html('');
+	        	$.each(data.documentsCertificatEficienciaEnergetica, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.documentsCertificatEficienciaEnergetica').append(html);
+	        		numDocument++;
+	        	 }); 
+	        	content.parent().find('.documentsIntalacioTermica').html('');
+	        	$.each(data.documentsIntalacioTermica, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.documentsIntalacioTermica').append(html);
+	        		numDocument++;
+	        	 }); 
+	        	content.parent().find('.documentsIntalacioAscensor').html('');
+	        	$.each(data.documentsIntalacioAscensor, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.documentsIntalacioAscensor').append(html);
+	        		numDocument++;
+	        	 });
+	        	content.parent().find('.documentsIntalacioAlarma').html('');
+	        	$.each(data.documentsIntalacioAlarma, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.documentsIntalacioAlarma').append(html);
+	        		numDocument++;
+	        	 }); 
+	        	content.parent().find('.documentsIntalacioSubministreAigua').html('');
+	        	$.each(data.documentsIntalacioSubministreAigua, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.documentsIntalacioSubministreAigua').append(html);
+	        		numDocument++;
+	        	 }); 
+	        	content.parent().find('.documentsPlaAutoproteccio').html('');
+	        	$.each(data.documentsPlaAutoproteccio, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.documentsPlaAutoproteccio').append(html);
+	        		numDocument++;
+	        	 }); 
+	        	content.parent().find('.documentsCedulaDeHabitabilitat').html('');
+	        	$.each(data.documentsCedulaDeHabitabilitat, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.documentsCedulaDeHabitabilitat').append(html);
+	        		numDocument++;
+	        	 }); 
+	        	content.parent().find('.documentsInstalacioPetrolifera').html('');
+	        	$.each(data.documentsInstalacioPetrolifera, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.documentsInstalacioPetrolifera').append(html);
+	        		numDocument++;
+	        	 }); 
+	        	content.parent().find('.documentsInstalacioGas').html('');
+	        	$.each(data.documentsInstalacioGas, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.documentsInstalacioGas').append(html);
+	        		numDocument++;
+	        	 }); 	
+	        	$.each(data.documentsIniciActivitat, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.documentsIniciActivitat').append(html);
+	        		numDocument++;
+	        	 }); 
+	        	
+	        	content.find('.loader').remove();
+	        },        
+	        //If there was no resonse from the server
+	        error: function(jqXHR, textStatus, errorThrown){
+	             console.log("Something really bad happened " + jqXHR.responseText);
+	             content.find('.loader').remove();
+	        }  
+	    });
+	});
+	
 	$('.filerTable.factures').DataTable({
 		dom: 'Bfrtip',
         buttons: [ {
@@ -36,27 +907,16 @@ $(document).ready(function() {
     		null,
     		null,
     		null,
-    		null,
     		null
 		]
 	});
 	
 	$('.deleteRelacioPersona').on('click', function(){
-		var table = $('.filerTable').DataTable();
-		$(this).parents('tr').addClass('selected');
-		if (table.row('.selected').data() != undefined && $('#llistatOfertes input[value="' + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[4] + '"]').size() > 0) {
-			$('#llistatOfertes input[value="' + table.row('.selected').data()[2] + "#" + table.row('.selected').data()[4] + '"]').remove();
-			if ($('#ofertaSeleccionadaNIF').val() == table.row('.selected').data()[2]) {
-				$('#ofertaSeleccionada').text('');  
-        		$('#ofertaSeleccionadaNIF').val('');  
-			}
-		}
-		table.row('.selected').remove().draw( false );
 		$.ajax({
 	        type: "POST",
-	        url: "DoDeleteOferta",
+	        url: "deletePersonalExpedient",
 	        dataType: "json",
-	        data: {"idOferta": $(this).data('idoferta')},
+	        data: {"idRelacio": $(this).data('idrelacio')},
 	        //if received a response from the server
 	        success: function( data, textStatus, jqXHR) {
 	            //our country code was correct so we have some information to display

@@ -29,10 +29,12 @@ public class Factura {
 	private Date dataEnviatComptabilitat;
 	private Date dataDescarregadaConformada;
 	private Fitxer factura;
+	private List<Fitxer> totsDocumentsFactura;
 	private List<Fitxer> certificacions;
 	private List<Fitxer> altres;
 	private boolean anulada;
 	private String motiuAnulada;
+	private String tipus;
 	
 	public Factura() {
 	
@@ -278,6 +280,22 @@ public class Factura {
 
 	public void setCertificacions(List<Fitxer> certificacions) {
 		this.certificacions = certificacions;
+	}
+
+	public List<Fitxer> getTotsDocumentsFactura() {
+		return totsDocumentsFactura;
+	}
+
+	public void setTotsDocumentsFactura(List<Fitxer> totsDocumentsFactura) {
+		this.totsDocumentsFactura = totsDocumentsFactura;
+	}
+
+	public String getTipus() {
+		return tipus;
+	}
+
+	public void setTipus(String tipus) {
+		this.tipus = tipus;
 	}
 	
 }

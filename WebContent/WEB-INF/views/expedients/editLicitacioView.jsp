@@ -177,7 +177,15 @@
 									</div>	
 									<input type="file" class="btn uploadImage" name="aprovacioEXPPlecsDespesa" /><br/>	
 					       		</div>				       		
-					       	</div>	
+					       	</div>		
+                            <div class="form-group">  
+								<div class="col-md-3">
+									<label>Data publicació</label>
+	                                <div class="input-group date datepicker">
+									  	<input type="text" class="form-control" name="dataPerfilContratant" value="${informePrevi.expcontratacio.getDataPublicacioPerfilContratantString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+									</div>
+								</div>
+							</div>
 					   	</c:if>
 				       	<div class="form-group">
 				    		<div class="col-md-12">
@@ -404,19 +412,11 @@
 				       	<div class="form-group">				       		
 				       		<div class="col-md-6">
 				       			<div class="document">
-			               			<label>Resolució d'adjudicació:</label>											                  	
-				           			<a target="_blanck" href="downloadFichero?ruta=${informePrevi.autoritzacioPropostaDespesa.getEncodedRuta()}">
-										${informePrevi.autoritzacioPropostaDespesa.nom}
-									</a>	
-									<c:if test="${informePrevi.autoritzacioPropostaDespesa.signat}">
-										<span data-ruta="${informePrevi.autoritzacioPropostaDespesa.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
-									</c:if>
-									<c:if test="${informePrevi.autoritzacioPropostaDespesa.ruta != null}">
-										<span data-ruta="${informePrevi.autoritzacioPropostaDespesa.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
-									</c:if>
-									<br>
-									<div class="infoSign hidden">										
-									</div>
+			               			<label>Resolució d'adjudicació:</label>		
+			               			<c:forEach items="${informePrevi.autoritzacioPropostaDespesa}" var="arxiu" >
+			               				<c:set var="arxiu" value="${arxiu}" scope="request"/>
+			               				<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+									</c:forEach>
 								</div>	
 								<input type="file" class="btn uploadImage" name="autoritzacioDespesa" /><br/>	
 				       		</div>				       		

@@ -43,10 +43,12 @@
                 
     			<div class="row">
                     <div class="col-md-12">                    	
-		    			<form class="form-horizontal" method="POST" action="DoEditRegistre">
+		    			<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoEditRegistre">
 		    				<div class="form-group">
+		    					<input type="hidden" id="tipusRegistre" value="${entradaSortida}"> 
 		    					<input type="hidden" name="idCodiRegistre" value="${registre.id}">        
-		    					<input type="hidden" name="entradaSortida" value="${entradaSortida}">                                
+		    					<input type="hidden" name="entradaSortida" value="${entradaSortida}">   
+		    					<input type="hidden" id="idCentresSeleccionats" name="idCentresSeleccionats" value="">                              
                             </div>		  
                             <div class="form-group">
                             	<c:if test="${entradaSortida == 'E'}">
@@ -72,31 +74,63 @@
                                 <div class="col-xs-3">
                                 	<textarea class="form-control" name="contingut" placeholder="contingut" rows="3" required>${registre.contingut}</textarea>
                                 </div>
-                            </div>		    				
+                            </div>	
+							<div class="form-group">
+								<label class="col-xs-3 control-label">Arxius:</label>								
+	                            <div class="col-xs-3">  	                            	
+	                                <input type="file" class="btn" name="file" multiple/><br/>
+								</div>					
+	         				</div>    
+	         				<div class="form-group">
+	         					<label class="col-xs-3 control-label"></label>								
+	                            <div class="col-xs-6">  	
+		         					<c:forEach items="${registre.documents}" var="arxiu" >
+						            	<c:set var="arxiu" value="${arxiu}" scope="request"/> 	
+						            	<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+									</c:forEach> 
+								</div>
+	         				</div>				
 		    				<div class="form-group">
                                 <label class="col-xs-3 control-label">Data petició</label>
                                 <div class="input-group date col-xs-3 datepicker">
 								  	<input type="text" class="form-control" name="peticio" value="${registre.getDataString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>
                             </div>   
-                            <c:if test="${canModificarCentre}">
-                            	<div class="form-group">
-	                                <label class="col-xs-3  control-label">Centre</label>
-	                                <div class="col-xs-3">
-		                                <select class="form-control selectpicker centresList" name="idCentre" data-live-search="true" data-size="5" id="centresList" multiple>
-			                            	<option value="-1">No hi ha relació</option>
-			                            </select>
-		                             </div>
-	                            </div> 
-	                            <div id="incidencies"></div>                            	
-							</c:if>									
+                            <div class="form-group">
+								<label class="col-xs-3 control-label">Confirmacions de recepció:</label>
+	                            <div class="col-xs-3">   
+	                                <input type="file" class="btn" name="confirmacioRecepcio" multiple/><br/>
+								</div>					
+	         				</div>	
+	         				<div class="form-group">
+	         					<label class="col-xs-3 control-label"></label>								
+	                            <div class="col-xs-6">  	
+		         					<c:forEach items="${registre.confirmacioRecepcio}" var="arxiu" >
+						            	<c:set var="arxiu" value="${arxiu}" scope="request"/> 	
+						            	<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+									</c:forEach> 
+								</div>
+	         				</div>	         				
+	         				<div class="form-group">
+                                <label class="col-xs-3  control-label">Centre</label>
+                                <input type="hidden" id="centrePrev" value="${registre.idCentres}" >
+                                <input type="hidden" id="incidenciesPrev" value="${registre.getIdActuacionss()}" >
+                                <div class="col-xs-3">
+	                                <select class="form-control selectpicker centresList" name="idCentre" data-live-search="true" data-size="5" id="centresList" multiple>
+		                            	<option value="-1">No hi ha relació</option>
+		                            </select>
+	                             </div>
+                            </div>
+                           	<div id="procediments"></div> 
+                            <div id="incidencies"></div>		
+                            <div id="expedients"></div>		                           	
                             <br>
 						    <div class="form-group">
 						    	<div class="col-xs-offset-8 col-xs-2">
 						            <input type="submit" class="btn btn-danger" name="anular" value="Anul·lar">
 						        </div>
 						        <div class=" col-xs-2">
-						            <input type="submit" class="btn btn-primary" name="modificar" value="Modificar">
+						            <input type="submit" class="btn btn-primary loadingButton" name="modificar" value="Modificar">
 						        </div>
 						    </div>    				
 		    			</form>		    			
@@ -109,6 +143,6 @@
 		<!-- /#page-wrapper -->
 	</div>
     <jsp:include page="../_footer.jsp"></jsp:include>
-    <script src="js/registre/registre.js?<%=application.getInitParameter("datakey")%>"></script>
+    <script src="js/registre/editRegistre.js?<%=application.getInitParameter("datakey")%>"></script>
 </body>
 </html>

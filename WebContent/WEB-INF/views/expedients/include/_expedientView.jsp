@@ -30,60 +30,80 @@
 				</c:if>
 	    		<div class="tabbable">
                    	<ul class="nav nav-tabs">
-                   	 	<li class="${informePrevi.getEstat() == 'acabat' || informePrevi.getEstat() == null ? 'estatExp active' : '' }"><a data-toggle="tab" href="#resum${informePrevi.idInf}">Resum</a></li>	
-					   	<li class="${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'previs' ? 'estatExp active' : '' }"><a data-toggle="tab" href="#informe${informePrevi.idInf}">Previs</a></li>
+                   		<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra != 'conveni' && informePrevi.propostaInformeSeleccionada.tipusObra != 'acordMarc'}">
+	                   	 	<li class="${informePrevi.getEstat() == 'acabat' || informePrevi.getEstat() == null ? 'estatExp active' : '' }"><a data-toggle="tab" href="#resum${informePrevi.idInf}">Resum</a></li>	
+						   	<li><a data-toggle="tab" href="#personal${informePrevi.idInf}">Personal</a></li>
+					   	</c:if>
+					   	<li class="${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'previs' ? 'estatExp active' : '' }"><a data-toggle="tab" href="#informe${informePrevi.idInf}">${informePrevi.propostaInformeSeleccionada.tipusObra != 'conveni' ? 'Previs' : 'Conveni'}</a></li>
 					   	<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra != 'conveni'}">
-						   	<li class="${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'licitacio' ? 'estatExp active' : '' }"><a data-toggle="tab" href="#licitacio${informePrevi.idInf}">Licitació</a></li>							   											    
+					   		<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra != 'acordMarc'}">
+						   		<li class="${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'licitacio' ? 'estatExp active' : '' }"><a data-toggle="tab" href="#licitacio${informePrevi.idInf}">Licitació</a></li>							   											    
+						    </c:if>
 						    <li class="${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'execucio' ? 'estatExp active' : '' }"><a data-toggle="tab" href="#execucio${informePrevi.idInf}">Execució</a></li>	
-						    <li class="${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'garantia' ? 'estatExp active' : '' }"><a data-toggle="tab" href="#garantia${informePrevi.idInf}">Garantia</a></li>	
-						    <li><a data-toggle="tab" href="#personal${informePrevi.idInf}">Personal</a></li>					    
-					    </c:if>		
-					    <li><a data-toggle="tab" href="#documents${informePrevi.idInf}">Documentació</a></li>			   
+						    <c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra != 'acordMarc'}">
+						    	<li class="${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'garantia' ? 'estatExp active' : '' }"><a data-toggle="tab" href="#garantia${informePrevi.idInf}">Garantia</a></li>	
+							</c:if>
+						</c:if>		
+					    <li><a data-toggle="tab" href="#documents${informePrevi.idInf}" class="carregarDocTecnica" data-iscap="${isCap}" data-idincidencia="${incidencia.idIncidencia}" data-idactuacio="${actuacio.referencia}" data-idinf="${informePrevi.idInf}">Documentació</a></li>			   
 				 	</ul>
 				 	<c:set var="informePrevi" value="${informePrevi}" scope="request"/>
-				  	<div class="tab-content">					  		
-						<div id="resum${informePrevi.idInf}" class="tab-pane fade ${informePrevi.getEstat() == 'acabat' || informePrevi.getEstat() == null ? 'in active' : '' }">
-				  			<div class="col-md-12 bordertab">
-				  				<jsp:include page="_resumExpedient.jsp"></jsp:include>
-				  			</div>
-				  		</div>
-				  		<div id="informe${informePrevi.idInf}" class="tab-pane fade ${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'previs' ? 'in active' : '' }">
+				  	<div class="tab-content">	
+				  		<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra != 'conveni' && informePrevi.propostaInformeSeleccionada.tipusObra != 'acordMarc'}">				  		
+							<div id="resum${informePrevi.idInf}" class="tab-pane fade ${informePrevi.getEstat() == 'acabat' || informePrevi.getEstat() == null ? 'in active' : '' }">
+					  			<div class="col-md-12 bordertab">
+					  				<jsp:include page="_resumExpedient.jsp"></jsp:include>
+					  			</div>
+					  		</div>
+					  	</c:if>
+				  		<div id="informe${informePrevi.idInf}" class="tab-pane fade ${informePrevi.propostaInformeSeleccionada.tipusObra == 'conveni' || (!informePrevi.expcontratacio.anulat && informePrevi.estat == 'previs') ? 'in active' : '' }">
 				  		 	<div class="col-md-12 bordertab">
 				  		 		<jsp:include page="_resumInforme.jsp"></jsp:include>
 				  		 	</div>
 				  		</div>
-				  		<div id="licitacio${informePrevi.idInf}" class="tab-pane fade ${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'licitacio' ? 'in active' : '' }">
-							<div class="col-md-12 bordertab">
-								<jsp:include page="_resumLicitacio.jsp"></jsp:include>												    
+				  		<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra != 'conveni'}">
+				  			<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra != 'acordMarc'}">
+						  		<div id="licitacio${informePrevi.idInf}" class="tab-pane fade ${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'licitacio' ? 'in active' : '' }">
+									<div class="col-md-12 bordertab">
+										<jsp:include page="_resumLicitacio.jsp"></jsp:include>												    
+									</div>
+								</div>
+							</c:if>
+							<div id="execucio${informePrevi.idInf}" class="tab-pane fade ${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'execucio' ? 'in active' : '' }">
+								<div class="col-md-12 bordertab">
+									<jsp:include page="_resumExecucio.jsp"></jsp:include>
+								</div>
 							</div>
-						</div>
-						<div id="execucio${informePrevi.idInf}" class="tab-pane fade ${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'execucio' ? 'in active' : '' }">
-							<div class="col-md-12 bordertab">
-								<jsp:include page="_resumExecucio.jsp"></jsp:include>
-							</div>
-						</div>
-						<div id="garantia${informePrevi.idInf}" class="tab-pane fade ${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'garantia' ? 'in active' : '' }">
-							<div class="col-md-12 bordertab">
-								<jsp:include page="_resumGarantia.jsp"></jsp:include>
-							</div>
-						</div>
-						<div id="personal${informePrevi.idInf}" class="tab-pane fade">
-							<div class="col-md-12 bordertab">
-								<jsp:include page="_resumPersonal.jsp"></jsp:include>
-							</div>
-						</div>	  
+							<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra != 'acordMarc'}">
+								<div id="garantia${informePrevi.idInf}" class="tab-pane fade ${!informePrevi.expcontratacio.anulat && informePrevi.getEstat() == 'garantia' ? 'in active' : '' }">
+									<div class="col-md-12 bordertab">
+										<jsp:include page="_resumGarantia.jsp"></jsp:include>
+									</div>
+								</div>											
+								<div id="personal${informePrevi.idInf}" class="tab-pane fade">
+									<div class="col-md-12 bordertab">
+										<jsp:include page="_resumPersonal.jsp"></jsp:include>
+									</div>
+								</div>	 
+							</c:if>
+						</c:if> 
 						<div id="documents${informePrevi.idInf}" class="tab-pane fade">							
 							<div class="tabbable">
-			                   	<ul class="nav nav-tabs">
-								   	<li class="active"><a data-toggle="tab" href="#documentacioTecnica${informePrevi.idInf}">Doc Tècnica</a></li>								   
-								    <c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra != 'conveni'}">
-								   		<li><a data-toggle="tab" href="#urbanisme${informePrevi.idInf}">Aut Urb</a></li>	
-								   	</c:if>						   
-								    <li><a data-toggle="tab" href="#documentacio${informePrevi.idInf}">Altre doc</a></li>
-								    <c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra != 'conveni'}">
-									    <li><a data-toggle="tab" href="#actes${informePrevi.idInf}">Actes</a></li>
-									    <li><a data-toggle="tab" href="#documentacioInstalacions${informePrevi.idInf}">Instal·lacions</a></li>
-									    <li><a data-toggle="tab" href="#recursAdministratiu${informePrevi.idInf}">Recurs Adm</a></li>	
+			                   	<ul class="nav nav-tabs">								   	
+								    <c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra != 'conveni' && informePrevi.propostaInformeSeleccionada.tipusObra != 'acordMarc'}">
+								   		<li class="active"><a data-toggle="tab" href="#documentacioTecnica${informePrevi.idInf}">Doc Tècnica</a></li>	
+								   		<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra == 'obr'}">							   
+								   			<li><a data-toggle="tab" href="#urbanisme${informePrevi.idInf}" class="carregarDocumentsUrbanisme" data-iscap="${isCap}" data-idincidencia="${incidencia.idIncidencia}" data-idactuacio="${actuacio.referencia}" data-idinf="${informePrevi.idInf}">Aut Urb</a></li>	
+								  		</c:if>
+								  		<li><a data-toggle="tab" href="#documentacio${informePrevi.idInf}" class="carregarAltresDocuments" data-iscap="${isCap}" data-idincidencia="${incidencia.idIncidencia}" data-idactuacio="${actuacio.referencia}" data-idinf="${informePrevi.idInf}" data-idtasca="${informePrevi.idTasca}">Altre doc</a></li>
+								    	<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra == 'obr'}">
+									    	<li><a data-toggle="tab" href="#actes${informePrevi.idInf}" class="carregarActes" data-iscap="${isCap}" data-idincidencia="${incidencia.idIncidencia}" data-idactuacio="${actuacio.referencia}" data-idinf="${informePrevi.idInf}">Actes</a></li>
+										    <li><a data-toggle="tab" href="#documentacioInstalacions${informePrevi.idInf}" class="carregarDocInstalacions" data-iscap="${isCap}" data-idincidencia="${incidencia.idIncidencia}" data-idactuacio="${actuacio.referencia}" data-idinf="${informePrevi.idInf}">Instal·lacions</a></li>
+										</c:if>
+									     <li><a data-toggle="tab" href="#recursAdministratiu${informePrevi.idInf}">Recurs Adm</a></li>	
+									</c:if>
+									<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra == 'conveni' || informePrevi.propostaInformeSeleccionada.tipusObra == 'acordMarc'}">
+										<li class="active"><a data-toggle="tab" href="#documentacioTecnica${informePrevi.idInf}">Tramits</a></li>	
+										<li><a data-toggle="tab" href="#documentacio${informePrevi.idInf}" class="carregarAltresDocuments" data-iscap="${isCap}" data-idincidencia="${incidencia.idIncidencia}" data-idactuacio="${actuacio.referencia}" data-idinf="${informePrevi.idInf}" data-idtasca="${informePrevi.idTasca}">Altre doc</a></li>							   
 									</c:if>				   
 							 	</ul>
 							 	<div class="tab-content">							 		

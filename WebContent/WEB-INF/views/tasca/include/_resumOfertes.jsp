@@ -12,6 +12,7 @@
 		    <thead>
 		        <tr>
 		            <th>Oferta</th>
+		            <th>Data</th>
 		            <th>Licitador</th>		
 		            <th>Arxiu</th>	                                        
 		        </tr>
@@ -19,7 +20,8 @@
 		    <tbody>
 		    	<c:forEach items="${ofertes}" var="oferta" >
 					<tr ${oferta.seleccionada ? "class='success'" : ""}>	
-						<td>${oferta.getPlicFormat()}</td>							          	
+						<td>${oferta.getPlicFormat()}</td>	
+						<td>${oferta.getDataCreacioString()}</td>							          	
 						<td><a href='empresa?cif=${oferta.cifEmpresa}'>${oferta.nomEmpresa} (${oferta.cifEmpresa})</a></td>
 						<td><a target="_blanck" href="downloadFichero?ruta=${oferta.presupost.getEncodedRuta()}">${oferta.presupost.nom}</a></td>
 		    		</tr>
@@ -60,7 +62,7 @@
 	<c:if test="${informePrevi.propostaTecnica.size() > 0 && esCap}">
 		<div class="separator"></div>												        	
 		<div class="panel-body">
-	     	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoAddPA">
+	     	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoTasca">
 		     	<input type="hidden" name="document" value="vitiplauPropostaTecnica">
 				<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
 				<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">

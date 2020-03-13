@@ -9,14 +9,12 @@
 	<input type="hidden" name="idActuacio" value="${informePrevi.actuacio.referencia}">
 	<input type="hidden" name="idIncidencia" value="${informePrevi.actuacio.idIncidencia}">
 	<input type="hidden" name="idInforme" value="${informePrevi.idInf}">			    
+	<div class="documentacioActes"></div>
 	<p>
 		<label>Acta replanteig:</label>
 	</p>	
 	<div class="row col-md-12">
-		<c:forEach items="${informePrevi.documentActaReplanteig}" var="arxiu" >
-			<c:set var="arxiu" value="${arxiu}" scope="request"/>
-			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-		</c:forEach>
+		<div class="actaReplanteig"></div>
 		<br>					            		
 	</div>
 	<div class="form-group">
@@ -29,10 +27,7 @@
 		<label>Acta comprovació replanteig:</label>
 	</p>	
 	<div class="row col-md-12">
-		<c:forEach items="${informePrevi.documentActaComprovacioReplanteig}" var="arxiu" >
-			<c:set var="arxiu" value="${arxiu}" scope="request"/>
-			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-		</c:forEach>
+		<div class="actaComprovacioReplanteig"></div>
 		<br>					            		
 	</div>
 	<div class="form-group">
@@ -45,10 +40,7 @@
 		<label>Acta inici d'obra:</label>
 	</p>		
 	<div class="row col-md-12">
-		<c:forEach items="${informePrevi.documentActaIniciObra}" var="arxiu" >
-			<c:set var="arxiu" value="${arxiu}" scope="request"/>
-			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-		</c:forEach>
+		<div class="actaIniciObra"></div>
 		<br>					            		
 	</div>
 	<div class="form-group">
@@ -61,10 +53,7 @@
 		<label>Acta aprovació pla de seguretat:</label>
 	</p>
 	<div class="row col-md-12">
-		<c:forEach items="${informePrevi.documentActaAprovacioPlaSeguretat}" var="arxiu" >
-			<c:set var="arxiu" value="${arxiu}" scope="request"/>
-			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-		</c:forEach>
+		<div class="actaAprovacioPlaSeguretat"></div>
 		<br>					            		
 	</div>	
 	<div class="form-group">
@@ -77,10 +66,7 @@
 		<label>Acta aprovació pla de gestió de residus:</label>
 	</p>	
 	<div class="row col-md-12">
-		<c:forEach items="${informePrevi.documentActaAprovacioResidus}" var="arxiu" >
-			<c:set var="arxiu" value="${arxiu}" scope="request"/>
-			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-		</c:forEach>
+		<div class="actaAprovacioResidus"></div>
 		<br>					            		
 	</div>	
 	<div class="form-group">
@@ -93,10 +79,7 @@
 		<label>Acta aprovació del programa de treball:</label>
 	</p>		
 	<div class="row col-md-12">
-		<c:forEach items="${informePrevi.documentActaAprovacioProgramaTreball}" var="arxiu" >
-			<c:set var="arxiu" value="${arxiu}" scope="request"/>
-			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-		</c:forEach>
+	<div class="actaAprovacioProgramaTreball"></div>
 		<br>					            		
 	</div>
 	<div class="form-group">
@@ -109,10 +92,7 @@
 		<label>Acta de recepció:</label>
 	</p>	
 	<div class="row col-md-12">
-		<c:forEach items="${informePrevi.documentActaRecepcio}" var="arxiu" >
-			<c:set var="arxiu" value="${arxiu}" scope="request"/>
-			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-		</c:forEach>
+		<div class="actaRecepcio"></div>
 		<br>					            		
 	</div>	
 	<div class="form-group">
@@ -125,10 +105,7 @@
 		<label>Acta medició general:</label>
 	</p>	
 	<div class="row col-md-12">
-		<c:forEach items="${informePrevi.documentActaMedicioGeneral}" var="arxiu" >
-			<c:set var="arxiu" value="${arxiu}" scope="request"/>
-			<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-		</c:forEach>
+		<div class="actaMedicioGeneral"></div>
 		<br>					            		
 	</div>	
 	<div class="form-group">
@@ -141,7 +118,7 @@
 		<div class="col-md-12">
 			<div class="row">	  			
 				<div class="col-md-offset-9 col-md-2 margin_top30">
-					<input type="submit" class="btn btn-primary" value="Actualitzar" />
+					<input type="submit" class="btn btn-primary loadingButton" value="Actualitzar" />
 				</div>
 	    	</div>       
 		</div>

@@ -190,12 +190,14 @@ function getDespesaEmpresa(cif, valor) {
 	$.ajax({
         type: "POST",
         url: "getDespesaEmpresa",
-        data: {"cif":cif, "dataIni":"09/03/2018"},
+        data: {"cif":cif, "dataIni":"01/01/2019"},
         dataType: "json",	        
         //if received a response from the server
         success: function( data, textStatus, jqXHR) {
             //our country code was correct so we have some information to display	  
-        	if (parseFloat(valor) + data.importAdjudicat >= 40000) {
+        	console.log(valor/1.21);
+        	console.log( data.importAdjudicat);
+        	if (parseFloat(valor/1.21) + data.importAdjudicat >= 40000) {
         		$('#superaMaximPermes').removeClass('hidden');
         	} else {
         		$('#superaMaximPermes').addClass('hidden');

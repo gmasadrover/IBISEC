@@ -84,8 +84,7 @@ $(document).ready(function() {
     		null,
     		null,
     		{"iDataSort": 6},
-    		{"bVisible": false},
-    		null
+    		{"bVisible": false}
 		]
 	} );
 	$('#ratioAP').on('keyup', function(){

@@ -55,20 +55,31 @@ public class UploadDocumentacioTecnicaServlet extends HttpServlet {
 	    String idIncidencia = multipartParams.getParametres().get("idIncidencia");
 	    String idInforme = multipartParams.getParametres().get("idInforme"); 
 		try {
-			Fitxers.guardarFitxer(conn, multipartParams.getFitxers(), idIncidencia, idActuacio, "", "", "", idInforme, "Documentació tècnica", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentInformeSupervisio"), idIncidencia, idActuacio, "", "", "", idInforme, "Informe Supervisió", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentProjecte"), idIncidencia, idActuacio, "", "", "", idInforme, "Projecte", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentNomenamentDF"), idIncidencia, idActuacio, "", "", "", idInforme, "NomenamentDF", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentPSS"), idIncidencia, idActuacio, "", "", "", idInforme, "PSS", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentPGR"), idIncidencia, idActuacio, "", "", "", idInforme, "PGR", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentPlaTreball"), idIncidencia, idActuacio, "", "", "", idInforme, "PlaTreball", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentFinalitzacioContratista"), idIncidencia, idActuacio, "", "", "", idInforme, "Finalització contratista", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentInformeDO"), idIncidencia, idActuacio, "", "", "", idInforme, "Informe DO", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentCFO"), idIncidencia, idActuacio, "", "", "", idInforme, "CFO", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentRepresentacioRecepcio"), idIncidencia, idActuacio, "", "", "", idInforme, "Representació Recepció", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentCertificacioFinal"), idIncidencia, idActuacio, "", "", "", idInforme, "CertificacioFinal", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentDevolucioAval"), idIncidencia, idActuacio, "", "", "", idInforme, "DevolucioAval", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentAltre"), idIncidencia, idActuacio, "", "", "", idInforme, "Documentació tècnica", Usuari.getIdUsuari());
 			String documents = "";
-		    Context env = (Context)new InitialContext().lookup("java:comp/env");
-			String ruta =  (String)env.lookup("ruta_base");
-			String ruta_base = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio + "/informe/" + idInforme + "/Documentació tècnica/";
 			Fitxer fitxer = null;
 			for(int i=0;i<multipartParams.getFitxers().size();i++){
 				 fitxer = (Fitxer) multipartParams.getFitxers().get(i);
-				 documents += "<a target='_blanck' href='downloadFichero?ruta=" + java.net.URLEncoder.encode(ruta_base, "UTF-8") +  java.net.URLEncoder.encode(fitxer.getFitxer().getName(), "UTF-8") + "'>" + fitxer.getFitxer().getName() + "</a><br>";
+				 documents += fitxer.getFitxer().getName() + "<br>";
 			}
-			if (Usuari.getRol().contains("CAP")) {
-				TascaCore.novaTasca(conn, "generic", UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari(), Usuari.getIdUsuari(), idActuacio, idIncidencia,  Usuari.getNomCompletReal() + ": S'ha afegit nova documentació tècnica <br>" + documents, "Nova documentació", idInforme, null, ipRemote, "automatic");
-			} else {
-				TascaCore.novaTasca(conn, "generic", UsuariCore.finCap(conn, Usuari.getDepartament()).getIdUsuari(), Usuari.getIdUsuari(), idActuacio, idIncidencia,  Usuari.getNomCompletReal() + ": S'ha afegit nova documentació tècnica <br>" + documents, "Nova documentació", idInforme, null, ipRemote, "automatic");
+			if (Usuari.getIdUsuari() != 4) {
+				if (Usuari.getRol().contains("CAP")) {
+					TascaCore.novaTasca(conn, "generic", UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari(), Usuari.getIdUsuari(), idActuacio, idIncidencia,  Usuari.getNomCompletReal() + ": S'ha afegit nova documentació tècnica <br>" + documents, "Nova documentació", idInforme, null, ipRemote, "automatic");
+				} else {
+					TascaCore.novaTasca(conn, "generic", UsuariCore.finCap(conn, Usuari.getDepartament()).getIdUsuari(), Usuari.getIdUsuari(), idActuacio, idIncidencia,  Usuari.getNomCompletReal() + ": S'ha afegit nova documentació tècnica <br>" + documents, "Nova documentació", idInforme, null, ipRemote, "automatic");
+				}
 			}
 		} catch (NamingException | SQLException e) {
 			// TODO Auto-generated catch block

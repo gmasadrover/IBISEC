@@ -78,6 +78,38 @@
 							</div> 
 						</div>
 						<p>
+							<label>Documentació Instal·lació fotovoltàica:</label>
+						</p>
+						<div class="row col-md-12">
+							<div class="col-md-6">
+								<p>
+									<label>Nº Expedient:</label>
+									<input name="expedientFotovoltaica" placeholder="" value="${informePrevi.instalacions.expedientFotovoltaica}"> 
+								</p>
+							</div>
+							<div class="col-md-3">
+								<p>
+									<label>Data OCA:</label>
+									<div class="input-group date datepicker">
+									  	<input type="text" class="form-control" name="dataOCAFotovoltaica" value="${informePrevi.instalacions.getDataOCAFotovoltaicaString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+									</div>									
+								</p>
+							</div>
+						</div>	
+						<div class="row col-md-12">
+							<c:forEach items="${informePrevi.documentsIntalacioFotovoltaica}" var="arxiu" >
+								<c:set var="arxiu" value="${arxiu}" scope="request"/>
+								<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+							</c:forEach>
+							<br>					            		
+						</div>
+						<div class="form-group">
+							<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+					           <div class="col-xs-5">   
+					           	<input type="file" class="btn" name="documentsIntalacioFotovoltaica" multiple/><br/>
+							</div> 
+						</div>
+						<p>
 							<label>Documentació Instal·lació contraincendis:</label>
 						</p>
 						<div class="row col-md-12">
@@ -185,6 +217,49 @@
 					           	<input type="file" class="btn" name="documentsInstalacioPetrolifera" multiple/><br/>
 							</div> 
 						</div>
+						
+						
+						<p>
+							<label>Documentació Instal·lació Gas:</label>
+						</p>	
+						<div class="row col-md-12">
+							<div class="col-md-4">
+								<p>
+									<label>Nº Expedient:</label>
+									<input name="expedientInstalacioGas" placeholder="" value="${informePrevi.instalacions.expedientInstalacioGas}">
+								</p>
+							</div>	
+							<div class="col-md-4">
+								<p>
+									<label>Tipus de gas:</label>
+									<input name="tipusInstalacioGas" placeholder="" value="${informePrevi.instalacions.tipusInstalacioGas}">
+								</p>
+							</div>	
+							<div class="col-md-3">
+								<p>
+									<label>Data:</label>
+									<div class="input-group date datepicker">
+									  	<input type="text" class="form-control" name="dataInstalacioGas" value="${informePrevi.instalacions.getDataInstalacioGasString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+									</div>
+								</p>
+							</div>	
+						</div>
+						<div class="row col-md-12 margin_bottom30">
+							<c:forEach items="${informePrevi.documentsInstalacioGas}" var="arxiu" >
+								<c:set var="arxiu" value="${arxiu}" scope="request"/>
+								<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+							</c:forEach>
+							<br>					            		
+						</div>
+						<div class="form-group">
+							<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+					           <div class="col-xs-5">   
+					           	<input type="file" class="btn" name="documentsInstalacioGas" multiple/><br/>
+							</div> 
+						</div>
+						
+						
+						
 						<p>
 							<label>Documentació Instal·lació tèrmica:</label>
 						</p>	
@@ -313,6 +388,22 @@
 							<label class="col-xs-2 control-label">Adjuntar arxius:</label>
 					           <div class="col-xs-5">   
 					           	<input type="file" class="btn" name="documentsCedulaDeHabitabilitat" multiple/><br/>
+							</div> 
+						</div>
+						<p>
+							<label>Documentació incici activitat:</label>
+						</p>
+						<div class="row col-md-12 margin_bottom30">
+							<c:forEach items="${informePrevi.documentsIniciActivitat}" var="arxiu" >
+								<c:set var="arxiu" value="${arxiu}" scope="request"/>
+								<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+							</c:forEach>
+							<br>					            		
+						</div>
+						<div class="form-group">
+							<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+					           <div class="col-xs-5">   
+					           	<input type="file" class="btn" name="documentsIniciActivitat" multiple/><br/>
 							</div> 
 						</div>
 						<div class="row col-md-12"> 

@@ -47,15 +47,6 @@
 									    <input type="text" class="form-control" name="dataFi" value="${dataFi}">
 									</div>                                
 							  	</div>	
-							  	<%-- <div class="col-md-3">	
-					         		<label>Empresa</label>									            	 										            	 	
-					            	<select class="selectpicker" name="llistaEmpreses" id="llistaEmpreses" data-live-search="true" data-size="10">						                                					                                	
-					               		<option value="-1">Totes</option>
-					               		<c:forEach items="${empresesList}" var="empresa">
-					                   		<option value="${empresa.cif}">${empresa.name}</option>
-					                   	</c:forEach>	
-					                </select>	
-					        	</div> --%>
 							  	<div class="col-md-3">								    
 									<div class="col-md-12">
 										<input type="hidden" id="estatFacturaSelected" value="${estatFactura}" />
@@ -89,11 +80,14 @@
                                         <th>Actuació</th>
                                         <th>Data factura</th>
                                         <th>Data factura No Format</th>
+                                        <th>Data entrada</th>
+                                        <th>Data entrada No Format</th>
                                         <th>Concepte</th>
                                         <th>Nombre fact</th>
                                         <th>Import</th>
                                         <th>Tipus</th>
                                         <th>Proveïdor</th>
+                                        <th>Nom proveïdor</th>
                                         <th>Usuari Conformador</th>
                                         <th>Data Conformació No Format</th>
                                         <th>Data Conformació</th>
@@ -111,7 +105,7 @@
                                         <th>data aut No Format</th>
                                         <th>data aut</th>
                                         <th>despesa prevista</th>   
-                                        <th>Factura</th>                            
+                                        <th>Estat</th>                        
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -121,17 +115,20 @@
 							            	<td><a href="actuacionsDetalls?ref=${factura.idActuacio}" class="loadingButton"  data-msg="obrint actuació...">${factura.idActuacio} - ${factura.actuacio.descripcio}</a></td>
 							            	<td>${factura.getDataFacturaString()}</td>
 							            	<td>${factura.dataFactura}</td>
+							            	<td>${factura.getDataEntradaString()}</td>
+							            	<td>${factura.dataEntrada}</td>
 							            	<td>${factura.concepte}</td>
 							            	<td>${factura.nombreFactura}</td>
 							            	<td>${factura.valor}</td>
 							            	<td>${factura.tipusFactura}</td>
 							            	<td>${factura.idProveidor}</td>
+							            	<td>${factura.nomProveidor}</td>
 							            	<td>${factura.usuariConformador.getNomCompletReal()}</td>
 							            	<td>${factura.dataConformacio}</td>
 							            	<td>${factura.getDataConformacioString()}</td>
 							            	<td>${factura.getDataDescarregadaConformada()}</td>
 							            	<td>${factura.getDataDescarregadaConformadaString()}</td>
-							            	<td>${factura.informe.assignacioCredit.partida.codi}</td>
+							            	<td>${factura.informe.assignacioCredit[0].partida.codi}</td>
 							            	<td>${factura.notes}</td>	 
 							            	<td>${factura.actuacio.centre.getNomComplet()}</td>    
 							            	<td>${factura.actuacio.dataCreacio}</td> 
@@ -143,7 +140,7 @@
 							            	<td>${factura.informe.dataAprovacio}</td> 
 							            	<td>${factura.informe.getDataAprovacioString()}</td>      
 							            	<td>${factura.informe.ofertaSeleccionada.getPlicFormat()}</td> 
-							            	<td><a target="_blanck" href="downloadFichero?ruta=${factura.factura.getEncodedRuta()}">${factura.factura.nom}</a></td>							            	
+							            	<td>${factura.anulada ? 'Anul·lada' : 'Correcte'}</td>
 							          	</tr>
 							       	</c:forEach>                                	
                                 </tbody>

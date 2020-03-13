@@ -18,12 +18,14 @@ $(document).ready(function() {
 	            visibility: true
 	        }
         ],
-        "order": [[ 0, "desc" ]],
+        "order": [[ 2, "desc" ]],
 		"aoColumns": [
 			null,
 			{"iDataSort": 2},
     		{"bVisible": false},
     		null,
+    		{"iDataSort": 5},
+    		{"bVisible": false},
     		null,	
     		null,
     		null,

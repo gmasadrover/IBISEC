@@ -91,14 +91,16 @@ public class DoAddModificacioServlet extends HttpServlet {
 				TascaCore.reasignar(conn, 900, idTasca, tasca.getTipus(), tasca.getDescripcio());
 				TascaCore.tancar(conn, idTasca);
 				int idUsuari = UsuariCore.findUsuarisByRol(conn, "CAP,CONTA").get(0).getIdUsuari();
-				InformeActuacio modificacio = InformeCore.getMoficacioInforme(conn, idModificacio);
+				InformeActuacio modificacio = InformeCore.getMoficacioInforme(conn, idModificacio, false);
 				InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme, false);
 				if (modificacio.getPropostaInformeSeleccionada().getPbase() > 0) {
-					TascaCore.novaTasca(conn, "resPartidaModificacio", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), idModificacio, null, ipRemote, "automatic");
+					String idModificacioAUX = idModificacio.split("#")[0];
+					TascaCore.novaTasca(conn, "resPartidaModificacio", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), idModificacioAUX, null, ipRemote, "automatic");
 				} else {
 					idUsuari = UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari();
+					String idModificacioAUX = idModificacio.split("#")[0];
 					String comentari = "S'ha realitzat la proposta de modificació " + idInforme ;
-					TascaCore.novaTasca(conn, "autoritzacioModificacio", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, comentari, "Autorització modificació actuació", idModificacio, null, ipRemote, "automatic");
+					TascaCore.novaTasca(conn, "autoritzacioModificacio", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, comentari, "Autorització modificació actuació", idModificacioAUX, null, ipRemote, "automatic");
 				}
 				
 			} catch (SQLException | NamingException e) {

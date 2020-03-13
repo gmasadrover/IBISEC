@@ -19,6 +19,7 @@ public class AssignacioCredit {
 	private Partida partida;
 	private double valorPA;
 	private double valorPD;
+	private double valorPagat;
 	private boolean feder;
 	private boolean bei;
 	  
@@ -170,5 +171,18 @@ public class AssignacioCredit {
 
 	public void setInforme(InformeActuacio informe) {
 		this.informe = informe;
+	}
+
+	public double getValorPagat() {
+		return valorPagat;
+	}
+
+	public String getValorPagatFormat() {
+		DecimalFormat num = new DecimalFormat("#,##0.00");
+	    return num.format(this.valorPagat) + '€';
+	}
+	
+	public void setValorPagat(double valorPagat) {
+		this.valorPagat = valorPagat;
 	}
 }

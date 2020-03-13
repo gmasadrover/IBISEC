@@ -117,10 +117,14 @@
                                         <th>Expedient</th>
                                         <th>Data Creacio</th>
                                         <th>Centre</th>
+                                        <th>Illa</th>
+                                        <th>Municipi</th>
                                         <th>Descripció</th>
                                         <th>Publicació</th>
                                         <th>Publicació</th>
+                                        <th>Preu licitació (Sense IVA)</th>
                                         <th>Preu licitació</th>
+                                        <th>Empreses presentades</th>
                                         <th>Adjudicació</th>
                                         <th>Adjudicació</th>
                                         <th>Adjudicatari</th>
@@ -136,6 +140,7 @@
                                         <th>Fi garantia</th>
                                         <th>Liquidació</th>
                                         <th>Liquidació</th>
+                                        <th>Estat</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -152,10 +157,14 @@
 							           			 </c:choose>
 							           		<td>${informe.expcontratacio.dataCreacio}</td>
 							            	<td>${informe.actuacio.centre.getNomComplet()}</td>
+							            	<td>${informe.actuacio.centre.illa}</td>
+							            	<td>${informe.actuacio.centre.municipi}</td>
 							            	<td>${informe.getPropostaInformeSeleccionada().objecte}</td>
-							            	<td>${informe.getPublicacioBOIBString()}</td>
-							            	<td>${informe.publicacioBOIB}</td>
+							            	<td>${informe.expcontratacio.getDataPublicacioPerfilContratantString()}</td>
+							            	<td>${informe.expcontratacio.getDataPublicacioPerfilContratant()}</td>
+							            	<td>${informe.getPropostaInformeSeleccionada().getPbaseFormat()}</td>
 							            	<td>${informe.getPropostaInformeSeleccionada().getPlicFormat()}</td>
+							            	<td>${informe.getEmpresesPresentades()}</td>
 							            	<td>${informe.expcontratacio.getDataAdjudicacioString()}</td>
 							            	<td>${informe.expcontratacio.dataAdjudicacio}</td>
 							            	<td>${informe.getOfertaSeleccionada().nomEmpresa}</td>
@@ -180,6 +189,7 @@
 							            	<td>${informe.expcontratacio.dataRetornGarantia}</td>
 							            	<td>${informe.expcontratacio.getDataLiquidacioString()}</td>
 							            	<td>${informe.expcontratacio.dataLiquidacio}</td>
+							            	<td>${informe.expcontratacio.anulat ? "Anul·lat" : "Actiu"}</td>
 							          	</tr>
 							       	</c:forEach>                                	
                                 </tbody>

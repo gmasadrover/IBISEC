@@ -76,15 +76,17 @@
 				<label>Proveïdor:</label> ${factura.nomProveidor}
 			</p>						       	
 			<p>
-				<label>Factura:	</label>				
-				<c:set var="arxiu" value="${factura.factura}" scope="request"/>
-				<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>									
+				<label>Factura:	</label>	
+				<c:forEach items="${factura.totsDocumentsFactura}" var="arxiu" >	
+					<c:set var="arxiu" value="${arxiu}" scope="request"/>											
+		        	<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+				</c:forEach>
 		 	</p>
 		</div> 	
     </div>
     
  	<c:if test="${canModificarFactura}">
-	 	<form class="form-horizontal" target="_blank" method="POST" enctype="multipart/form-data" action="DoAddPA"> 	
+	 	<form class="form-horizontal" target="_blank" method="POST" enctype="multipart/form-data" action="DoTasca"> 	
 	     	<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
 			<input type="hidden" name="idIncidencia" value="${informePrevi.idIncidencia}">															
 			<input type="hidden" name="idInforme" value="${informePrevi.idInf}">

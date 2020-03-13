@@ -1,5 +1,9 @@
 package core;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.security.Security;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,13 +15,24 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+import com.itextpdf.text.log.LoggerFactory;
+import com.itextpdf.text.log.SysoLogger;
+import com.itextpdf.text.pdf.AcroFields;
+import com.itextpdf.text.pdf.PdfReader;
 
 import bean.Actuacio;
 import bean.InformeActuacio;
 import bean.Actuacio.Feina;
 import bean.Resultat;
 import bean.Resultat.Estadistiques;
+import utils.Fitxers;
+import utils.Fitxers.Fitxer;
 public class ActuacioCore {
 	
 	static final String SQL_CAMPS = "id, idincidencia, descripcio, idcentre, usucre, datacre, dataaprovacio, usuaprovacio, datatancament, usutancament, datamodificacio, darreramodificacio, usuaprovarpa, dataaprovarpa, notes, motiutancament";
@@ -539,4 +554,71 @@ public class ActuacioCore {
 		}
 		return codi;
 	}
+	
+	public static List<Fitxer> findDocumentsTasques(String idIncidencia, Connection conn) throws NamingException, SQLException {
+		List<Fitxer> arxius = new ArrayList<Fitxer>();
+		
+		String sql = "SELECT idtasca"
+				+ " FROM public.tbl_tasques"
+				+ " WHERE idincidencia = ?";	 
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setString(1, idIncidencia);
+		ResultSet rs = pstm.executeQuery();
+		
+		 // Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String rutaBase =  (String)env.lookup("ruta_base") + "/documents/Tasca/";
+		
+		while (rs.next()) {
+			arxius.addAll(Fitxers.ObtenirTotsFitxers(rutaBase + rs.getString("idtasca"), ""));				
+		}
+		
+		
+		return arxius;		
+	}
+	
+	public static List<Fitxer> findDocumentsAltres(String idIncidencia, String idActuacio, Connection conn) throws NamingException, SQLException {
+		List<Fitxer> arxius = new ArrayList<Fitxer>();
+		
+		// Get the base naming context
+	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    // Get a single value
+		String rutaBase =  (String)env.lookup("ruta_base") + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio;
+		System.out.println("entra:" + rutaBase);
+		File dir = new File(rutaBase);
+		File[] ficheros = dir.listFiles();
+		LoggerFactory.getInstance().setLogger(new SysoLogger());
+		BouncyCastleProvider provider = new BouncyCastleProvider();
+		Security.addProvider(provider);
+		if (ficheros == null) {			
+		} else {
+			try {
+				for (int x=0;x<ficheros.length;x++) {					
+					if (!ficheros[x].isDirectory()) {
+						System.out.println("entra");
+						Fitxer fitxer = new Fitxer();	
+						if (!ficheros[x].getName().contains(".zip") && Fitxers.isPDF(ficheros[x])) {
+							PdfReader reader;						
+							reader = new PdfReader(rutaBase + "/" + ficheros[x].getName());						
+			            	AcroFields acroFields = reader.getAcroFields();
+			            	List<String> signatureNames = acroFields.getSignatureNames();
+			            	if (signatureNames.size() > 0) fitxer.setSignat(true);
+						}
+		            	fitxer.setNom(ficheros[x].getName());
+						fitxer.setRuta(rutaBase + "/" + ficheros[x].getName());
+						fitxer.setSeccio("Actuació");
+						fitxer.setData(Files.getLastModifiedTime(ficheros[x].toPath()));
+						arxius.add(fitxer);
+						
+					}				
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return arxius;	
+	}
+	
+	
 }

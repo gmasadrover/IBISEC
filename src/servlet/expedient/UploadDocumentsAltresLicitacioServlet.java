@@ -65,10 +65,12 @@ public class UploadDocumentsAltresLicitacioServlet extends HttpServlet {
 				 fitxer = (Fitxer) multipartParams.getFitxers().get(i);
 				 documents += "<a target='_blanck' href='downloadFichero?ruta=" + java.net.URLEncoder.encode(ruta_base, "UTF-8") +  java.net.URLEncoder.encode(fitxer.getFitxer().getName(), "UTF-8") + "'>" + fitxer.getFitxer().getName() + "</a><br>";
 			}
-			if (Usuari.getRol().contains("CAP")) {
-				TascaCore.novaTasca(conn, "generic", UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari(), Usuari.getIdUsuari(), idActuacio, idIncidencia,  Usuari.getNomCompletReal() + ": S'ha afegit nova documentació a licitació <br>" + documents, "Nova documentació", idInforme, null, ipRemote, "automatic");
-			} else {
-				TascaCore.novaTasca(conn, "generic", UsuariCore.finCap(conn, Usuari.getDepartament()).getIdUsuari(), Usuari.getIdUsuari(), idActuacio, idIncidencia, Usuari.getNomCompletReal() + ": S'ha afegit nova documentació a licitació <br>" + documents, "Nova documentació", idInforme, null, ipRemote, "automatic");
+			if (Usuari.getIdUsuari() != 4) {
+				if (Usuari.getRol().contains("CAP")) {
+					TascaCore.novaTasca(conn, "generic", UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari(), Usuari.getIdUsuari(), idActuacio, idIncidencia,  Usuari.getNomCompletReal() + ": S'ha afegit nova documentació a licitació <br>" + documents, "Nova documentació", idInforme, null, ipRemote, "automatic");
+				} else {
+					TascaCore.novaTasca(conn, "generic", UsuariCore.finCap(conn, Usuari.getDepartament()).getIdUsuari(), Usuari.getIdUsuari(), idActuacio, idIncidencia, Usuari.getNomCompletReal() + ": S'ha afegit nova documentació a licitació <br>" + documents, "Nova documentació", idInforme, null, ipRemote, "automatic");
+				}
 			}
 		} catch (NamingException | SQLException e) {
 			// TODO Auto-generated catch block

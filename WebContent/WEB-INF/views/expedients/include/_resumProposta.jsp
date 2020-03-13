@@ -20,6 +20,13 @@
 	</div>	
 </div>
 <div class="row">
+	<div class="col-md-12">
+		<p>			                     				
+			<label>Comentari administratiu:</label> ${propostaActuacio.comentariAdministratiu}
+		</p>
+	</div>	
+</div>
+<div class="row">
 	<div class="col-md-4">			                         	
 		<p>
 			<label>Tipus de contracte:</label> <m:message key="${propostaActuacio.tipusObra}"/>
@@ -44,7 +51,7 @@
 <div class="row">
 	<div class="col-md-4">
 		<p>
-			<label>Termini d'execució:</label> ${propostaActuacio.termini}
+			<label>${propostaActuacio.tipusObra == 'conveni' ? 'Vigència conveni' : 'Termini d\'execució'}:</label> ${propostaActuacio.termini}
 		</p>
 	</div>	
 </div>
@@ -58,5 +65,14 @@
 	<div class="col-md-4">
 		<label>Plic:</label> ${propostaActuacio.plic}€
    	</div>					  
-</div>	
+</div>
+<p></p>	
+<c:if test="${expedient.contracte == 'major'}">
+	<div class="row">
+		<div class="col-md-4">
+	       	<label>VEC:</label> ${propostaActuacio.vec}€						                                
+		</div>					  
+	</div>	
 <p></p>
+</c:if>	
+

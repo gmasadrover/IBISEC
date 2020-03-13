@@ -94,13 +94,48 @@ $(document).ready(function() {
 	$('.selectpicker').selectpicker('refresh');		
 	
 	$('#tipusIncidencia').on('change', function(){
-		if ($('#tipusIncidencia').val() == 'penalitzacio') {			
-			$('#infoMoficacio').addClass('hidden');
-			$('#infoPenalitzacio').removeClass('hidden');
-		} else {
-			$('#infoPenalitzacio').addClass('hidden');
-			$('#infoMoficacio').removeClass('hidden');
-			
+		if ($('#tipusIncidencia').val() == 'penalitzacio') { //Penalitzacions			
+			$('#seccioLlicendia').addClass('hidden');
+			$('#seccioPressupost').addClass('hidden');
+			$('#seccioTermini').addClass('hidden');
+			$('#seccioEmpresa').addClass('hidden');
+			$('#seccioPenalitzacio').removeClass('hidden');
+		} else if ($('#tipusIncidencia').val() == 'certfinal') { //Certificació Final
+			$('#seccioLlicendia').addClass('hidden');
+			$('#seccioPressupost').removeClass('hidden');
+			$('#seccioTermini').addClass('hidden');
+			$('#seccioEmpresa').removeClass('hidden');
+			$('#seccioPenalitzacio').addClass('hidden');
+		} else if ($('#tipusIncidencia').val() == 'termini'){ //Ampliacions termini
+			$('#seccioLlicendia').addClass('hidden');
+			$('#seccioPressupost').addClass('hidden');
+			$('#seccioTermini').removeClass('hidden');
+			$('#seccioEmpresa').addClass('hidden');
+			$('#seccioPenalitzacio').addClass('hidden');
+		} else if ($('#tipusIncidencia').val() == 'resolucioContracte'){ //Resolució Contracte
+			$('#seccioLlicendia').addClass('hidden');
+			$('#seccioPressupost').addClass('hidden');
+			$('#seccioTermini').addClass('hidden');
+			$('#seccioEmpresa').addClass('hidden');
+			$('#seccioPenalitzacio').addClass('hidden');
+		} else if ($('#tipusIncidencia').val() == 'informeExecucio'){ //Informe Execució
+			$('#seccioLlicendia').addClass('hidden');
+			$('#seccioPressupost').addClass('hidden');
+			$('#seccioTermini').addClass('hidden');
+			$('#seccioEmpresa').addClass('hidden');
+			$('#seccioPenalitzacio').addClass('hidden');
+		} else if ($('#tipusIncidencia').val() == 'enriquimentInjust'){ // Enriquiment execució	
+			$('#seccioLlicendia').addClass('hidden');
+			$('#seccioPressupost').removeClass('hidden');
+			$('#seccioTermini').addClass('hidden');
+			$('#seccioEmpresa').removeClass('hidden');
+			$('#seccioPenalitzacio').addClass('hidden');
+		} else { // Modificacions i preus contradictoris
+			$('#seccioLlicendia').removeClass('hidden');
+			$('#seccioPressupost').removeClass('hidden');
+			$('#seccioTermini').removeClass('hidden');
+			$('#seccioEmpresa').removeClass('hidden');
+			$('#seccioPenalitzacio').addClass('hidden');
 		}
 	});
 	

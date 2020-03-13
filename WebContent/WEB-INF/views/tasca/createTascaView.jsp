@@ -24,6 +24,9 @@
 							    <c:when test="${tipus=='notificacio'}">
 							        Notificació
 							    </c:when>
+							    <c:when test="${tipus=='modificacio'}">
+							        Incidència
+							    </c:when>
 							    <c:otherwise>
 							       Tasca
 							    </c:otherwise>
@@ -32,6 +35,9 @@
                             	<c:choose>
 								    <c:when test="${tipus=='infPrev'}">
 								        Sol·licitud informe
+								    </c:when>
+								    <c:when test="${tipus=='modificacio'}">
+								        Afegir incidència execució
 								    </c:when>
 								    <c:when test="${tipus=='notificacio'}">
 								        Nova notificació
@@ -50,6 +56,14 @@
 		                            </li>
 		                            <li class="active">
 		                                <i class="fa fa-table"></i> Nova notificació
+		                            </li>
+							    </c:when>
+							    <c:when test="${tipus=='modificacio'}">
+							        <li class="active">
+		                                <i class="fa fa-dashboard"></i> Incidència
+		                            </li>
+		                            <li class="active">
+		                                <i class="fa fa-table"></i> Nova incidència
 		                            </li>
 							    </c:when>
 							    <c:otherwise>
@@ -116,6 +130,9 @@
 									    <c:when test="${tipus=='infPrev'}">
 									   		<textarea class="form-control" name="comentari" placeholder="comentari inter" rows="3">Realitzar informe</textarea>	
 									    </c:when>
+									    <c:when test="${tipus=='modificacio'}">
+									   		<textarea class="form-control" name="comentari" placeholder="comentari inter" rows="3"></textarea>	
+									    </c:when>
 									    <c:otherwise>
 									       <textarea class="form-control" name="comentari" placeholder="comentari inter" rows="3">Revisar</textarea>	                            
 									    </c:otherwise>
@@ -128,7 +145,7 @@
 	                                <input type="file" class="btn" name="file" multiple/><br/>
 								</div> 	
 							</div>
-							<c:if test="${canReasignar}">
+							<c:if test="${canReasignar && tipus!='modificacio'}">
 	                            <div class="form-group">
 	                                <label class="col-xs-3  control-label">Asignar</label>
 	                                <div class="col-xs-3">

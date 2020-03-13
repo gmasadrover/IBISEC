@@ -23,6 +23,9 @@
 		</p>	
 		<p>			                     				
 			<label>Comentari tècnic:</label> ${informePrevi.propostaInformeSeleccionada.comentari}
+		</p>	
+		<p>			                     				
+			<label>Comentari administratiu:</label> ${informePrevi.propostaInformeSeleccionada.comentariAdministratiu}
 		</p>				                         	
 		<p>
 			<label>Tipus de contracte:</label> <m:message key="${informePrevi.propostaInformeSeleccionada.tipusObra}"/>
@@ -76,16 +79,18 @@
 			<label>Notes:</label> ${informePrevi.notes}
 		</p>
 		<p>
-			<label>Partida:</label> ${informePrevi.assignacioCredit.partida.codi}
+			<label>Partida:</label> 
+			<c:forEach items="${informePrevi.assignacioCredit}" var="assignacioCredit" >
+				${assignacioCredit.partida.nom} (${assignacioCredit.partida.codi})<br/>			
+			</c:forEach>
 		</p>
 	</div>
  </div>
  <c:if test="${canRealitzarTasca}">
 	<div class="panel-body">
-		
    		<c:if test="${informePrevi.autoritzacioPropostaAutoritzacio.ruta != null}">	
            	<div class="document">
-              		<label>Autorització proposta d'actuació signada:</label>											                  	
+                <label>Autorització proposta d'actuació signada:</label>											                  	
            		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.autoritzacioPropostaAutoritzacio.getEncodedRuta()}">
 					${informePrevi.autoritzacioPropostaAutoritzacio.nom}
 				</a>	
@@ -99,7 +104,7 @@
 		</c:if>	
 		<div class="separator"></div>												        	
 		<div class="panel-body">	     																	
-	       	<c:if test="${informePrevi.autoritzacioPropostaDespesa.ruta == null && actuacio.activa}">		
+	       	<c:if test="${actuacio.activa}">		
 		        <div class="row margin_bottom10">
 			   		<div class="col-md-12 panel">
 						<a target="_blanck" href="CrearDocument?tipus=autMen&idIncidencia=${incidencia.idIncidencia}&idActuacio=${actuacio.referencia}&idInforme=${informePrevi.idInf}" class="btn btn-success right" role="button">Generar autorització despesa actuació</a>

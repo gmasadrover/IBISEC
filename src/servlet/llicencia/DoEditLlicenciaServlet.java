@@ -53,19 +53,14 @@ public class DoEditLlicenciaServlet extends HttpServlet {
 		}
 		User Usuari = MyUtils.getLoginedUser(request.getSession());	   
        	String codi = multipartParams.getParametres().get("llicencia");
-       	String mode = multipartParams.getParametres().get("mode");
-       	String idInforme = multipartParams.getParametres().get("idInforme");
-       	String from = multipartParams.getParametres().get("from");  
+       	String idInforme = multipartParams.getParametres().get("idInforme"); 
     	String idActuacio = multipartParams.getParametres().get("idActuacio");  
        	Llicencia llicencia = new Llicencia();
        	String errorString = null;
-       	SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+       	SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");      
        	try {
        		InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme, false);
-       		if (mode.equals("modificar")) {
-       			llicencia = LlicenciaCore.findLlicencia(conn, codi, informe.getIdIncidencia(), idInforme);
-       		}
-			llicencia.setCodi(codi);	
+       		llicencia = LlicenciaCore.findLlicencia(conn, codi);     
 			llicencia.setTipus(multipartParams.getParametres().get("tipus"));
 			llicencia.setTaxa(Double.parseDouble(multipartParams.getParametres().get("taxa")));
 			llicencia.setIco(Double.parseDouble(multipartParams.getParametres().get("ico")));
@@ -73,7 +68,7 @@ public class DoEditLlicenciaServlet extends HttpServlet {
 			//Actualitzar reserva partida
 			double valor = Double.parseDouble(multipartParams.getParametres().get("taxa")) + Double.parseDouble(multipartParams.getParametres().get("ico"));
 			LlicenciaCore.actualitzarPartida(conn, llicencia, valor, informe);
-			
+		 
 			if (multipartParams.getParametres().get("dataSolicitud") != null && ! multipartParams.getParametres().get("dataSolicitud").isEmpty()) {
 				llicencia.setPeticio(formatter.parse(multipartParams.getParametres().get("dataSolicitud")));
 			}
@@ -93,13 +88,9 @@ public class DoEditLlicenciaServlet extends HttpServlet {
 			LlicenciaCore.guardarArxiu(conn, multipartParams.getFitxersByName().get("documentConcessioLlicencia"), codi, Usuari.getIdUsuari(), "Concessio");
 			LlicenciaCore.guardarArxiu(conn, multipartParams.getFitxersByName().get("documentPagamentLlicencia"), codi, Usuari.getIdUsuari(), "Pagament");
 			LlicenciaCore.guardarArxiu(conn, multipartParams.getFitxersByName().get("documentTitolHabilitant"), codi, Usuari.getIdUsuari(), "Habilitant");
-			if (mode.equals("modificar")) {
-				System.out.println("entra 1");
-				LlicenciaCore.updateLlicencia(conn, llicencia);
-			}else{
-				System.out.println("entra 2");
-				LlicenciaCore.novaLlicencia(conn, idInforme, llicencia);
-			}
+			
+			LlicenciaCore.updateLlicencia(conn, llicencia);
+			
 			
 			
 		} catch (ParseException | SQLException | NamingException e) {
@@ -115,16 +106,9 @@ public class DoEditLlicenciaServlet extends HttpServlet {
            RequestDispatcher dispatcher = request.getServletContext()
                    .getRequestDispatcher("/WEB-INF/views/llicencies/editLlicenciaView.jsp");
            dispatcher.forward(request, response);
-		}
-        
-		// If everything nice.
-		// Redirect to the product listing page.            
+		}         
 		else {
-			if (from.equals("expedient")) {
-				response.sendRedirect(request.getContextPath() + "/actuacionsDetalls?ref=" + idActuacio);
-			} else {
-				response.sendRedirect(request.getContextPath() + "/editLlicencia?codi=" + llicencia.getCodi());
-			}           
+			response.sendRedirect(request.getContextPath() + "/actuacionsDetalls?ref=" + idActuacio);
 		}
 	}
 

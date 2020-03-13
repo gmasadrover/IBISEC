@@ -44,7 +44,7 @@
 		<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 		
  	</p>
- 	<form class="form-horizontal" target="_blank" method="POST" enctype="multipart/form-data" action="DoAddPA"> 	
+ 	<form class="form-horizontal" target="_blank" method="POST" enctype="multipart/form-data" action="DoTasca"> 	
      	<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
 		<input type="hidden" name="idIncidencia" value="${informePrevi.idIncidencia}">															
 		<input type="hidden" name="idInforme" value="${informePrevi.idInf}">

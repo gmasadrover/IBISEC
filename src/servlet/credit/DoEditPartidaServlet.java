@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -59,7 +60,7 @@ public class DoEditPartidaServlet extends HttpServlet {
         		   
         	   }
         	 
-           } catch (SQLException e) {
+           } catch (SQLException | NamingException e) {
                e.printStackTrace();
                errorString = e.getMessage();
            }
