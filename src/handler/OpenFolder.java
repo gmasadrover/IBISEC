@@ -4,10 +4,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import java.sql.Connection;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,6 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonObject;
+
+import core.ConfiguracioCore;
+import utils.MyUtils;
 
 /**
  * Servlet implementation class OpenFolder
@@ -51,16 +51,10 @@ public class OpenFolder extends HttpServlet {
         response.setHeader("Access-Control-Max-Age", "86400");
  
         JsonObject myObj = new JsonObject();      
-        int idIncidencia = Integer.parseInt(request.getParameter("idIncidencia"));
-        Context env;
+    	Connection conn = MyUtils.getStoredConnection(request);
+        int idIncidencia = Integer.parseInt(request.getParameter("idIncidencia"));       
     	String ruta = "";
-		try {
-			env = (Context)new InitialContext().lookup("java:comp/env");
-			ruta = (String)env.lookup("ruta_base");
-		} catch (NamingException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
+		ruta = ConfiguracioCore.getConfiguracio(conn).getRutaBaseDocumentacio();
         File tmpFile = new File(ruta + "/documents/" + idIncidencia);
 		if (!tmpFile.exists()) {
 			tmpFile.mkdir();

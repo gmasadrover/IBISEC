@@ -1,8 +1,5 @@
 package utils;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,12 +18,11 @@ import com.itextpdf.text.pdf.*;
 
 import bean.Registre;
 import bean.User;
+import core.ConfiguracioCore;
 import core.RegistreCore;
 
 import java.io.*;
 import java.sql.Connection;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 /**
  * Servlet implementation class uploadFichero
  */
@@ -94,15 +90,8 @@ public class uploadFichero extends HttpServlet {
             }
         }
         
-        Context env;
     	String ruta = "";
-		try {
-			env = (Context)new InitialContext().lookup("java:comp/env");
-			ruta = (String)env.lookup("ruta_base");
-		} catch (NamingException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
+		ruta = ConfiguracioCore.getConfiguracio(conn).getRutaBaseDocumentacio();
         
         for (String idInc: idIncidencies) {
         	if (arxius != null) {

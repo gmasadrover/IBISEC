@@ -2,11 +2,9 @@ package servlet.registre;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,7 +22,6 @@ import core.JudicialCore;
 import core.RegistreCore;
 import core.TascaCore;
 import core.UsuariCore;
-import utils.Fitxers;
 import utils.MyUtils;
 
 /**
@@ -60,26 +57,23 @@ public class RegistreDetailsServlet extends HttpServlet {
 			   int idTasca = -1;					  
 		       String errorString = null;
 		       String numAutosProcediment = "";
+		       boolean isIBISEC = true;
 		       Registre registre = new Registre();
 		       List<Tasca> tasques = new ArrayList<Tasca>();
-		       try {
-		    	   registre = RegistreCore.findRegistre(conn, tipus, referencia);	
-		    	   tasques = TascaCore.findTasquesRegistre(conn, referencia);
-		    	   if (from != null || "notificacio".equals(from)) {
-		    		   idTasca = Integer.parseInt(request.getParameter("idTasca"));
-		    		   TascaCore.llegirNotificacio(conn, idTasca);
-		    	   }
-		    	   if (registre.getTipus().equals("Procediment judicial")) {
-		    		   Judicial judicial = JudicialCore.findProcediment(conn, registre.getIdIncidencies());
-		    		   numAutosProcediment = judicial.getNumAutos();
-		    	   }
-		       } catch (SQLException | NamingException e) {
-		           e.printStackTrace();
-		           errorString = e.getMessage();
-		       }			
-		      
+		       registre = RegistreCore.findRegistre(conn, tipus, referencia);	
+			   tasques = TascaCore.findTasquesRegistre(conn, referencia);
+			   if (from != null || "notificacio".equals(from)) {
+				   idTasca = Integer.parseInt(request.getParameter("idTasca"));
+				   TascaCore.llegirNotificacio(conn, idTasca);
+			   }
+			   if (registre.getTipus().equals("Procediment judicial")) {
+				   Judicial judicial = JudicialCore.findProcediment(conn, registre.getIdIncidencies());
+				   numAutosProcediment = judicial.getNumAutos();
+			   }			
+			   isIBISEC = !usuari.getRol().toUpperCase().contains("CONSELLERIA");
 		       // Store info in request attribute, before forward to views
 		       request.setAttribute("errorString", errorString);
+		       request.setAttribute("isIBISEC", isIBISEC);
 		       request.setAttribute("registre", registre);
 		       request.setAttribute("tipus", tipus);
 		       request.setAttribute("tasques", tasques);

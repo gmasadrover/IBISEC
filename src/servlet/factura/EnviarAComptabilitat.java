@@ -1,18 +1,12 @@
 package servlet.factura;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,7 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.itextpdf.text.Chunk;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.BaseFont;
@@ -31,9 +24,10 @@ import com.itextpdf.text.pdf.PdfStamper;
 
 import bean.Factura;
 import bean.InformeActuacio;
-import core.ActuacioCore;
+import core.ConfiguracioCore;
 import core.FacturaCore;
 import core.InformeCore;
+import core.TascaCore;
 import utils.Fitxers;
 import utils.MyUtils;
 
@@ -59,10 +53,15 @@ public class EnviarAComptabilitat extends HttpServlet {
 		Connection conn = MyUtils.getStoredConnection(request);	
 		
 	    String idFactura = request.getParameter("ref");   
+	    String idTasca = request.getParameter("idtasca");
 	    
 	    int idUsuari = MyUtils.getLoginedUser(request.getSession()).getIdUsuari();	  
 	    
 	    Factura factura = new Factura();
+	    
+	    if (idTasca != null) {
+	    	TascaCore.tancar(conn, Integer.parseInt(idTasca));
+	    }
 	    
 	    String errorString = null;	 	      
 	   	if (errorString == null) {
@@ -70,17 +69,7 @@ public class EnviarAComptabilitat extends HttpServlet {
 	   			factura = FacturaCore.getFactura(conn, idFactura);	
 	   			InformeActuacio informeActual = InformeCore.getInformePrevi(conn, factura.getIdInforme(), false);
 	   			Date date = new Date();
-	   			System.out.println("entra ->" + factura.getDataConformacio());
 	   			if (factura.getDataEnviatComptabilitat() == null) {
-	   				Context env;
-	   				String ruta = "";
-	   				try {
-	   					env = (Context)new InitialContext().lookup("java:comp/env");
-	   					ruta = (String)env.lookup("ruta_base");
-	   				} catch (NamingException e2) {
-	   					// TODO Auto-generated catch block
-	   					e2.printStackTrace();
-	   				}
 	   				
 	    	        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 	    	        String rutaFactua = factura.getFactura().getRuta();
@@ -106,6 +95,17 @@ public class EnviarAComptabilitat extends HttpServlet {
 	    	          overContent.endText();
 	    	          overContent.restoreState();
 	    	          
+	    	          if (factura.getNotes()!=null) {
+		    	          overContent = stamper.getOverContent( i + 1 );
+		    	          overContent.saveState();
+		    	          overContent.beginText();
+		    	          overContent.setFontAndSize( font, 10.0f );
+		    	          overContent.setTextMatrix( 24, 13 );
+		    	          overContent.showText("Notes: " + factura.getNotes());
+		    	          overContent.endText();
+		    	          overContent.restoreState();
+	    	          }
+	    	          
 	    	          overContent = stamper.getOverContent( i + 1 );
 	    	          overContent.saveState();
 	    	          overContent.beginText();
@@ -118,22 +118,21 @@ public class EnviarAComptabilitat extends HttpServlet {
 	    	        }
 	    	        stamper.close();
 	    	        reader.close();
-	    	        System.out.println("entra ->" + rutaFactua);
 	    	        Fitxers.eliminarFitxer(conn, idUsuari, rutaFactua);
 	   			}
 	   			factura.setDataEnviatComptabilitat(date);
 	   			factura.setDataConformacio(date);
 	   			FacturaCore.modificarFactura(conn, factura, idUsuari);
-	   			if (informeActual.getOfertaSeleccionada().getPlic() < Double.parseDouble(getServletContext().getInitParameter("importObraMajor"))) {
-	   				boolean totFacturat = true;   				
+	   			if (informeActual.getOfertaSeleccionada().getPlic() < ConfiguracioCore.getConfiguracio(conn).getImportObraMajor()) {
+	   								
 	   				if (informeActual.getOfertaSeleccionada().getPlic() > informeActual.getTotalFacturat()) {
-	   					totFacturat = false;	   				
+	   						   				
 	   				} else {
-	   					InformeCore.modificarEstat(conn, factura.getIdInforme(), "garantia");
+	   					InformeCore.modificarEstat(conn, factura.getIdInforme(), "acabat");
 	   					InformeCore.tancar(conn, factura.getIdInforme());
 	   				}
 	   			}
-	   		} catch (SQLException | NamingException | DocumentException e) {
+	   		} catch (DocumentException e) {
 	  			e.printStackTrace();
 	  			errorString = e.getMessage();
 	   		}

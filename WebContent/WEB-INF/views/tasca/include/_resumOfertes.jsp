@@ -37,6 +37,11 @@
 			<label>Cap d'obres designat:</label> ${ofertaSeleccionada.capDobra}
 		</p>
 	</c:if>	
+	<c:if test="${ofertaSeleccionada.correuLicitacio != null && ofertaSeleccionada.correuLicitacio != ''}">
+		<p>
+			<label>Direcció electrònica habilitada:</label> ${ofertaSeleccionada.correuLicitacio}
+		</p>
+	</c:if>	
 	<c:if test="${ofertaSeleccionada.personalInscrit.ruta != null}">
 		<p>
 			<div class="document">

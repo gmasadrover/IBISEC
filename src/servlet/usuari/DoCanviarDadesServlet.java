@@ -2,7 +2,6 @@ package servlet.usuari;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -45,11 +44,7 @@ public class DoCanviarDadesServlet extends HttpServlet {
 		  	usuariModificat.setName(request.getParameter("nom"));
 		  	usuariModificat.setLlinatges(request.getParameter("cognoms"));
 		  	usuariModificat.setCarreg(request.getParameter("carreg"));
-		  	try {
-		  		UsuariCore.modificarDades(conn, usuari.getIdUsuari(), usuariModificat);
-		  	} catch (SQLException e) {
-		  		e.printStackTrace();
-		  	}		  	  	
+		  	UsuariCore.modificarDades(conn, usuari.getIdUsuari(), usuariModificat);		  	  	
 		  	response.sendRedirect(request.getContextPath() + "/UsuariDetails?id=" + usuari.getIdUsuari());		  	
 		}
 	}

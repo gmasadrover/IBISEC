@@ -4,20 +4,16 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileUploadException;
-
 import com.google.gson.JsonObject;
 
 import bean.User;
 import core.EmpresaCore;
-import core.OfertaCore;
 import utils.Fitxers;
 import utils.MyUtils;
 
@@ -59,14 +55,9 @@ public class DoUploadEscritura extends HttpServlet {
         Connection conn = MyUtils.getStoredConnection(request);	
 		User Usuari = MyUtils.getLoginedUser(request.getSession());	   
         Fitxers.formParameters multipartParams = new Fitxers.formParameters();
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-			String cif = multipartParams.getParametres().get("cif");	   
-			EmpresaCore.guardarFitxer(conn, Usuari.getIdUsuari(), multipartParams.getFitxers(), cif, "");
-		} catch (FileUploadException | NamingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}			
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);
+		String cif = multipartParams.getParametres().get("cif");	   
+		EmpresaCore.guardarFitxer(conn, Usuari.getIdUsuari(), multipartParams.getFitxers(), cif, "");			
 		myObj.addProperty("success", true);	
 		
         out.println(myObj.toString());

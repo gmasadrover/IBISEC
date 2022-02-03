@@ -2,7 +2,6 @@ package servlet.actuacio;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,15 +13,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import bean.Empresa;
-import bean.Incidencia;
 import bean.Partida;
 import bean.User;
 import bean.ControlPage.SectionPage;
-import core.ActuacioCore;
 import core.ControlPageCore;
 import core.CreditCore;
 import core.EmpresaCore;
-import core.IncidenciaCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
@@ -55,15 +51,9 @@ public class CreateCompletActuacioServlet extends HttpServlet {
 	        List<Partida> partidesList = new ArrayList<Partida>();
 	        List<Empresa> empresesList = new ArrayList<Empresa>();
 	        List<User> usuarisList = new ArrayList<User>();
-	        try {
-				request.setAttribute("nouCodi", ActuacioCore.getNewCode(conn));
-				partidesList = CreditCore.getPartides(conn, false);
-				empresesList = EmpresaCore.getEmpreses(conn);
-				usuarisList = UsuariCore.llistaUsuaris(conn, true);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	        partidesList = CreditCore.getPartides(conn, false);
+			empresesList = EmpresaCore.getEmpreses(conn);
+			usuarisList = UsuariCore.llistaUsuaris(conn, true);
 	        request.setAttribute("partidesList", partidesList);
 	 	    request.setAttribute("empresesList", empresesList);
 	 	    request.setAttribute("llistaUsuaris", usuarisList);

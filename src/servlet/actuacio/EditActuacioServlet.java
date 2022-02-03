@@ -2,7 +2,6 @@ package servlet.actuacio;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -46,13 +45,7 @@ public class EditActuacioServlet extends HttpServlet {
     		response.sendRedirect(request.getContextPath() + "/");	 	
  	   	}else{ 	   		
 	        Actuacio actuacio = new Actuacio();
-	        try {
-				request.setAttribute("nouCodi", ActuacioCore.getNewCode(conn));
-				actuacio = ActuacioCore.findActuacio(conn, request.getParameter("idActuacio"));
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	        actuacio = ActuacioCore.findActuacio(conn, request.getParameter("idActuacio"));
 	        request.setAttribute("actuacio", actuacio);
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Actuacions"));
 	        RequestDispatcher dispatcher = request.getServletContext()

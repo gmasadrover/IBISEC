@@ -13,16 +13,25 @@
 		    <thead>
 		        <tr>
 		            <th>Usuari</th>
+		            <th>Tecnic</th>
 		            <th>Funció</th>		
-		            <th>Data alta</th>	 
-		            <th>Data baixa</th>	   
+		            <th>Data inici</th>	 
+		            <th>Data fi</th>	   
 		            <th>Control</th>                                     
 		        </tr>
 		    </thead>
 		    <tbody>
 		    	<c:forEach items="${informePrevi.personal}" var="persona" >
-					<tr>	
-						<td>${persona.usuari.getNomCompletReal()}</td>							          	
+					<tr>
+						<c:choose>
+							<c:when test="${persona.usuari.idUsuari == '-1'}">
+								<td>${persona.empresa}</td>	
+							</c:when>
+							<c:otherwise>
+								<td>${persona.usuari.getNomCompletReal()}</td>	
+							</c:otherwise>
+						</c:choose>							
+						<td>${persona.tecnic}</td>						          	
 						<td>${persona.funcio}</td>
 						<td>${persona.getDataAltaString()}</td>
 						<td>${persona.getDataBaixaString()}</td>
@@ -41,7 +50,7 @@
 			<div class="row">
 	  			<c:if test="${canModificarPersonal}">
 					<div class="col-md-offset-9 col-md-2 margin_top30">
-						<a href="newPersonalInforme?idinf=${informePrevi.idInf}&from=${redireccio}" class="btn btn-primary" role="button">Afegir</a>
+						<a href="newPersonalInforme?idactuacio=${informePrevi.actuacio.referencia}&idinf=${informePrevi.idInf}&from=${redireccio}" class="btn btn-primary" role="button">Afegir</a>
 					</div>
 				</c:if>
 	    	</div>       

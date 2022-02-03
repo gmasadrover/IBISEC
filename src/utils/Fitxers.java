@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
-import java.security.GeneralSecurityException;
 import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.sql.Connection;
@@ -17,15 +16,11 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Scanner;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItem;
@@ -47,10 +42,10 @@ import com.itextpdf.text.pdf.PdfString;
 import com.itextpdf.text.pdf.security.CertificateInfo;
 import com.itextpdf.text.pdf.security.PdfPKCS7;
 import com.itextpdf.text.pdf.security.SignaturePermissions;
-import com.itextpdf.text.pdf.security.SignaturePermissions.FieldLock;
 
 import bean.Actuacio;
 import bean.Actuacio.ArxiusAdjunts;
+import core.ConfiguracioCore;
 import bean.User;
 import utils.Fitxers.Fitxer.infoFirma;
 public class Fitxers {
@@ -225,12 +220,10 @@ public class Fitxers {
 		
 	}	
 	
-	public static List<Fitxer> ObtenirManuals() throws NamingException {
+	public static List<Fitxer> ObtenirManuals(Connection conn) {
 		List<Fitxer> arxius = new ArrayList<Fitxer>();	 
-		 // Get the base naming context
-	    Context env = (Context)new InitialContext().lookup("java:comp/env");
-	    // Get a single value
-		String ruta =  (String)env.lookup("ruta_base") + "/Manuals/";
+		
+		String ruta = ConfiguracioCore.getConfiguracio(conn).getRutaBaseDocumentacio() + "/Manuals/";
 		
 		File dir = new File(ruta);
 		File[] ficheros = dir.listFiles();
@@ -250,13 +243,10 @@ public class Fitxers {
 		return arxius;	
 	}
 	
-	public static List<Fitxer> ObtenirFitxers(String idIncidencia, String idActuacio, String tipus, String idTipus, String idSubTipus) throws NamingException {
+	public static List<Fitxer> ObtenirFitxers(Connection conn, String idIncidencia, String idActuacio, String tipus, String idTipus, String idSubTipus) {
 		List<Fitxer> arxius = new ArrayList<Fitxer>();
 		
-		 // Get the base naming context
-	    Context env = (Context)new InitialContext().lookup("java:comp/env");
-	    // Get a single value
-		String rutaBase =  (String)env.lookup("ruta_base") + "/documents/" + idIncidencia;
+		String rutaBase =  ConfiguracioCore.getConfiguracio(conn).getRutaBaseDocumentacio() + "/documents/" + idIncidencia;
 		if (idActuacio != null && !idActuacio.isEmpty()) rutaBase += "/Actuacio/" + idActuacio;				
 		rutaBase += "/" + tipus + "/" + idTipus;
 		if (!idSubTipus.isEmpty()) rutaBase += "/Comentari/" + idSubTipus;		
@@ -264,24 +254,19 @@ public class Fitxers {
 		return arxius;		
 	}
 	
-	public static List<Fitxer> ObtenirFitxersTasca(String idTasca) throws NamingException {
+	public static List<Fitxer> ObtenirFitxersTasca(Connection conn, int idTasca) {
 		List<Fitxer> arxius = new ArrayList<Fitxer>();
 		
-		 // Get the base naming context
-	    Context env = (Context)new InitialContext().lookup("java:comp/env");
-	    // Get a single value
-		String rutaBase =  (String)env.lookup("ruta_base") + "/documents/Tasca/" + idTasca;
+		String rutaBase =  ConfiguracioCore.getConfiguracio(conn).getRutaBaseDocumentacio() + "/documents/Tasca/" + idTasca;
 		arxius = ObtenirTotsFitxers(rutaBase, "");				
 		return arxius;		
 	}
 	
-	public static ArxiusAdjunts ObtenirTotsFitxers(String idIncidencia) throws NamingException {
+	public static ArxiusAdjunts ObtenirTotsFitxers(Connection conn, String idIncidencia) {
 		ArxiusAdjunts arxius = new Actuacio().new ArxiusAdjunts();
-		 // Get the base naming context
-	    Context env = (Context)new InitialContext().lookup("java:comp/env");
-	    // Get a single value			
+				
 	    List<Fitxers.Fitxer> arxiusAltres = new ArrayList<Fitxers.Fitxer>();
-	    String rutaBase =  (String)env.lookup("ruta_base") + "/documents/" + idIncidencia;		
+	    String rutaBase =  ConfiguracioCore.getConfiguracio(conn).getRutaBaseDocumentacio() + "/documents/" + idIncidencia;		
 		arxiusAltres = ObtenirTotsFitxers(rutaBase, "Altres");	
 		arxius.setArxiusAltres(arxiusAltres);
 		
@@ -418,40 +403,54 @@ public class Fitxers {
 		return arxius;	
 	}
 	
-	public static boolean isPDF(File file) throws FileNotFoundException{	    
-	    Scanner inputFile = new Scanner(new FileReader(file));
-	    while (inputFile.hasNextLine()) {
-	        final String checkline = inputFile.nextLine();
-	        if(checkline.contains("%PDF-")) { 
-	            // a match!
-	            return true;
-	        }  
-	    }
+	public static boolean isPDF(File file) {	    
+	    Scanner inputFile = null;
+		try {
+			inputFile = new Scanner(new FileReader(file));
+			 while (inputFile.hasNextLine()) {
+			        final String checkline = inputFile.nextLine();
+			        if(checkline.contains("%PDF-")) { 
+			            // a match!
+			        	inputFile.close();
+			            return true;
+			        }  
+			    }
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		inputFile.close();
 	    return false;
 	}
 	
-	public static List<Fitxers.Fitxer.infoFirma> getSignaturesDocument(String ruta) throws GeneralSecurityException, IOException {
+	public static List<Fitxers.Fitxer.infoFirma> getSignaturesDocument(String ruta) {
 		 List<infoFirma> firmesList = new ArrayList<infoFirma>();
 		 PdfReader reader;						
-		 reader = new PdfReader(ruta);						
-		 AcroFields acroFields = reader.getAcroFields();
-		 List<String> signatureNames = acroFields.getSignatureNames();	
-		 Fitxer.infoFirma info = null;
-		 for (String name: signatureNames) {     		
-				PdfPKCS7 pkcs7 = verifySignature(acroFields, name);
-				if (pkcs7 != null) {
-					info = new Fitxer().new infoFirma();
-					X509Certificate cert = (X509Certificate) pkcs7.getSigningCertificate();	
-					info.setNomFirmant(CertificateInfo.getSubjectFields(cert).getField("CN"));		
-					SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy HH:mm");		
-					info.setDataFirma(date_format.format(pkcs7.getSignDate().getTime()));	
-					firmesList.add(info);
-				}
-		 }
+		 try {
+			reader = new PdfReader(ruta);
+			AcroFields acroFields = reader.getAcroFields();
+			 List<String> signatureNames = acroFields.getSignatureNames();	
+			 Fitxer.infoFirma info = null;
+			 for (String name: signatureNames) {     		
+					PdfPKCS7 pkcs7 = verifySignature(acroFields, name);
+					if (pkcs7 != null) {
+						info = new Fitxer().new infoFirma();
+						X509Certificate cert = (X509Certificate) pkcs7.getSigningCertificate();	
+						info.setNomFirmant(CertificateInfo.getSubjectFields(cert).getField("CN"));		
+						SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy HH:mm");		
+						info.setDataFirma(date_format.format(pkcs7.getSignDate().getTime()));	
+						firmesList.add(info);
+					}
+			 }
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}						
+		 
 		 return firmesList;
 	}
 	
-	public static PdfPKCS7 verifySignature(AcroFields fields, String name) throws GeneralSecurityException, IOException {
+	public static PdfPKCS7 verifySignature(AcroFields fields, String name) {
 		//System.out.println("name: " + name);
 		//System.out.println("Signature covers whole document: " + fields.signatureCoversWholeDocument(name));
 		//System.out.println("Document revision: " + fields.getRevision(name) + " of " + fields.getTotalRevisions());
@@ -464,7 +463,7 @@ public class Fitxers {
 	}
 	
 	
-	public static SignaturePermissions inspectSignature(AcroFields fields, String name, SignaturePermissions perms, Fitxer fitxer) throws GeneralSecurityException, IOException {
+	public static SignaturePermissions inspectSignature(AcroFields fields, String name, SignaturePermissions perms, Fitxer fitxer) {
 		List<FieldPosition> fps = fields.getFieldPositions(name);
 		if (fps != null && fps.size() > 0) {
 			FieldPosition fp = fps.get(0);
@@ -511,49 +510,67 @@ public class Fitxers {
         return perms;
 	}
 	
-	private static int getIdRegistreDocument(Connection conn) throws SQLException {
+	private static int getIdRegistreDocument(Connection conn) {
 		int idRegistre = 0;
 		String sql = "SELECT idregistre " +
 					" FROM public.tbl_registredocuments" +
 					" ORDER BY idregistre DESC" +
 					" LIMIT 1";
-		PreparedStatement pstm = conn.prepareStatement(sql);
-		ResultSet rs = pstm.executeQuery();
-		if (rs.next()) idRegistre = rs.getInt("idregistre") + 1;
+		PreparedStatement pstm;
+		try {
+			pstm = conn.prepareStatement(sql);
+			ResultSet rs = pstm.executeQuery();
+			if (rs.next()) idRegistre = rs.getInt("idregistre") + 1;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return idRegistre;
 	}
 	
-	public static void guardarRegistreFitxer(Connection conn, String nomdocument, String ruta, int idUsuari) throws SQLException {
+	public static void guardarRegistreFitxer(Connection conn, String nomdocument, String ruta, int idUsuari) {
 		 if (idUsuari != 4) { //Silvia Sanz
 			 String sqlInsert = "INSERT INTO public.tbl_registredocuments(idregistre, usuari, data, nomdocument, dataeliminacio, usuarieliminacio, rutadocument)"
 			 			+ " VALUES (?, ?, localtimestamp, ?, null, null, ?);";	 
 			 PreparedStatement pstmInsert = null; 			 
-			 pstmInsert = conn.prepareStatement(sqlInsert);	
-			 pstmInsert.setInt(1, getIdRegistreDocument(conn));
-			 pstmInsert.setInt(2, idUsuari);
-			 pstmInsert.setString(3, nomdocument);		
-			 pstmInsert.setString(4, ruta);		
-			 pstmInsert.executeUpdate();	
+			 try {
+				pstmInsert = conn.prepareStatement(sqlInsert);
+				 pstmInsert.setInt(1, getIdRegistreDocument(conn));
+				 pstmInsert.setInt(2, idUsuari);
+				 pstmInsert.setString(3, nomdocument);		
+				 pstmInsert.setString(4, ruta);		
+				 pstmInsert.executeUpdate();	
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+			
 		 }
 	}
 	
-	public static void marcarDocumentEliminat(Connection conn, int idUsuari, String ruta) throws SQLException {
+	public static void marcarDocumentEliminat(Connection conn, int idUsuari, String ruta) {
 		String sqlUpdate = "UPDATE public.tbl_registredocuments" + 
 							" SET dataeliminacio=localtimestamp, usuarieliminacio=?" +
 							" WHERE rutadocument=?;";
-		 PreparedStatement pstm = conn.prepareStatement(sqlUpdate);	
-		 pstm.setInt(1,idUsuari);
-		 pstm.setString(2, ruta);		
-		 pstm.executeUpdate();	
+		 PreparedStatement pstm;
+		try {
+			pstm = conn.prepareStatement(sqlUpdate);
+			 pstm.setInt(1,idUsuari);
+			 pstm.setString(2, ruta);		
+			 pstm.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+			
 	}
 	
-	public static void guardarFitxer(Connection conn, List<Fitxer> fitxers, String idIncidencia, String idActuacio, String tipus, String idTipus, String idSubTipus, String idInforme, String docInforme, int idUsuari) throws IOException, NamingException{		
+	public static void guardarFitxer(Connection conn, List<Fitxer> fitxers, String idIncidencia, String idActuacio, String tipus, String idTipus, String idSubTipus, String idInforme, String docInforme, int idUsuari) {		
 		if (fitxers != null && !fitxers.isEmpty()) {
 			String fileName = "";
-			 // Get the base naming context
-		    Context env = (Context)new InitialContext().lookup("java:comp/env");
-		    // Get a single value
-			String ruta =  (String)env.lookup("ruta_base");
+			
+			String ruta =  ConfiguracioCore.getConfiguracio(conn).getRutaBaseDocumentacio();
 			// Crear directoris si no existeixen
 			File tmpFile = new File(ruta + "/documents/"  + idIncidencia);
 			if (!tmpFile.exists()) {
@@ -688,39 +705,50 @@ public class Fitxers {
 		}
 	}
 	
-	public static formParameters getParamsFromMultipartForm(HttpServletRequest req) throws FileUploadException, UnsupportedEncodingException {
+	public static formParameters getParamsFromMultipartForm(HttpServletRequest req) {
         Hashtable<String,String> parametres=new Hashtable<String,String>();
         Hashtable<String,List<Fitxer>> fitxersByName = new Hashtable<String,List<Fitxer>>();
-        List<?> items = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(req);  
-        List<Fitxer> fitxers = new ArrayList<Fitxer>();
+        List<?> items;
         formParameters form = new formParameters();
-        for(int i=0;i<items.size();i++){
-        	FileItem item = (FileItem) items.get(i);
-            if (item.isFormField()) {
-                parametres.put(item.getFieldName(), item.getString("UTF-8"));
-            } else {
-            	if (item.getSize() != 0) {
-            		Fitxer fitxer = new Fitxer();
-                	fitxer.setNom(item.getName());
-                	fitxer.setNomCamp(item.getFieldName());
-                	fitxer.setFitxer(item);
-                	fitxers.add(fitxer);
-                	List<Fitxer> aux = new ArrayList<Fitxer>();
-                	if (!fitxersByName.containsKey(item.getFieldName())) {
-                		aux.add(fitxer);
-                		fitxersByName.put(item.getFieldName(), aux);
-                	}else{
-                		aux = fitxersByName.get(item.getFieldName());
-                		aux.add(fitxer);
-                		fitxersByName.replace(item.getFieldName(), aux);
-                	}
-                	
-            	}
-            }
-        }        
-        form.setParametres(parametres);
-        form.setFitxers(fitxers);
-        form.setFitxersByName(fitxersByName);
+		try {
+			items = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(req);
+			List<Fitxer> fitxers = new ArrayList<Fitxer>();
+	      
+	        for(int i=0;i<items.size();i++){
+	        	FileItem item = (FileItem) items.get(i);
+	            if (item.isFormField()) {
+	                parametres.put(item.getFieldName(), item.getString("UTF-8"));
+	            } else {
+	            	if (item.getSize() != 0) {
+	            		Fitxer fitxer = new Fitxer();
+	                	fitxer.setNom(item.getName());
+	                	fitxer.setNomCamp(item.getFieldName());
+	                	fitxer.setFitxer(item);
+	                	fitxers.add(fitxer);
+	                	List<Fitxer> aux = new ArrayList<Fitxer>();
+	                	if (!fitxersByName.containsKey(item.getFieldName())) {
+	                		aux.add(fitxer);
+	                		fitxersByName.put(item.getFieldName(), aux);
+	                	}else{
+	                		aux = fitxersByName.get(item.getFieldName());
+	                		aux.add(fitxer);
+	                		fitxersByName.replace(item.getFieldName(), aux);
+	                	}
+	                	
+	            	}
+	            }
+	        }        
+	        form.setParametres(parametres);
+	        form.setFitxers(fitxers);
+	        form.setFitxersByName(fitxersByName);
+		} catch (FileUploadException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
+        
         return form;
     }
 }

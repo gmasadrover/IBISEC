@@ -2,7 +2,6 @@ package servlet.expedient;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -12,8 +11,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.fileupload.FileUploadException;
 
 import bean.Expedient;
 import core.ExpedientCore;
@@ -33,12 +30,7 @@ public class DoEditExecucioServlet extends HttpServlet {
            throws ServletException, IOException {
        	Connection conn = MyUtils.getStoredConnection(request);
        	Fitxers.formParameters multipartParams = new Fitxers.formParameters();
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);
        	
        	String refExp = multipartParams.getParametres().get("expedient");
        	Expedient expedient = new Expedient();
@@ -61,21 +53,11 @@ public class DoEditExecucioServlet extends HttpServlet {
 			if (multipartParams.getParametres().get("dataIniciObra") != null && ! multipartParams.getParametres().get("dataIniciObra").isEmpty()) {
 				expedient.setDataIniciExecucio(formatter.parse(multipartParams.getParametres().get("dataIniciObra")));
 			}
-			if (multipartParams.getParametres().get("dataFiGarantia") != null && ! multipartParams.getParametres().get("dataFiGarantia").isEmpty()) {
-				expedient.setDataFiGarantia(formatter.parse(multipartParams.getParametres().get("dataFiGarantia")));
-			}
-			if (multipartParams.getParametres().get("dataRecepcio") != null && ! multipartParams.getParametres().get("dataRecepcio").isEmpty()) {
-				expedient.setDataRecepcio(formatter.parse(multipartParams.getParametres().get("dataRecepcio")));
-			}
-			if (multipartParams.getParametres().get("dataRetornGarantia") != null && ! multipartParams.getParametres().get("dataRetornGarantia").isEmpty()) {
-				expedient.setDataRetornGarantia(formatter.parse(multipartParams.getParametres().get("dataRetornGarantia")));
-			}	
 			if (multipartParams.getParametres().get("dataLiquidacioObra") != null && ! multipartParams.getParametres().get("dataLiquidacioObra").isEmpty()) {
 				expedient.setDataLiquidacio(formatter.parse(multipartParams.getParametres().get("dataLiquidacioObra")));
 			}	
-			expedient.setGarantia(multipartParams.getParametres().get("garantia"));			
 			ExpedientCore.updateExpedient(conn, expedient);
-		} catch (ParseException | SQLException e) {
+		} catch (ParseException e) {
 			errorString = e.toString();
 		}
        	

@@ -124,11 +124,14 @@
                                         <th>Publicació</th>
                                         <th>Preu licitació (Sense IVA)</th>
                                         <th>Preu licitació</th>
+                                        <th>Llicència</th>
                                         <th>Empreses presentades</th>
                                         <th>Adjudicació</th>
                                         <th>Adjudicació</th>
+                                        <th>CIF Adjudicatari</th>
                                         <th>Adjudicatari</th>
                                         <th>Preu adjudicació</th>
+                                        <th>Termini</th>
                                         <th>Firma</th>
                                         <th>Firma</th>
                                         <th>Facturat</th>
@@ -164,22 +167,20 @@
 							            	<td>${informe.expcontratacio.getDataPublicacioPerfilContratant()}</td>
 							            	<td>${informe.getPropostaInformeSeleccionada().getPbaseFormat()}</td>
 							            	<td>${informe.getPropostaInformeSeleccionada().getPlicFormat()}</td>
+							            	<td>
+								            	<c:if test="${informe.getPropostaInformeSeleccionada().tipusObra=='obr'}">
+													 ${informe.getPropostaInformeSeleccionada().llicencia ? informe.getPropostaInformeSeleccionada().getTipusLlicenciaFormat() : "No"}														
+												</c:if>
+											</td>
 							            	<td>${informe.getEmpresesPresentades()}</td>
 							            	<td>${informe.expcontratacio.getDataAdjudicacioString()}</td>
 							            	<td>${informe.expcontratacio.dataAdjudicacio}</td>
+							            	<td>${informe.getOfertaSeleccionada().cifEmpresa}</td>
 							            	<td>${informe.getOfertaSeleccionada().nomEmpresa}</td>
-							            	<td>
-							            		<c:choose>
-								            		<c:when test="${informe.llistaModificacions.size() > 0}">
-								            			<a href="modificacions?exp=${informe.expcontratacio.expContratacio}">${informe.getOfertaSeleccionada().getPlicFormat()} *</a>
-								            		</c:when>
-								            		<c:otherwise>
-								            			${informe.getOfertaSeleccionada().getPlicFormat()}
-								            		</c:otherwise>
-							            		</c:choose>
-							            	</td>
+							            	<td>${informe.getOfertaSeleccionada().getPlicFormat()}</td>
+							            	<td>${informe.getOfertaSeleccionada().termini}</td>
 							            	<td>${informe.expcontratacio.getDataFirmaString()}</td>
-							            	<td>${informe.expcontratacio.dataFormalitzacioContracte}</td>
+							            	<td>${informe.expcontratacio.dataFormalitzacioContracte}</td>							            	
 							            	<td>${informe.getTotalFacturatFormat()}</td>
 							            	<td>${informe.expcontratacio.getDataIniciObratring()}</td>
 							            	<td>${informe.expcontratacio.dataIniciExecucio}</td>
@@ -189,7 +190,7 @@
 							            	<td>${informe.expcontratacio.dataRetornGarantia}</td>
 							            	<td>${informe.expcontratacio.getDataLiquidacioString()}</td>
 							            	<td>${informe.expcontratacio.dataLiquidacio}</td>
-							            	<td>${informe.expcontratacio.anulat ? "Anul·lat" : "Actiu"}</td>
+							            	<td>Informe: ${informe.getEstatExpedientFormat()} - Actuacio: ${informe.actuacio.dataTancament}</td>
 							          	</tr>
 							       	</c:forEach>                                	
                                 </tbody>

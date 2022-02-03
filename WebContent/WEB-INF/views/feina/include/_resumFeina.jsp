@@ -32,8 +32,10 @@
 		            	<td>${feina.data}</td>											            						            	
 		            	<td>${feina.notes}</td>		
 		            	<td>
-                   			<input class="btn btn-danger btn-sm deleteFeina" data-idfeina="${feina.idFeina}" data-msg="eliminant feina..." type="button" value="Eliminar">
-                   			<a href="modificarFeina?idFeina=${feina.idFeina}&idActuacio=${actuacio.referencia}" class="btn btn-primary btn-sm loadingButton"  data-msg="obrint feina..." role="button">Modificar</a>						                        			                       			
+		            		<c:if test="${isIBISEC}">
+	                   			<input class="btn btn-danger btn-sm deleteFeina" data-idfeina="${feina.idFeina}" data-msg="eliminant feina..." type="button" value="Eliminar">
+	                   			<a href="modificarFeina?idFeina=${feina.idFeina}&idActuacio=${actuacio.referencia}" class="btn btn-primary btn-sm loadingButton"  data-msg="obrint feina..." role="button">Modificar</a>						                        			                       			
+                   			</c:if>
                    		</td>	            	
 		          	</tr>
 	       		</c:forEach>

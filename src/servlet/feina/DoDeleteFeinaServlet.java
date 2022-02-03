@@ -3,7 +3,6 @@ package servlet.feina;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.JsonObject;
 
 import core.ActuacioCore;
-import core.OfertaCore;
 import utils.MyUtils;
 
 /**
@@ -55,12 +53,7 @@ public class DoDeleteFeinaServlet extends HttpServlet {
         
 		Connection conn = MyUtils.getStoredConnection(request);		
 		String idFeina = request.getParameter("idFeina");
-		try {
-			ActuacioCore.eliminarFeina(conn, idFeina);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		ActuacioCore.eliminarFeina(conn, idFeina);
 		
 		myObj.addProperty("success", true);	
 		

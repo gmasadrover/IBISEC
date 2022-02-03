@@ -110,20 +110,22 @@
 						            	<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
 									</c:forEach> 
 								</div>
-	         				</div>	         				
-	         				<div class="form-group">
-                                <label class="col-xs-3  control-label">Centre</label>
-                                <input type="hidden" id="centrePrev" value="${registre.idCentres}" >
-                                <input type="hidden" id="incidenciesPrev" value="${registre.getIdActuacionss()}" >
-                                <div class="col-xs-3">
-	                                <select class="form-control selectpicker centresList" name="idCentre" data-live-search="true" data-size="5" id="centresList" multiple>
-		                            	<option value="-1">No hi ha relació</option>
-		                            </select>
-	                             </div>
-                            </div>
-                           	<div id="procediments"></div> 
-                            <div id="incidencies"></div>		
-                            <div id="expedients"></div>		                           	
+	         				</div>	 
+	         				<div id="seleccionarInforme">     				
+		         				<div class="form-group">
+	                                <label class="col-xs-3  control-label">Centre</label>
+	                                <input type="hidden" id="centrePrev" value="${registre.idCentres}" >
+	                                <input type="hidden" id="incidenciesPrev" value="${registre.getIdActuacionss()}" >
+	                                <div class="col-xs-3">
+		                                <select class="form-control selectpicker centresList" name="idCentre" data-live-search="true" data-size="5" id="centresList" multiple>
+			                            	<option value="-1">No hi ha relació</option>
+			                            </select>
+		                             </div>
+	                            </div>
+	                           	<div id="procediments"></div> 
+	                            <div id="incidencies"></div>		
+	                            <div id="expedients"></div>		
+	                        </div>                           	
                             <br>
 						    <div class="form-group">
 						    	<div class="col-xs-offset-8 col-xs-2">

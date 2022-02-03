@@ -2,11 +2,9 @@ package servlet.empresa;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -46,12 +44,7 @@ public class DoCreateUTEServlet extends HttpServlet {
 		String[] paramValues = request.getParameterValues("empreses");
 		String errorString = "";
 		for(int i=0; i<paramValues.length; i++) {
-			try {
-				empreses.add(EmpresaCore.findEmpresa(conn, paramValues[i]));
-			} catch (SQLException | NamingException e) {
-				errorString = e.getMessage();
-				e.printStackTrace();
-			}	    	
+			empreses.add(EmpresaCore.findEmpresa(conn, paramValues[i]));	    	
 	    }
 		Empresa empresa = new Empresa();
 		empresa.setCif(cif);
@@ -59,12 +52,7 @@ public class DoCreateUTEServlet extends HttpServlet {
 		Empresa.UTE ute = empresa.new UTE();
 		ute.setEmpreses(empreses);
 		empresa.setUte(ute);
-		try {
-			EmpresaCore.insertUTE(conn, empresa, usuari.getIdUsuari());
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		EmpresaCore.insertUTE(conn, empresa, usuari.getIdUsuari());
 		// Store infomation to request attribute, before forward to views.
 		request.setAttribute("errorString", errorString);
 		request.setAttribute("empresa", empresa);

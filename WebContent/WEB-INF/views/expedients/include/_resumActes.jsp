@@ -17,12 +17,14 @@
 		<div class="actaReplanteig"></div>
 		<br>					            		
 	</div>
-	<div class="form-group">
-		<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-           <div class="col-xs-5">   
-           	<input type="file" class="btn" name="documentActaReplanteig" multiple/><br/>
-		</div> 
-	</div>
+	<c:if test="${isIBISEC}">
+		<div class="form-group">
+			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+	           <div class="col-xs-5">   
+	           	<input type="file" class="btn" name="documentActaReplanteig" multiple/><br/>
+			</div> 
+		</div>
+	</c:if>
 	<p>
 		<label>Acta comprovació replanteig:</label>
 	</p>	
@@ -30,12 +32,14 @@
 		<div class="actaComprovacioReplanteig"></div>
 		<br>					            		
 	</div>
-	<div class="form-group">
-		<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-           <div class="col-xs-5">   
-           	<input type="file" class="btn" name="documentActaComprovacioReplanteig" multiple/><br/>
-		</div> 
-	</div>
+	<c:if test="${isIBISEC}">
+		<div class="form-group">
+			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+	           <div class="col-xs-5">   
+	           	<input type="file" class="btn" name="documentActaComprovacioReplanteig" multiple/><br/>
+			</div> 
+		</div>
+	</c:if>
 	<p>
 		<label>Acta inici d'obra:</label>
 	</p>		
@@ -43,12 +47,14 @@
 		<div class="actaIniciObra"></div>
 		<br>					            		
 	</div>
-	<div class="form-group">
-		<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-           <div class="col-xs-5">   
-           	<input type="file" class="btn" name="documentActaIniciObra" multiple/><br/>
-		</div> 
-	</div>
+	<c:if test="${isIBISEC}">
+		<div class="form-group">
+			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+	           <div class="col-xs-5">   
+	           	<input type="file" class="btn" name="documentActaIniciObra" multiple/><br/>
+			</div> 
+		</div>
+	</c:if>
 	<p>
 		<label>Acta aprovació pla de seguretat:</label>
 	</p>
@@ -56,12 +62,14 @@
 		<div class="actaAprovacioPlaSeguretat"></div>
 		<br>					            		
 	</div>	
-	<div class="form-group">
-		<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-           <div class="col-xs-5">   
-           	<input type="file" class="btn" name="documentActaAprovacioPlaSeguretat" multiple/><br/>
-		</div> 
-	</div>
+	<c:if test="${isIBISEC}">
+		<div class="form-group">
+			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+	           <div class="col-xs-5">   
+	           	<input type="file" class="btn" name="documentActaAprovacioPlaSeguretat" multiple/><br/>
+			</div> 
+		</div>
+	</c:if>
 	<p>
 		<label>Acta aprovació pla de gestió de residus:</label>
 	</p>	
@@ -69,12 +77,14 @@
 		<div class="actaAprovacioResidus"></div>
 		<br>					            		
 	</div>	
-	<div class="form-group">
-		<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-           <div class="col-xs-5">   
-           	<input type="file" class="btn" name="documentActaAprovacioResidus" multiple/><br/>
-		</div> 
-	</div>
+	<c:if test="${isIBISEC}">
+		<div class="form-group">
+			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+	           <div class="col-xs-5">   
+	           	<input type="file" class="btn" name="documentActaAprovacioResidus" multiple/><br/>
+			</div> 
+		</div>
+	</c:if>
 	<p>
 		<label>Acta aprovació del programa de treball:</label>
 	</p>		
@@ -82,12 +92,14 @@
 	<div class="actaAprovacioProgramaTreball"></div>
 		<br>					            		
 	</div>
-	<div class="form-group">
-		<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-           <div class="col-xs-5">   
-           	<input type="file" class="btn" name="documentActaAprovacioProgramaTreball" multiple/><br/>
-		</div> 
-	</div>
+	<c:if test="${isIBISEC}">
+		<div class="form-group">
+			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+	           <div class="col-xs-5">   
+	           	<input type="file" class="btn" name="documentActaAprovacioProgramaTreball" multiple/><br/>
+			</div> 
+		</div>
+	</c:if>
 	<p>
 		<label>Acta de recepció:</label>
 	</p>	
@@ -95,25 +107,30 @@
 		<div class="actaRecepcio"></div>
 		<br>					            		
 	</div>	
-	<div class="form-group">
-		<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-           <div class="col-xs-5">   
-           	<input type="file" class="btn" name="documentActaRecepcio" multiple/><br/>
-		</div> 
-	</div>	
-		<p>
+	<c:if test="${isIBISEC}">
+		<div class="form-group">
+			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+	           <div class="col-xs-5">   
+	           	<input type="file" class="btn" name="documentActaRecepcio" multiple/><br/>
+			</div> 
+		</div>	
+	</c:if>
+	<p>
 		<label>Acta medició general:</label>
 	</p>	
 	<div class="row col-md-12">
 		<div class="actaMedicioGeneral"></div>
 		<br>					            		
 	</div>	
-	<div class="form-group">
-		<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-           <div class="col-xs-5">   
-           	<input type="file" class="btn" name="documentActaMedicioGeneral" multiple/><br/>
-		</div> 
-	</div>
+	<c:if test="${isIBISEC}">
+		<div class="form-group">
+			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+	           <div class="col-xs-5">   
+	           	<input type="file" class="btn" name="documentActaMedicioGeneral" multiple/><br/>
+			</div> 
+		</div>
+	</c:if>
+	<c:if test="${isIBISEC}">
 	<div class="row">
 		<div class="col-md-12">
 			<div class="row">	  			
@@ -123,4 +140,5 @@
 	    	</div>       
 		</div>
 	</div>
+	</c:if>
 </form>	  

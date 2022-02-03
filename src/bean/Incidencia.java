@@ -10,7 +10,7 @@ public class Incidencia {
 	private String descripcio;
 	private String idCentre;
 	private String nomCentre;
-	private Resultat llistaActuacions;
+	private List<Actuacio> llistaActuacions;
 	private User usuCre;
 	private Date usuMod;
 	private boolean activa;
@@ -31,14 +31,14 @@ public class Incidencia {
 		this.idIncidencia = idIncidencia;
 	}
 
-	public Resultat getLlistaActuacions() {
+	public List<Actuacio> getLlistaActuacions() {
 		return llistaActuacions;
 	}
 	
 	public String getLlistaIdActuacions(){
 		String llistaIds = "";
 		String estat = "danger";
-		for (Actuacio actuacio: this.llistaActuacions.getLlistaActuacions()) {
+		for (Actuacio actuacio: this.llistaActuacions) {
 			if (actuacio.isActiva()) estat = "warning";
 			if (actuacio.isActiva() && actuacio.isAprovada()) estat = "success";
 			llistaIds += "<a style='margin:2px;' class='btn btn-" + estat + "' target='_blank' href='actuacionsDetalls?ref=" + actuacio.getReferencia() + "'>" + actuacio.getReferencia() + "</a>";
@@ -49,15 +49,15 @@ public class Incidencia {
 	public boolean isAcabada(){
 		boolean acabada = true;
 		if (this.activa) {
-			if (this.llistaActuacions.getLlistaActuacions().size() == 0) acabada = false;
-			for (Actuacio actuacio: this.llistaActuacions.getLlistaActuacions()) {			
+			if (this.llistaActuacions.size() == 0) acabada = false;
+			for (Actuacio actuacio: this.llistaActuacions) {			
 				if (actuacio.isActiva()) acabada = false;
 			}
 		}
 		return acabada;
 	}
 
-	public void setLlistaActuacions(Resultat llistaActuacions) {
+	public void setLlistaActuacions(List<Actuacio> llistaActuacions) {
 		this.llistaActuacions = llistaActuacions;
 	}
 

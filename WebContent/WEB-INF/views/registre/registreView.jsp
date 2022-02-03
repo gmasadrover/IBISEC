@@ -91,7 +91,9 @@
 							            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
 													${arxiu.getDataString()} - ${arxiu.nom}
 												</a>
-												<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
+												<c:if test="${canCreateRegistre}">
+													<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
+												</c:if>
 												<br>
 											</c:forEach>
 			                        	</div>					
@@ -107,7 +109,9 @@
 							            		<a target="_blanck" href="downloadFichero?ruta=${arxiu.getEncodedRuta()}">
 													${arxiu.getDataString()} - ${arxiu.nom}
 												</a>
-												<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
+												<c:if test="${canCreateRegistre}">
+													<a href="#"><span data-ruta="${arxiu.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
+												</c:if>
 												<br>
 											</c:forEach>										
 			                        	</div>									        

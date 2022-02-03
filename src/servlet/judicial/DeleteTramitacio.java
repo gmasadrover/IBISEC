@@ -3,7 +3,6 @@ package servlet.judicial;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,7 +14,6 @@ import com.google.gson.JsonObject;
 
 import bean.User;
 import core.JudicialCore;
-import utils.Fitxers;
 import utils.MyUtils;
 
 /**
@@ -54,12 +52,7 @@ public class DeleteTramitacio extends HttpServlet {
         Connection conn = MyUtils.getStoredConnection(request);	
 		User usuari = MyUtils.getLoginedUser(request.getSession());
         JsonObject myObj = new JsonObject();      
-		try {
-			JudicialCore.eliminarTramitacio(conn, request.getParameter("idtramitacio"), usuari.getIdUsuari());
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		JudicialCore.eliminarTramitacio(conn, request.getParameter("idtramitacio"), usuari.getIdUsuari());
 		myObj.addProperty("success", true);	
 		
         out.println(myObj.toString());

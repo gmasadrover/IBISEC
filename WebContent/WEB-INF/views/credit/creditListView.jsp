@@ -49,7 +49,8 @@
                                         <th>Total</th>
                                         <th>Per asignar</th>
                                         <th>Reservat</th>
-                                        <th>Assignat / previst</th>                           
+                                        <th>Assignat / previst</th> 
+                                        <th>Bloquejat</th>                           
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -61,7 +62,8 @@
 							            	<td>${partida.getTotalPartidaFormat()}</td>
 							            	<td>${partida.getPartidaPerAsignarFormat()}</td>
 							            	<td>${partida.getReservaPartidaFormat()}</td>
-							            	<td>${partida.getPrevistPartidaFormat()}</td>					            	
+							            	<td>${partida.getPrevistPartidaFormat()}</td>	
+							            	<td>${partida.getBloquejatFormat()}</td>					            	
 							          	</tr>
 							       	</c:forEach>
                                 </tbody>

@@ -4,10 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -15,96 +12,137 @@ import bean.Centre;
 
 public class CentreCore {
 	
-	private static Centre initCentre(Connection conn, ResultSet rs, Boolean complet) throws SQLException {
+	private static Centre initCentre(Connection conn, ResultSet rs, Boolean complet) {
 		Centre centre = new Centre();
-		centre.setIdCentre(rs.getString("codi"));
-		centre.setNom(rs.getString("nom"));
-		centre.setTipo(rs.getString("tipo"));
-		centre.setIlla(rs.getString("illa"));
-		centre.setMunicipi(rs.getString("municipi"));
-		centre.setLocalitat(rs.getString("localitat"));
-		centre.setAdreca(rs.getString("adreca"));
-		centre.setCp(rs.getString("cp"));
-		centre.setLat(rs.getDouble("lat"));
-		centre.setLng(rs.getDouble("lng"));
-		if (complet) {
-			centre.setActuacions(ActuacioCore.searchActuacions(conn, rs.getString("codi"), null,null,null));
-			centre.setIncidencies(IncidenciaCore.searchIncidencies(conn, rs.getString("codi"), false, false, null, null));
+		try {
+			centre.setIdCentre(rs.getString("codi"));
+			centre.setNom(rs.getString("nom"));
+			centre.setTipo(rs.getString("tipo"));
+			centre.setIlla(rs.getString("illa"));
+			centre.setMunicipi(rs.getString("municipi"));
+			centre.setLocalitat(rs.getString("localitat"));
+			centre.setAdreca(rs.getString("adreca"));
+			centre.setCp(rs.getString("cp"));
+			centre.setLat(rs.getDouble("lat"));
+			centre.setLng(rs.getDouble("lng"));
+			if (complet) {
+				centre.setActuacions(ActuacioCore.searchActuacionsList(conn, rs.getString("codi"), null, null, null, null, null, null));
+				centre.setIncidencies(IncidenciaCore.searchIncidencies(conn, rs.getString("codi"), false, false, null, null));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 		return centre;
 	}
 	
-	public static void nouCentre(Connection conn, Centre centre) throws SQLException {
+	public static void nouCentre(Connection conn, Centre centre) {
 		String sql = "INSERT INTO public.tbl_centres(codi, tipo, nom, illa, municipi, localitat, adreca, cp)"
 					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
-		PreparedStatement pstm = conn.prepareStatement(sql);
-		pstm.setString(1, getNewCode(conn));
-		pstm.setString(2, centre.getTipo());
-		pstm.setString(3, centre.getNom());
-		pstm.setString(4, centre.getIlla());
-		pstm.setString(5, centre.getMunicipi());
-		pstm.setString(6, centre.getLocalitat());
-		pstm.setString(7, centre.getAdreca());
-		pstm.setString(8, centre.getCp());
-		pstm.executeUpdate();
+		PreparedStatement pstm;
+		try {
+			pstm = conn.prepareStatement(sql);
+			pstm.setString(1, getNewCode(conn));
+			pstm.setString(2, centre.getTipo());
+			pstm.setString(3, centre.getNom());
+			pstm.setString(4, centre.getIlla());
+			pstm.setString(5, centre.getMunicipi());
+			pstm.setString(6, centre.getLocalitat());
+			pstm.setString(7, centre.getAdreca());
+			pstm.setString(8, centre.getCp());
+			pstm.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
-	public static void editCentre(Connection conn, Centre centre) throws SQLException {
+	public static void editCentre(Connection conn, Centre centre) {
 		String sql = "UPDATE public.tbl_centres"
 					+ " SET tipo = ?, nom = ?, illa = ?, municipi = ?, localitat = ?, adreca = ?, cp = ?"
 					+ " WHERE codi = ?;";
-		PreparedStatement pstm = conn.prepareStatement(sql);		
-		pstm.setString(1, centre.getTipo());
-		pstm.setString(2, centre.getNom());
-		pstm.setString(3, centre.getIlla());
-		pstm.setString(4, centre.getMunicipi());
-		pstm.setString(5, centre.getLocalitat());
-		pstm.setString(6, centre.getAdreca());
-		pstm.setString(7, centre.getCp());
-		pstm.setString(8, centre.getIdCentre());
-		pstm.executeUpdate();
+		PreparedStatement pstm;
+		try {
+			pstm = conn.prepareStatement(sql);
+			pstm.setString(1, centre.getTipo());
+			pstm.setString(2, centre.getNom());
+			pstm.setString(3, centre.getIlla());
+			pstm.setString(4, centre.getMunicipi());
+			pstm.setString(5, centre.getLocalitat());
+			pstm.setString(6, centre.getAdreca());
+			pstm.setString(7, centre.getCp());
+			pstm.setString(8, centre.getIdCentre());
+			pstm.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		
 	}
 	
-	public static String nomCentre(Connection conn, String idCentre) throws SQLException {		 
+	public static String nomCentre(Connection conn, String idCentre) {		 
 		String sql = "SELECT nom from public.tbl_centres"
 					+ " WHERE codi = ?";
 		String nomCentre = "";
-		PreparedStatement pstm = conn.prepareStatement(sql);
-		pstm.setString(1, idCentre);		
-		ResultSet rs = pstm.executeQuery();	 
-		if (rs.next()) {
-			nomCentre = rs.getString("nom");
+		PreparedStatement pstm;
+		try {
+			pstm = conn.prepareStatement(sql);
+			pstm.setString(1, idCentre);		
+			ResultSet rs = pstm.executeQuery();	 
+			if (rs.next()) {
+				nomCentre = rs.getString("nom");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 		return nomCentre;
 	}
 	
-	public static String nomCentreComplet(Connection conn, String idCentre) throws SQLException {		 
+	public static String nomCentreComplet(Connection conn, String idCentre) {		 
 		String sql = "SELECT nom, localitat from public.tbl_centres"
 					+ " WHERE codi = ?";
 		String nomCentre = "";
-		PreparedStatement pstm = conn.prepareStatement(sql);
-		pstm.setString(1, idCentre);		
-		ResultSet rs = pstm.executeQuery();	 
-		if (rs.next()) {
-			nomCentre = rs.getString("nom") + " (" + rs.getString("localitat") + ")";
+		PreparedStatement pstm;
+		try {
+			pstm = conn.prepareStatement(sql);
+			pstm.setString(1, idCentre);		
+			ResultSet rs = pstm.executeQuery();	 
+			if (rs.next()) {
+				nomCentre = rs.getString("nom") + " (" + rs.getString("localitat") + ")";
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 		return nomCentre;
 	}
 	
-	public static List<Centre> findCentres(Connection conn, boolean ambIncidencies) throws SQLException {
+	public static List<Centre> findCentres(Connection conn, boolean ambIncidencies) {
 		List<Centre> centres = new ArrayList<Centre>();
 		String sql = "SELECT codi, tipo, nom, illa, municipi, localitat, adreca, cp, lat, lng"
 					+ " FROM public.tbl_centres;";
-		PreparedStatement pstm = conn.prepareStatement(sql);				
-		ResultSet rs = pstm.executeQuery();	 
-		while (rs.next()) {
-			Centre centre = initCentre(conn, rs, ambIncidencies);
-			centres.add(centre);
-		}
+		PreparedStatement pstm;
+		try {
+			pstm = conn.prepareStatement(sql);
+			ResultSet rs = pstm.executeQuery();	 
+			while (rs.next()) {
+				Centre centre = initCentre(conn, rs, ambIncidencies);
+				centres.add(centre);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}				
+		
 		return centres;
 	}
 	
-	public static List<Centre> findCentresWithIncidencies(Connection conn, String tipus, Date dataPeticioIni, Date dataPeticioFi, String estat, Date dataExecucioIni, Date dataExecucioFi) throws SQLException {
+	public static List<Centre> findCentresWithIncidencies(Connection conn, String tipus, Date dataPeticioIni, Date dataPeticioFi, String estat, Date dataExecucioIni, Date dataExecucioFi) {
 		List<Centre> centres = new ArrayList<Centre>();
 		String sql = "SELECT codi, tipo, nom, illa, municipi, localitat, adreca, cp, lat, lng"
 					+ " FROM public.tbl_centres c" 
@@ -120,7 +158,7 @@ public class CentreCore {
 					+	" AND a.idcentre = c.codi)";
 					
 		PreparedStatement pstm;		
-		if (dataPeticioIni != null) {
+		/*if (dataPeticioIni != null) {
 			//sql += " AND a.datacre >= ?";	
 		}
 		if (dataPeticioFi != null) {
@@ -136,10 +174,10 @@ public class CentreCore {
 				//sql += " AND e.datainiciexecucio <= ? AND e.datarecepcio IS NULL";					
 			}
 		}			
-		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		Calendar cal = Calendar.getInstance(); 
-		Date dataFi = cal.getTime();
-		String dataFiString = df.format(dataFi);	
+		//DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		//Calendar cal = Calendar.getInstance(); 
+		//Date dataFi = cal.getTime();
+		//String dataFiString = df.format(dataFi);	
 		if (estat != null && ! estat.equals("-1")) {	
 			//if ("redaccio".equals(estat)) sql+= " AND a.datatancament IS NULL AND e.dataliquidacio IS NULL AND i.expcontratacio = ''"; 
 			//if ("iniciExpedient".equals(estat)) sql+= " AND e.dataliquidacio IS NULL AND i.expcontratacio != '' AND i.databoib IS NULL AND e.dataadjudicacio IS NULL"; 
@@ -157,8 +195,18 @@ public class CentreCore {
 			//sql+= " AND i.tipo NOT LIKE '%lloguer%' AND i.tipo NOT LIKE '%interns%'";
 		}
 		//sql += " )";
-		
-		pstm = conn.prepareStatement(sql);
+		*/
+		try {
+			pstm = conn.prepareStatement(sql);
+			ResultSet rs = pstm.executeQuery();	 
+			while (rs.next()) {
+				Centre centre = initCentre(conn, rs, false);
+				centres.add(centre);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		/*int contVars = 1;
 		if (dataPeticioIni != null) {
 			pstm.setDate(contVars, new java.sql.Date(dataPeticioIni.getTime()));
@@ -186,37 +234,48 @@ public class CentreCore {
 			pstm.setString(contVars, tipus);
 			contVars += 1;
 		}		*/
-		ResultSet rs = pstm.executeQuery();	 
-		while (rs.next()) {
-			Centre centre = initCentre(conn, rs, false);
-			centres.add(centre);
-		}
+		
 		return centres;
 	}
 	
 	
-	public static Centre findCentre(Connection conn, String codi, boolean complet) throws SQLException {		
+	public static Centre findCentre(Connection conn, String codi, boolean complet) {		
 		String sql = "SELECT codi, tipo, nom, illa, municipi, localitat, adreca, cp, lat, lng"
 					+ " FROM public.tbl_centres"
 					+ " WHERE codi = ?;";
-		PreparedStatement pstm = conn.prepareStatement(sql);	
-		pstm.setString(1, codi);	
-		ResultSet rs = pstm.executeQuery();	 
+		PreparedStatement pstm;
 		Centre centre = new Centre();
-		if (rs.next()) {
-			centre = initCentre(conn, rs, complet);			
-		}
+		try {
+			pstm = conn.prepareStatement(sql);
+			pstm.setString(1, codi);	
+			ResultSet rs = pstm.executeQuery();	 
+			
+			if (rs.next()) {
+				centre = initCentre(conn, rs, complet);			
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		
 		return centre;
 	}
 	
-	public static String getNewCode(Connection conn) throws SQLException {	
+	public static String getNewCode(Connection conn) {	
 		String newCode = "";
 		String sql = "SELECT codi FROM public.tbl_centres WHERE codi NOT IN ('9999PERSO','99999999') AND codi LIKE '99%' ORDER BY 1 DESC LIMIT 1";
-		PreparedStatement pstm = conn.prepareStatement(sql);	
-		ResultSet rs = pstm.executeQuery();	 
-		if (rs.next()) {
-			newCode = String.valueOf(Integer.valueOf(rs.getString("codi")) + 1);
-		}
+		PreparedStatement pstm;
+		try {
+			pstm = conn.prepareStatement(sql);
+			ResultSet rs = pstm.executeQuery();	 
+			if (rs.next()) {
+				newCode = String.valueOf(Integer.valueOf(rs.getString("codi")) + 1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		
 		return newCode;
 	}
 }

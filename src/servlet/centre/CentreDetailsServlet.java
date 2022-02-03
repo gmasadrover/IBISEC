@@ -2,7 +2,6 @@ package servlet.centre;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -50,21 +49,24 @@ public class CentreDetailsServlet extends HttpServlet {
 		       boolean canViewIncidencies = false;
 		       boolean canCreateTasca = true;
 		       boolean canEditCentre = false;
-		       Centre centre = new Centre();			      
-		       try {
-		    	  centre = CentreCore.findCentre(conn, codi, true);
-		    	  canViewIncidencies = UsuariCore.hasPermision(conn, usuari, SectionPage.incidencia_list);		
-		    	  canEditCentre = usuari.getRol().contains("ADM");
-		       } catch (SQLException e) {
-		           e.printStackTrace();
-		           errorString = e.getMessage();
-		       }
+		       boolean isIBISEC = true;
+		       Centre centre = new Centre();
+	    	  try {
+				centre = CentreCore.findCentre(conn, codi, true);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    	  canViewIncidencies = UsuariCore.hasPermision(conn, usuari, SectionPage.incidencia_list);		
+	    	  canEditCentre = usuari.getRol().contains("ADM");
+		      isIBISEC = !usuari.getRol().toUpperCase().contains("CONSELLERIA");
 		  
 		       // Store info in request attribute, before forward to views
 		       request.setAttribute("errorString", errorString);
 		       request.setAttribute("canViewIncidencies", canViewIncidencies);
 		       request.setAttribute("canCreateTasca", canCreateTasca);
 		       request.setAttribute("canEditCentre", canEditCentre);
+		       request.setAttribute("isIBISEC", isIBISEC);
 		       request.setAttribute("centre", centre);
 		       request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "centres"));
 		       // Forward to /WEB-INF/views/homeView.jsp

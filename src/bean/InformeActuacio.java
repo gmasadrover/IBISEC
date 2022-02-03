@@ -300,7 +300,9 @@ public class InformeActuacio {
 		private int relacioID;
 		private User usuari;
 		private String idInf;
+		private String tecnic;
 		private String funcio;
+		private String empresa;
 		private boolean actiu;
 		private Date dataAlta;
 		private Date dataBaixa;
@@ -358,11 +360,24 @@ public class InformeActuacio {
 		public void setRelacioID(int relacioID) {
 			this.relacioID = relacioID;
 		}
+		public String getTecnic() {
+			return tecnic;
+		}
+		public void setTecnic(String tecnic) {
+			this.tecnic = tecnic;
+		}
+		public String getEmpresa() {
+			return empresa;
+		}
+		public void setEmpresa(String empresa) {
+			this.empresa = empresa;
+		}
 	}
 	
 	private String idInf;
 	private String idInfOriginal;
-	private String idInfEspecific;
+	private String idInfEspecific;	
+	private boolean informeAntic;
 	private int idTasca;
 	private Actuacio actuacio;
 	private String idIncidencia;	
@@ -386,7 +401,6 @@ public class InformeActuacio {
 	private List<Oferta> llistaOfertes;
 	private Oferta ofertaSeleccionada;
 	private List<Factura> llistaFactures;
-	private double totalFacturat;
 	private List<Factura> llistaCertificacions;
 	private List<InformeActuacio> llistaModificacions;
 	private List<Fitxer> tramitsModificacio;
@@ -407,7 +421,7 @@ public class InformeActuacio {
 	private Fitxer propostaActuacio;
 	private Fitxer vistiplauPropostaActuacio;
 	
-	private Fitxer conformeAreaEconomivaPropostaActuacio;
+	private List<Fitxers.Fitxer> conformeAreaEconomivaPropostaActuacio;
 	private Fitxer autoritzacioPropostaAutoritzacio;
 	private List<Fitxers.Fitxer> autoritzacioConsellDeGovern;
 	private Fitxer autoritzacioConseller;
@@ -482,6 +496,7 @@ public class InformeActuacio {
 	
 	private List<Fitxers.Fitxer> informeDF;
 	private List<Fitxers.Fitxer> informeJuridic;
+	private List<Fitxers.Fitxer> resolucioFinalModificacio;
 	private Fitxers.Fitxer formalitzacioSignat;	
 	
 	private List<Fitxers.Fitxer> resInici;
@@ -511,6 +526,7 @@ public class InformeActuacio {
 
 	public void setIdInf(String idInf) {
 		this.idInf = idInf;
+		if (idInf != null)	this.informeAntic = !idInf.contains("-INF-");
 	}
 
 	public int getIdTasca() {
@@ -809,11 +825,11 @@ public class InformeActuacio {
 		this.vistiplauPropostaActuacio = vistiplauPropostaActuacio;
 	}
 
-	public Fitxer getConformeAreaEconomivaPropostaActuacio() {
+	public List<Fitxer> getConformeAreaEconomivaPropostaActuacio() {
 		return conformeAreaEconomivaPropostaActuacio;
 	}
 
-	public void setConformeAreaEconomivaPropostaActuacio(Fitxer conformeAreaEconomivaPropostaActuacio) {
+	public void setConformeAreaEconomivaPropostaActuacio(List<Fitxer> conformeAreaEconomivaPropostaActuacio) {
 		this.conformeAreaEconomivaPropostaActuacio = conformeAreaEconomivaPropostaActuacio;
 	}
 
@@ -1019,7 +1035,7 @@ public class InformeActuacio {
 	public double getTotalModificacions() {
 		double total = 0;
 		for (InformeActuacio modificacio:  this.llistaModificacions) {
-			if (modificacio.getAutoritzacioPropostaDespesa().size() > 0 || modificacio.formalitzacioSignat.getRuta() != null) {				
+			if (modificacio.getAutoritzacioPropostaDespesa().size() > 0 || modificacio.getResFinal().size() > 0 || modificacio.formalitzacioSignat.getRuta() != null) {				
 				total += modificacio.getOfertaSeleccionada().getPlic();
 			}
 		}
@@ -1031,6 +1047,24 @@ public class InformeActuacio {
 	    return num.format(this.getTotalModificacions()) + '€';
 	}
 	
+	public double getTotalAmbModificacions() {
+		double total = 0;
+		if (this.getOfertaSeleccionada() != null){
+			for (InformeActuacio modificacio:  this.llistaModificacions) {
+				if (modificacio.getAutoritzacioPropostaDespesa().size() > 0 || modificacio.getResFinal().size() > 0 || modificacio.formalitzacioSignat.getRuta() != null) {				
+					total += modificacio.getOfertaSeleccionada().getPlic();
+				}
+			}
+			total += this.getOfertaSeleccionada().getPlic();
+		}
+		return total;
+	}
+	
+	public String getTotalAmbModificacionsString() {
+		DecimalFormat num = new DecimalFormat("#,##0.00");
+	    return num.format(this.getTotalAmbModificacions()) + '€';
+	}
+	
 	public String getEstatExpedientFormat() {
 		String estat = "";	
 		if (this.estat != null) {
@@ -1038,11 +1072,13 @@ public class InformeActuacio {
 			if (this.estat.equals("garantia")) {
 				estat = "Garantia";
 			} else if (this.estat.equals("previs")) {
-				estat = "Prèvis licitació";
+				estat = "Previs licitació";
 			} else if(this.estat.equals("licitacio")) {
 				estat = "En licitació";
 			} else if(this.estat.equals("acabat")) {
 				estat = "Tancada";
+			} else if(this.estat.equals("anulat")) {
+				estat = "Anul·lat";
 			}
 		}		
 		return estat;
@@ -1081,7 +1117,6 @@ public class InformeActuacio {
 	}
 
 	public void setTotalFacturat(double totalFacturat) {
-		this.totalFacturat = totalFacturat;
 	}
 
 	public List<Fitxers.Fitxer> getDocumentsAltresPrevis() {
@@ -1317,12 +1352,18 @@ public class InformeActuacio {
 			estat = "Penalització";
 		} else if(this.tipusModificacio.equals("certfinal")) {
 			estat = "Certificació final";
+		} else if(this.tipusModificacio.equals("excesAmidament")) {
+			estat = "Excés Amidament";
+		} else if(this.tipusModificacio.equals("decrementAmidament")) {
+				estat = "Decrement d'Amidament";			
 		} else if(this.tipusModificacio.equals("resolucioContracte")) {
 			estat = "Resolució Contracte";
 		} else if(this.tipusModificacio.equals("informeExecucio")) {
 			estat = "Informe d'execució";
 		} else if(this.tipusModificacio.equals("enriquimentInjust")) {
 			estat = "Enriquiment injust";
+		} else if(this.tipusModificacio.equals("ocupacio")) {
+			estat = "Ocupació";
 		}
 		
 		return estat;
@@ -1716,5 +1757,21 @@ public class InformeActuacio {
 
 	public void setResFinal(List<Fitxers.Fitxer> resFinal) {
 		this.resFinal = resFinal;
+	}
+
+	public List<Fitxers.Fitxer> getResolucioFinalModificacio() {
+		return resolucioFinalModificacio;
+	}
+
+	public void setResolucioFinalModificacio(List<Fitxers.Fitxer> resolucioFinalModificacio) {
+		this.resolucioFinalModificacio = resolucioFinalModificacio;
+	}
+
+	public boolean isInformeAntic() {
+		return informeAntic;
+	}
+
+	public void setInformeAntic(boolean isInformeAntic) {
+		this.informeAntic = isInformeAntic;
 	}	
 }

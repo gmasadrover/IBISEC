@@ -2,9 +2,7 @@ package servlet.centre;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -53,29 +51,16 @@ public class DoCreateCentreServlet extends HttpServlet {
 		centre.setMunicipi(municipi);
 		centre.setLocalitat(localitat);
 		
-		String errorString = null; 
-      
-		if (errorString == null) {
-			try {
-				CentreCore.nouCentre(conn, centre);
-			} catch (SQLException e) {
-				e.printStackTrace();
-				errorString = e.getMessage();
-			}
-		}
+		CentreCore.nouCentre(conn, centre);
+		
         
 		// Store infomation to request attribute, before forward to views.
-		request.setAttribute("errorString", errorString);
+		
 		request.setAttribute("centre", centre);
  
 		// If error, forward to Edit page.
-		if (errorString != null) {
-			RequestDispatcher dispatcher = request.getServletContext()
-               .getRequestDispatcher("/WEB-INF/views/centre/createCentreView.jsp");
-           dispatcher.forward(request, response);
-		} else {
-			response.sendRedirect(request.getContextPath() + "/centres");
-		}
+		response.sendRedirect(request.getContextPath() + "/centres");
+		
 	}
 
 	/**

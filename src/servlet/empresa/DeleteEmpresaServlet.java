@@ -2,9 +2,7 @@ package servlet.empresa;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import bean.User;
 import bean.ControlPage.SectionPage;
-import core.ControlPageCore;
 import core.EmpresaCore;
 import core.UsuariCore;
 import utils.MyUtils;
@@ -38,33 +35,13 @@ public class DeleteEmpresaServlet extends HttpServlet {
  	   	}else{	 
 	        String code = request.getParameter("code");
 	 
-	        String errorString = null;
+	      
 	 
-	        try {
-	            EmpresaCore.deleteEmpresa(conn, code);
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	            errorString = e.getMessage();
-	        }
+	        EmpresaCore.deleteEmpresa(conn, code);
 	         
 	 
-	        // If an error redirected to an error page.
-	        if (errorString != null) {
-	 
-	            // Store the information in the request attribute, before forward to views.
-	            request.setAttribute("errorString", errorString);
-	            //
-	            request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Empreses"));
-	            RequestDispatcher dispatcher = request.getServletContext()
-	                    .getRequestDispatcher("/WEB-INF/views/empresa/deleteEmpresaErrorView.jsp");
-	            dispatcher.forward(request, response);
-	        }
-	 
-	        // If everything nice.
-	        // Redirect to the product listing page.        
-	        else {
 	            response.sendRedirect(request.getContextPath() + "/productList");
-	        }
+	       
  	   	}
     }
  

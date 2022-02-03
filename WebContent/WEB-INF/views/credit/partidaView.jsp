@@ -58,7 +58,7 @@
 	                        	<label>Reservat (RF): </label> <a href="partidaDetalls?codi=${partida.codi}&estat=reservat" class="loadingButton"  data-msg="obrint total reservat...">${partida.getReservaPartidaFormat()}</a>
                             </p>
                             <p> 
-	                        	<label>Facturat: </label> <a href="partidaDetalls?codi=${partida.codi}&estat=pagat" class="loadingButton"  data-msg="obrint total facturat...">${partida.getPartidaPagatFormat()}</a>
+	                        	<label>Bloquejat: </label> <a href="partidaDetalls?codi=${partida.codi}&estat=pagat" class="loadingButton"  data-msg="obrint total facturat...">${partida.getBloquejatFormat()}</a>
                             </p>                       
 	                  	</div>
 		             	<div class="col-xs-offset-1 col-md-5">
@@ -83,19 +83,55 @@
 							</div>
 			    		</div>
 			    	</c:if> 
+			    	<c:if test="${subPartidesList.size() > 0}">
+				    	<h2 class="margin_bottom30">SubPartides</h2>
+				    	<div class="row">
+		                   <div class="table-responsive col-xs-offset-1 col-md-10">                        
+	                            <table class="table table-striped table-bordered filerTable subpartides">
+	                                <thead>
+	                                    <tr>
+	                                        <th>Codi</th>
+	                                        <th>Nom</th>
+	                                        <th>Tipus</th>
+	                                        <th>Total</th>
+	                                        <th>Per asignar</th>
+	                                        <th>Reservat</th>
+	                                        <th>Assignat / previst</th>     
+	                                        <th>Bloquejat</th>                                
+	                                    </tr>
+	                                </thead>
+	                                <tbody>
+	                                	<c:forEach items="${subPartidesList}" var="subpartida" >
+								          	<tr class=${subpartida.estat ? "success" : "danger"}>							          	
+								           		<td><a href="partidaDetalls?codi=${subpartida.codi}" class="loadingButton"  data-msg="obrint partida...">${subpartida.codi}</a></td>
+								            	<td>${subpartida.nom}</td>
+								            	<td>${subpartida.tipus}</td>
+								            	<td>${subpartida.getTotalPartidaFormat()}</td>
+								            	<td>${subpartida.getPartidaPerAsignarFormat()}</td>
+								            	<td>${subpartida.getReservaPartidaFormat()}</td>
+								            	<td>${subpartida.getPrevistPartidaFormat()}</td>		
+								            	<td>${subpartida.getBloquejatFormat()}</td>					            	
+								          	</tr>
+								       	</c:forEach>
+	                                </tbody>
+	                            </table>
+	                        </div>
+	                	</div>
+			    	</c:if>
+			    	
                 	<h2 class="margin_bottom30">Assignacions</h2>
                 	<div class="row">
 	                	<div class="table-responsive col-xs-offset-1 col-md-10">							                        
-		                    <table class="table table-striped table-bordered filerTable" id="assignacionsTable">
+		                    <table class="table table-striped table-bordered filerTable assignacionsTable" id="assignacionsTable">
 		                        <thead>
 		                            <tr>
-		                           		<th>Referència</th>
+		                           		<!--<th>Referència</th>-->
 		                                <th>Actuacio</th>
-		                                <th>Data aprovació</th>
-		                                <th>Data aprovació</th>
+		                                <th>Expedient</th>
 		                                <th>Centre</th>
 		                                <th>Objecte</th>
-		                                <th>Expedient</th>
+		                                <th>Data adjudicació</th>
+		                                <th>Data adjudicació</th>
 		                                <th>valor PA</th>
 		                                <th>valor PA</th>
 		                                <th>valor PD</th>	
@@ -107,13 +143,13 @@
 		                        <tbody>
 								<c:forEach items="${llistaAssignacions}" var="assignacio" >
 						          	<tr>		
-						          		<td>${assignacio.idAssignacio}</td>					          	
+						          		<!--<td>${assignacio.idAssignacio}</td>-->			          	
 						            	<td><a href="actuacionsDetalls?ref=${assignacio.informe.actuacio.referencia}" class="loadingButton"  data-msg="obrint actuació...">${assignacio.informe.actuacio.referencia}</a></td>
-						            	<td>${assignacio.informe.getDataAprovacioString()}</td>
-						            	<td>${assignacio.informe.dataAprovacio}</td>
-						            	<td>${assignacio.informe.actuacio.centre.getNomComplet()}</td>
-						            	<td>${assignacio.informe.actuacio.descripcio}</td>
 						            	<td>${assignacio.informe.expcontratacio.expContratacio}</td>
+						            	<td>${assignacio.informe.actuacio.centre.getNomComplet()}</td>
+						            	<td>${assignacio.informe.propostaInformeSeleccionada.objecte}</td>						            	
+						            	<td>${assignacio.informe.expcontratacio.getDataAdjudicacioString()}</td>
+						            	<td>${assignacio.informe.expcontratacio.dataAdjudicacio}</td>
 						            	<td>${assignacio.getValorPAFormat()}</td>
 						            	<td>${assignacio.valorPA}</td>
 						            	<td>${assignacio.getValorPDFormat()}</td>

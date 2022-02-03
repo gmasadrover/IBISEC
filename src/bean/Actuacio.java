@@ -3,8 +3,6 @@ package bean;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -145,14 +143,14 @@ public class Actuacio {
 		return this.dataTancament == null;
 	}
 	
-	public String estatNom(){
+	public String getEstatNom() {
 		if (this.dataTancament == null) {
-			return "Activa";
+			return "oberta";
 		}else{
-			return "Tancada";
+			return "tancada";
 		}
 	}
-
+	
 	public Date getDataTancament() {
 		return dataTancament;
 	}

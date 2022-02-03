@@ -1,6 +1,6 @@
 $(document).ready(function() {
 	$('#incidenciesTable').DataTable({
-		"order": [[ 3, "desc" ]],
+		"order":[[ 5, "asc" ],[ 3, "desc" ]],
 		"aoColumns": [
     		null,
     		null,
@@ -13,7 +13,7 @@ $(document).ready(function() {
 		]
 	});
 	$('#actuacionsTable').DataTable({
-		"order": [[ 3, "desc" ]],
+		"order":[[ 5, "asc" ],[ 3, "desc" ]],
 		"aoColumns": [
 			null,
     		null,

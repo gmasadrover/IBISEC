@@ -56,7 +56,9 @@
 						</div>
 						<p> 
 				       		<label>Data sol·licitud: </label> ${informePrevi.llicencia.getDataPeticioString()}
-				       	</p>  
+				       	</p> 
+					</c:otherwise>
+				</c:choose>   
 						<p>
 				       		<label>Concessió llicència:</label>
 				       	</p>
@@ -101,9 +103,7 @@
 								<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>
 							</c:forEach>
 							<br>					            		
-						</div>		
-		       		</c:otherwise>   
-		       	</c:choose> 
+						</div>
 		       	<p> 
 		       		<label>Observacions: </label> ${informePrevi.llicencia.observacio}
 		       	</p>  
@@ -146,19 +146,21 @@
 	<div class="documentsAltresAutUrbanistica"></div>
 	<br>					            		
 </div>
-<div class="row">            			
-	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadDocumentsAltresAutUrbanistica">
-		<div class="form-group">
-			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-            <div class="col-xs-5">   
-            	<input type="file" class="btn" name="file" multiple/><br/>
-			</div> 
-			<input type="hidden" name="idActuacio" value="${informePrevi.actuacio.referencia}">
-			<input type="hidden" name="idIncidencia" value="${informePrevi.actuacio.idIncidencia}">
-			<input type="hidden" name="idInforme" value="${informePrevi.idInf}">			    
-			<div class="col-xs-2"> 
-				<input type="submit" class="btn btn-primary loadingButton" value="Pujar" />
-			</div>    						
-		</div>         				
-	</form>							
-</div>
+<c:if test="${isIBISEC}">
+	<div class="row">            			
+		<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadDocumentsAltresAutUrbanistica">
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+	            <div class="col-xs-5">   
+	            	<input type="file" class="btn" name="file" multiple/><br/>
+				</div> 
+				<input type="hidden" name="idActuacio" value="${informePrevi.actuacio.referencia}">
+				<input type="hidden" name="idIncidencia" value="${informePrevi.actuacio.idIncidencia}">
+				<input type="hidden" name="idInforme" value="${informePrevi.idInf}">			    
+				<div class="col-xs-2"> 
+					<input type="submit" class="btn btn-primary loadingButton" value="Pujar" />
+				</div>    						
+			</div>         				
+		</form>							
+	</div>
+</c:if>

@@ -3,7 +3,6 @@ package handler;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,16 +59,10 @@ public class LlistatCentres extends HttpServlet {
         JsonObject myObj = new JsonObject();
         Connection conn = MyUtils.getStoredConnection(request);
         List<Centre> llistatCentres = new ArrayList<Centre>();
-		try {
-			llistatCentres = CentreCore.findCentres(conn, false);
-			myObj.addProperty("success", true);
-			JsonElement llistatObj = gson.toJsonTree(llistatCentres);
-			myObj.add("llistatCentres", llistatObj);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			myObj.addProperty("success", false);
-		}              
+		llistatCentres = CentreCore.findCentres(conn, false);
+		myObj.addProperty("success", true);
+		JsonElement llistatObj = gson.toJsonTree(llistatCentres);
+		myObj.add("llistatCentres", llistatObj);              
         out.println(myObj.toString());
  
         out.close();

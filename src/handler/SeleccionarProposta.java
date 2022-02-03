@@ -3,9 +3,6 @@ package handler;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,12 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import bean.Actuacio;
-import core.ActuacioCore;
 import core.InformeCore;
 import utils.MyUtils;
 
@@ -59,13 +50,7 @@ public class SeleccionarProposta extends HttpServlet {
         String idProposta = request.getParameter("idproposta");
         String idInforme = request.getParameter("idinforme");      
         Connection conn = MyUtils.getStoredConnection(request);       
-		try {
-			InformeCore.seleccionarProposta(conn, idProposta, idInforme);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			
-		}              
+		InformeCore.seleccionarProposta(conn, idProposta, idInforme);              
         out.println();
  
         out.close();

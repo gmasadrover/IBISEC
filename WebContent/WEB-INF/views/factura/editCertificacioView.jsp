@@ -64,7 +64,7 @@
                                 <label class="col-xs-3 control-label">Tipus de certificació</label>
                                 <input class="hidden" name="tipusCert" id=tipusCert value="${certificacio.tipus}">  
                                 <div class="col-xs-3">
-                                	<select class="selectpicker" name="tipusCertificacio" id="tipusCertificacio">						                                					                                	
+                                	<select class="selectpicker" name="tipusCertificacio" id="tipusCertificacio" ${canModificar ? '' : 'disabled'}>						                                					                                	
 					               		<option value="ordinaria">Ordinària</option>
 					               		<option value="final">Final</option>					                   		
 					                </select>	
@@ -74,7 +74,7 @@
                                 <label class="col-xs-3 control-label">Proveidor</label>
                                 <input class="hidden" name="nifProveidor" id=nifProveidor value="${certificacio.idProveidor}"> 
                                 <div class="col-xs-3">
-                                	<select class="selectpicker" name="idEmpresa" id="llistaEmpreses" data-live-search="true" data-size="5">						                                					                                	
+                                	<select class="selectpicker" name="idEmpresa" id="llistaEmpreses" data-live-search="true" data-size="5" ${canModificar ? '' : 'disabled'}>						                                					                                	
 					               		<c:forEach items="${empresesList}" var="empresa">
 					                   		<option value="${empresa.cif}">${empresa.name} (${empresa.cif})</option>
 					                   	</c:forEach>	
@@ -84,68 +84,70 @@
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">Import</label>
                                 <div class="col-xs-3">
-                                	<input class="form-control" name="import" id="import" placeholder="0000.00" value="${certificacio.valor}">
+                                	<input class="form-control" name="import" id="import" placeholder="0000.00" value="${certificacio.valor}" ${canModificar ? '' : 'disabled'}>
                                 </div>
                             </div>	     
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">Concepte</label>
                                 <div class="col-xs-3">
-                                	<input class="form-control" name="concepte" placeholder="concepte" value="${certificacio.concepte}">
+                                	<input class="form-control" name="concepte" placeholder="concepte" value="${certificacio.concepte}" ${canModificar ? '' : 'disabled'}>
                                 </div>
                             </div>	
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">Data entrada</label>
                                 <div class="input-group date col-xs-3 datepicker">
-								  	<input type="text" class="form-control" name="dataEntrada" value="${certificacio.getDataEntradaString()}" required><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+								  	<input type="text" class="form-control" name="dataEntrada" value="${certificacio.getDataEntradaString()}" required ${canModificar ? '' : 'disabled'}><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>
                             </div>	
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">Data certificació</label>
                                 <div class="input-group date col-xs-3 datepicker">
-								  	<input type="text" class="form-control" name="dataFactura" value="${certificacio.getDataFacturaString()}" required><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+								  	<input type="text" class="form-control" name="dataFactura" value="${certificacio.getDataFacturaString()}" required ${canModificar ? '' : 'disabled'}><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>
                             </div>
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">Nombre certficació</label>
                                 <div class="col-xs-3">
-                                	<input class="form-control" name="nombre" placeholder="nombre" value="${certificacio.nombreFactura}">
+                                	<input class="form-control" name="nombre" placeholder="nombre" value="${certificacio.nombreFactura}" ${canModificar ? '' : 'disabled'}>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-xs-3 control-label">Usuari conformador</label>
-                                <div class="col-xs-3">
-                                	<input class="hidden" name="idUsuariInforme" id=idUsuariInforme value="${certificacio.usuariConformador.idUsuari}"> 
-                                	<select class="form-control selectpicker" data-live-search="true" data-size="10" name="idConformador" id="usuarisList">
-		                                <c:forEach items="${llistaUsuaris}" var="usuari" >
-	                                		<option value='${usuari.idUsuari}'>${usuari.getNomCompletReal()}</option>
-	                                	</c:forEach>
-                                	</select>
-                                </div>
-                            </div>	
+                            </div>                           
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">Data pasada a conformar</label>
                                 <div class="input-group date col-xs-3 datepicker">
-								  	<input type="text" class="form-control" name="dataPasadaConformar" value="${certificacio.getDataEnviatConformadorString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+								  	<input type="text" class="form-control" name="dataPasadaConformar" value="${certificacio.getDataEnviatConformadorString()}" ${canModificar ? '' : 'disabled'}><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>
                             </div>	
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">Data conformada</label>
                                 <div class="input-group date col-xs-3 datepicker">
-								  	<input type="text" class="form-control" name="dataConformada" value="${certificacio.getDataConformacioString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+								  	<input type="text" class="form-control" name="dataConformada" value="${certificacio.getDataConformacioString()}" ${canModificar ? '' : 'disabled'}><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>
                             </div>
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">Data pasada a comptabilitat</label>
                                 <div class="input-group date col-xs-3 datepicker">
-								  	<input type="text" class="form-control" name="dataPasadaComptabilitat" value="${certificacio.getDataEnviatComptabilitatString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+								  	<input type="text" class="form-control" name="dataPasadaComptabilitat" value="${certificacio.getDataEnviatComptabilitatString()}" ${canModificar ? '' : 'disabled'}><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>
                             </div>
                             <div class="form-group">
                             	<label class="col-xs-3 control-label">Notes</label>
                                 <div class="col-xs-3">
-                                	<textarea class="form-control" name="notes" placeholder="anotacions" rows="3">${certificacio.notes}</textarea>
+                                	<textarea class="form-control" name="notes" placeholder="anotacions" rows="3" ${canModificar ? '' : 'disabled'}>${certificacio.notes}</textarea>
                                 </div>
                             </div>	
+                             <div class="form-group">
+                             	<div class="col-md-12">
+				    				<label class="col-xs-3 control-label">Relació valorada</label> 
+				    				<div class="col-xs-3">
+										<c:forEach items="${certificacio.relaciovalorada}" var="arxiu" >
+											<c:set var="arxiu" value="${arxiu}" scope="request"/>
+											<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+										</c:forEach>		
+										<br>									
+					           			<input type="file" class="btn uploadImage" name="relaciovalorada" multiple/><br/>	
+				           			</div>															 		
+				    			</div>                            	
+							</div>
 		    				<div class="form-group">						       	
 				    			<div class="col-md-12">
 				    				<label class="col-xs-3 control-label">Certificació</label> 
@@ -155,7 +157,7 @@
 											<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
 										</c:forEach>		
 										<br>									
-					           			<input type="file" class="btn uploadImage" name="file"/><br/>	
+					           			<input type="file" class="btn uploadImage" name="certificacio" multiple/><br/>	
 				           			</div>															 		
 				    			</div>
 				      		</div>	                           

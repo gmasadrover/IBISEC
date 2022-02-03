@@ -2,10 +2,7 @@ package servlet.registre;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,7 +16,6 @@ import bean.ControlPage.SectionPage;
 import core.ControlPageCore;
 import core.RegistreCore;
 import core.UsuariCore;
-import utils.Fitxers;
 import utils.MyUtils;
 
 /**
@@ -51,16 +47,11 @@ public class EditRegistreServlet extends HttpServlet {
  	   		String idRegistre = request.getParameter("id");
  	   		String entradaSortida = request.getParameter("tipus");
  	   		Registre registre = new Registre();
-	        try {
-	        	registre = RegistreCore.findRegistre(conn, entradaSortida, idRegistre);	  
-	        	request.setAttribute("isCap", usuari.getRol().contains("CAP") || usuari.getRol().contains("ADMIN"));
-	        	request.setAttribute("registre", registre);
-	        	request.setAttribute("idRegistre", idRegistre);
-				request.setAttribute("entradaSortida", entradaSortida);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}	        
+	        registre = RegistreCore.findRegistre(conn, entradaSortida, idRegistre);	  
+			request.setAttribute("isCap", usuari.getRol().contains("CAP") || usuari.getRol().contains("ADMIN"));
+			request.setAttribute("registre", registre);
+			request.setAttribute("idRegistre", idRegistre);
+			request.setAttribute("entradaSortida", entradaSortida);	        
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Registre"));
 	        RequestDispatcher dispatcher = request.getServletContext()
 	                .getRequestDispatcher("/WEB-INF/views/registre/registreEditView.jsp");

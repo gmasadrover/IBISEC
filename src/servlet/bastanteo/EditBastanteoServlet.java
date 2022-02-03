@@ -2,11 +2,9 @@ package servlet.bastanteo;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,8 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.Expedient;
-import bean.InformeActuacio;
 import bean.User;
 import bean.Bastanteo;
 import bean.ControlPage.SectionPage;
@@ -23,8 +19,6 @@ import bean.Empresa;
 import core.BastanteosCore;
 import core.ControlPageCore;
 import core.EmpresaCore;
-import core.ExpedientCore;
-import core.InformeCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
@@ -58,14 +52,9 @@ public class EditBastanteoServlet extends HttpServlet {
 	        Bastanteo bastanteo = new Bastanteo();
 	        List<Empresa> empresesList = new ArrayList<Empresa>();
 	        String errorString = null;	      
-	        try {
-	        	bastanteo = BastanteosCore.findBastanteo(conn, ref);
-	        	empresesList = EmpresaCore.getEmpreses(conn); 	
-	        	empresesList.addAll(EmpresaCore.getEmpresesUTE(conn)); 	
-	        } catch (SQLException | NamingException e) {
-	            e.printStackTrace();
-	            errorString = e.getMessage();
-	        }	
+	        bastanteo = BastanteosCore.findBastanteo(conn, ref);
+			empresesList = EmpresaCore.getEmpreses(conn); 	
+			empresesList.addAll(EmpresaCore.getEmpresesUTE(conn));	
 	        // If no error.
 	        // The product does not exist to edit.
 	        // Redirect to productList page.

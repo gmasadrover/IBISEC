@@ -2,9 +2,7 @@ package servlet.expedient;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,14 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.Expedient;
 import bean.InformeActuacio;
 import bean.User;
-import bean.ControlPage.SectionPage;
 import core.ControlPageCore;
-import core.ExpedientCore;
 import core.InformeCore;
-import core.UsuariCore;
 import utils.MyUtils;
 
 /**
@@ -47,26 +41,12 @@ public class EditGarantiaServlet extends HttpServlet {
  		   response.sendRedirect(request.getContextPath() + "/");
     	} else{
 			String idInf = request.getParameter("idinf");
-	        String errorString = null;	          
 	        InformeActuacio informe = new InformeActuacio();
-	        try {
-	        	informe = InformeCore.getInformePrevi(conn, idInf, true);	
-	        } catch (SQLException | NamingException e) {
-	            e.printStackTrace();
-	            errorString = e.getMessage();
-	        }
+	        informe = InformeCore.getInformePrevi(conn, idInf, true);
 	 
 	         
-	        // If no error.
-	        // The product does not exist to edit.
-	        // Redirect to productList page.
-	        if (errorString != null && informe == null) {
-	            response.sendRedirect(request.getServletPath() + "/expedients");
-	            return;
-	        }
 	 
 	        // Store errorString in request attribute, before forward to views.	       
-	        request.setAttribute("errorString", errorString);
 	        request.setAttribute("informePrevi", informe);
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"expedients"));
 	        

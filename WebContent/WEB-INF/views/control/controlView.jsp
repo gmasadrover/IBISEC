@@ -18,9 +18,7 @@
        	<div id="page-wrapper">
 
             <div class="container-fluid">
-
-                <!-- Page Heading -->
-                <div class="row">
+         		<div class="row">
                     <div class="col-md-12">
                         <h1 class="page-header">
                             Control <small>Detalls</small>
@@ -35,213 +33,88 @@
                         </ol>
                     </div>
                 </div>
-                <!-- /.row -->
-				
+                <!-- /.row -->				
             </div>
-            <!-- /.container-fluid -->
+
 			<div class="row">
-				<!-- -- Modificar registres mala asignació <br />
-				-- Modificar Factures mala asignació <br />
-				<div class="col-md-6">
-					<div class="borderbox">
-						<span>Projecte Binissalem</span></br>
-						<span><a href="expedient?ref=004/17" target="_blanck">Expedient 004/17</a></span>
-					</div>
-				</div>
-				<div class="col-md-6">
-					<div class="borderbox">
-						<span>Projecte Ses Casesnoves</span></br>
-						<span><a href="expedient?ref=032/17" target="_blanck">Expedient 032/17</a></span>
-					</div>
-				</div>
-				<div class="col-md-6"> 
-					<div class="borderbox">
-						<span>Projecte IES JOSEP MARIA QUADRADO</span></br>
-						<span><a href="expedient?ref=005/17" target="_blanck">Expedient 005/17</a></span>
-					</div>
-				</div> -->
-				
-	           <%--  <div class="col-md-12">
-	                <c:forEach items="${controlCentres}" var="control" >
-	                	<h4>${control.centre.getNomComplet()}</h4>
-	                	<div class="table-responsive">                        
-	                    <table class="table table-striped table-bordered filerTable">
-	                        <thead>
-	                            <tr>
-	                                <th>Tasca</th>
-                                    <th>id Actuació</th>
-                                    <th>Centre</th>                                        
-                                    <th>Data creació</th>
-                                    <th>Responsable</th>
-	                            </tr>
-	                        </thead>
-	                        <tbody>
-	                        	<c:forEach items="${control.getTasquesList()}" var="tasca" >
-						         	<tr>							          	
-						          		<td><a href="tasca?id=${tasca.idTasca}">${tasca.idTasca} - ${tasca.descripcio}</a></td>
-						            	<td>
-						            		<c:choose>
-						            			<c:when test="${tasca.actuacio.referencia != '-1'}">
-						            				<a href="actuacionsDetalls?ref=${tasca.actuacio.referencia}" class="loadingButton"  data-msg="obrint actuació...">${tasca.actuacio.referencia}</a>
-						            			</c:when>
-						            			<c:otherwise>
-						            				${tasca.idinforme}
-						            			</c:otherwise>
-						            		</c:choose>
-						            	</td>
-						            	<td>${tasca.actuacio.centre.getNomComplet()}</td>							            	
-						            	<td>${tasca.getDataCreacioString()}</td>
-						            	<td>${tasca.usuari.getNomComplet()}</td>							           	
-						         	</tr>
-						      	</c:forEach>                                	
-	                        </tbody>
-	                    </table>
-	                </div>
-	                </c:forEach>
-	            </div> --%>
-	  <%--            <div class="row">					
-						<div class="col-md-12">
-		                        <h2>Informes usuari</h2>
-		                        <div class="table-responsive">                        
-		                            <table class="table table-striped table-bordered filerTable informes">
-		                                <thead>
-		                                    <tr>                                        
-		                                        <th>Expedient</th>
-		                                        <th>Objecte</th>
-		                                        <th>Responsable</th>
-		                                        <th>Actuació</th>
-		                                        <th>Centre</th> 
-		                                        <th>Empresa</th>  
-		                                        <th>Estat</th>  
-		                                    </tr>
-		                                </thead>
-		                                <tbody>
-		                                	<c:forEach items="${controlExpedients}" var="informe" >	  
-		                                		<c:if test="${informe.getEstatExpedientFormat() != 'Garantia'}">                              		
-										          	<tr>							          	
-										           		<td>
-															<c:choose>
-										            			<c:when test="${informe.expcontratacio != null && informe.expcontratacio.expContratacio != '-1'}">
-										            				<a href="actuacionsDetalls?ref=${informe.actuacio.referencia}&exp=${informe.idInf}" class="loadingButton"  data-msg="obrint expedient...">${informe.expcontratacio.expContratacio}</a>
-										            			</c:when>
-										            			<c:otherwise>
-										            				<c:choose>
-												            			<c:when test="${informe.actuacio.referencia != '-1'}">
-												            				<a href="actuacionsDetalls?ref=${informe.actuacio.referencia}" class="loadingButton"  data-msg="obrint actuació...">${informe.actuacio.referencia}</a>
-												            			</c:when>
-												            			<c:otherwise>
-												            				${informe.idInf}
-												            			</c:otherwise>
-												            		</c:choose>
-										            			</c:otherwise>
-										            		</c:choose>
-														</td>												
-														<td>
-															<c:choose>
-										            			<c:when test="${informe.propostaInformeSeleccionada != null}">
-										            				${informe.propostaInformeSeleccionada.objecte}
-										            			</c:when>
-										            			<c:otherwise>
-										            				
-										            			</c:otherwise>
-										            		</c:choose>
-														</td>
-														<td>${informe.usuari.getNomComplet()}</td>
-										            	<td>${informe.actuacio.descripcio}</td>										            	
-										            	<td>${informe.actuacio.centre.getNomComplet()}</td>
-										            	<td>${informe.ofertaSeleccionada.nomEmpresa}</td>
-										            	<td>${informe.getEstatExpedientFormat()}</td>
-										          	</tr>
-										    	</c:if>
-									       	</c:forEach>
-		                                </tbody>
-		                            </table>
-		                        </div>
-		                    </div>
-	        </div> --%>	
-	       <div class="row">
-	      		<div class="col-md-12">
-	      			<h2>Estat actuacions</h2>
-	      			<div class="table-responsive">                        
+				<div class="col-md-12">
+                	<h2>Configuració INTRANET</h2>
+                	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="updateConfiguracio">
+                		<div class="form-group">
+							<div class="col-md-6">
+								<label>Import obra major</label>
+								<input name="importObraMajor" placeholder="" value="${configuracioActual.getImportObraMajor()}" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-6">
+								<label>Import servei major</label>
+								<input name="importServeiMajor" placeholder="" value="${configuracioActual.getImportServeiMajor()}" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-6">
+								<label>Import subministrament major</label>
+								<input name="importSubministramentMajor" placeholder="" value="${configuracioActual.getImportSubministramentMajor()}" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-6">
+								<label>Ruta base documents</label>
+								<input name="rutaBaseDocumentacio" placeholder="" value="${configuracioActual.rutaBaseDocumentacio}" required>
+							</div>
+						</div>
+						<div class="col-md-4">												        		
+				    		<div class="row">
+				        		<div class="col-md-12">															        																						 				
+							 		<input class="btn btn-success margin_top30 upload" type="submit" name="modificar" value="Guardar canvis">
+							 	</div>
+				     		</div>
+		     			</div>	
+                	</form>
+                </div>
+			</div>
+		
+	       	<div class="row">				
+				<div class="col-md-12">
+                	<h2>Historial usuari</h2>
+                 	<div class="table-responsive">                        
                          <table class="table table-striped table-bordered filerTable informes">
                              <thead>
-                                 <tr>                                        
-                                     <th>Actuació</th>
-                                     <th>Illa</th>
-                                     <th>Municipi</th>
-                                     <th>Centre</th>
-                                     <th>Descripció</th>
-                                     <th>Pressupost</th>
-                                     <th>Tècnic</th>
-                                     <th>Tasca</th>
-                                     <th>Creació</th>
-                                     <th>Últim canvi</th>
-                                     <th>Data últim canvi</th>
-                                     <th>Estat</th>
-                                     <th>Usuari</th>
+                                 <tr> 
+                                 	<th>Data</th> 
+                                 	<th>Expedient/Registre</th>
+                                 	<th>Actuacio</th>                              	
+                                     <th>Comentari</th>
+                                     <th>Descripcio tasca</th> 
+                                     <th>Centre</th>  
+                                     <th>Responsable</th>
                                  </tr>
                              </thead>
                              <tbody>
-                             	<c:forEach items="${tasques}" var="tasca" >
-				          	<tr>							          	
-				           		<td>${tasca.actuacio.referencia}</td>	
-				           		<td>${tasca.actuacio.centre.illa}</td>	
-				           		<td>${tasca.actuacio.centre.municipi}</td>	
-				           		<td>${tasca.actuacio.centre.nom}</td>	
-				           		<td>${tasca.actuacio.descripcio} - ${tasca.informe.getPropostaInformeSeleccionada().getObjecte()}</td>	
-				           		<td>${tasca.informe.getPropostaInformeSeleccionada().getPlicFormat()}</td>
-				           		<td>${tasca.informe.usuari.getNomComplet()}</td>
-				           		<td>${tasca.primerComentari}</td>	
-				           		<td>${tasca.getDataCreacioString()}</td>	
-				           		<td>${tasca.darrerComentari}</td>	
-				           		<td>${tasca.getDarreraModificacioString()}</td>	
-				           		<td>${tasca.tipus}</td>	
-				           		<td>${tasca.usuari.getNomComplet()}</td>							            	
+                             	<c:forEach items="${controlHistoric}" var="historic" >
+				          	<tr>
+				          		<td>${historic.getDataString()}</td>
+				          		<c:choose>
+					          		<c:when test="${historic.tasca.registre != null}">
+					          			<td>${historic.tasca.registre}</td>	
+					          		</c:when>
+					          		<c:otherwise>
+					          			<td>${historic.actuacio.refExt}</td>	
+					          		</c:otherwise>
+				          		</c:choose>
+				            	<td>${historic.actuacio.descripcio}</td>		
+				            	<td>${historic.comentari}</td>	
+				            	<td>${historic.tasca.descripcio}</td>									            										            	
+				            	<td>${historic.actuacio.centre.getNomComplet()}</td>	
+				            	<td>${historic.usuari.getNomComplet()}</td>					            	
 				          	</tr>
 				       	</c:forEach>
                              </tbody>
                          </table>
-                     </div>
-	      		</div>					
-						<%-- <div class="col-md-12">
-		                        <h2>Historial usuari</h2>
-		                        <div class="table-responsive">                        
-		                            <table class="table table-striped table-bordered filerTable informes">
-		                                <thead>
-		                                    <tr>                                        
-		                                        <th>Responsable</th>
-		                                        <th>Comentari</th>
-		                                        <th>Data</th>
-		                                        <th>Tipus</th>
-		                                        <th>Descripcio tasca</th> 
-		                                        <th>Descripcio actuacio</th>  
-		                                        <th>Centre</th>  
-		                                    </tr>
-		                                </thead>
-		                                <tbody>
-		                                	<c:forEach items="${controlHistoric}" var="historic" >
-									          	<tr>							          	
-									           		<td>${historic.usuari.getNomComplet()}</td>	
-													<td>${historic.comentari}</td>													
-									            	<td>${historic.getDataString()}</td>
-									            	<td>${historic.tipus}</td>
-									            	<td>${historic.tasca.descripcio}</td>
-									            	<td>${historic.actuacio.descripcio}</td>										            	
-									            	<td>${historic.actuacio.centre.getNomComplet()}</td>									            	
-									          	</tr>
-									       	</c:forEach>
-		                                </tbody>
-		                            </table>
-		                        </div>
-		                    </div> --%>
-	        </div> 
-	       <%--  <div>
-	        		
-				<c:forEach items="${dictionary}" var="informe" >	
-				
-				 ${informe}<br>
-				</c:forEach>
-	        </div>     --%>	           
+                	</div>
+               	</div>
+	   		</div> 	            
         </div>
         <!-- /#page-wrapper -->
 

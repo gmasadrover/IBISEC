@@ -2,11 +2,9 @@ package servlet.judicial;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,13 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 import bean.Judicial;
 import bean.Registre;
 import bean.Tasca;
-import bean.Empresa;
 import bean.Factura;
 import bean.User;
 import bean.ControlPage.SectionPage;
-import core.BastanteosCore;
 import core.ControlPageCore;
-import core.EmpresaCore;
 import core.FacturaCore;
 import core.JudicialCore;
 import core.RegistreCore;
@@ -59,27 +54,22 @@ public class EditJudicialServlet extends HttpServlet {
  	   	}else{
 			String ref = request.getParameter("ref");
 	        Judicial procediment = new Judicial();
-	        String errorString = null;	      
+	          
 	        List<Tasca> tasquesList = new ArrayList<Tasca>();
 	        List<Registre> entrades = new ArrayList<Registre>();
 	        List<Registre> sortides = new ArrayList<Registre>();
 	        List<Factura> llistaFactures = new ArrayList<Factura>();
 	        boolean canModificarProcediment = false;
-	        try {
-	        	procediment = JudicialCore.findProcediment(conn, ref);
-	        	tasquesList = TascaCore.findTasquesJudicial(conn, ref);
-	        	entrades = RegistreCore.searchEntradesIncidencia(conn, ref, null);
-	        	sortides = RegistreCore.searchSortidesIncidencia(conn, ref, null);
-	        	llistaFactures = FacturaCore.getFacturesActuacio(conn, ref);
-	        	canModificarProcediment = UsuariCore.hasPermision(conn, usuari, SectionPage.judicials_modificar);
-	        } catch (SQLException | NamingException e) {
-	            e.printStackTrace();
-	            errorString = e.getMessage();
-	        }	
+	        procediment = JudicialCore.findProcediment(conn, ref);
+			tasquesList = TascaCore.findTasquesJudicial(conn, ref);
+			entrades = RegistreCore.searchEntradesIncidencia(conn, ref, null);
+			sortides = RegistreCore.searchSortidesIncidencia(conn, ref, null);
+			llistaFactures = FacturaCore.getFacturesActuacio(conn, ref);
+			canModificarProcediment = UsuariCore.hasPermision(conn, usuari, SectionPage.judicials_modificar);	
 	        // If no error.
 	        // The product does not exist to edit.
 	        // Redirect to productList page.
-	        if (errorString != null || procediment.getReferencia() == null) {
+	        if (procediment.getReferencia() == null) {
 	            response.sendRedirect("/judicials");
 	            return;
 	        }
@@ -90,7 +80,6 @@ public class EditJudicialServlet extends HttpServlet {
 	        request.setAttribute("sortides", sortides);
 	        request.setAttribute("llistaFactures", llistaFactures);
 	        request.setAttribute("tasquesList", tasquesList);
-	        request.setAttribute("errorString", errorString);
 	        request.setAttribute("procediment", procediment);
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"judicials"));
 	        

@@ -36,10 +36,7 @@ public class downloadFichero extends HttpServlet {
         String filePath = request.getParameter("ruta");
         File downloadFile = new File(filePath);
         FileInputStream inStream = new FileInputStream(downloadFile);
-         
-        // if you want to use a relative path to context root:
-        String relativePath = getServletContext().getRealPath("");
-         
+                  
         // obtains ServletContext
         ServletContext context = getServletContext();
          

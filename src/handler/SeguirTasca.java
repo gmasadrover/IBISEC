@@ -3,7 +3,6 @@ package handler;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -51,17 +50,10 @@ public class SeguirTasca extends HttpServlet {
         int idUsuari =  Integer.parseInt(request.getParameter("idUsuari"));    
         boolean seguir = Boolean.parseBoolean(request.getParameter("seguir"));
         Connection conn = MyUtils.getStoredConnection(request);       
-		try {
-			if (seguir) {
-				TascaCore.seguirTasca(conn, idTasca, idUsuari);
-			} else {
-				TascaCore.desSeguirTasca(conn, idTasca, idUsuari);
-			}
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			
+		if (seguir) {
+			TascaCore.seguirTasca(conn, idTasca, idUsuari);
+		} else {
+			TascaCore.desSeguirTasca(conn, idTasca, idUsuari);
 		}              
         out.println();
  

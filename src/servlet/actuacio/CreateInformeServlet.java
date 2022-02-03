@@ -2,7 +2,6 @@ package servlet.actuacio;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -43,13 +42,8 @@ public class CreateInformeServlet extends HttpServlet {
         }else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.actuacio_modificar)) {
     		response.sendRedirect(request.getContextPath() + "/");	 	
  	   	}else{ 	   		
-	        try {
-				request.setAttribute("actuacio", ActuacioCore.findActuacio(conn, request.getParameter("idActuacio")));
-				request.setAttribute("llistaUsuaris", UsuariCore.llistaUsuaris(conn, true));
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	        request.setAttribute("actuacio", ActuacioCore.findActuacio(conn, request.getParameter("idActuacio")));
+			request.setAttribute("llistaUsuaris", UsuariCore.llistaUsuaris(conn, true));
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Actuacions"));
 	        RequestDispatcher dispatcher = request.getServletContext()
 	                .getRequestDispatcher("/WEB-INF/views/actuacio/createInformeView.jsp");

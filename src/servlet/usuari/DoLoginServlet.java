@@ -2,7 +2,6 @@ package servlet.usuari;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -13,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
  
 import bean.User;
-import core.LoggerCore;
 import core.UsuariCore;
 import utils.MyUtils;
  
@@ -42,36 +40,30 @@ public class DoLoginServlet extends HttpServlet {
             hasError = true;
             errorString = "Required username and password!";
         } else {
-            try {   
-            	user = UsuariCore.findUsuari(conn, userName);
-            	if (user == null) {
-                    hasError = true;
-                    errorString = "Usuari incorrecte";
-                }
-            	else {
-            		if (repeatPassword == null) {    
-	            		if (user.getPassword().isEmpty()) {
-	            			hasError = true;
-	            			newUser = true;
-	            			errorString = "És el teu primer accès? Introdueix la contrasenya que desitgis";            			
-	            		} else if (! UsuariCore.coincideixPassword(conn, user.getIdUsuari(), password)) {
-		                    hasError = true;
-		                    errorString = "Password invalid";
-		                }
-            		} else {
-            			if (! password.equals(repeatPassword)){
-            				hasError = true;
-		                    errorString = "No coincideixen els passwords";
-            			} else {
-            				UsuariCore.modificarPassword(conn, user.getIdUsuari(), password);
-            			}
-            		}
-            	}
-            } catch (SQLException e) {
-                e.printStackTrace();
-                hasError = true;
-                errorString = e.getMessage();
-            }
+            user = UsuariCore.findUsuari(conn, userName);
+			if (user == null) {
+			    hasError = true;
+			    errorString = "Usuari incorrecte";
+			}
+			else {
+				if (repeatPassword == null) {    
+					if (user.getPassword().isEmpty()) {
+						hasError = true;
+						newUser = true;
+						errorString = "És el teu primer accès? Introdueix la contrasenya que desitgis";            			
+					} else if (! UsuariCore.coincideixPassword(conn, user.getIdUsuari(), password)) {
+			            hasError = true;
+			            errorString = "Password invalid";
+			        }
+				} else {
+					if (! password.equals(repeatPassword)){
+						hasError = true;
+			            errorString = "No coincideixen els passwords";
+					} else {
+						UsuariCore.modificarPassword(conn, user.getIdUsuari(), password);
+					}
+				}
+			}
         }
         
         // If error, forward to /WEB-INF/views/login.jsp
@@ -96,12 +88,7 @@ public class DoLoginServlet extends HttpServlet {
         // Store user information in Session
         // And redirect to userInfo page.
         else {
-        	try {
-				UsuariCore.darrerAcces(conn, user.getIdUsuari());
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+        	UsuariCore.darrerAcces(conn, user.getIdUsuari());
             HttpSession session = request.getSession();
             MyUtils.storeLoginedUser(session, user);     
             // Redirect to userInfo page.

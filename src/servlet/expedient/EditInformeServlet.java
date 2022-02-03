@@ -2,11 +2,9 @@ package servlet.expedient;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -56,39 +54,25 @@ public class EditInformeServlet extends HttpServlet {
 			String idInf = request.getParameter("idinf");
 			Expedient expedient = new Expedient();
 	        List<Partida> partidesList = new ArrayList<Partida>();
+	        String partidaPare = null;
 	        List<User> llistaUsuaris = new ArrayList<User>();
 	        List<User> llistaCaps = new ArrayList<User>();
-	        String errorString = null;
-	        double importObraMajor = Double.parseDouble(getServletContext().getInitParameter("importObraMajor"));      
 	        InformeActuacio informePrevi = new InformeActuacio();
-	        try {
-	        	if (refExp == null || refExp.isEmpty()) {
-	        		informePrevi = InformeCore.getInformePrevi(conn, idInf, false);					
-				} else {
-					expedient = ExpedientCore.findExpedient(conn, refExp);
-					informePrevi = InformeCore.getInformePrevi(conn, expedient.getIdInforme(), true);
-					System.out.println(informePrevi.isCessioCredit());
-				}
-	            partidesList = CreditCore.getPartides(conn, false);
-	            llistaUsuaris = UsuariCore.llistaUsuaris(conn, true);
-	            llistaCaps = UsuariCore.findUsuarisByRol(conn, "CAP");
-	        } catch (SQLException | NamingException e) {
-	            e.printStackTrace();
-	            errorString = e.getMessage();
-	        }
+	        if (refExp == null || refExp.isEmpty()) {
+				informePrevi = InformeCore.getInformePrevi(conn, idInf, false);					
+			} else {
+				expedient = ExpedientCore.findExpedient(conn, refExp);
+				informePrevi = InformeCore.getInformePrevi(conn, expedient.getIdInforme(), true);
+				if (informePrevi.getAssignacioCredit().size() > 0) partidaPare = informePrevi.getAssignacioCredit().get(0).getPartida().getSubpartidaDe();
+			}
+			partidesList = CreditCore.getPartides(conn, true);
+			llistaUsuaris = UsuariCore.llistaUsuaris(conn, true);
+			llistaCaps = UsuariCore.findUsuarisByRol(conn, "CAP");
 	 
-	         
-	        // If no error.
-	        // The product does not exist to edit.
-	        // Redirect to productList page.
-	        if (errorString != null && expedient == null) {
-	            response.sendRedirect(request.getServletPath() + "/expedients");
-	            return;
-	        }
+	      
 	 
-	        // Store errorString in request attribute, before forward to views.
-	        request.setAttribute("errorString", errorString);
 	        request.setAttribute("partidesList", partidesList);
+	        request.setAttribute("partidaPare", partidaPare);
 	        request.setAttribute("llistaUsuaris", llistaUsuaris);
 	        request.setAttribute("llistaCaps", llistaCaps);
 	        request.setAttribute("expedient", expedient);

@@ -22,13 +22,7 @@ public class Historic {
 
 	}
 
-	public Historic(int idHistoric, int idTasca, String comentari, User usuari, Date data) {
-		this.setIdHistoric(idHistoric);
-		this.setIdTasca(idTasca);
-		this.setComentari(comentari);
-		this.setUsuari(usuari);
-		this.setData(data);
-	}
+	
 
 	public int getIdHistoric() {
 		return idHistoric;

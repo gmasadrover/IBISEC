@@ -46,17 +46,17 @@
 		    			<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="doNovaIncidenciaGarantia">
 		    				<input type="hidden" name="idInforme" value="${idInforme}"> 
 		    				<div class="form-group">			    				    				    		
-			                    <div class="col-md-6">
+			                    <div class="col-md-3">
 		                            <div class="form-group">
-		                                <label class="col-xs-3 control-label">Data inici</label>
+		                                <label class="col-xs-4 control-label">Data inici</label>
 		                                <div class="input-group date col-xs-6 datepicker">
 										  	<input type="text" class="form-control" name="dataInici"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 										</div>
 		                            </div>	          
 			                    </div>
-			                    <div class="col-md-6">
+			                    <div class="col-md-3">
 		                            <div class="form-group">
-		                                <label class="col-xs-3 control-label">Data fi</label>
+		                                <label class="col-xs-4 control-label">Data fi</label>
 		                                <div class="input-group date col-xs-6 datepicker">
 										  	<input type="text" class="form-control" name="dataFi"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 										</div>
@@ -66,11 +66,17 @@
 						    <div class="form-group">
 						   		<div class="col-md-12">
 	                                <label class="col-xs-1 control-label">Descripcio</label>
-	                                <div class="col-xs-10">
+	                                <div class="col-xs-5">
 	                                	<textarea class="form-control" name="descripcio" placeholder="descripcio" rows="3"></textarea>
 	                                </div>
                                 </div>
                             </div>
+                            <div class="form-group">
+								<label class="col-xs-1 control-label">Adjuntar arxius:</label>
+						           <div class="col-xs-5">   
+						           	<input type="file" class="btn" name="documentIncidenciaGarantia" multiple/><br/>
+								</div> 
+							</div>	
                             <br>
 						    <div class="form-group">
 						        <div class="col-xs-offset-3 col-xs-9">

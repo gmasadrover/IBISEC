@@ -218,15 +218,15 @@
 		<div class="documentsIniciActivitat"></div>
 		<br>					            		
 	</div>	
-	<div class="row">
-		<div class="col-md-12">
-			<div class="row">
-	  			<c:if test="${canModificarInstalacions}">
+	<c:if test="${isIBISEC}">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="row">	  			
 					<div class="col-md-offset-9 col-md-2 margin_top30">
 						<a href="editInstalacions?${informePrevi.expcontratacio.expContratacio != '-1' ? 'ref=' += informePrevi.expcontratacio.expContratacio : 'idinf=' += informePrevi.idInf}&from=${redireccio}" class="btn btn-primary" role="button">Editar</a>
 					</div>
-				</c:if>
-	    	</div>       
+		    	</div>       
+			</div>
 		</div>
-	</div>
+	</c:if>
 </form>	  

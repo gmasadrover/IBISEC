@@ -101,6 +101,15 @@
                 	</div>
                 	<div class="row">
                 		<div class="col-xs-offset-1 col-md-10">
+                			<label>Relació Valorada: </label>
+                			<c:forEach items="${certificacio.relaciovalorada}" var="arxiu" >
+								<c:set var="arxiu" value="${arxiu}" scope="request"/>
+								<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+							</c:forEach>		                	
+						</div>
+					</div>
+                	<div class="row">
+                		<div class="col-xs-offset-1 col-md-10">
                 			<label>Certificació: </label>
                 			<c:forEach items="${certificacio.certificacions}" var="arxiu" >
 								<c:set var="arxiu" value="${arxiu}" scope="request"/>
@@ -116,12 +125,10 @@
                             </p>	                		
                         </div>
                 	</div>   
-                	<c:if test="${!certificacio.anulada}">        
+                	<c:if test="${!certificacio.anulada && isIBISEC}">        
 	                	<div class="row">
 	                		<div class="col-md-2">
-		               			<c:if test="${canModificar}">
-									<a href="editCertificacio?ref=${certificacio.idFactura}" class="btn btn-primary" role="button">Modificar</a>									
-								</c:if>
+								<a href="editCertificacio?ref=${certificacio.idFactura}" class="btn btn-primary" role="button">Modificar</a>
 							</div>	
 		                	<div class="col-md-3">
 		               			<c:if test="${canModificar}">																	

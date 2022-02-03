@@ -1,13 +1,10 @@
 package servlet.usuari;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,14 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.math.NumberUtils;
-
-import bean.Actuacio;
-import bean.Tasca;
 import bean.User;
 import bean.ControlPage.SectionPage;
 import core.ControlPageCore;
-import core.LoggerCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
@@ -63,7 +55,7 @@ public class UsuarisListServlet extends HttpServlet {
 	        		filterWithActius = "on";
 	        	}	
 	        	llistaUsuaris =  UsuariCore.llistaUsuaris(conn, "on".equals(filterWithActius));	        	
-	        } catch (SQLException | NumberFormatException e) {
+	        } catch (NumberFormatException e) {
 	            e.printStackTrace();
 	            errorString = e.getMessage();
 	        }	        

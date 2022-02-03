@@ -160,7 +160,7 @@
 				        </div>									
 						<div class="form-group">
 							<div class="col-md-6">
-								<label>${informePrevi.propostaInformeSeleccionada.tipusObra == 'conveni' ? 'Vigència conveni' : 'Termini d\'execució'}:</label>
+								<label>${informePrevi.propostaInformeSeleccionada.tipusObra == 'conveni' ? 'Vigència conveni' : 'Termini execució'}:</label>
 								<input name="termini" placeholder="" value="${informePrevi.propostaInformeSeleccionada.termini}" required>
 							</div>
 						</div>
@@ -240,10 +240,44 @@
 					       		</div>
 					       	</div>
                         </div>
-						<div class="form-group">
+                        <div class="row">
+							<div class="col-md-4">
+								<p>
+									<label>Partida:</label>									
+									<div class="table-responsive col-xs-offset-1 col-md-12">							                        
+					                    <table class="table table-striped table-bordered filerTable">
+					                    	<thead>
+					                            <tr>
+					                           		<th>Partida</th>	
+					                                <th>Valor</th>
+					                                <th></th>			                                        							                                       
+					                            </tr>
+					                        </thead>
+					                        <tbody>
+					                        <c:set var="total" value="0" />
+											<c:forEach items="${informePrevi.assignacioCredit}" var="assignacioCredit" >
+									          	<tr>		
+									          		<td><a target="_black" href="partidaDetalls?codi=${assignacioCredit.partida.codi}">${assignacioCredit.partida.codi} (${assignacioCredit.partida.nom})</a></td>	
+									          		<td>${assignacioCredit.getValorPAFormat()}</td>	
+									          		<td><input class="btn btn-primary carregarModal" data-idassignacio="${assignacioCredit.idAssignacio}" data-valorassignacio="${assignacioCredit.valorPA}" data-partidaprev="${assignacioCredit.partida.subpartidaDe}" data-subpartidaprev="${assignacioCredit.partida.codi}" data-toggle="modal" data-target="#modalAssignacio" name="modificar" value="Modificar"></td>
+									          		<c:set var="total" value="${total + assignacioCredit.valorPA}" />
+									          	</tr>
+									      	</c:forEach>  	
+									      		<tr>
+									      			<td>Total</td>
+									      			<td><m:formatNumber pattern= "#,##0.00" type = "number" value ="${total}"/>€</td>
+									      			<td><input class="btn btn-success carregarModal" data-idassignacio="-1" data-valorassignacio="0" data-toggle="modal" data-target="#modalAssignacio" name="novaAssignacio" value="Afegir"></td>
+									      		</tr>	
+									      	</tbody>					      		     
+					                    </table>
+					                </div>
+								</p>
+							</div>		
+						</div>						
+						<%-- <div class="form-group">
 				    		<div class="col-md-4">	
 				      			<label>Partida asignada</label>		
-				      			<input type="hidden" id="partidaPrev" value="${informePrevi.assignacioCredit[0].partida.codi}" >							            	 										            	 	
+				      			<input type="hidden" id="partidaPrev" value="${partidaPare}" >							            	 										            	 	
 				                <select class="form-control selectpicker" name="llistaPartides" id="llistaPartides">
 				                	<option value="-1">No assignar partida</option>
 				                	<c:forEach items="${partidesList}" var="partida">
@@ -251,7 +285,14 @@
 				                	</c:forEach>					                                	
 				                </select>	
 				            </div>					                       		
-				       	</div>	                		
+				       	</div>	  
+				        <div class="form-group">
+				    		<div class="col-md-4">	
+				      			<label>SubPartida asignada</label>	
+				      			<input type="hidden" id="subPartidaPrev" value="${informePrevi.assignacioCredit[0].partida.codi}" >										            	 										            	 	
+				                <select class="form-control selectpicker" name="llistaSubPartides" id="llistaSubPartides"></select>	
+				            </div>					                       		
+				       	</div>	              	 --%>	
 		                <div class="row">
 	                		<div class="form-group">
 	                			<label class="col-xs-2 control-label">Afectat BEI</label> 
@@ -283,24 +324,25 @@
 				       	</div>	
 				       	<div class="form-group">
 				       		<div class="col-md-6">
-				       			<div class="document">
-									<label>Autorització àrea econòmica signada:</label>										                  	
-					           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.conformeAreaEconomivaPropostaActuacio.getEncodedRuta()}">
-										${informePrevi.conformeAreaEconomivaPropostaActuacio.nom}
-									</a>	
-									<c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.signat}">
-											<span data-ruta="${informePrevi.conformeAreaEconomivaPropostaActuacio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
-									</c:if>
-									<c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.ruta != null}">
-										<span data-ruta="${informePrevi.conformeAreaEconomivaPropostaActuacio.ruta}" class="glyphicon glyphicon-remove deleteFile"></span>
-									</c:if>
-									<br>
-									<div class="infoSign hidden">										
-									</div>	
+				       			<div class="document">								                  	
+					           		<c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.size() > 0}">
+										<p>
+											<div class="document">
+												<label>Certificat d'existència de crèdit:</label>	
+												<div class="row col-md-12">
+													<c:forEach items="${informePrevi.conformeAreaEconomivaPropostaActuacio}" var="arxiu" >
+														<c:set var="arxiu" value="${arxiu}" scope="request"/>
+														<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+													</c:forEach>
+													<br>					            		
+												</div>
+											</div>																	
+										</p>	
+									</c:if>	
 								</div>	
 								<input type="file" class="btn uploadImage" name="conformeAreaEconomica" /><br/>		
 				       		</div>
-				       		<c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.ruta == null}">
+				       		<c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.size() == 0}">
 					       		<div class="col-md-6">
 									<div class="form-group">
 							    		<div class="col-md-12">
@@ -537,6 +579,56 @@
 			                </div>
 			           	</div>
 	                </form>
+	                <form class="form-horizontal" method="POST" enctype="multipart/form-data" action="modificarAssignacioPartida">
+						<input class="hidden" name="expedient" value="${informePrevi.expcontratacio.expContratacio}">
+                		<input class="hidden" name="idActuacio" value="${informePrevi.actuacio.referencia}">
+                		<input class="hidden" name="idInforme" value="${informePrevi.idInf}">
+                		<input class="hidden" name="redireccio" value="/editInforme?ref=${informePrevi.expcontratacio.expContratacio}&from=${redireccio}">	
+                		<input class="hidden" name="idAssignacio" id="idAssignacioModal" value="">	
+	        			<!-- Modal -->	        			
+						<div id="modalAssignacio" class="modal fade" role="dialog">
+							<div class="modal-dialog">																	
+						    <!-- Modal content-->
+						    	<div class="modal-content">
+						      		<div class="modal-header">
+						        		<button type="button" class="close" data-dismiss="modal">&times;</button>
+						        		<h4 class="modal-title">Modificar assignació</h4>
+						      		</div>
+						      		<div class="modal-body">
+						        		<div class="form-group">
+								    		<div class="col-md-6">	
+								      			<label>Partida asignada</label>		
+								      			<input type="hidden" id="partidaPrev" value="" >							            	 										            	 	
+								                <select class="form-control selectpicker llistaPartides" name="llistaPartides" id="llistaPartides">
+								                	<option value="-1">No assignar partida</option>
+								                	<c:forEach items="${partidesList}" var="partida">
+								                		<option value="${partida.codi}">${partida.codi} (${partida.nom} - Restant: ${partida.getPartidaPerAsignarFormat()})</option>
+								                	</c:forEach>					                                	
+								                </select>	
+								            </div>					                       		
+								       	</div>	  
+								        <div class="form-group">
+								    		<div class="col-md-6">	
+								      			<label>SubPartida asignada</label>	
+								      			<input type="hidden" id="subPartidaPrev" value="" >										            	 										            	 	
+								                <select class="form-control selectpicker" name="llistaSubPartides" id="llistaSubPartides"></select>	
+								            </div>					                       		
+								       	</div>
+								       	<div class="form-group">
+									       	<div class="col-md-6">
+									          	<label>Valor</label>
+									          	<input name="valorAssignacio" class="valorAssignacio" required>
+									          	<label class="">€</label>
+									        </div>
+										</div>
+						      		</div>
+						      		<div class="modal-footer">
+						      			<input class="btn btn-success" type="submit" name="modificar" value="Modificar">
+						      		</div>
+					    		</div>																	
+						  	</div>
+						</div> 
+					</form>
                 </c:if>
                 <!-- /.row -->     
            	</div>

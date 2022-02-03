@@ -46,11 +46,7 @@
 				   			<input type="hidden" name="redireccio" value="${redireccio}">  
 				   			<input type="hidden" name="expedient" value="${informePrevi.expcontratacio.expContratacio}">
 	                	 	<input type="hidden" name="idInforme" value="${informePrevi.idInf}">           
-				   			<div class="form-group">	
-								<div class="form-group">
-									<label>Termini garantia:</label>
-									<input name="terminiGarantia" placeholder="" value="${informePrevi.expcontratacio.garantia}"> 
-								</div>
+				   			<div class="form-group">
 								<div class="form-group">
 									<div class="col-md-3">
 										<label>Data inici garantia:</label>
@@ -60,62 +56,28 @@
 									</div>								
 								</div>
 								<div class="form-group">
-									<label>Sol·licitud devolució aval:</label>
-								</div>	
+									<div class="col-md-3">
+										<label>Data fi garantia prevista:</label>
+										<div class="input-group date datepicker">
+										  	<input type="text" class="form-control" name="dataFiGarantia" value="${informePrevi.expcontratacio.getDataFiGarantiaString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+										</div>	
+									</div>								
+								</div>								
 								<div class="form-group">
-									<c:forEach items="${informePrevi.documentSolDevolucio}" var="arxiu" >
-										<c:set var="arxiu" value="${arxiu}" scope="request"/>
-										<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
-									</c:forEach>
-									<br>					            		
+									<div class="col-md-3">
+										<label>Data devolució garantia:</label>
+										<div class="input-group date datepicker">
+										  	<input type="text" class="form-control" name="dataRetornGarantia" value="${informePrevi.expcontratacio.getDataRetornGarantiaString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+										</div>	
+									</div>	
 								</div>
 								<div class="form-group">
-									<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-							           <div class="col-xs-5">   
-							           	<input type="file" class="btn" name="documentSolDevolucio" multiple/><br/>
-									</div> 
-								</div>
-								<div class="form-group">
-									<label>Informe devolució aval:</label>								
-								</div>
-								<div class="form-group">
-									<c:forEach items="${informePrevi.documentInformeDevolucio}" var="arxiu" >
-										<c:set var="arxiu" value="${arxiu}" scope="request"/>
-										<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
-									</c:forEach>
-									<br>					            		
-								</div>
-								<div class="form-group">
-									<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-							           <div class="col-xs-5">   
-							           	<input type="file" class="btn" name="documentInformeDevolucio" multiple/><br/>
-									</div> 
-								</div>
-								<div class="form-group">
-									<label>Liquidació aval:</label>
-								</div>	
-								<div class="form-group">
-									<c:forEach items="${informePrevi.documentLiquidacioAval}" var="arxiu" >
-										<c:set var="arxiu" value="${arxiu}" scope="request"/>
-										<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
-									</c:forEach>
-									<br>					            		
-								</div>	
-								<div class="form-group">
-									<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-							           <div class="col-xs-5">   
-							           	<input type="file" class="btn" name="documentLiquidacioAval" multiple/><br/>
-									</div> 
-								</div>
-								<div class="form-group">
-									<p>
-										<div class="col-md-3">
-											<label>Data retorn aval:</label>
-											<div class="input-group date datepicker">
-											  	<input type="text" class="form-control" name="dataRetornGarantia" value="${informePrevi.expcontratacio.getDataRetornGarantiaString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-											</div>	
-										</div>								
-									</p>
+									<div class="col-md-3">
+										<label>Data liquidació contracte:</label>
+										<div class="input-group date datepicker">
+										  	<input type="text" class="form-control" name="dataLiquidacio" value="${informePrevi.expcontratacio.getDataLiquidacioString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+										</div>	
+									</div>	
 								</div>
 			   				</div>	
 						    <div class="form-group">
@@ -123,7 +85,7 @@
 							       	<div class="row">
 				                		<div class="form-group">
 									        <div class="col-xs-offset-9 col-xs-9">
-									            <input type="submit" class="btn btn-primary" value="Actualitzar expedient">							            
+									            <input type="submit" class="btn btn-primary" value="Actualitzar dades">							            
 									        </div>
 									    </div> 
 				                	</div>

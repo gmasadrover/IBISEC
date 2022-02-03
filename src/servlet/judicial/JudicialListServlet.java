@@ -2,12 +2,9 @@ package servlet.judicial;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,12 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import bean.Judicial;
-import bean.Judicial.Tramitacio;
 import bean.User;
 import bean.ControlPage.SectionPage;
-import core.BastanteosCore;
 import core.ControlPageCore;
-import core.ExpedientCore;
 import core.JudicialCore;
 import core.UsuariCore;
 import utils.MyUtils;
@@ -52,7 +46,6 @@ public class JudicialListServlet extends HttpServlet {
 		}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.judicials_list)) {
     		response.sendRedirect(request.getContextPath() + "/");	
 		} else {
-			String errorString = "";
 			List<Judicial> procedimentsList = new ArrayList<Judicial>();
 			List<Judicial> tramitacionsPendentsTercersList = new ArrayList<Judicial>();
 			List<Judicial> tramitacionsPendentsProvisioList = new ArrayList<Judicial>();
@@ -63,26 +56,20 @@ public class JudicialListServlet extends HttpServlet {
 			boolean canCreateProcediment = false;
 			boolean canViewPendentsTercers = false;
 			boolean canViewPendentsProvisio = false;
-			try {
-				if (filtrar != null) {	
-					estat = request.getParameter("estat");	
-				} else {
-					yearInString = "-1";
-				}
-				anysList = JudicialCore.getAnysProcediment(conn);
-				procedimentsList = JudicialCore.getProcediments(conn, estat, yearInString);		
-				tramitacionsPendentsTercersList = JudicialCore.ProcedimentsAmbtramitacionsPendentsTercersList(conn);
-				tramitacionsPendentsProvisioList = JudicialCore.ProcedimentsAmbtramitacionsPendentsProvisioList(conn);
-				canCreateProcediment = UsuariCore.hasPermision(conn, usuari, SectionPage.judicials_modificar);
-				canViewPendentsTercers = UsuariCore.hasPermision(conn, usuari, SectionPage.judicials_modificar);
-				canViewPendentsProvisio = usuari.getDepartament().equals("juridica") || (usuari.getRol().contains("CAP") && usuari.getDepartament().equals("comptabilitat"));
-			} catch (SQLException | NamingException e) {
-				e.printStackTrace();
-				errorString = e.getMessage();
+			if (filtrar != null) {	
+				estat = request.getParameter("estat");	
+			} else {
+				yearInString = "-1";
 			}
+			anysList = JudicialCore.getAnysProcediment(conn);
+			procedimentsList = JudicialCore.getProcediments(conn, estat, yearInString);		
+			tramitacionsPendentsTercersList = JudicialCore.ProcedimentsAmbtramitacionsPendentsTercersList(conn);
+			tramitacionsPendentsProvisioList = JudicialCore.ProcedimentsAmbtramitacionsPendentsProvisioList(conn);
+			canCreateProcediment = UsuariCore.hasPermision(conn, usuari, SectionPage.judicials_modificar);
+			canViewPendentsTercers = UsuariCore.hasPermision(conn, usuari, SectionPage.judicials_modificar);
+			canViewPendentsProvisio = usuari.getDepartament().equals("juridica") || (usuari.getRol().contains("CAP") && usuari.getDepartament().equals("comptabilitat"));
 
 			// Store info in request attribute, before forward to views
-			request.setAttribute("errorString", errorString);
 			request.setAttribute("canCreateProcediment", canCreateProcediment);
 			request.setAttribute("canViewPendentsTercers", canViewPendentsTercers);
 			request.setAttribute("canViewPendentsProvisio", canViewPendentsProvisio);

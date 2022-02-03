@@ -85,21 +85,7 @@
 		</div> 	
     </div>
     
- 	<c:if test="${canModificarFactura}">
-	 	<form class="form-horizontal" target="_blank" method="POST" enctype="multipart/form-data" action="DoTasca"> 	
-	     	<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
-			<input type="hidden" name="idIncidencia" value="${informePrevi.idIncidencia}">															
-			<input type="hidden" name="idInforme" value="${informePrevi.idInf}">
-			<input type="hidden" name="idTasca" value="${tasca.idTasca}">		
-			<input type="hidden" name="idFactura" value="${factura.idFactura}">		
-			<input type="hidden" name="document" value="facturaConformada">
-	    	<div class="col-md-4">												        		
-	   			<div class="row">
-		       		<div class="col-md-12">															        																						 				
-				 		<input class="btn btn-success margin_top30 upload" type="submit" name="enviar" value="Enviar factura a comptabilitat">
-				 	</div>
-	    		</div>
-	   		</div>															     											    		
-		</form>		   
+ 	<c:if test="${canModificarFactura && factura.dataEnviatComptabilitat == null}">
+ 		<a href="enviarAComptabilitat?ref=${factura.idFactura}&idtasca=${tasca.idTasca}" class="btn btn-success margin_top30 upload" role="button">Enviar factura a comptabilitat</a>
 	</c:if>        
 </div>

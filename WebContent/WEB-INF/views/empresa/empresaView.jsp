@@ -88,9 +88,9 @@
 						                        <p> 
 						                        	<label>Teléfon: </label> ${empresa.telefon}
 					                            </p>                           	
-						                        <p> 
+						                        <!--<p> 
 						                        	<label>email: </label> ${empresa.email}
-					                            </p>
+					                            </p>--> <!--Ocult a petició M.Garcia en data 10/11/21--> 
 					                            <p>
 					                            	<label>Pime: </label> ${empresa.isPime() ? "Si" : "No"}
 					                            </p>

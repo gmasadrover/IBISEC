@@ -2,7 +2,6 @@ package servlet.usuari;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -46,42 +45,30 @@ public class DoCanviarPasswordServlet extends HttpServlet {
 			String passwordActual = request.getParameter("passActual");
 			String passwordNou = request.getParameter("nouPassword");
 			String passwordNouRepetit = request.getParameter("repetirNouPassword");
-		  	String errorString = "";
-		  	try {
-		  		if (!UsuariCore.coincideixPassword(conn, usuariLogetjat.getIdUsuari(), passwordActual)) { //No coincideix el password actual
-			  		errorString += "No coincideix el password actual introduit amb el password actual<br>";
-			  	}
-		  		if (passwordNou.isEmpty()) {
-			  		errorString += "El password nou no es correcte<br>";
-			  	}
-			  	if (!passwordNou.equals(passwordNouRepetit)) {
-			  		errorString += "No coincideix el passwords nou amb la seva validació<br>";
-			  	}
-			  	if (passwordNou.equals(passwordActual)){
-			  		errorString += "El password nou no pot ser igual al password actual<br>";
-			  	}
-			  	if (errorString.isEmpty()) {			  	
-			  		UsuariCore.modificarPassword(conn, usuariLogetjat.getIdUsuari(), passwordNou);			  	
-			  	}
-		  	} catch (SQLException e) {
-		  		e.printStackTrace();
-		  		errorString = e.getMessage();
-		  	}
+		  	String errorString = null;
+		  	if (!UsuariCore.coincideixPassword(conn, usuariLogetjat.getIdUsuari(), passwordActual)) { //No coincideix el password actual
+				errorString += "No coincideix el password actual introduit amb el password actual<br>";
+			}
+			if (passwordNou.isEmpty()) {
+				errorString += "El password nou no es correcte<br>";
+			}
+			if (!passwordNou.equals(passwordNouRepetit)) {
+				errorString += "No coincideix el passwords nou amb la seva validació<br>";
+			}
+			if (passwordNou.equals(passwordActual)){
+				errorString += "El password nou no pot ser igual al password actual<br>";
+			}
+			if (errorString.isEmpty()) {			  	
+				UsuariCore.modificarPassword(conn, usuariLogetjat.getIdUsuari(), passwordNou);			  	
+			}
 		  	// Store info in request attribute, before forward to views
 		  	request.setAttribute("errorString", errorString);
 		  	request.setAttribute("usuari", usuariLogetjat);
 		  	request.setAttribute("potModificar", true);
 		  	request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuariLogetjat,"Usuaris"));  
-		  	// If error, forward to Edit page.
-		  	if (errorString != null) {
-	           RequestDispatcher dispatcher = request.getServletContext()
+		  	RequestDispatcher dispatcher = request.getServletContext()
 	                   .getRequestDispatcher("/WEB-INF/views/usuari/usuariView.jsp");
 	           dispatcher.forward(request, response);
-		    } else {		  	
-		  	// Forward to /WEB-INF/views/homeView.jsp
-		  	// (Users can not access directly into JSP pages placed in WEB-INF)
-		    	response.sendRedirect(request.getContextPath() + "/UsuariDetails?id=" + usuariLogetjat.getIdUsuari());
-		    }
 		}
 	}
 

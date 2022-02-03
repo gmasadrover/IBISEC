@@ -2,11 +2,9 @@ package servlet.expedient;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,11 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileUploadException;
-
 import bean.InformeActuacio;
+import bean.User;
 import bean.InformeActuacio.IncidenciaGarantia;
-import core.ExpedientCore;
 import core.InformeCore;
 import utils.Fitxers;
 import utils.MyUtils;
@@ -44,12 +40,8 @@ public class DoNovaIncidenciaGarantia extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Connection conn = MyUtils.getStoredConnection(request);
 		Fitxers.formParameters multipartParams = new Fitxers.formParameters();
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		User Usuari = MyUtils.getLoginedUser(request.getSession());	  
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);
 		String errorString = null;
 		String idInforme = multipartParams.getParametres().get("idInforme");
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");			
@@ -64,8 +56,12 @@ public class DoNovaIncidenciaGarantia extends HttpServlet {
 				incidencia.setDataFi(formatter.parse(multipartParams.getParametres().get("dataFi")));
 			}
 			incidencia.setObjecte(multipartParams.getParametres().get("descripcio"));
-			InformeCore.novaIncidenciaGarantia(conn, idInforme, incidencia);
-		} catch (SQLException | ParseException | NamingException e2) {
+			String idIncidenciaGarantia = Integer.toString(InformeCore.novaIncidenciaGarantia(conn, idInforme, incidencia));
+			if (multipartParams.getFitxersByName().get("documentIncidenciaGarantia") != null) {
+	  			InformeCore.setFitxersIncidenciaGarantia(conn, informe.getIdIncidencia(), informe.getActuacio().getReferencia(), idInforme, idIncidenciaGarantia, multipartParams.getFitxersByName().get("documentIncidenciaGarantia"), Usuari.getIdUsuari());
+	  		}
+			
+		} catch (ParseException e2) {
 			errorString = e2.toString();
 		}		
 		

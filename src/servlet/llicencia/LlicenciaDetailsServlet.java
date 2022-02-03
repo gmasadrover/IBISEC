@@ -2,9 +2,7 @@ package servlet.llicencia;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,7 +17,6 @@ import bean.User;
 import bean.ControlPage.SectionPage;
 import core.ActuacioCore;
 import core.ControlPageCore;
-import core.ExpedientCore;
 import core.LlicenciaCore;
 import core.IncidenciaCore;
 import core.InformeCore;
@@ -53,25 +50,19 @@ public class LlicenciaDetailsServlet extends HttpServlet {
 		   }else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.llicencia_detalls)) {
 	   		response.sendRedirect(request.getContextPath() + "/");	 	
 		   }else{		   
-			   String codi = request.getParameter("codi"); 			  
-		       String errorString = null;
+			   String codi = request.getParameter("codi"); 	
 		       Llicencia llicencia = new Llicencia();
 		       Actuacio actuacio = new Actuacio();	
 		       Incidencia incidencia = new Incidencia();
 		       Boolean canModificar = false;
-		       try {
-		    	   actuacio = ActuacioCore.findActuacio(conn, InformeCore.getInformePrevi(conn, llicencia.getCodiExpedient(), false).getActuacio().getReferencia());
-		    	   llicencia = LlicenciaCore.findLlicencia(conn, codi);
-		    	   actuacio.setSeguiment(ActuacioCore.isSeguimentActuacio(conn, actuacio.getReferencia(), usuari.getIdUsuari()));	  
-		    	   incidencia = IncidenciaCore.findIncidencia(conn, actuacio.getIdIncidencia());
-		    	   actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia()));
-		    	   canModificar = UsuariCore.hasPermision(conn, usuari, SectionPage.llicencia_modificar);
-		       } catch (SQLException | NamingException e) {
-		           e.printStackTrace();
-		           errorString = e.getMessage();
-		       }
+		       actuacio = ActuacioCore.findActuacio(conn, InformeCore.getInformePrevi(conn, llicencia.getCodiExpedient(), false).getActuacio().getReferencia());
+			   llicencia = LlicenciaCore.findLlicencia(conn, codi);
+			   actuacio.setSeguiment(ActuacioCore.isSeguimentActuacio(conn, actuacio.getReferencia(), usuari.getIdUsuari()));	  
+			   incidencia = IncidenciaCore.findIncidencia(conn, actuacio.getIdIncidencia());
+			   actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(conn, incidencia.getIdIncidencia()));
+			   canModificar = UsuariCore.hasPermision(conn, usuari, SectionPage.llicencia_modificar);
 		       // Store info in request attribute, before forward to views
-		       request.setAttribute("errorString", errorString);
+		       
 		       request.setAttribute("llicencia", llicencia);
 		       request.setAttribute("actuacio", actuacio);		       
 		       request.setAttribute("incidencia", incidencia);

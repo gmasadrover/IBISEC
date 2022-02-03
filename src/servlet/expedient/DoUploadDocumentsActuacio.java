@@ -2,23 +2,16 @@ package servlet.expedient;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileUploadException;
-
 import bean.User;
-import core.TascaCore;
-import core.UsuariCore;
 import utils.Fitxers;
 import utils.MyUtils;
-import utils.Fitxers.Fitxer;
 
 /**
  * Servlet implementation class DoUploadDocumentsActuacio
@@ -40,22 +33,12 @@ public class DoUploadDocumentsActuacio extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Fitxers.formParameters multipartParams = new Fitxers.formParameters();
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);
 		Connection conn = MyUtils.getStoredConnection(request);	
 		User Usuari = MyUtils.getLoginedUser(request.getSession()); 
 		String idActuacio = multipartParams.getParametres().get("idActuacio");
 	    String idIncidencia = multipartParams.getParametres().get("idIncidencia");
-		try {
-			Fitxers.guardarFitxer(conn, multipartParams.getFitxers(), idIncidencia, idActuacio, "", "", "", "", "Altre documentació actuació", Usuari.getIdUsuari());
-		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Fitxers.guardarFitxer(conn, multipartParams.getFitxers(), idIncidencia, idActuacio, "", "", "", "", "Altre documentació actuació", Usuari.getIdUsuari());
 		response.sendRedirect(request.getContextPath() + "/actuacionsDetalls?ref=" + idActuacio);  
 	}
 

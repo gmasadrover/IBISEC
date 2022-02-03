@@ -99,18 +99,7 @@
                                 <div class="col-xs-3">
                                 	<input class="form-control" name="nombre" placeholder="nombre">
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-xs-3 control-label">Usuari conformador</label>
-                                <div class="col-xs-3">
-                                	<input class="hidden" name="idUsuariInforme" id=idUsuariInforme value="${idUsuariInforme}"> 
-                                	<select class="form-control selectpicker" data-live-search="true" data-size="10" name="idConformador" id="usuarisList">
-		                                <c:forEach items="${llistaUsuaris}" var="usuari" >
-	                                		<option value='${usuari.idUsuari}'>${usuari.getNomCompletReal()}</option>
-	                                	</c:forEach>
-                                	</select>
-                                </div>
-                            </div>	
+                            </div>                           
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">Data pasada a conformar</label>
                                 <div class="input-group date col-xs-3 datepicker">

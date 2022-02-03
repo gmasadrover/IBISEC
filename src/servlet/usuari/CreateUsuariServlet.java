@@ -2,13 +2,7 @@ package servlet.usuari;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,21 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileUploadException;
-
-import bean.Actuacio;
-import bean.Factura;
-import bean.Registre;
 import bean.User;
 import bean.ControlPage.SectionPage;
-import core.ActuacioCore;
 import core.ControlPageCore;
-import core.EmpresaCore;
-import core.FacturaCore;
-import core.RegistreCore;
-import core.TascaCore;
 import core.UsuariCore;
-import utils.Fitxers;
 import utils.MyUtils;
 
 /**

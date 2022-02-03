@@ -2,22 +2,16 @@ package servlet.expedient;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileUploadException;
-
 import bean.Instalacions;
 import bean.User;
-import core.ExpedientCore;
 import core.InformeCore;
 import utils.Fitxers;
 import utils.MyUtils;
@@ -43,12 +37,7 @@ public class DoEditInstalacionsServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Fitxers.formParameters multipartParams = new Fitxers.formParameters();
 		Connection conn = MyUtils.getStoredConnection(request);
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);
 		User Usuari = MyUtils.getLoginedUser(request.getSession());	   
 		String idActuacio = multipartParams.getParametres().get("idActuacio");
 	    String idIncidencia = multipartParams.getParametres().get("idIncidencia");
@@ -117,7 +106,7 @@ public class DoEditInstalacionsServlet extends HttpServlet {
 			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsInstalacioPetrolifera"), idIncidencia, idActuacio, "", "", "", idInforme, "Instalació petrolifers", Usuari.getIdUsuari());
 			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsInstalacioGas"), idIncidencia, idActuacio, "", "", "", idInforme, "Instalació gas", Usuari.getIdUsuari());
 			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsIniciActivitat"), idIncidencia, idActuacio, "", "", "", idInforme, "Inici activitat", Usuari.getIdUsuari());
-		} catch (NamingException | SQLException | ParseException e) {
+		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

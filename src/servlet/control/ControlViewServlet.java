@@ -2,15 +2,9 @@ package servlet.control;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,26 +12,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.Actuacio;
+import bean.Configuracio;
 import bean.ControlInfo;
-import bean.Factura;
 import bean.Historic;
-import bean.Incidencia;
 import bean.InformeActuacio;
-import bean.Registre;
 import bean.Tasca;
 import bean.User;
 import bean.ControlPage.SectionPage;
-import core.ActuacioCore;
-import core.ControlCore;
+import core.ConfiguracioCore;
 import core.ControlPageCore;
-import core.FacturaCore;
-import core.IncidenciaCore;
-import core.InformeCore;
-import core.RegistreCore;
 import core.TascaCore;
 import core.UsuariCore;
-import utils.Fitxers;
 import utils.MyUtils;
 
 /**
@@ -71,21 +56,11 @@ public class ControlViewServlet extends HttpServlet {
 			List<Historic> controlHistoric = new ArrayList<Historic>();
 			List<String> dictionary = new ArrayList<String>();
 			List<Tasca> tasques = new ArrayList<Tasca>();
-			//controlExpedients = InformeCore.getInformesResumArea(conn, "obres");
-			//controlExpedients.addAll(InformeCore.getInformesResumArea(conn, "instalacions"));
-			try {
-				tasques = TascaCore.getTasquesEstatActuacio(conn);
-				//controlHistoric = TascaCore.findHistorialComplet(conn);
-			} catch (SQLException | NamingException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} 
-			/*try {
-				dictionary = InformeCore.getInformesSignats();
-			} catch (NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}*/
+			Configuracio configuracioActual = new Configuracio();
+			//tasques = TascaCore.getTasquesEstatActuacio(conn);
+			//controlHistoric = TascaCore.findHistorialComplet(conn);
+			controlHistoric = TascaCore.getTasquesSetmanals(conn, usuari.getIdUsuari());
+			configuracioActual = ConfiguracioCore.getConfiguracio(conn);
 			
 			
 			request.setAttribute("controlExpedients", controlExpedients);
@@ -93,6 +68,7 @@ public class ControlViewServlet extends HttpServlet {
 			request.setAttribute("controlHistoric", controlHistoric);
 			request.setAttribute("dictionary", dictionary);
 			request.setAttribute("tasques", tasques);
+			request.setAttribute("configuracioActual", configuracioActual);
 			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "Control"));
 	     
 			// Forward to /WEB-INF/views/homeView.jsp

@@ -3,22 +3,17 @@ package servlet.empresa;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.naming.NamingException;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.fileupload.FileUploadException;
 
 import bean.Empresa;
 import bean.User;
@@ -41,58 +36,58 @@ public class DoEditEmpresaServlet extends HttpServlet {
        	User usuari = MyUtils.getLoginedUser(request.getSession());
        
        	Fitxers.formParameters multipartParams = new Fitxers.formParameters();
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);
 		User Usuari = MyUtils.getLoginedUser(request.getSession());	   
 		String extincio = multipartParams.getParametres().get("extincio");
 		String succecio = multipartParams.getParametres().get("succecio");
 		String prohibicio = multipartParams.getParametres().get("prohibicio");
+		String concurs = multipartParams.getParametres().get("concurs");
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 		Date dataFinsProhibicio = null;
+		Date dataConcurs = null;
        	String cif = multipartParams.getParametres().get("newcif");
        	if (cif == null) cif = multipartParams.getParametres().get("cif");
        	Boolean isUte = "true".equals(multipartParams.getParametres().get("isute"));       	
        	Empresa empresa = new Empresa();
-       	String errorString = null;
+      
        	
        	if (extincio != null) {
-       		try {
-       			String motiuExtincio = multipartParams.getParametres().get("motiuextincio");
-				EmpresaCore.extincioEmpresa(conn, cif, motiuExtincio);
-				empresa.setCif(cif);
-				//Guardar adjunts
-			   	EmpresaCore.guardarFitxer(conn, Usuari.getIdUsuari(), multipartParams.getFitxers(), empresa.getCif(), "");
-			} catch (SQLException | NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+       		String motiuExtincio = multipartParams.getParametres().get("motiuextincio");
+			EmpresaCore.extincioEmpresa(conn, cif, motiuExtincio);
+			empresa.setCif(cif);
+			//Guardar adjunts
+			EmpresaCore.guardarFitxer(conn, Usuari.getIdUsuari(), multipartParams.getFitxers(), empresa.getCif(), "");
        	} else if (succecio != null) {
        		String cifSuccesora = multipartParams.getParametres().get("cifsuccesora");
-       		try {
-				EmpresaCore.addSuccesora(conn, cif, cifSuccesora);
-				empresa.setCif(cif);
-				//Guardar adjunts
-			   	EmpresaCore.guardarFitxer(conn, Usuari.getIdUsuari(), multipartParams.getFitxers(), empresa.getCif(), "");
-			} catch (SQLException | NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+       		EmpresaCore.addSuccesora(conn, cif, cifSuccesora);
+			empresa.setCif(cif);
+			//Guardar adjunts
+			EmpresaCore.guardarFitxer(conn, Usuari.getIdUsuari(), multipartParams.getFitxers(), empresa.getCif(), "");
        	} else if (prohibicio != null) {
        		try {       			
        			if (multipartParams.getParametres().get("dateLimitProhibicio") != null && ! multipartParams.getParametres().get("dateLimitProhibicio").isEmpty()) dataFinsProhibicio = formatter.parse(multipartParams.getParametres().get("dateLimitProhibicio"));
-				EmpresaCore.prohibicioContractarEmpresa(conn, cif, dataFinsProhibicio);				
-				empresa.setCif(cif);
+				EmpresaCore.prohibicioContractarEmpresa(conn, cif, dataFinsProhibicio);	
 				//Guardar adjunts
 			   	EmpresaCore.guardarFitxer(conn, Usuari.getIdUsuari(), multipartParams.getFitxers(), empresa.getCif(), "");
-			} catch (SQLException | NamingException | ParseException e) {
+			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-   		}else {       	
+   		} else if (concurs != null) {       		
+       		try {
+       			String infoConcurs =  multipartParams.getParametres().get("infoConcurs");
+       			boolean isIntervencio = "on".equals(multipartParams.getParametres().get("infoConcurs"));
+       			String infoIntervencio = multipartParams.getParametres().get("infoIntervencio");
+       			if (multipartParams.getParametres().get("dateConcurs") != null && ! multipartParams.getParametres().get("dateConcurs").isEmpty()) dataConcurs = formatter.parse(multipartParams.getParametres().get("dateConcurs"));
+				EmpresaCore.addConcurs(conn, cif, infoConcurs, dataConcurs, isIntervencio, infoIntervencio);				
+				//Guardar adjunts
+			   	EmpresaCore.guardarFitxer(conn, Usuari.getIdUsuari(), multipartParams.getFitxers(), empresa.getCif(), "");
+				empresa.setCif(cif);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+       	} else {       	
 			String name = multipartParams.getParametres().get("name");
 			String direccio = multipartParams.getParametres().get("direccio");
 			String cp = multipartParams.getParametres().get("cp");
@@ -165,39 +160,22 @@ public class DoEditEmpresaServlet extends HttpServlet {
 				//Guardar adjunts
 			   	EmpresaCore.guardarFitxer(conn, Usuari.getIdUsuari(), multipartParams.getFitxers(), empresa.getCif(), "");
 			    
-			} catch (ParseException | NamingException e1) {
+			} catch (ParseException e1) {
 				e1.printStackTrace();
 			}
 			
-			try {
-				if (isUte) {
-					 EmpresaCore.updateEmpresaUTE(conn, empresa, administradors, usuari.getIdUsuari());
-				}else{
-					 EmpresaCore.updateEmpresa(conn, empresa, multipartParams.getParametres().get("cif"), administradors, usuari.getIdUsuari());
-				}          
-			} catch (SQLException e) {
-	           e.printStackTrace();
-	           errorString = e.getMessage();
+			if (isUte) {
+				 EmpresaCore.updateEmpresaUTE(conn, empresa, administradors, usuari.getIdUsuari());
+			}else{
+				 EmpresaCore.updateEmpresa(conn, empresa, multipartParams.getParametres().get("cif"), administradors, usuari.getIdUsuari());
 			}
        	}
  
 		// Store infomation to request attribute, before forward to views.
-		request.setAttribute("errorString", errorString);
-		request.setAttribute("empresa", empresa);
- 
- 
-		// If error, forward to Edit page.
-		if (errorString != null) {
-           RequestDispatcher dispatcher = request.getServletContext()
-                   .getRequestDispatcher("/WEB-INF/views/empresa/editEmpresaView.jsp");
-           dispatcher.forward(request, response);
-		}
-        
-		// If everything nice.
-		// Redirect to the product listing page.            
-		else {
-           response.sendRedirect(request.getContextPath() + "/empresa?cif=" + empresa.getCif());
-		}
+		
+		request.setAttribute("empresa", empresa.getCif());
+		response.sendRedirect(request.getContextPath() + "/empresa?cif=" + empresa.getCif());
+		
    	}
  
    @Override

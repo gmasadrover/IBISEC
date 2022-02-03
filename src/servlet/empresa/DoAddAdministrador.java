@@ -3,18 +3,14 @@ package servlet.empresa;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.fileupload.FileUploadException;
 
 import com.google.gson.JsonObject;
 
@@ -80,7 +76,7 @@ public class DoAddAdministrador extends HttpServlet {
 	    	administrador.setEntitatValidacio(multipartParams.getParametres().get("organValidador"));
 			EmpresaCore.addAdministrador(conn, cif, administrador, Usuari.getIdUsuari());
 			EmpresaCore.guardarFitxer(conn, Usuari.getIdUsuari(), multipartParams.getFitxers(), cif, administrador.getDni());
-		} catch (FileUploadException | NamingException | ParseException | SQLException e1) {
+		} catch (ParseException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}			

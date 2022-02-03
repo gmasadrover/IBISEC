@@ -2,7 +2,6 @@ package servlet.registre;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -65,35 +64,30 @@ public class RegistreEntradaListServlet extends HttpServlet {
 		   String dataIniciString = df.format(dataInici);		   
  	       String errorString = null;
  	       List<Registre> list = new ArrayList<Registre>();
- 	       try {
- 	    	  if (filtrar != null) {
- 	    		  try { 	    			 
- 	    			 if (!"-1".equals(request.getParameter("idCentre").split("_")[0])) {
- 						  idCentre = request.getParameter("idCentre").split("_")[0];
- 						  idCentreSelector = request.getParameter("idCentre");
- 					  }
- 	    			 dataInici = null;
- 	    			 dataIniciString = "";
- 	    			 dataFi = null;
- 	    			 dataFiString = "";
- 	    			 if (filterWithOutDate == null){
- 	    				 dataInici = df.parse(request.getParameter("dataInici"));
- 	    				 dataIniciString = request.getParameter("dataInici");
- 	    				 dataFi = df.parse(request.getParameter("dataFi"));
- 	    				 dataFiString = request.getParameter("dataFi");
- 	    			 }	
- 	    			 list = RegistreCore.searchEntrades(conn, idCentre, dataInici, dataFi);
- 	    		  } catch (ParseException e1) {
- 	    			  // TODO Auto-generated catch block
- 	    			  e1.printStackTrace();
- 	    		  }				  		  
-			  }else{
-				  list = RegistreCore.entrades(conn);
-			  } 
- 	       } catch (SQLException e) {
- 	           e.printStackTrace();
- 	           errorString = e.getMessage();
- 	       }  
+ 	       if (filtrar != null) {
+			  try { 	    			 
+				 if (!"-1".equals(request.getParameter("idCentre").split("_")[0])) {
+					  idCentre = request.getParameter("idCentre").split("_")[0];
+					  idCentreSelector = request.getParameter("idCentre");
+				  }
+				 dataInici = null;
+				 dataIniciString = "";
+				 dataFi = null;
+				 dataFiString = "";
+				 if (filterWithOutDate == null){
+					 dataInici = df.parse(request.getParameter("dataInici"));
+					 dataIniciString = request.getParameter("dataInici");
+					 dataFi = df.parse(request.getParameter("dataFi"));
+					 dataFiString = request.getParameter("dataFi");
+				 }	
+				 list = RegistreCore.searchEntrades(conn, idCentre, dataInici, dataFi);
+			  } catch (ParseException e1) {
+				  // TODO Auto-generated catch block
+				  e1.printStackTrace();
+			  }				  		  
+		  }else{
+			  list = RegistreCore.entrades(conn);
+		  }  
  	     
  	       /*utils.GeneradorDocumentosServiceTest a = new utils.GeneradorDocumentosServiceTest();
  	       try {

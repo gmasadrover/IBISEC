@@ -2,13 +2,10 @@ package servlet.expedient;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,9 +13,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileUploadException;
-
-import bean.AssignacioCredit;
 import bean.Expedient;
 import bean.InformeActuacio;
 import bean.User;
@@ -26,8 +20,6 @@ import bean.InformeActuacio.PropostaInforme;
 import core.ActuacioCore;
 import core.ExpedientCore;
 import core.InformeCore;
-import core.TascaCore;
-import core.UsuariCore;
 import utils.Fitxers;
 import utils.MyUtils;
 
@@ -52,12 +44,7 @@ public class DoEditInformeServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Connection conn = MyUtils.getStoredConnection(request);
        	Fitxers.formParameters multipartParams = new Fitxers.formParameters();
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);
 		User Usuari = MyUtils.getLoginedUser(request.getSession());	
        	String refExp = multipartParams.getParametres().get("expedient");
        	String refExpNou = multipartParams.getParametres().get("expedientNou");
@@ -174,11 +161,7 @@ public class DoEditInformeServlet extends HttpServlet {
 			
 		    //Partida
 		    informe.setComentariPartida(multipartParams.getParametres().get("comentariFinancer"));
-		    AssignacioCredit assignacio = new AssignacioCredit();
-		    if (informe.getAssignacioCredit().size() > 0) assignacio = informe.getAssignacioCredit().get(0);
-    	    assignacio.setBei(multipartParams.getParametres().get("bei") != null);
-    	    assignacio.setFeder(multipartParams.getParametres().get("feder") != null);    	 
-    	    InformeCore.modificarPartida(conn, informe, multipartParams.getParametres().get("llistaPartides"), Usuari.getIdUsuari(), assignacio);    	     
+		  
     	    if (multipartParams.getFitxersByName().get("conformeAreaEconomica") != null) Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("conformeAreaEconomica")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Conforme àrea financera", Usuari.getIdUsuari());
     	  
     	    //Autorització
@@ -214,7 +197,7 @@ public class DoEditInformeServlet extends HttpServlet {
     	    	ExpedientCore.actualitzarCodiExpedient(conn, refExp, refExpNou, idInforme);
     	    }
     	    expedient = ExpedientCore.findExpedient(conn, refExp);
-		} catch (SQLException | NamingException | ParseException e) {
+		} catch (ParseException e) {
 			errorString = e.toString();
 		}
 		// Store infomation to request attribute, before forward to views.

@@ -147,6 +147,10 @@
 						    	<li class="${primera ? 'active' : ''}"><a data-toggle="tab" href="#altres">Altres<span class="notif">${altresList.size()}</span></a></li>
 						    	<c:if test="${primera}"><c:set var="primera" value="false" scope="request"/></c:if> 
 						    </c:if>	
+						     <c:if test="${reservaDronList.size() > 0}">
+						    	<li class="${primera ? 'active' : ''}"><a data-toggle="tab" href="#notificacios">Reserva Dron<span class="notif">${reservaDronList.size()}</span></a></li>
+						    	<c:if test="${primera}"><c:set var="primera" value="false" scope="request"/></c:if> 
+						    </c:if>
 						    <c:if test="${notificacionsList.size() > 0}">
 						    	<li class="${primera ? 'active' : ''}"><a data-toggle="tab" href="#notificacios">Notificacions<span class="notif">${notificacionsList.size()}</span></a></li>
 						    	<c:if test="${primera}"><c:set var="primera" value="false" scope="request"/></c:if> 
@@ -307,6 +311,15 @@
 						  			</div>
 						  		</div>
 						  	</c:if>
+						  	<c:if test="${reservaDronList.size() > 0}"> 				  		
+						  		<div id="notificacios" class="tab-pane fade ${primera ? 'in active' : ''}">
+						  			<div class="col-md-12 bordertab">
+						  				<c:set var="tasquesList" value="${reservaDronList}" scope="request"/>
+						  				<jsp:include page="include/_tasquesList.jsp"></jsp:include>
+						  				<c:if test="${primera}"><c:set var="primera" value="false" scope="request"/></c:if> 
+						  			</div>
+						  		</div>
+						  	</c:if>
 						  	<c:if test="${notificacionsList.size() > 0}"> 				  		
 						  		<div id="notificacios" class="tab-pane fade ${primera ? 'in active' : ''}">
 						  			<div class="col-md-12 bordertab">
@@ -319,67 +332,7 @@
 					  	</div>
 					</div>                    
                 </div>
-                <br/>
-                <c:if test="${obresAssignades.size() > 0}">
-	                <div class="row">					
-						<div class="col-md-12">
-		                        <h2>Obres assignades</h2>
-		                        <div class="table-responsive">                        
-		                            <table class="table table-striped table-bordered filerTable informes">
-		                                <thead>
-		                                    <tr>                                        
-		                                        <th>Expedient</th>
-		                                        <th>Objecte</th>
-		                                        <th>Responsable</th>
-		                                        <th>Actuació</th>
-		                                        <th>Centre</th>  
-		                                        <th>Estat</th>  
-		                                    </tr>
-		                                </thead>
-		                                <tbody>
-		                                	<c:forEach items="${obresAssignades}" var="informe" >	  
-		                                		<c:if test="${informe.getEstatExpedientFormat() != 'Garantia'}">                              		
-										          	<tr>							          	
-										           		<td>
-															<c:choose>
-										            			<c:when test="${informe.expcontratacio != null && informe.expcontratacio.expContratacio != '-1'}">
-										            				<a href="actuacionsDetalls?ref=${informe.actuacio.referencia}&exp=${informe.idInf}" class="loadingButton"  data-msg="obrint expedient...">${informe.expcontratacio.expContratacio}</a>
-										            			</c:when>
-										            			<c:otherwise>
-										            				<c:choose>
-												            			<c:when test="${informe.actuacio.referencia != '-1'}">
-												            				<a href="actuacionsDetalls?ref=${informe.actuacio.referencia}" class="loadingButton"  data-msg="obrint actuació...">${informe.actuacio.referencia}</a>
-												            			</c:when>
-												            			<c:otherwise>
-												            				${informe.idInf}
-												            			</c:otherwise>
-												            		</c:choose>
-										            			</c:otherwise>
-										            		</c:choose>
-														</td>												
-														<td>
-															<c:choose>
-										            			<c:when test="${informe.propostaInformeSeleccionada != null}">
-										            				${informe.propostaInformeSeleccionada.objecte}
-										            			</c:when>
-										            			<c:otherwise>
-										            				
-										            			</c:otherwise>
-										            		</c:choose>
-														</td>
-														<td>${informe.usuari.getNomComplet()} (${informe.personal.get(0).funcio})</td>
-										            	<td>${informe.actuacio.descripcio}</td>										            	
-										            	<td>${informe.actuacio.centre.getNomComplet()}</td>
-										            	<td>${informe.getEstatExpedientFormat()}</td>
-										          	</tr>
-										    	</c:if>
-									       	</c:forEach>
-		                                </tbody>
-		                            </table>
-		                        </div>
-		                    </div>
-					</div>
-				</c:if>
+                <br/>                
 				<br/>
                 <c:if test="${seguimentList.size() > 0}">
 	                <div class="row">

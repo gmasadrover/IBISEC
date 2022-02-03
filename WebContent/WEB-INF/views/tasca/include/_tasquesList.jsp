@@ -49,7 +49,7 @@
 			            			- Prioritat ${tasca.prioritat}
 			            		</c:if>
 							</td>
-							<td><a href="tasca?id=${tasca.idTasca}" class="loadingButton"  data-msg="obrint tasca...">${!tasca.llegida ? '<img src="css/img/exclamation.png" class="exclamationimg">' : ''} ${tasca.idTasca} - ${tasca.descripcio}</a></td>
+							<td class="col-md-5"><a href="tasca?id=${tasca.idTasca}" class="loadingButton"  data-msg="obrint tasca...">${!tasca.llegida ? '<img src="css/img/exclamation.png" class="exclamationimg">' : ''} ${tasca.idTasca} - ${tasca.descripcio}</a></td>
 							<td>${tasca.usuari.getNomComplet()}</td>	
 							<td>${tasca.usuCre}</td>							
 			            	<c:choose>			            		
@@ -70,13 +70,13 @@
 					            	<c:choose>
 					            		<c:when test="${tasca.actuacio.referencia == '-1' || tasca.actuacio.referencia == '' || tasca.actuacio.referencia == null}">
 											<td></td>	
-											<td>${tasca.incidencia.nomCentre}</td>	
+											<td class="col-md-5">${tasca.incidencia.nomCentre}</td>	
 											<td></td>			
 										</c:when>
 										<c:otherwise>
 											<td>${tasca.actuacio.centre.illa}</td>	
-											<td>${tasca.actuacio.centre.getNomComplet()}</td>	
-											<td>${tasca.actuacio.descripcio} - ${tasca.informe.getPropostaInformeSeleccionada().getObjecte()}</td>		
+											<td class="col-md-5">${tasca.actuacio.centre.getNomComplet()}</td>	
+											<td class="col-md-5">${tasca.actuacio.descripcio} - ${tasca.informe.getPropostaInformeSeleccionada().getObjecte()}</td>		
 										</c:otherwise>
 					            	</c:choose>	
 								</c:when>

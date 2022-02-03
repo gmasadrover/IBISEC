@@ -44,32 +44,65 @@
     			<div class="row">
                     <div class="col-md-12">                    	
 		    			<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="DoEditPersonalExpedient">
-		    				<input type="hidden" name="idInforme" value="${informe.idInf}"> 
-		    			
+		    				<input type="hidden" name="idInforme" value="${idInforme}"> 		
+		    				<input type="hidden" name="idActuacio" value="${idActuacio}"> 		    			
 		    				<div class="form-group">	                	 		
-								<div class="col-md-6">
-									<label>Tècnic</label>						            	 										            	 	
+								<label class="col-xs-3  control-label">Usuari</label>	
+								<div class="col-xs-3">					            	 										            	 	
 					                <select class="form-control selectpicker" data-live-search="true" data-size="5" name="llistaUsuaris" id="llistaUsuaris">
+					                	<option value="0">Seleccionar usuari</option>
 					                	<c:forEach items="${llistaUsuaris}" var="usuari">
 					                		<option value="${usuari.idUsuari}">${usuari.getNomCompletReal()}</option>
-					                	</c:forEach>					                                	
+					                	</c:forEach>
+					                	<option value="-1">Extern</option>					                                	
+					                </select>
+				                </div>
+							</div>
+							<div class="form-group llistaEmpresesDiv hidden">
+								<label class="col-xs-3  control-label">Empresa</label>							            	 										            	 	
+				                <div class="col-xs-3">	
+					                <select class="selectpicker" name="llistaEmpreses" id="llistaEmpreses" data-live-search="true" data-size="5">						                                					                                	
+					               		<option value="-1">Seleccionar opció</option>
+					               		<c:forEach items="${empresesList}" var="empresa">
+					                   		<option value="${empresa.cif}">${empresa.name}</option>
+					                   	</c:forEach>	
 					                </select>	
-								</div>
-								<div class="col-md-6">
-									<label>Funció</label>							            	 										            	 	
-					                <select class="form-control selectpicker" name="llistaFuncions" id="llistaFuncions">
-					                	<option value="Responsable contracte">Responsable contracte</option>
+					        	</div>	
+							</div>
+							<div class="form-group">
+								<label class="col-xs-3  control-label">Tècnic</label>							            	 										            	 	
+				                <div class="col-xs-3">	
+					                <select class="form-control selectpicker" name="llistaTecnic" id="llistaTecnic">
+					                	<option value="-1">Seleccionar opció</option>
 					                	<option value="Arquitecte">Arquitecte</option>
-					                	<option value="Arquitecte Tècnic">Arquitecte Tècnic</option>	
-					                	<option value="Enginyer">Enginyer</option>			                					                                	
-					                </select>	
-								</div>
+					                	<option value="Arquitecte tècnic">Arquitecte tècnic</option>	
+					                	<option value="Enginyer">Enginyer</option>	
+					                	<option value="Ajudant d'instal·lacions">Ajudant d'instal·lacions</option>		
+					                	<option value="Delineant">Delineant</option>			   					                			                					                                	
+					                </select>
+					        	</div>	
+							</div>
+							<div class="form-group">
+								<label class="col-xs-3  control-label">Funció</label>							            	 										            	 	
+				                <div class="col-xs-3">	
+					                <select class="form-control selectpicker" name="llistaFuncions" id="llistaFuncions">
+					                	<option value="-1">Seleccionar opció</option>
+					                	<option value="Director">Director projecte</option>
+					                	<option value="Redactor">Redactor</option>	
+					                	<option value="Supervisor">Supervisor</option>			   
+					                	<option value="Direcció">Direcció obra</option>			   
+					                	<option value="Responsable contracte">Responsable contracte</option>
+					                		                					                                	
+					                </select>
+					        	</div>	
 							</div>
                             <br>
 						    <div class="form-group">
-						        <div class="col-xs-offset-3 col-xs-9">
-						            <input type="submit" class="btn btn-primary" value="Guardar">
-						            <input type="reset" class="btn btn-default" value="Reiniciar">
+						        <div class="col-xs-offset-3 col-xs-2">
+						            <input type="submit" name="afegir" class="btn btn-success" value="Guardar i afegir més">
+						        </div>
+						        <div class=" col-xs-3">
+						            <input type="submit" name="guardar" class="btn btn-primary" value="Guardar i sortir">
 						        </div>
 						    </div>    				
 		    			</form>
@@ -81,6 +114,7 @@
 		</div>
 		<!-- /#page-wrapper -->
 	</div>
-    <jsp:include page="../_footer.jsp"></jsp:include>
+	<jsp:include page="../_footer.jsp"></jsp:include>     
+ 	<script src="js/personalinforme/create.js?<%=application.getInitParameter("datakey")%>"></script>
 </body>
 </html>

@@ -2,11 +2,9 @@ package servlet.credit;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -55,19 +53,17 @@ public class PartidaDetailsServlet extends HttpServlet {
 			Partida partida = new Partida();	
 			List<AssignacioCredit> llistaAssignacions = new ArrayList<AssignacioCredit>();
 			boolean canEditPartida = false;
-	       	try {
-	       		partida = CreditCore.getPartida(conn,codi);	
-	       		if (estat != null) llistaAssignacions = CreditCore.findAssignacionsPartida(conn, codi, estat);
-	       		canEditPartida = UsuariCore.hasPermision(conn, usuari, SectionPage.partides_crear);	       		
-	       	} catch (SQLException | NamingException  e) {
-	       		e.printStackTrace();
-	       		errorString = e.getMessage();
-	       	}
+			List<Partida> subPartidesList = new ArrayList<Partida>();		      
+	       	partida = CreditCore.getPartida(conn,codi);	
+			subPartidesList = CreditCore.getSubPartides(conn, codi);
+			if (estat != null) llistaAssignacions = CreditCore.findAssignacionsPartida(conn, codi);
+			canEditPartida = UsuariCore.hasPermision(conn, usuari, SectionPage.partides_crear);
 	  
 	       	// Store info in request attribute, before forward to views
 	       	request.setAttribute("errorString", errorString);
 	       	request.setAttribute("canEditPartida", canEditPartida);
 	       	request.setAttribute("partida", partida);	    
+	       	request.setAttribute("subPartidesList", subPartidesList);
 	       	request.setAttribute("llistaAssignacions", llistaAssignacions);
 	       	request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "Partides"));
 	       	// Forward to /WEB-INF/views/homeView.jsp

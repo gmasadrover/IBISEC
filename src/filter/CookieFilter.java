@@ -2,7 +2,6 @@ package filter;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
  
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -56,12 +55,8 @@ public class CookieFilter implements Filter {
        String checked = (String) session.getAttribute("COOKIE_CHECKED");
        if (checked == null && conn != null) {
            String userName = MyUtils.getUserNameInCookie(req);
-           try {
-               User user = UsuariCore.findUsuari(conn, userName);
-               MyUtils.storeLoginedUser(session, user);
-           } catch (SQLException e) {
-               e.printStackTrace();
-           }
+           User user = UsuariCore.findUsuari(conn, userName);
+		   MyUtils.storeLoginedUser(session, user);
     
            // Mark checked.
            session.setAttribute("COOKIE_CHECKED", "CHECKED");

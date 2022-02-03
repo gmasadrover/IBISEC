@@ -2,9 +2,7 @@ package servlet.incidencia;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -44,33 +42,19 @@ public class DoCreateIncidenciaServlet extends HttpServlet {
 	    String descripcio = request.getParameter("descripcio");	    
 	    int idUsuari = MyUtils.getLoginedUser(request.getSession()).getIdUsuari();
 	    
-	    String errorString = null;	 	      
-	   	if (errorString == null) {
-	   		try {
-	   			Incidencia incidencia = new Incidencia();
-	   		    incidencia.setIdIncidencia(referencia);
-	   		    incidencia.setIdCentre(idCentre);
-	   		    incidencia.setUsuCre(UsuariCore.findUsuariByID(conn, idUsuari));
-	   		    incidencia.setDescripcio(descripcio);
-	   		    incidencia.setSolicitant(solicitant);
-	   		    IncidenciaCore.novaIncidencia(conn, incidencia);
-	   		} catch (SQLException e) {
-	  			e.printStackTrace();
-	  			errorString = e.getMessage();
-	   		}
-	   	}
+	  
+	   		Incidencia incidencia = new Incidencia();
+			incidencia.setIdIncidencia(referencia);
+			incidencia.setIdCentre(idCentre);
+			incidencia.setUsuCre(UsuariCore.findUsuariByID(conn, idUsuari));
+			incidencia.setDescripcio(descripcio);
+			incidencia.setSolicitant(solicitant);
+			IncidenciaCore.novaIncidencia(conn, incidencia);
 	   	
-	   	// Store infomation to request attribute, before forward to views.
-	   	request.setAttribute("errorString", errorString);
-	  	// If error, forward to Edit page.
-	   	if (errorString != null) {
-	   		RequestDispatcher dispatcher = request.getServletContext()
-	   				.getRequestDispatcher("/WEB-INF/views/incidencia/createIncidenciaView.jsp");
-	   		dispatcher.forward(request, response);
-	   	}// If everything nice. Redirect to the product listing page.            
-	   	else {
+	   
+	   
 	   		response.sendRedirect(request.getContextPath() + "/incidencies");
-	   	}
+	   	
 	}
 
 	/**

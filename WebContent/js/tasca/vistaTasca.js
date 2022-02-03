@@ -124,6 +124,43 @@ $(document).ready(function() {
 	        }  
 	    });
 	});
+	
+	$('#llistaPartides').on('change', function(){
+		loadSubPartides($(this).val());
+	});
+	
+	$('.carregarModal').on('click', function(){				
+		$('#idAssignacioModal').val($(this).data('idassignacio'));	
+		$('.valorAssignacio').val($(this).data('valorassignacio'));
+		$('.llistaPartides option[value="' + $(this).data('partidaprev') + '"]').attr('selected', 'selected');			
+		$.ajax({
+	        type: "POST",
+	        url: "getSubPartides",
+	        data: {"idPartida":$(this).data('partidaprev')},
+	        dataType: "json",
+	        async: false,
+	        //if received a response from the server
+	        success: function( data, textStatus, jqXHR) {
+	            //our country code was correct so we have some information to display
+	             if(data.success){
+	            	 $('#llistaSubPartides').html('');
+	            	 $.each(data.llistatSubPartides, function( key, data ) {
+	            		 var partidaPerAsignar = data.totalPartida - data.contractatPartida - data.reservaPartida - data.pagatPartida;
+	            		 $('#llistaSubPartides').append('<option value=' + data.codi + '>' + data.codi + ' (' + data.nom + ') - Restant: ' + partidaPerAsignar +  '</option>');
+	            	 }); 
+	               if ($('.selectpicker').size() > 0) {
+	            	   $('#llistaSubPartides option[value="' + $(this).data('subpartidaprev') + '"]').attr('selected', 'selected');	
+	               }
+	             }             
+	        },        
+	        //If there was no resonse from the server
+	        error: function(jqXHR, textStatus, errorThrown){
+	             console.log("Something really bad happened " + jqXHR.responseText);
+	        }  
+	    });
+		$('.selectpicker').selectpicker('refresh');	
+	});
+	
 });
 
 function initInformePrevi() {
@@ -202,6 +239,36 @@ function getDespesaEmpresa(cif, valor) {
         	} else {
         		$('#superaMaximPermes').addClass('hidden');
         	}
+        },        
+        //If there was no resonse from the server
+        error: function(jqXHR, textStatus, errorThrown){
+             console.log("Something really bad happened " + jqXHR.responseText);
+        }  
+    });
+}
+
+function loadSubPartides(idPartida){
+	$.ajax({
+        type: "POST",
+        url: "getSubPartides",
+        data: {"idPartida":idPartida},
+        dataType: "json",
+        async: false,
+        //if received a response from the server
+        success: function( data, textStatus, jqXHR) {
+            //our country code was correct so we have some information to display
+             if(data.success){
+            	 $('#llistaSubPartides').html('');
+            	 $.each(data.llistatSubPartides, function( key, data ) {
+            		 if (data.estat) {
+            			 var partidaPerAsignar = data.totalPartida - data.contractatPartida - data.reservaPartida - data.pagatPartida - data.bloquejat;
+                		 $('#llistaSubPartides').append('<option value=' + data.codi + '>' + data.codi + ' (' + data.nom + ') - Restant: ' + partidaPerAsignar.toFixed(2) +  '</option>');
+            		 }            		 
+            	 }); 
+               if ($('.selectpicker').size() > 0) {
+             	  $('.selectpicker').selectpicker('refresh');
+               }
+             }             
         },        
         //If there was no resonse from the server
         error: function(jqXHR, textStatus, errorThrown){

@@ -2,7 +2,6 @@ package servlet.bastanteo;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -34,12 +33,7 @@ public class DoDeleteEscrituraServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Connection conn = MyUtils.getStoredConnection(request);
 		String refBastanteo = request.getParameter("refBastanteo");
-		try {
-			BastanteosCore.eliminarEscritura(conn, request.getParameter("ref"));
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		BastanteosCore.eliminarEscritura(conn, request.getParameter("ref"));
 		response.sendRedirect(request.getContextPath() + "/bastanteo?ref=" + refBastanteo);
 	}
 

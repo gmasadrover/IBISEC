@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %> 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="m"  %>
+<m:setLocale value="es_ES"/>
 <c:set var="language" value="${not empty param.language ? param.language : not empty language ? language : pageContext.request.locale}" scope="session" />
 <m:setLocale value="${language}" />
 <m:setBundle basename="i18n.base"/>		
@@ -50,7 +51,6 @@
 		</div>
 	</div>
 </c:if>
-${informePrevi.expcontratacio.contracte}
 <c:set var="informePrevi" value="${informePrevi}" scope="request"/>
 <c:set var="propostaActuacio" value="${informePrevi.llistaPropostes[0]}" scope="request"/> 	
 <c:set var="expedient" value="${informePrevi.expcontratacio}" scope="request"/>
@@ -155,52 +155,72 @@ ${informePrevi.expcontratacio.contracte}
 		</div>
 	</div>
 </c:if>
-<c:if test="${informePrevi.vistiplauPropostaActuacio.ruta != null || partida != ''}">
-	<div class="row">
-		<div class="col-md-4">
-			<p>
-				<label>Partida:</label>
-				<c:choose>
-					<c:when test="${informePrevi.dataRebujada != null}">
-						${informePrevi.partidaRebutjadaMotiu}
-					</c:when>
-					<c:otherwise>
-						<c:forEach items="${informePrevi.assignacioCredit}" var="assignacioCredit" >
-							<a target="_black" href="partidaDetalls?codi=${assignacioCredit.partida.codi}">${assignacioCredit.partida.codi} (${assignacioCredit.partida.nom})</a><br/>
-						</c:forEach>
-						</c:otherwise>
-				</c:choose> 
-			</p>
-		</div>
-		<div class="col-md-4">
-		    <label class="left margin_right10">Afectat BEI</label> 
-		   	<div class="checkbox inline">
-		    	<label><input name="bei" type="checkbox" ${informePrevi.assignacioCredit[0].bei ? 'checked' : ''} disabled></label>
-		   	</div> 
-	   	</div>
-	   	<div class="col-md-4">
-		    <label class="left margin_right10">Afectat FEDER</label> 
-		 	<div class="checkbox inline">
-		     	<label><input name="feder" type="checkbox" ${informePrevi.assignacioCredit[0].feder ? 'checked' : ''} disabled></label>
-		  	</div>
-	  	</div>
-	</div>
-</c:if>
-<c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.ruta != null}">
+<div class="row">
+	<div class="col-md-4">
+		<p>
+			<label>Partida:</label>
+			<c:choose>
+				<c:when test="${informePrevi.dataRebujada != null}">
+					${informePrevi.partidaRebutjadaMotiu}
+				</c:when>
+				<c:otherwise>
+					<div class="table-responsive col-xs-offset-1 col-md-10">							                        
+	                    <table class="table table-striped table-bordered filerTable">
+	                    	<thead>
+	                            <tr>
+	                           		<th>Partida</th>	
+	                                <th>Valor</th>			                                        							                                       
+	                            </tr>
+	                        </thead>
+	                        <tbody>
+	                        <c:set var="total" value="0" />
+							<c:forEach items="${informePrevi.assignacioCredit}" var="assignacioCredit" >
+					          	<tr>		
+					          		<td><a target="_black" href="partidaDetalls?codi=${assignacioCredit.partida.codi}">${assignacioCredit.partida.codi} (${assignacioCredit.partida.nom})</a></td>	
+					          		<td>${assignacioCredit.getValorPAFormat()}</td>	
+					          		<c:set var="total" value="${total + assignacioCredit.valorPA}" />
+					          	</tr>
+					      	</c:forEach>  	
+					      		<tr>
+					      			<td>Total</td>
+					      			<td><m:formatNumber pattern= "#,##0.00" type = "number" value ="${total}"/>€</td>
+					      		</tr>	
+					      	</tbody>					      		     
+	                    </table>
+	                </div>
+				</c:otherwise>
+			</c:choose> 
+		</p>
+	</div>		
+</div>
+<c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.size() > 0}">
 	<p>
 		<div class="document">
-			<label>Certificat d'existència de crèdit:</label>										                  	
-          		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.conformeAreaEconomivaPropostaActuacio.getEncodedRuta()}">
-				${informePrevi.conformeAreaEconomivaPropostaActuacio.nom}
-			</a>	
-			<c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.signat}">
-					<span data-ruta="${informePrevi.conformeAreaEconomivaPropostaActuacio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
-			</c:if><br>
-			<div class="infoSign hidden">				
-			</div>	
+			<label>Certificat d'existència de crèdit:</label>	
+			<div class="row col-md-12">
+				<c:forEach items="${informePrevi.conformeAreaEconomivaPropostaActuacio}" var="arxiu" >
+					<c:set var="arxiu" value="${arxiu}" scope="request"/>
+					<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+				</c:forEach>
+				<br>					            		
+			</div>
 		</div>																	
 	</p>	
 </c:if>	
+<div class="row">
+	<div class="col-md-4">
+	    <label class="left margin_right10">Afectat BEI</label> 
+	   	<div class="checkbox inline">
+	    	<label><input name="bei" type="checkbox" ${informePrevi.assignacioCredit[0].bei ? 'checked' : ''} disabled></label>
+	   	</div> 
+   	</div>
+   	<div class="col-md-4">
+	    <label class="left margin_right10">Afectat FEDER</label> 
+	 	<div class="checkbox inline">
+	     	<label><input name="feder" type="checkbox" ${informePrevi.assignacioCredit[0].feder ? 'checked' : ''} disabled></label>
+	  	</div>
+  	</div>
+</div>	
 <c:if test="${informePrevi.autoritzacioPropostaAutoritzacio.ruta != null}">
 	<p>
 		<div class="document">
@@ -323,22 +343,24 @@ ${informePrevi.expcontratacio.contracte}
 	</c:forEach>	
 	<br>					            		
 </div>
-<div class="row">            			
-	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadDocumentsAltresPrevis">
-		<div class="form-group">
-			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-            <div class="col-xs-5">   
-            	<input type="file" class="btn" name="file" multiple/><br/>
-			</div> 
-			<input type="hidden" name="idActuacio" value="${informePrevi.actuacio.referencia}">
-			<input type="hidden" name="idIncidencia" value="${informePrevi.actuacio.idIncidencia}">
-			<input type="hidden" name="idInforme" value="${informePrevi.idInf}">			    
-			<div class="col-xs-2"> 
-				<input type="submit" class="btn btn-primary loadingButton" value="Pujar" />
-			</div>    						
-		</div>         				
-	</form>							
-</div> 
+<c:if test="${isIBISEC}">
+	<div class="row">            			
+		<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadDocumentsAltresPrevis">
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+	            <div class="col-xs-5">   
+	            	<input type="file" class="btn" name="file" multiple/><br/>
+				</div> 
+				<input type="hidden" name="idActuacio" value="${informePrevi.actuacio.referencia}">
+				<input type="hidden" name="idIncidencia" value="${informePrevi.actuacio.idIncidencia}">
+				<input type="hidden" name="idInforme" value="${informePrevi.idInf}">			    
+				<div class="col-xs-2"> 
+					<input type="submit" class="btn btn-primary loadingButton" value="Pujar" />
+				</div>    						
+			</div>         				
+		</form>							
+	</div> 
+</c:if>
 <div class="row">
 	<div class="col-md-12">
 		<div class="row">

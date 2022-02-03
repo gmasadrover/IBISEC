@@ -1,23 +1,15 @@
 package servlet.registre;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -25,28 +17,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
-
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.ColumnText;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfStamper;
-
 import bean.Actuacio;
 import bean.Incidencia;
 import bean.Registre;
 import bean.User;
 import core.ActuacioCore;
+import core.ConfiguracioCore;
 import core.IncidenciaCore;
 import core.RegistreCore;
 import core.UsuariCore;
@@ -75,12 +51,7 @@ public class DoEditRegistreServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Connection conn = MyUtils.getStoredConnection(request);
 		Fitxers.formParameters multipartParams = new Fitxers.formParameters();
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);
 		User usuari = MyUtils.getLoginedUser(request.getSession());
 	    String idRegistre =  multipartParams.getParametres().get("idCodiRegistre");
 	    String entradaSortida =  multipartParams.getParametres().get("entradaSortida");
@@ -97,16 +68,9 @@ public class DoEditRegistreServlet extends HttpServlet {
 	    String errorString = null;
 	    Registre registreOld = new Registre();	  
 	    Registre registre = new Registre();	  
-	    String anular = multipartParams.getParametres().get("anular");
-	    
+	    String anular = multipartParams.getParametres().get("anular");	  
 	    if (anular != null) {
-	    	try {
-				RegistreCore.anularRegistre(conn, idRegistre, entradaSortida);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				errorString = e.toString();
-				e.printStackTrace();
-			}
+	    	RegistreCore.anularRegistre(conn, idRegistre, entradaSortida);
 	    } else {
 			try {  
 		    	registreOld = RegistreCore.findRegistre(conn, entradaSortida, idRegistre);			    	
@@ -116,35 +80,32 @@ public class DoEditRegistreServlet extends HttpServlet {
 		    		idIncidencies = "";
 		    		idInformes = "";
 	 		        for(int i=0; i<idCentres.length; i++) { 		
-	 		        	idCentresSeleccionats += idCentres[i] + "#";	 		        	
-	 		        	try {
-	 		        		if (!idCentres[i].isEmpty() && !"-1".equals(idCentres[i])) {
-	 		        			if (tipus.equals("Procediment judicial")) {
-	 		        				idIncidencies = multipartParams.getParametres().get("procedimentsList");
-	 		        			} else {
-	 		        				if (!"-1".equals(multipartParams.getParametres().get("incidenciesList" + idCentres[i])) && !"-2".equals(multipartParams.getParametres().get("incidenciesList" + idCentres[i]))) { 		        			
+	 		        	idCentresSeleccionats += idCentres[i] + "#";	
+	 		        	if (tipus.equals("Procediment judicial")) {
+	 		     			idIncidencies = multipartParams.getParametres().get("procedimentsList");
+	 		     	    }
+	 		        	else {
+		 		        	if (!idCentres[i].isEmpty() && !"-1".equals(idCentres[i])) {
+								if (!tipus.equals("Procediment judicial")) {
+									if (!"-1".equals(multipartParams.getParametres().get("incidenciesList" + idCentres[i])) && !"-2".equals(multipartParams.getParametres().get("incidenciesList" + idCentres[i]))) {
 										Actuacio actuacio = ActuacioCore.findActuacio(conn, multipartParams.getParametres().get("incidenciesList" + idCentres[i]));							
 										idIncidenciesList.add(actuacio.getIdIncidencia());
-					 		        	idIncidencies +=  actuacio.getIdIncidencia() + "#";
-					 		        	idInformes += multipartParams.getParametres().get("expedientsList" + idCentres[i]) + "#";
-			 		        		} else if("-1".equals(multipartParams.getParametres().get("incidenciesList" + idCentres[i]))) {
-			 		        			Incidencia incidencia = new Incidencia();
-				 		   	   		    incidencia.setIdIncidencia(IncidenciaCore.getNewCode(conn));
-				 		   	   		    incidencia.setIdCentre(idCentres[i]);
-				 		   	   		    incidencia.setUsuCre(UsuariCore.findUsuariByID(conn, usuari.getIdUsuari()));
-				 		   	   		    incidencia.setDescripcio(registreOld.getContingut());
-				 		   	   		    incidencia.setSolicitant(registreOld.getRemDes());
-				 		   	   		    IncidenciaCore.novaIncidencia(conn, incidencia);
-			 		        			idIncidenciesList.add(incidencia.getIdIncidencia() + "#");
-					 		        	idIncidencies +=  incidencia.getIdIncidencia() + "#";
-			 		        		}
-	 		        			}		 		        		
-	 		        		}
-						} catch (SQLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-	 		        	
+							        	idIncidencies +=  actuacio.getIdIncidencia() + "#";
+							        	idInformes += multipartParams.getParametres().get("expedientsList" + idCentres[i]) + "#";
+									} else if("-1".equals(multipartParams.getParametres().get("incidenciesList" + idCentres[i]))) {
+										Incidencia incidencia = new Incidencia();
+							   		    incidencia.setIdIncidencia(IncidenciaCore.getNewCode(conn));
+							   		    incidencia.setIdCentre(idCentres[i]);
+							   		    incidencia.setUsuCre(UsuariCore.findUsuariByID(conn, usuari.getIdUsuari()));
+							   		    incidencia.setDescripcio(registreOld.getContingut());
+							   		    incidencia.setSolicitant(registreOld.getRemDes());
+							   		    IncidenciaCore.novaIncidencia(conn, incidencia);
+										idIncidenciesList.add(incidencia.getIdIncidencia() + "#");
+							        	idIncidencies +=  incidencia.getIdIncidencia() + "#";
+									}
+								}		 		        		
+							}
+	 		        	}
 	 		        }
 		    	}
 				peticio = formatter.parse(multipartParams.getParametres().get("peticio"));				
@@ -153,28 +114,22 @@ public class DoEditRegistreServlet extends HttpServlet {
 				registre.setTipus(tipus);
 				registre.setContingut(contingut);
 				registre.setData(peticio);
-				if (idIncidencies.isEmpty() || idIncidencies.equals("-1#")) idIncidencies = registreOld.getIdIncidencies();
+				if (idIncidencies.isEmpty()) idIncidencies = registreOld.getIdIncidencies();
 				registre.setIdIncidencies(idIncidencies);
+				registre.setIdActuacions(RegistreCore.findActuacions(conn, idIncidencies));
 				if (idInformes.isEmpty() || idInformes.equals("-1#")) idInformes = registreOld.getIdInforme();
 				registre.setIdInforme(idInformes);
 				if (idCentresSeleccionats.isEmpty() || idCentresSeleccionats.equals("#")) idCentresSeleccionats = registreOld.getIdCentres();
 				registre.setIdCentres(idCentresSeleccionats);
 				if (multipartParams.getFitxersByName().get("confirmacioRecepcio") != null ) {
-					RegistreCore.guardarConfirmacioRecepcio(registre, multipartParams.getFitxersByName().get("confirmacioRecepcio"));
+					RegistreCore.guardarConfirmacioRecepcio(conn, registre, multipartParams.getFitxersByName().get("confirmacioRecepcio"));
 				}
 			    RegistreCore.modificarRegistre(conn, registre, entradaSortida);
 			    RegistreCore.modificarNotificacio(conn, registre);
 			    List<Fitxer> fitxers = multipartParams.getFitxersByName().get("file");
 	   			if (fitxers != null ) {
-	   				Context env;
 			    	String ruta = "";
-	   				try {
-	   					env = (Context)new InitialContext().lookup("java:comp/env");
-	   					ruta = (String)env.lookup("ruta_base");
-	   				} catch (NamingException e2) {
-	   					// TODO Auto-generated catch block
-	   					e2.printStackTrace();
-	   				}
+	   				ruta = ConfiguracioCore.getConfiguracio(conn).getRutaBaseDocumentacio();
 	   				File tmpFile =  null;
 	   				if (!entradaSortida.equals("E")) {
 	   					tmpFile = new File(ruta + "/documents/Registre Sortida/" + registre.getId());
@@ -205,9 +160,9 @@ public class DoEditRegistreServlet extends HttpServlet {
 			        }
 	   			}
 	   			registre = RegistreCore.findRegistre(conn, entradaSortida, registre.getId());
-	   			RegistreCore.crearResguard(registre, entradaSortida);  			
+	   			RegistreCore.crearResguard(conn, registre, entradaSortida);  			
 			    
-			} catch (ParseException | SQLException | NamingException e1) {
+			} catch (ParseException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 				errorString = e1.toString();

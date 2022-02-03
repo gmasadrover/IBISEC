@@ -2,7 +2,6 @@ package servlet.expedient;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -49,12 +48,7 @@ public class EditIncidenciaGarantiaServlet extends HttpServlet {
         	String idInforme = request.getParameter("idInforme");	  
         	int idIncidencia = Integer.parseInt(request.getParameter("idIncidencia"));	  
         	IncidenciaGarantia incidencia = new InformeActuacio().new IncidenciaGarantia();
-			try {
-				incidencia = InformeCore.getIncidenciaGarantia(conn, idIncidencia);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			incidencia = InformeCore.getIncidenciaGarantia(conn, idIncidencia);
         	request.setAttribute("idInforme", idInforme);	
         	request.setAttribute("incidencia", incidencia);
 			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"expedients"));			

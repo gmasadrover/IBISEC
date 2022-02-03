@@ -2,7 +2,6 @@ package servlet.tasca;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.User;
 import core.TascaCore;
 import utils.MyUtils;
 
@@ -37,13 +35,8 @@ public class ObrirTasca extends HttpServlet {
  	   	if (MyUtils.getLoginedUser(request.getSession()) == null){
  	   		response.sendRedirect(request.getContextPath() + "/preLogin"); 	   
  	   	}else{
- 	   		String idTasca = request.getParameter("idtasca");
- 	   		try {
-				TascaCore.obrirTasca(conn, idTasca);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+ 	   		int idTasca = Integer.parseInt(request.getParameter("idtasca"));
+ 	   		TascaCore.obrirTasca(conn, idTasca);
  	   		response.sendRedirect(request.getContextPath() + "/");	
  	   	}
 	}

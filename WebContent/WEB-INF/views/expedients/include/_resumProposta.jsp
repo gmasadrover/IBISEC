@@ -51,28 +51,29 @@
 <div class="row">
 	<div class="col-md-4">
 		<p>
-			<label>${propostaActuacio.tipusObra == 'conveni' ? 'Vigència conveni' : 'Termini d\'execució'}:</label> ${propostaActuacio.termini}
+			<label> ${propostaActuacio.tipusObra == 'conveni' ? 'Vigència conveni' : 'Termini execució'}:
+			</label> ${propostaActuacio.termini}
 		</p>
 	</div>	
 </div>
 <div class="row">
 	<div class="col-md-4">
-       	<label>PBase:</label> ${propostaActuacio.pbase}€						                                
+       	<label>PBase:</label> <m:formatNumber pattern= "#,##0.00" type = "number" value ="${propostaActuacio.pbase}"/>€					                                
 	</div>
 	<div class="col-md-4"> 
-		<label>IVA:</label> ${propostaActuacio.iva}€
+		<label>IVA:</label> <m:formatNumber pattern= "#,##0.00" type = "number" value ="${propostaActuacio.iva}"/>€
 	</div>
 	<div class="col-md-4">
-		<label>Plic:</label> ${propostaActuacio.plic}€
+		<label>Plic:</label> <m:formatNumber pattern= "#,##0.00" type = "number" value ="${propostaActuacio.plic}"/>€
    	</div>					  
 </div>
 <p></p>	
 <c:if test="${expedient.contracte == 'major'}">
 	<div class="row">
 		<div class="col-md-4">
-	       	<label>VEC:</label> ${propostaActuacio.vec}€						                                
+	       	<label>VEC:</label> <m:formatNumber pattern= "#,##0.00" type = "number" value ="${propostaActuacio.vec}"/>€					                                
 		</div>					  
 	</div>	
-<p></p>
-</c:if>	
+	<p></p>
+</c:if>
 

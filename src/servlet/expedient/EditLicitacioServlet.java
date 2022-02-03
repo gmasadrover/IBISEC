@@ -2,11 +2,9 @@ package servlet.expedient;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,12 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import bean.Expedient;
 import bean.InformeActuacio;
-import bean.Partida;
 import bean.User;
 import bean.ControlPage.SectionPage;
 import bean.Empresa;
 import core.ControlPageCore;
-import core.CreditCore;
 import core.EmpresaCore;
 import core.ExpedientCore;
 import core.InformeCore;
@@ -58,38 +54,23 @@ public class EditLicitacioServlet extends HttpServlet {
 			String idInf = request.getParameter("idinf");
 	        Expedient expedient = new Expedient();
 	        List<Empresa> empresesList = new ArrayList<Empresa>();
-	        String errorString = null;
-	        double importObraMajor = Double.parseDouble(getServletContext().getInitParameter("importObraMajor"));      
 	        InformeActuacio informePrevi = new InformeActuacio();
-	        try {
-	        	if (refExp == null || refExp.isEmpty()) {
-	        		informePrevi = InformeCore.getInformePrevi(conn, idInf, false);	        		
-					refExp = ExpedientCore.crearExpedient(conn, informePrevi, importObraMajor, true, "");
-				}	        	
-	            expedient = ExpedientCore.findExpedient(conn, refExp);
-	            if (expedient == null || expedient.getExpContratacio() == null || expedient.getExpContratacio().isEmpty()) {
-	            	refExp = ExpedientCore.crearExpedient(conn, informePrevi, importObraMajor, true, refExp);
-	            	expedient = ExpedientCore.findExpedient(conn, refExp);
-	            }
-	            informePrevi = InformeCore.getInformePrevi(conn, expedient.getIdInforme(), true);	            
-	            empresesList = EmpresaCore.getEmpreses(conn);
-	            empresesList.addAll(EmpresaCore.getEmpresesUTE(conn));
-	        } catch (SQLException | NamingException e) {
-	            e.printStackTrace();
-	            errorString = e.getMessage();
-	        }
+	        if (refExp == null || refExp.isEmpty()) {
+				informePrevi = InformeCore.getInformePrevi(conn, idInf, false);	        		
+				refExp = ExpedientCore.crearExpedient(conn, informePrevi, true, "", informePrevi.getUsuari().getIdUsuari());
+			}	        	
+			expedient = ExpedientCore.findExpedient(conn, refExp);
+			if (expedient == null || expedient.getExpContratacio() == null || expedient.getExpContratacio().isEmpty()) {
+				refExp = ExpedientCore.crearExpedient(conn, informePrevi, true, refExp, informePrevi.getUsuari().getIdUsuari());
+				expedient = ExpedientCore.findExpedient(conn, refExp);
+			}
+			informePrevi = InformeCore.getInformePrevi(conn, expedient.getIdInforme(), true);	            
+			empresesList = EmpresaCore.getEmpreses(conn);
+			empresesList.addAll(EmpresaCore.getEmpresesUTE(conn));
 	 
 	         
-	        // If no error.
-	        // The product does not exist to edit.
-	        // Redirect to productList page.
-	        if (errorString != null && expedient == null) {
-	            response.sendRedirect(request.getServletPath() + "/expedients");
-	            return;
-	        }
-	 
+	       
 	        // Store errorString in request attribute, before forward to views.
-	        request.setAttribute("errorString", errorString);
 	        request.setAttribute("empresesList", empresesList);
 	        request.setAttribute("expedient", expedient);
 	        request.setAttribute("informePrevi", informePrevi);

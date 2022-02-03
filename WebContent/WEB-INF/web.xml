@@ -11,7 +11,6 @@
   </filter-mapping>
   <welcome-file-list>
     <welcome-file>tascaList</welcome-file>
-    <welcome-file>index.html</welcome-file>
   </welcome-file-list>
   <error-page>
     <error-code>404</error-code>
@@ -23,19 +22,7 @@
   </error-page>
   <context-param>
     <param-name>datakey</param-name>
-    <param-value>200309_0830</param-value>
-  </context-param>
-  <context-param>
-    <param-name>importObraMajor</param-name>
-    <param-value>40000</param-value>
-  </context-param>
-  <context-param>
-    <param-name>importServeiMajor</param-name>
-    <param-value>15000</param-value>
-  </context-param>
-  <context-param>
-    <param-name>importSubministramentMajor</param-name>
-    <param-value>15000</param-value>
+    <param-value>211118_0900</param-value>
   </context-param>
   <context-param>
     <param-name>idUsuariRecercaPresuposts</param-name>
@@ -58,6 +45,10 @@
     <param-value>12</param-value>
   </context-param>
   <context-param>
+    <param-name>idUsuariActualitzarEmpresa</param-name>
+    <param-value>7</param-value>
+  </context-param>
+  <context-param>
     <param-name>idUsuariLlicencies</param-name>
     <param-value>29</param-value>
   </context-param>
@@ -71,26 +62,16 @@
   </context-param>
   <context-param>
     <param-name>pageName</param-name>
-    <param-value>Intranet IBISEC</param-value>
+    <param-value>Intranet Test</param-value>
   </context-param>
   <env-entry>
     <env-entry-name>hostName</env-entry-name>
     <env-entry-type>java.lang.String</env-entry-type>
-    <env-entry-value>10.215.26.87</env-entry-value>
+    <env-entry-value>10.215.26.93</env-entry-value>
   </env-entry>
   <env-entry>
     <env-entry-name>dbName</env-entry-name>
     <env-entry-type>java.lang.String</env-entry-type>
-    <env-entry-value>IBISEC</env-entry-value>
-  </env-entry>
-  <env-entry>
-    <env-entry-name>ruta_base_ok</env-entry-name>
-    <env-entry-type>java.lang.String</env-entry-type>
-    <env-entry-value>E:/NOVA INTRANET</env-entry-value>
-  </env-entry>
-  <env-entry>
-    <env-entry-name>ruta_base</env-entry-name>
-    <env-entry-type>java.lang.String</env-entry-type>
-    <env-entry-value>//sibisec1/usuaris/INTERCANVI D'OBRES/IBISEC/NOVA INTRANET</env-entry-value>
+    <env-entry-value>proves</env-entry-value>
   </env-entry>
 </web-app>

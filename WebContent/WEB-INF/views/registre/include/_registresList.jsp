@@ -54,10 +54,10 @@
 								<td>Tramesa documentació Personal</td>		
 							</c:when> 
 							<c:otherwise>
-								<td>${registre.contingut}</td>									        
+								<td class="col-md-5">${registre.contingut}</td>									        
 							</c:otherwise>
 						</c:choose>								            		
-						<td>${registre.getNomCentresString()}</td>	
+						<td class="col-md-3">${registre.getNomCentresString()}</td>	
 						<c:if test="${canViewIncidencies}">
 							<td>								
 								<c:choose>

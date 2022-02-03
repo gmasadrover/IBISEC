@@ -2,11 +2,8 @@ package servlet.credit;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.naming.NamingException;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,7 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.AssignacioCredit;
 import bean.Partida;
 import bean.User;
 import bean.ControlPage.SectionPage;
@@ -53,12 +49,7 @@ public class EditPartidaServlet extends HttpServlet {
 			String codi = request.getParameter("idPartida");
 			String errorString = null;
 			Partida partida = new Partida();
-	       	try {
-	       		partida = CreditCore.getPartida(conn,codi);	  	       	
-	       	} catch (SQLException | NamingException e) {
-	       		e.printStackTrace();
-	       		errorString = e.getMessage();
-	       	}
+	       	partida = CreditCore.getPartida(conn,codi);
 	  
 	       	// Store info in request attribute, before forward to views
 	        request.setAttribute("tipusPartida", PartidaTipus.values());

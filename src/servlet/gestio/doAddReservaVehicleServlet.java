@@ -2,20 +2,14 @@ package servlet.gestio;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Calendar;
-
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.Actuacio;
 import bean.User;
-import bean.Actuacio.Feina;
-import core.ActuacioCore;
 import core.CalendarCore;
 import utils.MyUtils;
 
@@ -51,22 +45,17 @@ public class doAddReservaVehicleServlet extends HttpServlet {
 	    int idUsuari = usuariLogetjat.getIdUsuari();
 	   	Calendar cal = Calendar.getInstance();	
 	    String errorString = null;	
-   		try {
-   			if (cal.get(Calendar.DAY_OF_WEEK) == dia && cal.get(Calendar.WEEK_OF_YEAR) == setmana) {
-   				if (CalendarCore.potReservar(conn, idUsuari, vehicle, setmana, dia, year, horaIni, horaFi, false)) { 
-   	   				CalendarCore.reservar(conn, idUsuari, vehicle, setmana, dia, year, horaIni, horaFi, motiu);
-   				} else {
-   	   				errorString = "ocupat";
-   	   			}
-   			}
-   			else if (CalendarCore.potReservar(conn, idUsuari, vehicle, setmana, dia, year, horaIni, horaFi, true)) {
-   				CalendarCore.reservar(conn, idUsuari, vehicle, setmana, dia, year, horaIni, horaFi, motiu);
-   			} else {
-   				errorString = "ocupat";
-   			}
-			
-		} catch (SQLException e) {
-			errorString = e.toString();
+   		if (cal.get(Calendar.DAY_OF_WEEK) == dia && cal.get(Calendar.WEEK_OF_YEAR) == setmana) {
+			if (CalendarCore.potReservar(conn, idUsuari, vehicle, setmana, dia, year, horaIni, horaFi, false)) { 
+				CalendarCore.reservar(conn, idUsuari, vehicle, setmana, dia, year, horaIni, horaFi, motiu);
+			} else {
+				errorString = "ocupat";
+			}
+		}
+		else if (CalendarCore.potReservar(conn, idUsuari, vehicle, setmana, dia, year, horaIni, horaFi, true)) {
+			CalendarCore.reservar(conn, idUsuari, vehicle, setmana, dia, year, horaIni, horaFi, motiu);
+		} else {
+			errorString = "ocupat";
 		}	          	
 	   	
 	   	// Store infomation to request attribute, before forward to views.

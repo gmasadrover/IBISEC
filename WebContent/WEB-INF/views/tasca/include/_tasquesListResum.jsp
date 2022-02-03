@@ -32,11 +32,18 @@
 		        <tbody>
 		        	<c:forEach items="${tasquesList}" var="tasca" >
 		        		<c:if test="${!(tasca.actuacio.centre.idCentre == '9999PERSO' && !canViewPersonal)}">
-							<tr class="${tasca.activa ? "success" : "danger"}">							          	
-								<td><a href="tasca?id=${tasca.idTasca}" class="loadingButton"  data-msg="obrint tasca...">${tasca.idTasca} - ${tasca.descripcio}</a></td>
-								<td>${tasca.usuari.getNomComplet()}</td>
-								<td>${tasca.getDataCreacioString()}</td>								
-								<td>${tasca.getDarreraModificacioString()}</td>						
+							<tr class="${tasca.activa ? "success" : "danger"}">		
+								<c:choose>
+									<c:when test="${isIBISEC}">
+										<td class="col-md-5"><a href="tasca?id=${tasca.idTasca}" class="loadingButton"  data-msg="obrint tasca...">${tasca.idTasca} - ${tasca.descripcio}</a></td>
+									</c:when>
+									<c:otherwise>
+										<td class="col-md-5">${tasca.idTasca} - ${tasca.descripcio}</td>
+									</c:otherwise>
+								</c:choose>
+								<td class="col-md-3">${tasca.usuari.getNomComplet()}</td>
+								<td class="col-md-2">${tasca.getDataCreacioString()}</td>								
+								<td class="col-md-2">${tasca.getDarreraModificacioString()}</td>						
 							</tr>
 						</c:if>
 					</c:forEach>

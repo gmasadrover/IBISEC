@@ -6,17 +6,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
@@ -59,17 +53,12 @@ public class DoDownloadFacturesServlet extends HttpServlet {
 		} else {
 			//Create list for file URLs - these are files from all different locations
 		    List<String> filenames = new ArrayList<String>();
-		    try {
-				List<Factura> factures = FacturaCore.getFacturesConformadesPend(conn);
-				for (Factura factura: factures) {
-					 if (factura.getFactura() != null && factura.getFactura().getRuta() != null) {
-						 FacturaCore.descarregada(conn, factura.getIdFactura());
-						 if (!filenames.contains(factura.getFactura().getRuta())) filenames.add(factura.getFactura().getRuta());
-					 }
-				}
-			} catch (SQLException | NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		    List<Factura> factures = FacturaCore.getFacturesConformadesPend(conn);
+			for (Factura factura: factures) {
+				 if (factura.getFactura() != null && factura.getFactura().getRuta() != null) {
+					 FacturaCore.descarregada(conn, factura.getIdFactura());
+					 if (!filenames.contains(factura.getFactura().getRuta())) filenames.add(factura.getFactura().getRuta());
+				 }
 			}		    
 		    
 		    //..code to add URLs to the list

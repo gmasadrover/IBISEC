@@ -28,6 +28,15 @@ public class ControlPageCore {
 			active = "";
 			collapse = "";
 		}
+		//Encàrrecs
+				if (UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_list)) {			
+					if (seccio.equals("Encarrecs")) active = "active"; 
+					menu.append("<li class='" + active + "'>");
+					menu.append("	<a href='encarrecsList' class='loadingButton'  data-msg='Carregant encàrrecs...'><i class='fa fa-fw fa-tasks'></i> Encàrrecs</a>");
+					menu.append("</li>");
+					active = "";
+					collapse = "";
+				}
 		//Registre
 		if (UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_list) || UsuariCore.hasPermision(conn, usuari, SectionPage.registre_sort_list)) {
 			if ( seccio.equals("Registre")) {
@@ -79,8 +88,17 @@ public class ControlPageCore {
 			active = "";
 			collapse = "";
 		}
+		/*//Assignar tècnic actuació
+		if (UsuariCore.hasPermision(conn, usuari, SectionPage.tecnic_actiacio)) {			
+			if (seccio.equals("TecnicActuacio")) active = "active"; 
+			menu.append("<li class='" + active + "'>");
+			menu.append("	<a href='createTecnicActuacio' class='loadingButton'  data-msg='Carregant actuacions...'><i class='fa fa-fw fa-bookmark'></i> Tècnic actuació</a>");
+			menu.append("</li>");
+			active = "";
+			collapse = "";
+		}*/
 		//Personal
-		if (true) {	
+		if (UsuariCore.hasPermision(conn, usuari, SectionPage.personalIBISEC)) {	
 			if (seccio.equals("personal")) {
 				active = "active"; 
 				collapse = "in";
@@ -91,12 +109,15 @@ public class ControlPageCore {
 			menu.append("		<li>");
 			menu.append("       	<a href='CalendariCotxe' class='loadingButton'  data-msg='Carregant vehicles...'>Reserva Vehicles</a>");
 			menu.append("    	</li>");
-			if (UsuariCore.hasPermision(conn, usuari, SectionPage.personal)) {
+			menu.append("		<li>");
+			menu.append("       	<a href='CalendariDron' class='loadingButton'  data-msg='Carregant dron...'>Reserva Dron</a>");
+			menu.append("    	</li>");
+			/*if (UsuariCore.hasPermision(conn, usuari, SectionPage.personal)) {
 				menu.append("		<li>");
 				menu.append("       	<a href='vacancesList' class='loadingButton'  data-msg='Carregant vacances...'>Vacances</a>");
 				menu.append("    	</li>");
-			}			
-			if (UsuariCore.hasPermision(conn, usuari, SectionPage.personal)) {
+			}	*/		
+			if (UsuariCore.hasPermision(conn, usuari, SectionPage.modificarPersonal)) {
 				menu.append("		<li>");
 				menu.append("       	<a href='usuarisList' class='loadingButton'  data-msg='Carregant usuaris...'>Usuaris</a>");
 				menu.append("    	</li>");
@@ -160,13 +181,29 @@ public class ControlPageCore {
 			collapse = "";
 		}
 		//Llicencies
-		if (UsuariCore.hasPermision(conn, usuari, SectionPage.llicencia_list)) {			
-			if (seccio.equals("llicencies")) active = "active"; 
-			menu.append("<li class='" + active + "'>");
-			menu.append("	<a href='llicencies' class='loadingButton'  data-msg='Carregant autoritzacions urbanístiques...'><i class='fa fa-fw fa-list'></i> Aut Urbanístiques</a>");
+		if (UsuariCore.hasPermision(conn, usuari, SectionPage.llicencia_list)) {	
+			if (seccio.equals("llicencies")) {
+				active = "active"; 
+				collapse = "in";
+			}
+			menu.append("<li class='"+ active + "'>");
+			menu.append("	<a href='javascript:;' data-toggle='collapse' data-target='#llicenciesMenu'><i class='fa fa-fw fa-list'></i> Aut Urbanístiques<i class='fa fa-fw fa-caret-down'></i></a>");
+			menu.append("	<ul id='llicenciesMenu' class='nav nav-second-level collapse " + collapse + "'>");
+			if (UsuariCore.hasPermision(conn, usuari, SectionPage.llicencia_list)) {
+				menu.append("		<li>");
+				menu.append("       	<a href='llicencies' class='loadingButton'  data-msg='Carregant autoritzacions urbanístiques...'> Aut Urbanístiques</a>");
+				menu.append("    	</li>");
+			}			
+			if (UsuariCore.hasPermision(conn, usuari, SectionPage.llicencia_list)) {
+				menu.append("		<li>");
+				menu.append("       	<a href='previsiollicencies' class='loadingButton'  data-msg='Carregant autoritzacions urbanístiques...'> Previsió autoritzacions</a>");
+				menu.append("    	</li>");
+			}			
+			menu.append("	</ul>");
 			menu.append("</li>");
 			active = "";
 			collapse = "";
+			
 		}
 		//Centres
 		if (UsuariCore.hasPermision(conn, usuari, SectionPage.centres_list)) {				
@@ -255,6 +292,10 @@ public class ControlPageCore {
 				menu.append("     	<li>");
 				menu.append("        	<a href='facturesConformadesPend' class='loadingButton'  data-msg='Carregant factures...'>Factures per pagar noves</a>");
 				menu.append("    	</li>");
+				menu.append("     	<li>");
+				menu.append("        	<a href='facturesNoConformadesPend' class='loadingButton'  data-msg='Carregant factures...'>Factures no conformades (+15 dies)</a>");
+				menu.append("    	</li>");
+				
 			}
 			menu.append("	</ul>");
 			menu.append("</li>");

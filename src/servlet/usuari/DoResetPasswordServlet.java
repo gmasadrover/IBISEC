@@ -2,9 +2,7 @@ package servlet.usuari;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -44,28 +42,17 @@ public class DoResetPasswordServlet extends HttpServlet {
 	  		response.sendRedirect(request.getContextPath() + "/");	
 		}else{	
 			int idUsuari = Integer.parseInt(request.getParameter("idUsuari"));
-		  	String errorString = "";
-		  	try {
-		  		UsuariCore.modificarPassword(conn, idUsuari, "");
-		  	} catch (SQLException e) {
-		  		e.printStackTrace();
-		  		errorString = e.getMessage();
-		  	}
+		  	
+		  	UsuariCore.modificarPassword(conn, idUsuari, "");
 		  	// Store info in request attribute, before forward to views
-		  	request.setAttribute("errorString", errorString);
 		  	request.setAttribute("usuari", usuariLogetjat);
 		  	request.setAttribute("potModificar", true);
 		  	request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuariLogetjat,"Usuaris"));  
-		  	// If error, forward to Edit page.
-		  	if (errorString != null) {
-	           RequestDispatcher dispatcher = request.getServletContext()
-	                   .getRequestDispatcher("/WEB-INF/views/usuari/usuariView.jsp");
-	           dispatcher.forward(request, response);
-		    } else {		  	
+		  
 		  	// Forward to /WEB-INF/views/homeView.jsp
 		  	// (Users can not access directly into JSP pages placed in WEB-INF)
 		    	response.sendRedirect(request.getContextPath() + "/UsuariDetails?id=" + usuariLogetjat.getIdUsuari());
-		    }
+		    
 		}
 	}
 

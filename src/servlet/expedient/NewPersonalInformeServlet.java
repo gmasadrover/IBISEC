@@ -2,11 +2,9 @@ package servlet.expedient;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,12 +12,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.Expedient;
+import bean.Empresa;
 import bean.InformeActuacio;
 import bean.User;
-import bean.ControlPage.SectionPage;
 import core.ControlPageCore;
-import core.ExpedientCore;
+import core.EmpresaCore;
 import core.InformeCore;
 import core.UsuariCore;
 import utils.MyUtils;
@@ -50,28 +47,18 @@ public class NewPersonalInformeServlet extends HttpServlet {
     	}else if (!usuari.getRol().contains("CAP") && !usuari.getRol().contains("ADMIN")) {
     		response.sendRedirect(request.getContextPath() + "/");	 
  	   	}else{
-			String idInf = request.getParameter("idinf");	       
-	        String errorString = null;	          
-	        InformeActuacio informe = new InformeActuacio();
+			String idInf = request.getParameter("idinf");  
+			String idActuacio = request.getParameter("idactuacio");  
 	        List<User> llistaUsuaris = new ArrayList<User>();
-	        try {
-	        	informe = InformeCore.getInformePrevi(conn, idInf, false);		
-	        	llistaUsuaris = UsuariCore.llistaUsuaris(conn, true);
-	        } catch (SQLException | NamingException e) {
-	            e.printStackTrace();
-	            errorString = e.getMessage();
-	        }
-	        // If no error.
-	        // The product does not exist to edit.
-	        // Redirect to productList page.
-	        if (errorString != null) {
-	            response.sendRedirect(request.getServletPath() + "/expedients");
-	            return;
-	        }
-	 
-	        // Store errorString in request attribute, before forward to views.	       
-	        request.setAttribute("errorString", errorString);
-	        request.setAttribute("informe", informe);
+			llistaUsuaris = UsuariCore.llistaUsuaris(conn, true);
+			List<Empresa> empresesList = new ArrayList<Empresa>();
+		    empresesList = EmpresaCore.getEmpreses(conn);
+				
+		 	    
+	        // Store errorString in request attribute, before forward to views.	   
+		    request.setAttribute("empresesList", empresesList);
+	        request.setAttribute("idInforme", idInf);
+	        request.setAttribute("idActuacio", idActuacio);
 	        request.setAttribute("llistaUsuaris", llistaUsuaris);
 	        request.setAttribute("redireccio", request.getParameter("from"));
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"expedients"));

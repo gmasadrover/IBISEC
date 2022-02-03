@@ -2,9 +2,7 @@ package servlet.judicial;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -48,12 +46,7 @@ public class EditTramitacioServlet extends HttpServlet {
     		response.sendRedirect(request.getContextPath() + "/");	
  	   	}else{ 
 	        Tramitacio tramitacio = new Judicial().new Tramitacio();
-	        try {
-				tramitacio = JudicialCore.findTramitacio(conn, request.getParameter("ref"));
-			} catch (SQLException | NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	        tramitacio = JudicialCore.findTramitacio(conn, request.getParameter("ref"));
  	   		request.setAttribute("tramitacio", tramitacio);
  	   		request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"judicials"));
  	   		request.setAttribute("procediment", request.getParameter("refPro"));

@@ -2,25 +2,18 @@ package servlet.expedient;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.naming.NamingException;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileUploadException;
-
 import bean.InformeActuacio;
 import bean.Oferta;
 import bean.User;
 import bean.InformeActuacio.PropostaInforme;
-import core.CreditCore;
 import core.InformeCore;
-import core.OfertaCore;
 import utils.Fitxers;
 import utils.MyUtils;
 
@@ -45,12 +38,7 @@ public class DoEditPenalitzacioInformeServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Connection conn = MyUtils.getStoredConnection(request);	
 		Fitxers.formParameters multipartParams = new Fitxers.formParameters();
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);
 	    String idInforme = multipartParams.getParametres().get("idInforme");
 	    String idModificacio = multipartParams.getParametres().get("idModificacio");
 	    String objecte = multipartParams.getParametres().get("objecteModificacio");
@@ -68,52 +56,37 @@ public class DoEditPenalitzacioInformeServlet extends HttpServlet {
 	    
     	plic = Double.parseDouble(multipartParams.getParametres().get("plicPenalitzacio").replace(',','.'));
     	if (plic > 0) plic = -1*plic;
-	       	  
-	    String errorString = null;	    
+	       	  	    
 	    InformeActuacio informe = new InformeActuacio();
 	    InformeActuacio informeModificacio = new InformeActuacio();
-	  	try {	 
-	  		informe = InformeCore.getInformePrevi(conn, idInforme, false);
-	  		informeModificacio = InformeCore.getMoficacioInforme(conn, idModificacio, false);
-	  		PropostaInforme proposta = informeModificacio.getPropostaInformeSeleccionada();	  		
-	  		
-	  		proposta.setObjecte(objecte);
-	  		
-	  		proposta.setPlic(plic);
-	  		proposta.setRetencio(retencio);
-	  		informeModificacio.setPropostaInformeSeleccionada(proposta);
-	  		
-	  		Oferta ofertaProposta = informeModificacio.getOfertaSeleccionada();
-	  		
-	  		 		
-	  		//Modificar modificació	  		
-	  		InformeCore.modificarModificacioInforme(conn, idModificacio, proposta, ofertaProposta, Usuari, "penalitzacio");	  		
-	  		
-	  		if (multipartParams.getFitxersByName().get("informe") != null) {
-	  			InformeCore.saveInformeModificacio(conn, informe.getIdIncidencia(), informe.getActuacio().getReferencia(), idInforme, idModificacio, multipartParams.getFitxersByName().get("informe"), Usuari.getIdUsuari());
-	  		}	 		
-	  		
-	  		if (multipartParams.getFitxersByName().get("tramitsPenalitzacio") != null) {
-	  			InformeCore.saveTramitsPenalitzacio(conn, informe.getIdIncidencia(), informe.getActuacio().getReferencia(), idInforme, idModificacio, multipartParams.getFitxersByName().get("tramitsPenalitzacio"), Usuari.getIdUsuari());
-		  	}	  		
-	  		/*;*/
-		} catch (SQLException | NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			errorString = e.getMessage();
-		} 
+	  	informe = InformeCore.getInformePrevi(conn, idInforme, false);
+		informeModificacio = InformeCore.getMoficacioInforme(conn, idModificacio, false);
+		PropostaInforme proposta = informeModificacio.getPropostaInformeSeleccionada();	  		
+		
+		proposta.setObjecte(objecte);
+		
+		proposta.setPlic(plic);
+		proposta.setRetencio(retencio);
+		informeModificacio.setPropostaInformeSeleccionada(proposta);
+		
+		Oferta ofertaProposta = informeModificacio.getOfertaSeleccionada();
+		
+		 		
+		//Modificar modificació	  		
+		InformeCore.modificarModificacioInforme(conn, idModificacio, proposta, ofertaProposta, Usuari, "penalitzacio");	  		
+		
+		if (multipartParams.getFitxersByName().get("informe") != null) {
+			InformeCore.saveInformeModificacio(conn, informe.getIdIncidencia(), informe.getActuacio().getReferencia(), idInforme, idModificacio, multipartParams.getFitxersByName().get("informe"), Usuari.getIdUsuari());
+		}	 		
+		
+		if (multipartParams.getFitxersByName().get("tramitsPenalitzacio") != null) {
+			InformeCore.saveTramitsPenalitzacio(conn, informe.getIdIncidencia(), informe.getActuacio().getReferencia(), idInforme, idModificacio, multipartParams.getFitxersByName().get("tramitsPenalitzacio"), Usuari.getIdUsuari());
+		}	  		
+		/*;*/ 
 	  	
-	   	// Store infomation to request attribute, before forward to views.
-	   	request.setAttribute("errorString", errorString);
-	  	// If error, forward to Edit page.
-	   	if (errorString != null) {
-	   		RequestDispatcher dispatcher = request.getServletContext()
-	   				.getRequestDispatcher("/WEB-INF/views/expedients/editPenalitzacioView.jsp");
-	   		dispatcher.forward(request, response);
-	   	}// If everything nice. Redirect to the product listing page.            
-	   	else {
-	   		response.sendRedirect(request.getContextPath() + "/actuacionsDetalls?ref=" + informe.getActuacio().getReferencia());
-	   	}	
+	  
+	   	response.sendRedirect(request.getContextPath() + "/actuacionsDetalls?ref=" + informe.getActuacio().getReferencia());
+
 	}
 
 	/**

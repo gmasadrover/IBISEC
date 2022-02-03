@@ -26,6 +26,7 @@ $(document).ready(function() {
 	$('#centresList').on('change', function(){
 		$('.incidencies').addClass('hidden');	
 		$('.expedients').addClass('hidden');	
+		$('#seleccionarInforme').append('<div class="loader"></div>');
 		if ($(this).val() != null && ($(this).val().length == 2 || $(this).val().indexOf("-1") < 0)) {		
 			$('#centresList option[value="-1"]').prop('selected', false);
 			$('#idCentresSeleccionats').val('');
@@ -35,6 +36,7 @@ $(document).ready(function() {
 						if ($('.incidencies' + data).size() > 0) {
 							$('.incidencies'  + data).removeClass('hidden');
 							$('.expedients'  + data).removeClass('hidden');
+							$('#seleccionarInforme .loader').remove();
 						} else {
 							searchIncidencies(data);
 						}
@@ -45,6 +47,7 @@ $(document).ready(function() {
 				$.each($(this).val(), function( key, data ) {
 					$('#idCentresSeleccionats').val($('#idCentresSeleccionats').val() + "#" + data);
 				});
+				$('#seleccionarInforme .loader').remove();
 			}
 			$('.selectpicker').selectpicker('refresh');
 		} else {	
@@ -54,8 +57,10 @@ $(document).ready(function() {
 				$('.centresList').selectpicker('val', "-1");				
 	    		$('.centresList').selectpicker('refresh');
 	    	}
-		}		
+			$('#seleccionarInforme .loader').remove();
+		}	
 	});
+	
 	$('#tipusList').on('change', function(){		
 		if (decodeURIComponent($(this).val()) == 'Procediment judicial') {	
 			$(".centresList").selectpicker('deselectAll');
@@ -76,7 +81,7 @@ $(document).ready(function() {
 			$('.procedimentnoudiv').addClass('hidden');
 			
 		}		
-	});
+	});	
 });
 
 function loadTipus(){
@@ -123,7 +128,7 @@ function searchIncidencies(idCentre) {
             	html += '		</select>';
             	html += '	</div>';
             	html += '</div>';
-            	$('#incidencies').append(html);
+            	$('#incidencies').append(html);            	
         		$.each(data.llistatActuacions, function( key, data ) {
         			var refExt = '';
         			var estat = '';
@@ -134,14 +139,13 @@ function searchIncidencies(idCentre) {
         				estilTancada = 'red';
         			}
         			$('#incidenciesList' + idCentre).append('<option class = ' + estilTancada + ' value=' + data.referencia + '>' + estat + data.referencia + refExt + ' - ' + data.descripcio + '</option>');
-        		});     
+        		});   
+        		$('#seleccionarInforme .loader').remove();
         		$('.selectpicker').selectpicker('refresh');
         		$('#incidenciesList' + idCentre).on('change', function(){
         			$('.expedients' + idCentre).remove();
     				if ($(this).val() != "-1") {
-    					searchExpedients($(this).val(), idCentre);    					
-    				} else {
-    					$('#seleccionarInforme .loader').remove();
+    					searchExpedients($(this).val(), idCentre);  
     				}	
         			$('.selectpicker').selectpicker('refresh');	
         			
@@ -155,6 +159,7 @@ function searchIncidencies(idCentre) {
     });
 }
 function searchExpedients(idActuacio, idCentre) {
+	$('#seleccionarInforme').append('<div class="loader"></div>');
 	var optionDefault = '';	
 	var html = '';
 	$.ajax({
@@ -178,10 +183,9 @@ function searchExpedients(idActuacio, idCentre) {
         		$.each(data.llistatExpedients, function( key, data ) {
         			var refExt = '';
         			if (data.expcontratacio.expContratacio != '-1') refExt = ' EXP ' + data.expcontratacio.expContratacio + ' ';
-        			if (data.ofertaSeleccionada != null) {
-        				$('#expedientsList' + idCentre).append('<option data-idactuacio="' + data.actuacio.referencia + '" data-idinf="' + data.idInf + '" data-objecte="' + data.propostaInformeSeleccionada.objecte + '" data-total="' + data.propostaInformeSeleccionada.plic + '" data-pagat="' + data.totalFacturat + '" value=' + data.idInf + '>' + refExt + '-' + data.propostaInformeSeleccionada.objecte + '</option>');
-        			}
-        		});     
+        			$('#expedientsList' + idCentre).append('<option data-idactuacio="' + data.actuacio.referencia + '" data-idinf="' + data.idInf + '" data-objecte="' + data.propostaInformeSeleccionada.objecte + '" data-total="' + data.propostaInformeSeleccionada.plic + '" data-pagat="' + data.totalFacturat + '" value=' + data.idInf + '>' + refExt + '-' + data.propostaInformeSeleccionada.objecte + '</option>');
+        		});   
+        		$('#seleccionarInforme .loader').remove();
         		$('.selectpicker').selectpicker('refresh');   
              } 
         },        
@@ -207,6 +211,7 @@ function searchProcediments() {
             	html += '	<label class="col-xs-3 control-label">Procediment</label>';
             	html += ' 	<div class="col-xs-3">';   
             	html += '     	<select class="form-control selectpicker" name="procedimentsList" data-live-search="true" data-size="5" id="procedimentsList">';
+            	html += '			<option value="-1">Sense expedient</option>';
             	html += '		</select>';
             	html += '	</div>';
             	html += '</div>';
@@ -216,8 +221,7 @@ function searchProcediments() {
         			if (demanda == null) demanda = '';
         			$('#procedimentsList').append('<option value=' + data.referencia + '>' + data.numAutos + '-' + demanda + '</option>');
         		});     
-        		$('.selectpicker').selectpicker('refresh');   
-        		$('#seleccionarInforme .loader').remove();        		
+        		$('.selectpicker').selectpicker('refresh');        		
              }                 
         },        
         //If there was no resonse from the server

@@ -22,13 +22,15 @@
 		<div class="docTecnica"></div>
 		<br>					            		
 	</div>
-	<div class="form-group">
-		<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-           <div class="col-xs-5">   
-           	<input type="file" class="btn" name="documentAltre" multiple/><br/>
-		</div>				
-	</div>
-	<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra == 'obr'}">		
+	<c:if test="${isIBISEC}">
+		<div class="form-group">
+			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+	           <div class="col-xs-5">   
+	           	<input type="file" class="btn" name="documentAltre" multiple/><br/>
+			</div>				
+		</div>
+	</c:if>
+	<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra == null || informePrevi.propostaInformeSeleccionada.tipusObra == 'obr'}">		
 		<div class="documentacioEBSS"></div>
 		<div class="redaccioProjecteExtern"></div>
 		<div class="estudiGeotecnic"></div>
@@ -42,13 +44,14 @@
 			<div class="informeSupervisio"></div>
 			<br>					            		
 		</div>
-		<div class="form-group">
-			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-	           <div class="col-xs-5">   
-	           	<input type="file" class="btn" name="documentInformeSupervisio" multiple/><br/>
-			</div> 
-		</div>
-
+		<c:if test="${isIBISEC}">
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+		           <div class="col-xs-5">   
+		           	<input type="file" class="btn" name="documentInformeSupervisio" multiple/><br/>
+				</div> 
+			</div>
+		</c:if>
 		<p>
 			<label>Projecte o DGE:</label>
 		</p>	
@@ -56,13 +59,14 @@
 			<div class="projecte"></div>
 			<br>					            		
 		</div>
-		<div class="form-group">
-			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-	           <div class="col-xs-5">   
-	           	<input type="file" class="btn" name="documentProjecte" multiple/><br/>
-			</div> 
-		</div>
-		
+		<c:if test="${isIBISEC}">
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+		           <div class="col-xs-5">   
+		           	<input type="file" class="btn" name="documentProjecte" multiple/><br/>
+				</div> 
+			</div>
+		</c:if>
 		<p>
 			<label>Nomenament DF:</label>
 		</p>	
@@ -70,13 +74,14 @@
 			<div class="nomenamentDF"></div>
 			<br>					            		
 		</div>
-		<div class="form-group">
-			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-	           <div class="col-xs-5">   
-	           	<input type="file" class="btn" name="documentNomenamentDF" multiple/><br/>
-			</div> 
-		</div>
-		
+		<c:if test="${isIBISEC}">
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+		           <div class="col-xs-5">   
+		           	<input type="file" class="btn" name="documentNomenamentDF" multiple/><br/>
+				</div> 
+			</div>
+		</c:if>
 		<p>
 			<label>Pla Seguretat i Salut:</label>
 		</p>	
@@ -84,13 +89,14 @@
 			<div class="documentPSS"></div>
 			<br>					            		
 		</div>
-		<div class="form-group">
-			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-	           <div class="col-xs-5">   
-	           	<input type="file" class="btn" name="documentPSS" multiple/><br/>
-			</div> 
-		</div>
-		
+		<c:if test="${isIBISEC}">
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+		           <div class="col-xs-5">   
+		           	<input type="file" class="btn" name="documentPSS" multiple/><br/>
+				</div> 
+			</div>
+		</c:if>
 		<p>
 			<label>Pla de Gestió Residus:</label>
 		</p>	
@@ -98,13 +104,14 @@
 			<div class="documentPGR"></div>
 			<br>					            		
 		</div>
-		<div class="form-group">
-			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-	           <div class="col-xs-5">   
-	           	<input type="file" class="btn" name="documentPGR" multiple/><br/>
-			</div> 
-		</div>
-		
+		<c:if test="${isIBISEC}">
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+		           <div class="col-xs-5">   
+		           	<input type="file" class="btn" name="documentPGR" multiple/><br/>
+				</div> 
+			</div>
+		</c:if>
 		<p>
 			<label>Programa de treball:</label>
 		</p>	
@@ -112,13 +119,29 @@
 			<div class="documentPlaTreball"></div>
 			<br>					            		
 		</div>
-		<div class="form-group">
-			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-	           <div class="col-xs-5">   
-	           	<input type="file" class="btn" name="documentPlaTreball" multiple/><br/>
-			</div> 
+		<c:if test="${isIBISEC}">
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+		           <div class="col-xs-5">   
+		           	<input type="file" class="btn" name="documentPlaTreball" multiple/><br/>
+				</div> 
+			</div>
+		</c:if>
+		<p>
+			<label>Programa control de qualitat:</label>
+		</p>	
+		<div class="row col-md-12">
+			<div class="documentControlQualitat"></div>
+			<br>					            		
 		</div>
-		
+		<c:if test="${isIBISEC}">
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+		           <div class="col-xs-5">   
+		           	<input type="file" class="btn" name="documentControlQualitat" multiple/><br/>
+				</div> 
+			</div>
+		</c:if>
 		<p>
 			<label>Comunicació finalització obres (Contratista):</label>
 		</p>	
@@ -126,13 +149,14 @@
 			<div class="documentFinalitzacioContratista"></div>
 			<br>					            		
 		</div>
-		<div class="form-group">
-			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-	           <div class="col-xs-5">   
-	           	<input type="file" class="btn" name="documentFinalitzacioContratista" multiple/><br/>
-			</div> 
-		</div>
-		
+		<c:if test="${isIBISEC}">
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+		           <div class="col-xs-5">   
+		           	<input type="file" class="btn" name="documentFinalitzacioContratista" multiple/><br/>
+				</div> 
+			</div>
+		</c:if>
 		<p>
 			<label>Informe DF finalització obra:</label>
 		</p>	
@@ -140,13 +164,14 @@
 			<div class="documentInformeDO"></div>
 			<br>					            		
 		</div>
-		<div class="form-group">
-			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-	           <div class="col-xs-5">   
-	           	<input type="file" class="btn" name="documentInformeDO" multiple/><br/>
-			</div> 
-		</div>
-		
+		<c:if test="${isIBISEC}">
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+		           <div class="col-xs-5">   
+		           	<input type="file" class="btn" name="documentInformeDO" multiple/><br/>
+				</div> 
+			</div>
+		</c:if>
 		<p>
 			<label>CFO (Certificat final obra):</label>
 		</p>	
@@ -154,13 +179,14 @@
 			<div class="documentCFO"></div>
 			<br>					            		
 		</div>
-		<div class="form-group">
-			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-	           <div class="col-xs-5">   
-	           	<input type="file" class="btn" name="documentCFO" multiple/><br/>
-			</div> 
-		</div>
-		
+		<c:if test="${isIBISEC}">
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+		           <div class="col-xs-5">   
+		           	<input type="file" class="btn" name="documentCFO" multiple/><br/>
+				</div> 
+			</div>
+		</c:if>
 		<p>
 			<label>Nomenament facultatiu per a recepció:</label>
 		</p>	
@@ -168,13 +194,14 @@
 			<div class="documentRepresentacioRecepcio"></div>
 			<br>					            		
 		</div>
-		<div class="form-group">
-			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-	           <div class="col-xs-5">   
-	           	<input type="file" class="btn" name="documentRepresentacioRecepcio" multiple/><br/>
-			</div> 
-		</div>
-		
+		<c:if test="${isIBISEC}">
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+		           <div class="col-xs-5">   
+		           	<input type="file" class="btn" name="documentRepresentacioRecepcio" multiple/><br/>
+				</div> 
+			</div>
+		</c:if>
 		<p>
 			<label>Informe certificació final:</label>
 		</p>	
@@ -182,13 +209,14 @@
 			<div class="documentCertificacioFinal"></div>
 			<br>					            		
 		</div>
-		<div class="form-group">
-			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-	           <div class="col-xs-5">   
-	           	<input type="file" class="btn" name="documentCertificacioFinal" multiple/><br/>
-			</div> 
-		</div>
-		
+		<c:if test="${isIBISEC}">
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+		           <div class="col-xs-5">   
+		           	<input type="file" class="btn" name="documentCertificacioFinal" multiple/><br/>
+				</div> 
+			</div>
+		</c:if>
 		<p>
 			<label>Informe devolució aval</label>
 		</p>	
@@ -196,21 +224,40 @@
 			<div class="documentDevolucioAval"></div>
 			<br>					            		
 		</div>
-		<div class="form-group">
-			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-	           <div class="col-xs-5">   
-	           	<input type="file" class="btn" name="documentDevolucioAval" multiple/><br/>
-			</div> 
-		</div>	
+		<c:if test="${isIBISEC}">
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+		           <div class="col-xs-5">   
+		           	<input type="file" class="btn" name="documentDevolucioAval" multiple/><br/>
+				</div> 
+			</div>
+		</c:if>	
 		
-	</c:if>		
-	<div class="row">
-		<div class="col-md-12">
-			<div class="row">	  			
-				<div class="col-md-offset-9 col-md-2 margin_top30">
-					<input type="submit" class="btn btn-primary loadingButton" value="Actualitzar" />
-				</div>
-	    	</div>       
+		<p>
+			<label>Certificats bona execució</label>
+		</p>	
+		<div class="row col-md-12">			
+			<div class="documentCertificatsBonaExecucio"></div>
+			<br>					            		
 		</div>
-	</div>         				
+		<c:if test="${isIBISEC}">
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+		           <div class="col-xs-5">   
+		           	<input type="file" class="btn" name="documentCertificatsBonaExecucio" multiple/><br/>
+				</div> 
+			</div>	
+		</c:if>		
+	</c:if>		
+	<c:if test="${isIBISEC}">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="row">	  			
+					<div class="col-md-offset-9 col-md-2 margin_top30">
+						<input type="submit" class="btn btn-primary loadingButton" value="Actualitzar" />
+					</div>
+		    	</div>       
+			</div>
+		</div>  
+	</c:if>       				
 </form>	  

@@ -3,9 +3,7 @@ package servlet.factura;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,7 +15,6 @@ import com.google.gson.JsonObject;
 import bean.User;
 import core.FacturaCore;
 import core.TascaCore;
-import core.UsuariCore;
 import utils.MyUtils;
 
 /**
@@ -58,15 +55,10 @@ public class AnularCertificacioServlet extends HttpServlet {
         Connection conn = MyUtils.getStoredConnection(request);
 		String idFactura = request.getParameter("idFactura");
 		String motiu = request.getParameter("motiu");
-		try {
-			FacturaCore.anularCertificacio(conn, idFactura, motiu);
-			int usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariCertificacions")); 
-			User Usuari = MyUtils.getLoginedUser(request.getSession());	
-			TascaCore.novaTasca(conn, "generic", usuariTasca, Usuari.getIdUsuari(), "", "", "<span class='missatgeAutomatic'>S'ha anul·lat la certificació <a target='_blank' href='certificacioDetalls?ref=" + idFactura + "'>" + idFactura + "</a></span><br>Motiu: " + motiu, "Certificació anul·lada", "-1", null, request.getRemoteAddr(), "manual");
-		} catch (SQLException | NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		FacturaCore.anularCertificacio(conn, idFactura, motiu);
+		int usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariCertificacions")); 
+		User Usuari = MyUtils.getLoginedUser(request.getSession());	
+		TascaCore.novaTasca(conn, "generic", usuariTasca, Usuari.getIdUsuari(), "", "", "<span class='missatgeAutomatic'>S'ha anul·lat la certificació <a target='_blank' href='certificacioDetalls?ref=" + idFactura + "'>" + idFactura + "</a></span><br>Motiu: " + motiu, "Certificació anul·lada", "-1", null, request.getRemoteAddr(), "manual");
 		myObj.addProperty("success", true);	
 		
         out.println(myObj.toString());

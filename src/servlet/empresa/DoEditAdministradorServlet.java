@@ -2,19 +2,14 @@ package servlet.empresa;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import javax.naming.NamingException;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.fileupload.FileUploadException;
 
 import bean.Empresa;
 import bean.User;
@@ -44,12 +39,7 @@ public class DoEditAdministradorServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Connection conn = MyUtils.getStoredConnection(request);	
 		Fitxers.formParameters multipartParams = new Fitxers.formParameters();
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);
 		String modificar = multipartParams.getParametres().get("modificar");
 		String eliminar = multipartParams.getParametres().get("eliminar");
 		String cif = multipartParams.getParametres().get("cif");
@@ -75,7 +65,7 @@ public class DoEditAdministradorServlet extends HttpServlet {
 		    	EmpresaCore.updateAdministrador(conn, cif, nifAdministrador, administrador);
 		    	EmpresaCore.guardarFitxer(conn, Usuari.getIdUsuari(), multipartParams.getFitxers(), cif, nifAdministrador);
 			}
-		} catch (SQLException | NamingException | ParseException e) {
+		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

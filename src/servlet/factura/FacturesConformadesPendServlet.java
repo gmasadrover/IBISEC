@@ -2,16 +2,9 @@ package servlet.factura;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,7 +17,6 @@ import bean.User;
 import bean.ControlPage.SectionPage;
 import core.ControlPageCore;
 import core.FacturaCore;
-import core.InformeCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
@@ -56,12 +48,7 @@ public class FacturesConformadesPendServlet extends HttpServlet {
 		} else {
 			List<Factura> list = new ArrayList<Factura>();
 			String errorString = null;			
-			try {
-				list = FacturaCore.getFacturesConformadesPend(conn);
-			} catch (SQLException | NamingException e) {
-				e.printStackTrace();
-				errorString = e.getMessage();			
-			}
+			list = FacturaCore.getFacturesConformadesPend(conn);
 
 			// Store info in request attribute, before forward to views
 			request.setAttribute("errorString", errorString);

@@ -2,12 +2,9 @@ package servlet.llicencia;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,13 +12,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.Llicencia;
 import bean.User;
 import bean.ControlPage.SectionPage;
 import bean.InformeActuacio;
 import core.ControlPageCore;
 import core.InformeCore;
-import core.LlicenciaCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
@@ -51,26 +46,19 @@ public class LlicenciaListServlet extends HttpServlet {
 		}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.llicencia_list)) {
     		response.sendRedirect(request.getContextPath() + "/");	
 		} else {
-			String errorString = "";
 			List<InformeActuacio> informeList = new ArrayList<InformeActuacio>();
 			String filtrar = request.getParameter("filtrar");
 			String estat = "";
 			String tipus = "";
-			try {
-				if (filtrar != null) {	
-					estat = request.getParameter("estat");		
-					tipus = request.getParameter("tipus");		
-				} 
-				informeList = InformeCore.getInformesLlicencia(conn, estat, tipus);				
-			} catch (SQLException | NamingException e) {
-				e.printStackTrace();
-				errorString = e.getMessage();
-			}
+			if (filtrar != null) {	
+				estat = request.getParameter("estat");		
+				tipus = request.getParameter("tipus");		
+			} 
+			informeList = InformeCore.getInformesLlicencia(conn, estat, tipus);
 
 			// Store info in request attribute, before forward to views
 			request.setAttribute("estatFilter", estat);
 			request.setAttribute("tipusFilter", tipus);
-			request.setAttribute("errorString", errorString);
 			request.setAttribute("informeList", informeList);
 			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"llicencies"));
 			// Forward to /WEB-INF/views/homeView.jsp

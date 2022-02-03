@@ -2,11 +2,9 @@ package servlet.bastanteo;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,12 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileUploadException;
-
 import bean.Bastanteo;
 import bean.Bastanteo.Escritura;
 import core.BastanteosCore;
-import core.EmpresaCore;
 import utils.Fitxers;
 import utils.MyUtils;
 
@@ -44,12 +39,7 @@ public class DoEditEscrituraServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Connection conn = MyUtils.getStoredConnection(request);
        	Fitxers.formParameters multipartParams = new Fitxers.formParameters();
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);
        	
        	String ref = multipartParams.getParametres().get("ref");
        	String refBastanteo = multipartParams.getParametres().get("refBastanteo");
@@ -64,7 +54,7 @@ public class DoEditEscrituraServlet extends HttpServlet {
 			escritura.setNumProtocol(multipartParams.getParametres().get("nProtocol"));	
 			escritura.setNotari(multipartParams.getParametres().get("notari"));
 			BastanteosCore.modificarEscritura(conn, escritura, ref);
-		} catch (ParseException | SQLException | NamingException e) {
+		} catch (ParseException e) {
 			errorString = e.toString();
 		}
 		// Store infomation to request attribute, before forward to views.

@@ -2,9 +2,6 @@ package servlet.empresa;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -50,25 +47,16 @@ public class EmpresaListDespesaView extends HttpServlet {
     	}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.empreses_list)) {
     		response.sendRedirect(request.getContextPath() + "/");	 
  	   	}else{	 
-	        String errorString = null;
 	        List<Empresa> list = null;
-	        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			Calendar cal = Calendar.getInstance(); 
 			Date dataFi = cal.getTime();
-			String dataFiString = df.format(dataFi);	
 			dataFi = new Date(dataFi.getTime());
 			cal.set(2019, 0, 1);
 			Date dataIni = cal.getTime();
-			String dataIniciString = df.format(dataIni);
-	        try {
-	            list = EmpresaCore.getDespesaEmpreses(conn, dataIni, dataFi);
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	            errorString = e.getMessage();
-	        }
+	        list = EmpresaCore.getDespesaEmpreses(conn, dataIni, dataFi);
 	   
 	        // Store info in request attribute, before forward to views
-	        request.setAttribute("errorString", errorString);
+	        
 	        request.setAttribute("empresesList", list);
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Empreses")); 
 	     

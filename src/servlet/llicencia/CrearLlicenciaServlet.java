@@ -2,9 +2,7 @@ package servlet.llicencia;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,12 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import bean.Actuacio;
-import bean.Llicencia;
 import bean.User;
 import bean.ControlPage.SectionPage;
 import core.ControlPageCore;
 import core.InformeCore;
-import core.LlicenciaCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
@@ -49,26 +45,12 @@ public class CrearLlicenciaServlet extends HttpServlet {
     		response.sendRedirect(request.getContextPath() + "/");	 
  	   	}else{
 			String idInforme = request.getParameter("idInforme");			       
-	        Actuacio actuacio = new Actuacio();	
-	        String errorString = null;	 
-	        try {     	
-	        	actuacio = InformeCore.getInformePrevi(conn, idInforme, false).getActuacio();	                   
-	        } catch (SQLException | NamingException e) {
-	            e.printStackTrace();
-	            errorString = e.getMessage();
-	        }
+	        Actuacio actuacio = new Actuacio();
+	        actuacio = InformeCore.getInformePrevi(conn, idInforme, false).getActuacio();
 	 
-	         
-	        // If no error.
-	        // The product does not exist to edit.
-	        // Redirect to productList page.
-	        if (errorString != null) {
-	            response.sendRedirect(request.getServletPath() + "/llicencies");
-	            return;
-	        }
 	 
 	        // Store errorString in request attribute, before forward to views.
-	        request.setAttribute("errorString", errorString);
+	        
 	        request.setAttribute("idInforme", idInforme);
 	        request.setAttribute("actuacio", actuacio);
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"llicencies"));

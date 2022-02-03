@@ -214,22 +214,24 @@
 	</c:forEach>
 	<br>					            		
 </div>
-<div class="row">            			
-	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadDocumentsAltresLicitacio">
-		<div class="form-group">
-			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-            <div class="col-xs-5">   
-            	<input type="file" class="btn" name="file" multiple/><br/>
-			</div> 
-			<input type="hidden" name="idActuacio" value="${informePrevi.actuacio.referencia}">
-			<input type="hidden" name="idIncidencia" value="${informePrevi.actuacio.idIncidencia}">
-			<input type="hidden" name="idInforme" value="${informePrevi.idInf}">			    
-			<div class="col-xs-2"> 
-				<input type="submit" class="btn btn-primary loadingButton" value="Pujar" />
-			</div>    						
-		</div>         				
-	</form>							
-</div>	
+<c:if test="${isIBISEC}">
+	<div class="row">            			
+		<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadDocumentsAltresLicitacio">
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+	            <div class="col-xs-5">   
+	            	<input type="file" class="btn" name="file" multiple/><br/>
+				</div> 
+				<input type="hidden" name="idActuacio" value="${informePrevi.actuacio.referencia}">
+				<input type="hidden" name="idIncidencia" value="${informePrevi.actuacio.idIncidencia}">
+				<input type="hidden" name="idInforme" value="${informePrevi.idInf}">			    
+				<div class="col-xs-2"> 
+					<input type="submit" class="btn btn-primary loadingButton" value="Pujar" />
+				</div>    						
+			</div>         				
+		</form>							
+	</div>
+</c:if>	
 <div class="row">
 	<div class="col-md-12">
 		<div class="row">

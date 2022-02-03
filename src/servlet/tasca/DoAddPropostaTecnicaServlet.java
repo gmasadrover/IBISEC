@@ -2,9 +2,7 @@ package servlet.tasca;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -53,19 +51,13 @@ public class DoAddPropostaTecnicaServlet extends HttpServlet {
 	    String guardar = request.getParameter("guardar");
 	    if (guardar != null) {
 	    	if (seleccionada != null && !seleccionada.isEmpty()){
-			  	try {	   	
-			  		OfertaCore.seleccionarOferta(conn, idInforme, seleccionada, termini, comentari);
-			  		InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme, false);
-			  		PropostaInforme proposta = informe.getPropostaInformeSeleccionada();
-			  		proposta.setEbss(EBSS);
-			  		proposta.setCoordinacio(coordinacio);
-			  		InformeCore.modificarProposta(conn, proposta);
-			   		/*;*/
-				} catch (SQLException | NamingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					errorString = e.getMessage();
-				} 
+			  	OfertaCore.seleccionarOferta(conn, idInforme, seleccionada, termini, comentari);
+				InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme, false);
+				PropostaInforme proposta = informe.getPropostaInformeSeleccionada();
+				proposta.setEbss(EBSS);
+				proposta.setCoordinacio(coordinacio);
+				InformeCore.modificarProposta(conn, proposta);
+				/*;*/ 
 	    	}else{
 	    		errorString = "S'ha de seleccionar l'empresa adjudicatària";
 	    	}

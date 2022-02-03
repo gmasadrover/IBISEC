@@ -2,14 +2,12 @@ package servlet.factura;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,7 +19,6 @@ import bean.Empresa;
 import bean.InformeActuacio;
 import bean.Oferta;
 import bean.User;
-import bean.ControlPage.SectionPage;
 import core.ControlPageCore;
 import core.EmpresaCore;
 import core.FacturaCore;
@@ -56,24 +53,26 @@ public class CreateCertificacioServlet extends HttpServlet {
         } else{ 	 
  	   		String idInforme = request.getParameter("idInforme");
  	   		List<Empresa> empresesList = new ArrayList<Empresa>();
- 	   		boolean NovaLLei = false;
-	        try {
-	        	InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme, false);
+	        InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme, false);
+	        if (informe.isInformeAntic()) {
+	        	request.setAttribute("idActuacio", informe.getActuacio().getReferencia());	        	
+				request.setAttribute("idInforme", idInforme);
+				request.setAttribute("concepte", informe.getActuacio().getDescripcio());
+				request.setAttribute("idCertificacio", FacturaCore.getCodeCertAntic(conn));
+	        } else {
 	        	Oferta oferta = OfertaCore.findOfertaSeleccionada(conn, idInforme);
-	        	request.setAttribute("idActuacio", oferta.getIdActuacio());	        	
-	        	request.setAttribute("idInforme", oferta.getIdInforme());
-				request.setAttribute("idCertificacio", FacturaCore.getNewCodeCert(conn));
+				request.setAttribute("idActuacio", oferta.getIdActuacio());	        	
+				request.setAttribute("idInforme", oferta.getIdInforme());
 				request.setAttribute("nifProveidor", oferta.getCifEmpresa());
 				request.setAttribute("valorRestantCertificar", oferta.getPlic() + informe.getTotalModificacions() - informe.getTotalCertificat());
-				request.setAttribute("idUsuariInforme", informe.getUsuari().getIdUsuari());
 				request.setAttribute("concepte", informe.getPropostaInformeSeleccionada().getObjecte());
-				request.setAttribute("llistaUsuaris", UsuariCore.llistaUsuaris(conn, true));
-				empresesList = EmpresaCore.getEmpreses(conn);
-				empresesList.addAll(EmpresaCore.getEmpresesUTE(conn));		
-			} catch (SQLException | NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				request.setAttribute("idCertificacio", FacturaCore.getNewCodeCert(conn));
+	        }			
+			
+			request.setAttribute("idUsuariInforme", informe.getUsuari().getIdUsuari());
+			request.setAttribute("llistaUsuaris", UsuariCore.llistaUsuaris(conn, true));
+			empresesList = EmpresaCore.getEmpreses(conn);
+			empresesList.addAll(EmpresaCore.getEmpresesUTE(conn));
 	        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 	        String today = df.format(new Date().getTime());	
 	        request.setAttribute("data", today);

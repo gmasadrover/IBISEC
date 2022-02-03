@@ -2,11 +2,9 @@ package servlet.expedient;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,15 +12,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileUploadException;
-
 import bean.InformeActuacio;
 import bean.Oferta;
 import bean.User;
 import bean.InformeActuacio.PropostaInforme;
-import core.ActuacioCore;
 import core.CreditCore;
-import core.ExpedientCore;
 import core.InformeCore;
 import core.OfertaCore;
 import core.TascaCore;
@@ -51,12 +45,7 @@ public class DoEditModificacioInformeServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Connection conn = MyUtils.getStoredConnection(request);	
 		Fitxers.formParameters multipartParams = new Fitxers.formParameters();
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);
 	    String idInforme = multipartParams.getParametres().get("idInforme");
 	    String idModificacio = multipartParams.getParametres().get("idModificacio");
 	    String objecte = multipartParams.getParametres().get("objecteModificacio");
@@ -67,13 +56,11 @@ public class DoEditModificacioInformeServlet extends HttpServlet {
 	    double pbase = 0;
 	    double iva = 0;
 	    double plic = 0;
-	 	SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-	 	
+	 	SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");			
 	    if (tipusIncidencia.equals("penalitzacio")) {	
 	    	plic = Double.parseDouble(multipartParams.getParametres().get("plicPenalitzacio").replace(',','.'));
-	    	if (plic > 0) plic = -1*plic;
-	    			
-	    } else if(tipusIncidencia.equals("certfinal") ||  tipusIncidencia.equals("enriquimentInjust") || tipusIncidencia.equals("modificacio") || tipusIncidencia.equals("preusContradictoris")) {
+	    	if (plic > 0) plic = -1*plic;	    
+	    } else if(tipusIncidencia.equals("certfinal") || tipusIncidencia.equals("excesAmidament")  || tipusIncidencia.equals("decrementAmidament") ||  tipusIncidencia.equals("enriquimentInjust") || tipusIncidencia.equals("modificacio") || tipusIncidencia.equals("preusContradictoris")) {
 	    	pbase = Double.parseDouble(multipartParams.getParametres().get("pbase").replace(',','.'));
 	    	iva = Double.parseDouble(multipartParams.getParametres().get("iva"));
 	    	plic = Double.parseDouble(multipartParams.getParametres().get("plic").replace(',','.'));	
@@ -130,48 +117,40 @@ public class DoEditModificacioInformeServlet extends HttpServlet {
 	  		
 	  		//Modificar modificació	  		
 	  		InformeCore.modificarModificacioInforme(conn, idModificacio, proposta, ofertaProposta, Usuari, tipusIncidencia);
-	  		System.out.println("entra");
 	  		if (!tipusIncidencia.equals("penalitzacio")) {
 		  		OfertaCore.modificarOferta(conn, ofertaProposta);
 	  		}
 	  		if (multipartParams.getFitxersByName().get("informeDF") != null) {
-	  			System.out.println("entra -> informe DF");
-	  			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("informeDF"), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", idInforme, idModificacio, "Informe DF", Usuari.getIdUsuari());
+	  			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("informeDF"), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", idInforme, idModificacio.split("#")[0], "Informe DF", Usuari.getIdUsuari());
 	  		}
 	  		if (multipartParams.getFitxersByName().get("resinici") != null) {
-	  			System.out.println("entra -> res inici");
-	  			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("resinici"), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", idInforme, idModificacio, "Resolució Inici", Usuari.getIdUsuari());
+	  			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("resinici"), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", idInforme, idModificacio.split("#")[0], "Resolució Inici", Usuari.getIdUsuari());
 	  		}
 	  		if (multipartParams.getFitxersByName().get("tramits") != null) {
-	  			System.out.println("entra -> tramits");
-	  			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("tramits"), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", idInforme, idModificacio, "Tramits", Usuari.getIdUsuari());
+	  			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("tramits"), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", idInforme, idModificacio.split("#")[0], "Tramits", Usuari.getIdUsuari());
 	  		}
 	  		if (multipartParams.getFitxersByName().get("resfinal") != null) {
-	  			System.out.println("entra -> res final");
-	  			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("resfinal"), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", idInforme, idModificacio, "Resolució Final", Usuari.getIdUsuari());
+	  			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("resfinal"), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", idInforme, idModificacio.split("#")[0], "Resolució Final", Usuari.getIdUsuari());
 	  		}
 	  		if (multipartParams.getFitxersByName().get("informe") != null) {
-	  			System.out.println("entra -> informe");
-	  			InformeCore.saveInformeModificacio(conn, informe.getIdIncidencia(), informe.getActuacio().getReferencia(), idInforme, idModificacio, multipartParams.getFitxersByName().get("informe"), Usuari.getIdUsuari());
+	  			InformeCore.saveInformeModificacio(conn, informe.getIdIncidencia(), informe.getActuacio().getReferencia(), idInforme, idModificacio.split("#")[0], multipartParams.getFitxersByName().get("informe"), Usuari.getIdUsuari());
 	  		}	  		
 	  		if (multipartParams.getFitxersByName().get("certificatEconomic") != null) {
-	  			System.out.println("entra -> certificat economic");
-	  			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("certificatEconomic"), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", idInforme, idModificacio, "Conforme àrea financera", Usuari.getIdUsuari());
+	  			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("certificatEconomic"), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", idInforme, idModificacio.split("#")[0], "Conforme àrea financera", Usuari.getIdUsuari());
 	  		}
 	  		if (multipartParams.getFitxersByName().get("informeJuridic") != null) {
-	  			System.out.println("entra -> informe juridic");
-	  			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("informeJuridic"), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", idInforme, idModificacio, "Informe Juridic", Usuari.getIdUsuari());
+	  			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("informeJuridic"), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", idInforme, idModificacio.split("#")[0], "Informe Juridic", Usuari.getIdUsuari());
 	  		}
 	  		if (multipartParams.getFitxersByName().get("autoritzacioDespesa") != null) {
-	  			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("autoritzacioDespesa"), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", idInforme, idModificacio, "Autorització Despesa modificació", Usuari.getIdUsuari());
+	  			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("autoritzacioDespesa"), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", idInforme, idModificacio.split("#")[0], "Autorització Despesa modificació", Usuari.getIdUsuari());
 		  		OfertaCore.aprovarOferta(conn, idModificacio, Usuari.getIdUsuari());
 		  		CreditCore.assignar(conn, idModificacio, informeModificacio.getOfertaSeleccionada().getPlic());
 	  		}	
 	  		if (multipartParams.getFitxersByName().get("contracte") != null) {
-	  			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("contracte"), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", idInforme, idModificacio, "Contracte", Usuari.getIdUsuari());
+	  			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("contracte"), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", idInforme, idModificacio.split("#")[0], "Contracte", Usuari.getIdUsuari());
 	  		}
 	  		/*;*/
-		} catch (SQLException | NamingException | ParseException e) {
+		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			errorString = e.getMessage();

@@ -3,11 +3,9 @@ package servlet.expedient;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -64,12 +62,7 @@ public class DoGetDocumentacioUrbanisme extends HttpServlet {
 		String idActuacio = request.getParameter("idActuacio");
 		String idInf = request.getParameter("idInf");
 		List<Fitxer> adjunts = new ArrayList<Fitxer>();
-		try {
-			adjunts = InformeCore.getDocumentsAltresAutUrbanistica(conn, idIncidencia, idActuacio, idInf);	
-		} catch (SQLException | NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		adjunts = InformeCore.getDocumentsAltresAutUrbanistica(conn, idIncidencia, idActuacio, idInf);
 		
 		myObj.addProperty("success", true);	
 		JsonElement llistatObj = gson.toJsonTree(adjunts);

@@ -2,9 +2,7 @@ package servlet.expedient;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -48,28 +46,21 @@ public class ExpedientDetailsServlet extends HttpServlet {
    		response.sendRedirect(request.getContextPath() + "/");	 	
 	   }else{		   
 		   String referencia = request.getParameter("ref");   
-	       String errorString = null;
 	       Expedient expedient = new Expedient();
 	       InformeActuacio informePrevi = new InformeActuacio();
 	       Actuacio actuacio = new Actuacio();	
 	       Incidencia incidencia = new Incidencia();
 	       Llicencia llicencia = new Llicencia();
 	       Boolean canModificar = false;
-	       try {
-	    	   expedient = ExpedientCore.findExpedient(conn, referencia);
-	    	   informePrevi = InformeCore.getInformePrevi(conn, expedient.getIdInforme(), true);
-	    	   llicencia = LlicenciaCore.findLlicenciaExpedient(conn, informePrevi.getIdInf(), informePrevi.getIdIncidencia());
-	    	   actuacio = informePrevi.getActuacio();
-	    	   actuacio.setSeguiment(ActuacioCore.isSeguimentActuacio(conn, actuacio.getReferencia(), usuari.getIdUsuari()));	  
-	    	   incidencia = IncidenciaCore.findIncidencia(conn, actuacio.getIdIncidencia());
-	    	   actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(incidencia.getIdIncidencia()));
-	    	   canModificar = UsuariCore.hasPermision(conn, usuari, SectionPage.expedient_modificar);
-	       } catch (SQLException | NamingException e) {
-	           e.printStackTrace();
-	           errorString = e.getMessage();
-	       }
+	       expedient = ExpedientCore.findExpedient(conn, referencia);
+		   informePrevi = InformeCore.getInformePrevi(conn, expedient.getIdInforme(), true);
+		   llicencia = LlicenciaCore.findLlicenciaExpedient(conn, informePrevi.getIdInf(), informePrevi.getIdIncidencia());
+		   actuacio = informePrevi.getActuacio();
+		   actuacio.setSeguiment(ActuacioCore.isSeguimentActuacio(conn, actuacio.getReferencia(), usuari.getIdUsuari()));	  
+		   incidencia = IncidenciaCore.findIncidencia(conn, actuacio.getIdIncidencia());
+		   actuacio.setArxiusAdjunts(Fitxers.ObtenirTotsFitxers(conn, incidencia.getIdIncidencia()));
+		   canModificar = UsuariCore.hasPermision(conn, usuari, SectionPage.expedient_modificar);
 	       // Store info in request attribute, before forward to views
-	       request.setAttribute("errorString", errorString);
 	       request.setAttribute("expedient", expedient);
 	       request.setAttribute("informeSeleccionat", informePrevi.getIdInf());
 	       request.setAttribute("informePrevi", informePrevi);

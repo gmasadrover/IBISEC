@@ -2,7 +2,6 @@ package servlet.llistats;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,15 +16,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.Resultat;
 import bean.User;
 import bean.Centre;
-import bean.InformeActuacio;
 import bean.ControlPage.SectionPage;
-import core.ActuacioCore;
 import core.CentreCore;
 import core.ControlPageCore;
-import core.InformeCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
@@ -105,7 +99,7 @@ public class LlistatsListServlet extends HttpServlet {
 					centres = CentreCore.findCentresWithIncidencies(conn, tipus, dataInici, dataFi, estat, null, null);
 					filterWithOutDateExec = "on";
 				}				
-			} catch (SQLException | ParseException e) {
+			} catch (ParseException e) {
 				errorString = e.getMessage();
 				e.printStackTrace();
 			}

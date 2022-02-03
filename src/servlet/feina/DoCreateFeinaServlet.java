@@ -2,9 +2,7 @@ package servlet.feina;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -51,28 +49,17 @@ public class DoCreateFeinaServlet extends HttpServlet {
 	    feina.setContingut(contingut);
 	    feina.setNotes(notes);
 	    
-	    String errorString = null;	
-   		try {
-   			ActuacioCore.afegirFeina(conn, idActuacio, feina);
-   		} catch (SQLException e) {
-  			e.printStackTrace();
-  			errorString = e.getMessage();
-   		}
+   		ActuacioCore.afegirFeina(conn, idActuacio, feina);
 	       
 	   	
 	   	
 	   	// Store infomation to request attribute, before forward to views.
-	   	request.setAttribute("errorString", errorString);
+	  
 	   	request.setAttribute("idActuacio", idActuacio);
 	  	// If error, forward to Edit page.
-	   	if (errorString != null) {
-	   		RequestDispatcher dispatcher = request.getServletContext()
-	   				.getRequestDispatcher("/WEB-INF/views/actuacio/createFeinaView.jsp");
-	   		dispatcher.forward(request, response);
-	   	}// If everything nice. Redirect to the product listing page.            
-	   	else {
+	  
 	   		response.sendRedirect(request.getContextPath() + "/actuacionsDetalls?ref=" + idActuacio);
-	   	}
+	   	
 	}
 
 	/**

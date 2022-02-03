@@ -2,7 +2,6 @@ package servlet.gestio;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -14,7 +13,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.ReservaVehicle;
 import bean.User;
 import bean.Vacances;
 import bean.ControlPage.SectionPage;
@@ -93,18 +91,13 @@ public class VacancesServlet extends HttpServlet {
 	        int diesDisponiblesVacances = 0;
 	        int diesDisponiblesP7 = 0;
 	        
- 			try {
- 				if (departament == null) departament = usuariLogetjat.getDepartament();
-				usuarisObres = UsuariCore.findUsuarisDepartament(conn, departament);
-				vacances.setReservesList(CalendarCore.getVacances(conn, departament));
-				reservesPropiesPendents = CalendarCore.getProperesVacancesUsuari(conn, usuariLogetjat.getIdUsuari());
-				reservesPropiesDisfrutades = CalendarCore.getVacancesDisfrutadesUsuari(conn, usuariLogetjat.getIdUsuari());
-				diesDisponiblesVacances = CalendarCore.getDiesDisponibles(conn, usuariLogetjat.getIdUsuari(), vacances, "vacances");
-				diesDisponiblesP7 = CalendarCore.getDiesDisponibles(conn, usuariLogetjat.getIdUsuari(), vacances, "p7");
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+ 			if (departament == null) departament = usuariLogetjat.getDepartament();
+			usuarisObres = UsuariCore.findUsuarisDepartament(conn, departament);
+			vacances.setReservesList(CalendarCore.getVacances(conn, departament));
+			reservesPropiesPendents = CalendarCore.getProperesVacancesUsuari(conn, usuariLogetjat.getIdUsuari());
+			reservesPropiesDisfrutades = CalendarCore.getVacancesDisfrutadesUsuari(conn, usuariLogetjat.getIdUsuari());
+			diesDisponiblesVacances = CalendarCore.getDiesDisponibles(conn, usuariLogetjat.getIdUsuari(), vacances, "vacances");
+			diesDisponiblesP7 = CalendarCore.getDiesDisponibles(conn, usuariLogetjat.getIdUsuari(), vacances, "p7");
 	        request.setAttribute("vacances", vacances);
 	        request.setAttribute("actualMonth", actualMonth);
 	        request.setAttribute("actualYear", actualYear);

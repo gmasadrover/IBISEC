@@ -3,11 +3,9 @@ package handler;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,10 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import bean.Actuacio;
 import bean.Judicial;
-import core.ActuacioCore;
-import core.CentreCore;
 import core.JudicialCore;
 import utils.MyUtils;
 
@@ -62,16 +57,10 @@ public class LlistatProcediments extends HttpServlet {
         JsonObject myObj = new JsonObject();
         Connection conn = MyUtils.getStoredConnection(request);
         List<Judicial> llistatProcediments = new ArrayList<Judicial>();
-		try {
-			llistatProcediments = JudicialCore.getProcediments(conn, null, null);		
-			myObj.addProperty("success", true);
-			JsonElement llistatObj = gson.toJsonTree(llistatProcediments);
-			myObj.add("llistatProcediments", llistatObj);
-		} catch (SQLException | NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			myObj.addProperty("success", false);
-		}              
+		llistatProcediments = JudicialCore.getProcediments(conn, null, null);		
+		myObj.addProperty("success", true);
+		JsonElement llistatObj = gson.toJsonTree(llistatProcediments);
+		myObj.add("llistatProcediments", llistatObj);              
         out.println(myObj.toString());
  
         out.close();

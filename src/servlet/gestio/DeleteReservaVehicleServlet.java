@@ -3,7 +3,6 @@ package servlet.gestio;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,9 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonObject;
 
-import bean.ReservaVehicle;
 import core.CalendarCore;
-import utils.Fitxers;
 import utils.MyUtils;
 
 /**
@@ -56,9 +53,6 @@ public class DeleteReservaVehicleServlet extends HttpServlet {
 		try {
 			CalendarCore.eliminarReserva(conn, Integer.parseInt(request.getParameter("any")), Integer.parseInt(request.getParameter("setmana")), Integer.parseInt(request.getParameter("dia")), request.getParameter("vehicle"), Integer.parseInt(request.getParameter("idusuari")));
 		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

@@ -49,7 +49,7 @@
 		    				<div class="form-group">			    				    				    		
 			                    <div class="col-md-6">
 		                            <div class="form-group">
-		                                <label class="col-xs-3 control-label">Data inici</label>
+		                                <label class="col-xs-4 control-label">Data inici</label>
 		                                <div class="input-group date col-xs-6 datepicker">
 										  	<input type="text" class="form-control" name="dataInici" value="${incidencia.getDataIniciString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 										</div>
@@ -57,7 +57,7 @@
 			                    </div>
 			                    <div class="col-md-6">
 		                            <div class="form-group">
-		                                <label class="col-xs-3 control-label">Data fi</label>
+		                                <label class="col-xs-4 control-label">Data fi</label>
 		                                <div class="input-group date col-xs-6 datepicker">
 										  	<input type="text" class="form-control" name="dataFi" value="${incidencia.getDataFiString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 										</div>
@@ -65,13 +65,30 @@
 		                        </div>
 			                </div>
 						    <div class="form-group">
-						   		<div class="col-md-12">
-	                                <label class="col-xs-1 control-label">Descripcio</label>
-	                                <div class="col-xs-10">
+						   		<div class="col-md-6">
+	                                <label class="col-xs-4 control-label">Descripcio</label>
+	                                <div class="col-xs-8">
 	                                	<textarea class="form-control" name="descripcio" placeholder="descripcio" rows="3">${incidencia.objecte}</textarea>
 	                                </div>
                                 </div>
                             </div>
+                            <div class="form-group">					
+						    	<div class="col-md-6">
+						        	<label class="col-xs-4 control-label">Arxius:</label> 
+						            	<div class="col-xs-8">  		
+						                	<c:forEach items="${incidencia.documentsList}" var="arxiu" >
+						                		<c:set var="arxiu" value="${arxiu}" scope="request"/>
+												<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>						            		
+										</c:forEach>	
+									</div>
+								</div>
+							</div>	
+							<div class="form-group">
+								<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+						           <div class="col-xs-5">   
+						           	<input type="file" class="btn" name="documentIncidenciaGarantia" multiple/><br/>
+								</div> 
+							</div>	
                             <br>
 						    <div class="form-group">
 						        <div class="col-xs-offset-3 col-xs-9">

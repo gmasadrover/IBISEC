@@ -2,17 +2,12 @@ package servlet.expedient;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.naming.NamingException;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.fileupload.FileUploadException;
 
 import bean.InformeActuacio;
 import core.CreditCore;
@@ -42,27 +37,17 @@ public class DoAnularExpedient extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Connection conn = MyUtils.getStoredConnection(request);
 		Fitxers.formParameters multipartParams = new Fitxers.formParameters();
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);
 		String errorString = null;
 		String refExp = multipartParams.getParametres().get("expedient");
 		String idActuacio = multipartParams.getParametres().get("idActuacio");
 		String motiuAnulacio = multipartParams.getParametres().get("motiuAnulacio");
 		String idInforme = multipartParams.getParametres().get("idInforme");
-		try {
-			//Anular Expedient			
-			ExpedientCore.anularExpedient(conn, refExp, motiuAnulacio);
-			//Anular Reserva crèdit
-			//CreditCore.anularReserva(conn, idInforme);
-		} catch (SQLException e2) {
-			errorString = e2.toString();
-		}		
-		
-	   	// Store infomation to request attribute, before forward to views.
+		//Anular Expedient			
+		ExpedientCore.anularExpedient(conn, idInforme, refExp, motiuAnulacio);				
+		InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme, false);
+		CreditCore.assignar(conn, idInforme, informe.getTotalFacturat());
+		// Store infomation to request attribute, before forward to views.
 	   	request.setAttribute("errorString", errorString);
 	   
 	  	// If error, forward to Edit page.	   

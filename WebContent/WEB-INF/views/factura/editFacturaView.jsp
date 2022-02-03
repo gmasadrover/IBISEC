@@ -66,8 +66,8 @@
 	                            </div> 
 	                            <div id="incidencies"></div>   
 	                            <div id="procediments"></div>   
-	                            <div id="expedients"></div>     
-	                    	</div>
+	                            <div id="expedients"></div>      
+	                    	</div>	                    	
                             <div class="form-group proveidor">
                                 <label class="col-xs-3 control-label">Proveidor</label>
                                 <input class="hidden" name="nifProveidor" id=nifProveidor value="${factura.idProveidor}"> 
@@ -79,7 +79,18 @@
 					                   	</c:forEach>	
 					                </select>	
                                 </div>
-                            </div>	 
+                            </div>	
+                            <div class="form-group">
+                                <label class="col-xs-3  control-label">Usuari conformador</label>
+                                <input class="hidden" name="idUsuariInforme" id=idUsuariInforme value="${factura.usuariConformador.idUsuari}"> 
+                                <div class="col-xs-3">
+	                                 <select class="form-control selectpicker" data-live-search="true" data-size="5" name="usuarisList" id="usuarisList">
+					                	<c:forEach items="${llistaUsuaris}" var="usuari">
+					                		<option value="${usuari.idUsuari}">${usuari.getNomCompletReal()}</option>
+					                	</c:forEach>					                                	
+					                </select>	
+	                             </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">Import</label>
                                 <div class="col-xs-3">
@@ -116,17 +127,6 @@
                                 	<input class="form-control" name="nombre" placeholder="nombre" value="${factura.nombreFactura}">
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="col-xs-3 control-label">Usuari conformador</label>
-                                <div class="col-xs-3">
-                                	<input class="hidden" name="idUsuariInforme" id=idUsuariInforme value="${factura.usuariConformador.idUsuari}"> 
-                                	<select class="form-control selectpicker" data-live-search="true" data-size="10" name="idConformador" id="usuarisList">
-		                                <c:forEach items="${llistaUsuaris}" var="usuari" >
-	                                		<option value='${usuari.idUsuari}'>${usuari.getNomCompletReal()}</option>
-	                                	</c:forEach>
-                                	</select>
-                                </div>
-                            </div>   
                             <div class="form-group hidden">
                                 <label class="col-xs-3 control-label">Data pasada a conformar</label>
                                 <div class="input-group date col-xs-3 datepicker">

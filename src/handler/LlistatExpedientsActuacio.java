@@ -3,11 +3,9 @@ package handler;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,9 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import bean.Actuacio;
 import bean.InformeActuacio;
-import core.ActuacioCore;
 import core.CentreCore;
 import core.InformeCore;
 import utils.MyUtils;
@@ -64,18 +60,12 @@ public class LlistatExpedientsActuacio extends HttpServlet {
         JsonObject myObj = new JsonObject();
         Connection conn = MyUtils.getStoredConnection(request);
         List<InformeActuacio> llistatExpedients = new ArrayList<InformeActuacio>();
-		try {
-			llistatExpedients = InformeCore.getInformesActuacio(conn, idActuacio);
-			myObj.addProperty("success", true);
-			JsonElement llistatObj = gson.toJsonTree(llistatExpedients);
-			myObj.add("llistatExpedients", llistatObj);
-			JsonElement nomCentreObj = gson.toJsonTree(CentreCore.nomCentre(conn, idCentre));
-			myObj.add("nomCentre", nomCentreObj);
-		} catch (SQLException | NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			myObj.addProperty("success", false);
-		}              
+		llistatExpedients = InformeCore.getInformesActuacio(conn, idActuacio);
+		myObj.addProperty("success", true);
+		JsonElement llistatObj = gson.toJsonTree(llistatExpedients);
+		myObj.add("llistatExpedients", llistatObj);
+		JsonElement nomCentreObj = gson.toJsonTree(CentreCore.nomCentre(conn, idCentre));
+		myObj.add("nomCentre", nomCentreObj);              
         out.println(myObj.toString());
  
         out.close();

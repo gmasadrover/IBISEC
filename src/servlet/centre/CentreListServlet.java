@@ -2,7 +2,6 @@ package servlet.centre;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,15 +50,10 @@ public class CentreListServlet extends HttpServlet {
 			boolean ambIncidencia = false;	
 			String errorString = null;
 			List<Centre> list = new ArrayList<Centre>();
-			try {
-				if (filtrar != null) {
-					ambIncidencia = request.getParameter("ambIncidencia") != null;					
-				}
-				list = CentreCore.findCentres(conn, ambIncidencia);
-			} catch (SQLException e) {
-				e.printStackTrace();
-				errorString = e.getMessage();
+			if (filtrar != null) {
+				ambIncidencia = request.getParameter("ambIncidencia") != null;					
 			}
+			list = CentreCore.findCentres(conn, ambIncidencia);
 
 			// Store info in request attribute, before forward to views
 			request.setAttribute("errorString", errorString);

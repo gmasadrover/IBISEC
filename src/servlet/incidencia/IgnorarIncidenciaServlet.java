@@ -2,7 +2,6 @@ package servlet.incidencia;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -34,12 +33,7 @@ public class IgnorarIncidenciaServlet extends HttpServlet {
 		Connection conn = MyUtils.getStoredConnection(request);				
 	    String idIncidencia = request.getParameter("idIncidencia");	   
    		
-		try {
-			IncidenciaCore.ignorar(conn, idIncidencia);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}   
+		IncidenciaCore.ignorar(conn, idIncidencia);   
 
 	   	response.sendRedirect(request.getContextPath() + "/incidenciaDetalls?ref=" + idIncidencia);
 	}

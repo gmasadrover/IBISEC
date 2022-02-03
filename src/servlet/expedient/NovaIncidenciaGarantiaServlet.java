@@ -2,9 +2,7 @@ package servlet.expedient;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,13 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.InformeActuacio;
 import bean.User;
 import bean.ControlPage.SectionPage;
-import core.ActuacioCore;
 import core.ControlPageCore;
-import core.ExpedientCore;
-import core.InformeCore;
 import core.UsuariCore;
 import utils.MyUtils;
 

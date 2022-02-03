@@ -2,12 +2,10 @@ package servlet.registre;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -48,17 +46,12 @@ public class CreateSortidaServlet extends HttpServlet {
         }else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.registre_sort_crear)) {
     		response.sendRedirect(request.getContextPath() + "/");
         }else{	       
-	        try {
-	        	String idIncidencia = request.getParameter("idIncidencia");
-	        	String idInforme = request.getParameter("idInf");
-	        	request.setAttribute("llistaProcediment", JudicialCore.getProcediments(conn, "-1", "-1"));
-	        	request.setAttribute("idIncidencia", idIncidencia);
-	        	request.setAttribute("idInforme", idInforme);
-				request.setAttribute("nouCodi", RegistreCore.getNewCode(conn, "S"));
-			} catch (SQLException | NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	        String idIncidencia = request.getParameter("idIncidencia");
+			String idInforme = request.getParameter("idInf");
+			request.setAttribute("llistaProcediment", JudicialCore.getProcediments(conn, "-1", "-1"));
+			request.setAttribute("idIncidencia", idIncidencia);
+			request.setAttribute("idInforme", idInforme);
+			request.setAttribute("nouCodi", RegistreCore.getNewCode(conn, "S"));
 	        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 	        String today = df.format(new Date().getTime());	
 	        request.setAttribute("data", today);

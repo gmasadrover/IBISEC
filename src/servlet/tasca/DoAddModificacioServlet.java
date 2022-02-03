@@ -2,11 +2,9 @@ package servlet.tasca;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,18 +12,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileUploadException;
-
-import bean.Actuacio;
-import bean.Expedient;
 import bean.InformeActuacio;
 import bean.Tasca;
 import bean.User;
 import core.ActuacioCore;
-import core.ExpedientCore;
 import core.InformeCore;
-import core.LlicenciaCore;
-import core.OfertaCore;
 import core.TascaCore;
 import core.UsuariCore;
 import utils.Fitxers;
@@ -54,12 +45,7 @@ public class DoAddModificacioServlet extends HttpServlet {
 		Connection conn = MyUtils.getStoredConnection(request);
 		
 		Fitxers.formParameters multipartParams = new Fitxers.formParameters();
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);
 		String ipRemote = request.getRemoteAddr();
 		int idTasca = -1;
 		Tasca tasca = new Tasca();
@@ -72,40 +58,29 @@ public class DoAddModificacioServlet extends HttpServlet {
 	    User Usuari = MyUtils.getLoginedUser(request.getSession());	
 	    if (multipartParams.getParametres().get("idTasca") != null) {
 	    	idTasca = Integer.parseInt(multipartParams.getParametres().get("idTasca"));	
-	    	try {
-				tasca = TascaCore.findTascaId(conn, idTasca, Usuari.getIdUsuari());
-			} catch (SQLException | NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	    	tasca = TascaCore.findTascaId(conn, idTasca, Usuari.getIdUsuari());
 	    }
 		
 	    //Guardar adjunts
 	    List<Fitxer> fitxers = multipartParams.getFitxers();
 	    if (!fitxers.isEmpty()) {
-	    	try {		
-		    	InformeCore.saveInformeModificacio(conn, idIncidencia, idActuacio, idInforme, idModificacio, fitxers, Usuari.getIdUsuari());
-		    	InformeCore.validacioCapInforme(conn, idModificacio, Usuari.getIdUsuari(), comentariCap, new Date());
-		    	TascaCore.nouHistoric(conn, String.valueOf(idTasca), "Informe aprovat", Usuari.getIdUsuari(), ipRemote, "automatic");
-				ActuacioCore.actualitzarActuacio(conn, idActuacio, "Proposta modificació realitzada");
-				TascaCore.reasignar(conn, 900, idTasca, tasca.getTipus(), tasca.getDescripcio());
-				TascaCore.tancar(conn, idTasca);
-				int idUsuari = UsuariCore.findUsuarisByRol(conn, "CAP,CONTA").get(0).getIdUsuari();
-				InformeActuacio modificacio = InformeCore.getMoficacioInforme(conn, idModificacio, false);
-				InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme, false);
-				if (modificacio.getPropostaInformeSeleccionada().getPbase() > 0) {
-					String idModificacioAUX = idModificacio.split("#")[0];
-					TascaCore.novaTasca(conn, "resPartidaModificacio", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), idModificacioAUX, null, ipRemote, "automatic");
-				} else {
-					idUsuari = UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari();
-					String idModificacioAUX = idModificacio.split("#")[0];
-					String comentari = "S'ha realitzat la proposta de modificació " + idInforme ;
-					TascaCore.novaTasca(conn, "autoritzacioModificacio", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, comentari, "Autorització modificació actuació", idModificacioAUX, null, ipRemote, "automatic");
-				}
-				
-			} catch (SQLException | NamingException e) {
-				errorString = e.toString();
-				e.printStackTrace();
+	    	InformeCore.saveInformeModificacio(conn, idIncidencia, idActuacio, idInforme, idModificacio, fitxers, Usuari.getIdUsuari());
+			InformeCore.validacioCapInforme(conn, idModificacio, Usuari.getIdUsuari(), comentariCap, new Date());
+			TascaCore.nouHistoric(conn, idTasca, "Informe aprovat", Usuari.getIdUsuari(), ipRemote, "automatic");
+			ActuacioCore.actualitzarActuacio(conn, idActuacio, "Proposta modificació realitzada");
+			TascaCore.reasignar(conn, 900, idTasca, tasca.getTipus(), tasca.getDescripcio());
+			TascaCore.tancar(conn, idTasca);
+			int idUsuari = UsuariCore.findUsuarisByRol(conn, "CAP,CONTA").get(0).getIdUsuari();
+			InformeActuacio modificacio = InformeCore.getMoficacioInforme(conn, idModificacio, false);
+			InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme, false);
+			if (modificacio.getPropostaInformeSeleccionada().getPbase() > 0) {
+				String idModificacioAUX = idModificacio.split("#")[0];
+				TascaCore.novaTasca(conn, "resPartidaModificacio", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), "Modificació expedient " + informe.getExpcontratacio().getExpContratacio(), idModificacioAUX, null, ipRemote, "automatic");
+			} else {
+				idUsuari = UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari();
+				String idModificacioAUX = idModificacio.split("#")[0];
+				String comentari = "S'ha realitzat la proposta de modificació " + idInforme ;
+				TascaCore.novaTasca(conn, "autoritzacioModificacio", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, comentari, "Autorització modificació actuació", idModificacioAUX, null, ipRemote, "automatic");
 			}	    	
 	    } else {
 	    	errorString = "Falta adjuntar document";

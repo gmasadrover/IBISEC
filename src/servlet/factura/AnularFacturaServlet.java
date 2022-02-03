@@ -3,9 +3,7 @@ package servlet.factura;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,10 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonObject;
 
-import bean.InformeActuacio;
 import bean.User;
 import core.FacturaCore;
-import core.InformeCore;
 import core.TascaCore;
 import core.UsuariCore;
 import utils.MyUtils;
@@ -60,15 +56,10 @@ public class AnularFacturaServlet extends HttpServlet {
         Connection conn = MyUtils.getStoredConnection(request);
 		String idFactura = request.getParameter("idFactura");
 		String motiu = request.getParameter("motiu");
-		try {
-			FacturaCore.anular(conn, idFactura, motiu);
-			int idUsuari = UsuariCore.findUsuarisByRol(conn, "CAP,CONTA").get(0).getIdUsuari();
-			User Usuari = MyUtils.getLoginedUser(request.getSession());	
-			TascaCore.novaTasca(conn, "generic", idUsuari, Usuari.getIdUsuari(), "", "", "<span class='missatgeAutomatic'>S'ha anul·lat la factura <a target='_blank' href='facturaDetalls?ref=" + idFactura + "'>" + idFactura + "</a></span><br>Motiu: " + motiu, "Factura anul·lada", "-1", null, request.getRemoteAddr(), "manual");
-		} catch (SQLException | NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		FacturaCore.anular(conn, idFactura, motiu);
+		int idUsuari = UsuariCore.findUsuarisByRol(conn, "CAP,CONTA").get(0).getIdUsuari();
+		User Usuari = MyUtils.getLoginedUser(request.getSession());	
+		TascaCore.novaTasca(conn, "generic", idUsuari, Usuari.getIdUsuari(), "", "", "<span class='missatgeAutomatic'>S'ha anul·lat la factura <a target='_blank' href='facturaDetalls?ref=" + idFactura + "'>" + idFactura + "</a></span><br>Motiu: " + motiu, "Factura anul·lada", "-1", null, request.getRemoteAddr(), "manual");
 		myObj.addProperty("success", true);	
 		
         out.println(myObj.toString());

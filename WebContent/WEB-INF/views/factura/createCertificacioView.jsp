@@ -113,17 +113,6 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-xs-3 control-label">Usuari conformador</label>
-                                <div class="col-xs-3">
-                                	<input class="hidden" name="idUsuariInforme" id=idUsuariInforme value="${idUsuariInforme}"> 
-                                	<select class="form-control selectpicker" data-live-search="true" data-size="10" name="idConformador" id="usuarisList">
-		                                <c:forEach items="${llistaUsuaris}" var="usuari" >
-	                                		<option value='${usuari.idUsuari}'>${usuari.getNomCompletReal()}</option>
-	                                	</c:forEach>
-                                	</select>
-                                </div>
-                            </div>	
-                            <div class="form-group">
                                 <label class="col-xs-3 control-label">Data pasada a conformar</label>
                                 <div class="input-group date col-xs-3 datepicker">
 								  	<input type="text" class="form-control" name="dataPasadaConformar" value="${data}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
@@ -136,9 +125,15 @@
                                 </div>
                             </div>	
                             <div class="form-group">
+                            	<label class="col-xs-3 control-label">Relació valorada:</label>
+	                            <div class="col-xs-5">   
+	                                <input type="file" class="btn" name="relaciovalorada" multiple/><br/>
+								</div> 	
+							</div>
+                            <div class="form-group">
                             	<label class="col-xs-3 control-label">Adjuntar certificació:</label>
 	                            <div class="col-xs-5">   
-	                                <input type="file" class="btn" name="file" multiple/><br/>
+	                                <input type="file" class="btn" name="certificacio" multiple/><br/>
 								</div> 	
 							</div>
 		    				<br>

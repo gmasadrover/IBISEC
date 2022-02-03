@@ -2,7 +2,6 @@ package servlet.incidencia;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -44,12 +43,7 @@ public class CreateIncidenciaServlet extends HttpServlet {
         }else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.incidencia_modificar)) {
     		response.sendRedirect(request.getContextPath() + "/");	 	
  	   	}else{ 	   		
-	        try {
-				request.setAttribute("nouCodi", IncidenciaCore.getNewCode(conn));
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	        request.setAttribute("nouCodi", IncidenciaCore.getNewCode(conn));
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Incidencies"));
 	        RequestDispatcher dispatcher = request.getServletContext()
 	                .getRequestDispatcher("/WEB-INF/views/incidencia/createIncidenciaView.jsp");

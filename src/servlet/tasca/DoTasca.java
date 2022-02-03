@@ -3,7 +3,6 @@ package servlet.tasca;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,17 +10,12 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.fileupload.FileUploadException;
 
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.BaseFont;
@@ -31,9 +25,7 @@ import com.itextpdf.text.pdf.PdfStamper;
 
 import bean.Actuacio;
 import bean.AssignacioCredit;
-import bean.Expedient;
 import bean.Factura;
-import bean.Incidencia;
 import bean.InformeActuacio;
 import bean.Oferta;
 import bean.Registre;
@@ -41,15 +33,12 @@ import bean.Tasca;
 import bean.User;
 import bean.InformeActuacio.PropostaInforme;
 import core.ActuacioCore;
-import core.CentreCore;
+import core.ConfiguracioCore;
 import core.CreditCore;
-import core.EmpresaCore;
 import core.ExpedientCore;
 import core.FacturaCore;
-import core.IncidenciaCore;
 import core.InformeCore;
 import core.JudicialCore;
-import core.LlicenciaCore;
 import core.OfertaCore;
 import core.RegistreCore;
 import core.TascaCore;
@@ -80,12 +69,7 @@ public class DoTasca extends HttpServlet {
 		Connection conn = MyUtils.getStoredConnection(request);
 		
 		Fitxers.formParameters multipartParams = new Fitxers.formParameters();
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);
 		
 		int idTasca = -1;
 		String ipRemote = request.getRemoteAddr();
@@ -102,12 +86,7 @@ public class DoTasca extends HttpServlet {
 	    User Usuari = MyUtils.getLoginedUser(request.getSession());	
 	    if (multipartParams.getParametres().get("idTasca") != null) {
 			idTasca = Integer.parseInt(multipartParams.getParametres().get("idTasca"));	 
-			try {
-				tasca = TascaCore.findTascaId(conn, idTasca, Usuari.getIdUsuari());
-			} catch (SQLException | NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			tasca = TascaCore.findTascaId(conn, idTasca, Usuari.getIdUsuari());
 		}
 	    //Guardar adjunts
 	    List<Fitxer> fitxers = multipartParams.getFitxers();
@@ -164,16 +143,11 @@ public class DoTasca extends HttpServlet {
 				    InformeCore.seleccionarProposta(conn, informe.getLlistaPropostes().get(0).getIdProposta(), idInforme);	   
 				    informe = InformeCore.getInformePrevi(conn, idInforme, false);
 				    if (modificar == null && (informe.getExpcontratacio() == null || informe.getExpcontratacio().getExpContratacio().equals("-1"))) {
-	   					//Cream expedient	   						
-		   				double importObraMajor = Double.parseDouble(getServletContext().getInitParameter("importObraMajor"));
-		   				if ("srv".equals(tipusObra)) {
-		   					importObraMajor = Double.parseDouble(getServletContext().getInitParameter("importServeiMajor"));
-		   				} else if ("submi".equals(tipusObra)) {
-		   					importObraMajor = Double.parseDouble(getServletContext().getInitParameter("importSubministramentMajor"));
-		   				}
+	   					
 	   					String nouCodi = "";
-		   				nouCodi = ExpedientCore.crearExpedient(conn, informe, importObraMajor, false, "");	   				
-		   				informe.setExpcontratacio(ExpedientCore.findExpedient(conn, nouCodi));			   				
+		   				nouCodi = ExpedientCore.crearExpedient(conn, informe, false, "", idTecnic);	   				
+		   				informe.setExpcontratacio(ExpedientCore.findExpedient(conn, nouCodi));			  
+		   				
 	   				}
 				    if (informe.getAssignacioCredit() == null || informe.getAssignacioCredit().size() == 0 || informe.getAssignacioCredit().get(0).getPartida() == null || informe.getAssignacioCredit().get(0).getPartida().getCodi().isEmpty()) {
 				    	if (!TascaCore.existTascaReservaCredit(conn, informe.getIdInf())) { // no existeix tasca creada
@@ -194,7 +168,7 @@ public class DoTasca extends HttpServlet {
 					TascaCore.novaTasca(conn, "autoritzacioActuacio", idUsuari, Usuari.getIdUsuari(), idActuacio, idIncidencia, comentari, "Documentació prelicitació per signar", idInforme, null, ipRemote, "automatic");
 	    		} else if ("autoritzacioCap".equals(document)) {
 			    	Fitxers.guardarFitxer(conn, fitxers, idIncidencia, idActuacio, "", "", "", idInforme, "Vistiplau cap", Usuari.getIdUsuari());
-			    	TascaCore.nouHistoric(conn, String.valueOf(idTasca), "Informe aprovat", Usuari.getIdUsuari(), ipRemote, "automatic");
+			    	TascaCore.nouHistoric(conn, idTasca, "Informe aprovat", Usuari.getIdUsuari(), ipRemote, "automatic");
 					ActuacioCore.actualitzarActuacio(conn, idActuacio, "Proposta d'actuació realitzada");
 					TascaCore.reasignar(conn, 900, idTasca, tasca.getTipus(), tasca.getDescripcio());
 					TascaCore.tancar(conn, idTasca);
@@ -217,7 +191,7 @@ public class DoTasca extends HttpServlet {
 				   		comentariHistoral = "<span class='missatgeAutomatic'>S'ha rebutjat l'import de " + informe.getPropostaInformeSeleccionada().getPlicFormat() + "€ de la partida " + informe.getAssignacioCredit().get(0).getPartida().getNom() + "</span>";
 				   		comentariHistoral += "</br>Motiu: " + informe.getPartidaRebutjadaMotiu(); 
 				   	}
-			   		TascaCore.nouHistoric(conn, String.valueOf(idTasca), comentariHistoral, Usuari.getIdUsuari(), ipRemote, tipus);
+			   		TascaCore.nouHistoric(conn, idTasca, comentariHistoral, Usuari.getIdUsuari(), ipRemote, tipus);
 			   		TascaCore.reasignar(conn, 901, idTasca, tasca.getTipus(), tasca.getDescripcio());
 			   		TascaCore.tancar(conn, idTasca);
 			   		int idUsuari = UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari();
@@ -243,7 +217,7 @@ public class DoTasca extends HttpServlet {
 			    	
 				    String comentariHistoral = "S'ha reservat l'import de " + importReserva + "€ de la partida " + assignacio.getPartida().getCodi();
 			   		String tipus = "automatic";
-			   		TascaCore.nouHistoric(conn, String.valueOf(idTasca), comentariHistoral, Usuari.getIdUsuari(), ipRemote, tipus);
+			   		TascaCore.nouHistoric(conn, idTasca, comentariHistoral, Usuari.getIdUsuari(), ipRemote, tipus);
 			   		TascaCore.reasignar(conn, 901, idTasca, tasca.getTipus(), tasca.getDescripcio());
 			   		TascaCore.tancar(conn, idTasca);
 			   		int idUsuari = UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari();
@@ -267,7 +241,7 @@ public class DoTasca extends HttpServlet {
 			    	if (idInforme.contains("-MOD-")) {
 			    		informe = InformeCore.getMoficacioInforme(conn, idInforme, false);
 			    		Fitxers.guardarFitxer(conn, fitxers, idIncidencia, idActuacio, "", "", informe.getIdInfOriginal(), idInforme, "Autorització Proposta modificació", Usuari.getIdUsuari());
-			    		TascaCore.nouHistoric(conn, String.valueOf(idTasca), "Autorització Proposta modificació", Usuari.getIdUsuari(), ipRemote, "automatic");			   		
+			    		TascaCore.nouHistoric(conn, idTasca, "Autorització Proposta modificació", Usuari.getIdUsuari(), ipRemote, "automatic");			   		
 				   		TascaCore.tancar(conn, idTasca);
 				   		CreditCore.assignar(conn, idInforme, informe.getOfertaSeleccionada().getPlic());
 				   		if (informe.getUsuariCapValidacio() != null) {
@@ -284,7 +258,7 @@ public class DoTasca extends HttpServlet {
 							Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("ordreInici"), idIncidencia, idActuacio, "", "", "", idInforme, "Memòria odre inici", Usuari.getIdUsuari());
 					    }
 				    	Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("certCredit"), idIncidencia, idActuacio, "", "", "", idInforme, "Conforme àrea financera", Usuari.getIdUsuari());
-				    	TascaCore.nouHistoric(conn, String.valueOf(idTasca), "Autorització Proposta d'actuació", Usuari.getIdUsuari(), ipRemote, "automatic");			   		
+				    	TascaCore.nouHistoric(conn, idTasca, "Autorització Proposta d'actuació", Usuari.getIdUsuari(), ipRemote, "automatic");			   		
 				   		TascaCore.tancar(conn, idTasca);
 				   		InformeCore.modificarEstat(conn, idInforme, "licitacio");
 				    	String tipus = "";				    	
@@ -301,11 +275,10 @@ public class DoTasca extends HttpServlet {
 		   				ActuacioCore.actualitzarActuacio(conn, idActuacio, "Sol·licitud proposta tècnica");
 		   				TascaCore.novaTasca(conn, tipus, usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "", "",informe.getIdInf(),null, ipRemote, "automatic");
 		   				
-		   				//Cream expedient	   						
-		   				double importObraMajor = Double.parseDouble(getServletContext().getInitParameter("importObraMajor"));
+		   				//Cream expedient	
 		   				String nouCodi = "";
 		   				if (informe.getExpcontratacio() == null || informe.getExpcontratacio().getExpContratacio() == null || informe.getExpcontratacio().getExpContratacio().isEmpty()) {
-		   					nouCodi = ExpedientCore.crearExpedient(conn, informe, importObraMajor, false, "");
+		   					nouCodi = ExpedientCore.crearExpedient(conn, informe, false, "", informe.getUsuari().getIdUsuari());
 		   				} else {
 		   					nouCodi = informe.getExpcontratacio().getExpContratacio();
 		   				}
@@ -385,7 +358,7 @@ public class DoTasca extends HttpServlet {
 						}
 						int usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariOrdreInici"));   	
 						//TascaCore.novaTasca(conn, "docprelicitacio", usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Prepara documentació per a licitació expedient ", "Preparació documentació expedient",informe.getIdInf(),null, ipRemote, "automatic");
-						TascaCore.nouHistoric(conn, String.valueOf(idTasca), "Documentació enviada per licitar", Usuari.getIdUsuari(), ipRemote, "automatic");
+						TascaCore.nouHistoric(conn, idTasca, "Documentació enviada per licitar", Usuari.getIdUsuari(), ipRemote, "automatic");
 						TascaCore.reasignar(conn, usuariTasca, idTasca, "docprelicitacio", "Preparar documentació per a la licitació");
 						//TascaCore.tancar(conn, idTasca);
 					}
@@ -398,7 +371,7 @@ public class DoTasca extends HttpServlet {
 				    	//Registrar comentari;	 
 				    	OfertaCore.validacioCapOferta(conn, idInforme, Usuari.getIdUsuari());	   			
 			   			ActuacioCore.actualitzarActuacio(conn, idActuacio, "Proposta tècnica realitzada");
-				   		TascaCore.nouHistoric(conn, String.valueOf(idTasca), "Proposta tècnica aprovada", Usuari.getIdUsuari(), ipRemote, "automatic");
+				   		TascaCore.nouHistoric(conn, idTasca, "Proposta tècnica aprovada", Usuari.getIdUsuari(), ipRemote, "automatic");
 			   			TascaCore.reasignar(conn, 902, idTasca, tasca.getTipus(), tasca.getDescripcio());
 						TascaCore.tancar(conn, idTasca);
 						int idUsuari = UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari();
@@ -408,7 +381,7 @@ public class DoTasca extends HttpServlet {
 			   			Fitxers.guardarFitxer(conn, fitxers, idIncidencia, idActuacio, "", "", "", idInforme, "Proposta tècnica", Usuari.getIdUsuari());
 				    	//Registrar comentari;	
 				   		String comentariHistoral = "<span class='missatgeAutomatic'>El tècnic proposa: " + informe.getOfertaSeleccionada().getNomEmpresa() + "</span><br>" + informe.getOfertaSeleccionada().getComentari() + "<br><span class='missatgeAutomatic'>Amb un termini d'execució de: " + informe.getOfertaSeleccionada().getTermini() + "</span>";	   		
-			   			TascaCore.nouHistoric(conn, String.valueOf(idTasca), comentariHistoral, Usuari.getIdUsuari(), ipRemote, "manual");
+			   			TascaCore.nouHistoric(conn, idTasca, comentariHistoral, Usuari.getIdUsuari(), ipRemote, "manual");
 				   		TascaCore.reasignar(conn, UsuariCore.finCap(conn, Usuari.getDepartament()).getIdUsuari(), idTasca, tasca.getTipus(), tasca.getDescripcio());	
 				   		if (informe.getPropostaInformeSeleccionada().isEbss() || informe.getPropostaInformeSeleccionada().isCoordinacio()) {
 							String comentari = "";
@@ -474,15 +447,7 @@ public class DoTasca extends HttpServlet {
 			    	Factura certificacio = FacturaCore.getCertificacio(conn, idFactura);
 			    	Actuacio actuacio = ActuacioCore.findActuacio(conn, certificacio.getIdActuacio());
 			        TascaCore.novaTasca(conn, "firmaCertificacio", UsuariCore.finCap(conn, certificacio.getUsuariConformador().getDepartament()).getIdUsuari(), Usuari.getIdUsuari(), idActuacio, idIncidencia, "Firma certificació", "Firma certificació", idFactura, null, ipRemote, "automatic");
-			        Context env;
-	   				String ruta = "";
-	   				try {
-	   					env = (Context)new InitialContext().lookup("java:comp/env");
-	   					ruta = (String)env.lookup("ruta_base");
-	   				} catch (NamingException e2) {
-	   					// TODO Auto-generated catch block
-	   					e2.printStackTrace();
-	   				}
+			        
 	   				DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 	    	        Date date = new Date();
 	    	        for (int x=0;x<certificacio.getCertificacions().size()-1;x++) {
@@ -517,7 +482,9 @@ public class DoTasca extends HttpServlet {
 				 				if (informe.getTotalCertificat() > informe.getOfertaSeleccionada().getPlic() + informe.getTotalModificacions()) {
 				 					//Excés d'amidaments.
 				 					Double totalExces = (informe.getTotalCertificat()) - (informe.getOfertaSeleccionada().getPlic() + informe.getTotalModificacions());
-			 				  		
+				 					System.out.println("total certificat " + informe.getTotalCertificat());
+				 					System.out.println("total oferta " + informe.getOfertaSeleccionada().getPlic());
+				 					System.out.println("total modificacions " + informe.getTotalModificacions());
 				 					PropostaInforme proposta = informe.new PropostaInforme();
 				 			  		proposta.setTipusObra(informe.getPropostaInformeSeleccionada().getTipusObra());
 				 			  		proposta.setLlicencia(false);
@@ -562,35 +529,29 @@ public class DoTasca extends HttpServlet {
 			    	int idTramitacio = Integer.valueOf(multipartParams.getParametres().get("idTramitacio"));
 			    	JudicialCore.guardarFitxerTramitacio(conn, multipartParams.getFitxers(), idProcediment, idTramitacio, Usuari.getIdUsuari());
 			    }
-			} catch (SQLException | NamingException | DocumentException e) {
+			} catch (DocumentException e) {
 				errorString = e.toString();
 				e.printStackTrace();
 			}	    	
 	    } else {
-	    	try {
-	 		    if ("facturaConformada".equals(document)) {
-	 		    	TascaCore.tancar(conn, idTasca);				
-	 		    	Factura factura = FacturaCore.getFactura(conn, idFactura);
-	 		    	factura.setDataEnviatComptabilitat(new Date());
-	 		    	FacturaCore.modificarFactura(conn, factura, Usuari.getIdUsuari());
-	 		    	InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme, false);
-	 		    	//Obra menor
-	 		    	if (informe.getOfertaSeleccionada().getPlic() < Double.parseDouble(getServletContext().getInitParameter("importObraMajor"))) {
-		   				if (informe.getOfertaSeleccionada().getPlic() > informe.getTotalFacturat()) {
-		   						   				
-		   				} else {
-		   					InformeCore.modificarEstat(conn, factura.getIdInforme(), "garantia");
-		   					InformeCore.tancar(conn, factura.getIdInforme());
-		   				}		   				
-	 		    	}
-	 		    } else {
-	 		    	errorString = "Falta adjuntar document";
-	 		    }
-	 	    } catch (SQLException | NamingException e) {
-	 			// TODO Auto-generated catch block
-	 			e.printStackTrace();
-	 			errorString = e.toString();
-	 		}	    	
+	    	if ("facturaConformada".equals(document)) {
+				TascaCore.tancar(conn, idTasca);				
+				Factura factura = FacturaCore.getFactura(conn, idFactura);
+				factura.setDataEnviatComptabilitat(new Date());
+				FacturaCore.modificarFactura(conn, factura, Usuari.getIdUsuari());
+				InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme, false);
+				//Obra menor
+				if (informe.getOfertaSeleccionada().getPlic() < ConfiguracioCore.getConfiguracio(conn).getImportObraMajor()) {
+					if (informe.getOfertaSeleccionada().getPlic() > informe.getTotalFacturat()) {
+							   				
+					} else {
+						InformeCore.modificarEstat(conn, factura.getIdInforme(), "acabat");
+						InformeCore.tancar(conn, factura.getIdInforme());
+					}		   				
+				}
+			} else {
+				errorString = "Falta adjuntar document";
+			}	    	
 	    }
 	   
 	   	// Store infomation to request attribute, before forward to views.

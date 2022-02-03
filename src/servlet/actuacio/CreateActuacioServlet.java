@@ -2,7 +2,6 @@ package servlet.actuacio;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -14,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import bean.ControlPage.SectionPage;
 import bean.Incidencia;
 import bean.User;
-import core.ActuacioCore;
 import core.ControlPageCore;
 import core.IncidenciaCore;
 import core.UsuariCore;
@@ -46,13 +44,7 @@ public class CreateActuacioServlet extends HttpServlet {
     		response.sendRedirect(request.getContextPath() + "/");	 	
  	   	}else{ 	   		
 	        Incidencia incidencia = new Incidencia();
-	        try {
-				request.setAttribute("nouCodi", ActuacioCore.getNewCode(conn));
-				incidencia = IncidenciaCore.findIncidencia(conn, request.getParameter("idIncidencia"));
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	        incidencia = IncidenciaCore.findIncidencia(conn, request.getParameter("idIncidencia"));
 	        request.setAttribute("incidencia", incidencia);
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Actuacions"));
 	        RequestDispatcher dispatcher = request.getServletContext()

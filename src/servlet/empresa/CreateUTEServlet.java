@@ -2,7 +2,6 @@ package servlet.empresa;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,11 +48,7 @@ public class CreateUTEServlet extends HttpServlet {
     		response.sendRedirect(request.getContextPath() + "/");	 
  	   	}else{
  	   		List<Empresa> empresesList = new ArrayList<Empresa>();
- 	   		try {
-				empresesList = EmpresaCore.getEmpreses(conn);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+ 	   		empresesList = EmpresaCore.getEmpreses(conn);
  	   		request.setAttribute("empresesList", empresesList);
  	   		request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Empreses"));
 	        RequestDispatcher dispatcher = request.getServletContext()

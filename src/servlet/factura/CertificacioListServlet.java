@@ -2,7 +2,6 @@ package servlet.factura;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,7 +10,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,7 +22,6 @@ import bean.User;
 import bean.ControlPage.SectionPage;
 import core.ControlPageCore;
 import core.FacturaCore;
-import core.InformeCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
@@ -79,7 +76,7 @@ public class CertificacioListServlet extends HttpServlet {
 					list = FacturaCore.advancedSearchCertificacions(conn, dataInici, dataFi, idCentre);
 				}
 				
-			} catch (SQLException | ParseException | NamingException e) {
+			} catch (ParseException e) {
 				e.printStackTrace();
 				errorString = e.getMessage();			
 			}

@@ -2,17 +2,13 @@ package servlet.tasca;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.fileupload.FileUploadException;
 
 import bean.Oferta;
 import bean.User;
@@ -43,17 +39,11 @@ public class DoAddOfertaServlet extends HttpServlet {
 		Connection conn = MyUtils.getStoredConnection(request);		
 		User Usuari = MyUtils.getLoginedUser(request.getSession());	   
 		Fitxers.formParameters multipartParams = new Fitxers.formParameters();
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);
 		
 	    int idTasca = Integer.parseInt(multipartParams.getParametres().get("idTasca"));
 	    String idActuacio = multipartParams.getParametres().get("idActuacio");
 	    String idIncidencia = multipartParams.getParametres().get("idIncidencia");
-	    String idProposta = multipartParams.getParametres().get("idProposta");
 	    String idInforme = multipartParams.getParametres().get("idInformePrevi");	   
 	    String errorString = null;
 	    
@@ -75,19 +65,8 @@ public class DoAddOfertaServlet extends HttpServlet {
    		oferta.setSeleccionada(false);
    		oferta.setDescalificada(false);
 		
-		try {
-			OfertaCore.novaOferta(conn, oferta, Usuari.getIdUsuari());
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//Guardar adjunts
-	   	try {
-			OfertaCore.guardarFitxer(conn, multipartParams.getFitxers(), idIncidencia, idActuacio, idInforme, cifEmpresa, "Oferta", Usuari.getIdUsuari());
-		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		OfertaCore.novaOferta(conn, oferta, Usuari.getIdUsuari());
+		OfertaCore.guardarFitxer(conn, multipartParams.getFitxers(), idIncidencia, idActuacio, idInforme, cifEmpresa, "Oferta", Usuari.getIdUsuari());
 			    	
 	   	// Store infomation to request attribute, before forward to views.
 	   	request.setAttribute("errorString", errorString);

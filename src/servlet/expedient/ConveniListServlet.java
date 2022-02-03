@@ -2,12 +2,10 @@ package servlet.expedient;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -50,26 +48,18 @@ public class ConveniListServlet extends HttpServlet {
 		}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.expedient_list)) {
     		response.sendRedirect(request.getContextPath() + "/");	
 		} else {
-			String errorString = "";
 			List<InformeActuacio> informesList = new ArrayList<InformeActuacio>();
 			List<String> anysList = new ArrayList<String>();
 			String filtrar = request.getParameter("filtrar");			
 			Calendar now = Calendar.getInstance();
 			String yearInString = request.getParameter("any");
-			int year = now.get(Calendar.YEAR);			
-			double importObraMajor = 0;
-			try {				
-				if (filtrar == null) yearInString = String.valueOf(year);				
-				anysList = ExpedientCore.getAnysExpedients(conn);
-				informesList = InformeCore.getInformesExpedients(conn, "-1", "conveni", "-1", importObraMajor, yearInString);								
-			} catch (SQLException | NamingException e) {
-				e.printStackTrace();
-				errorString = e.getMessage();
-			}
+			int year = now.get(Calendar.YEAR);	
+			if (filtrar == null) yearInString = String.valueOf(year);				
+			anysList = ExpedientCore.getAnysExpedients(conn);
+			informesList = InformeCore.getInformesExpedients(conn, "-1", "conveni", "-1", yearInString);
 
 			// Store info in request attribute, before forward to views
 			request.setAttribute("anyFilter", yearInString);
-			request.setAttribute("errorString", errorString);
 			request.setAttribute("anysList", anysList);
 			request.setAttribute("informesList", informesList);
 			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"expedients"));

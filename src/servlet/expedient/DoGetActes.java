@@ -3,11 +3,9 @@ package servlet.expedient;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -66,35 +64,30 @@ public class DoGetActes extends HttpServlet {
 		List<Fitxer> adjunts = new ArrayList<Fitxer>();
 		myObj.addProperty("success", true);	
 		JsonElement llistatObj = null;
-		try {
-			adjunts = InformeCore.getDocumentActaReplanteigSignat(conn, idIncidencia, idActuacio, idInf);		
-			llistatObj = gson.toJsonTree(adjunts);
-			myObj.add("actaReplanteig", llistatObj);
-			adjunts = InformeCore.getDocumentActaComprovacioReplanteigSignat(conn, idIncidencia, idActuacio, idInf);
-			llistatObj = gson.toJsonTree(adjunts);
-			myObj.add("actaComprovacioReplanteig", llistatObj);
-			adjunts = InformeCore.getDocumentActaIniciObraSignat(conn, idIncidencia, idActuacio, idInf);
-			llistatObj = gson.toJsonTree(adjunts);
-			myObj.add("actaIniciObra", llistatObj);
-			adjunts = InformeCore.getDocumentActaAprovacioPlaSeguretatSignat(conn, idIncidencia, idActuacio, idInf);
-			llistatObj = gson.toJsonTree(adjunts);
-			myObj.add("actaAprovacioPlaSeguretat", llistatObj);
-			adjunts = InformeCore.getDocumentActaAprovacioResidusSignat(conn, idIncidencia, idActuacio, idInf);
-			llistatObj = gson.toJsonTree(adjunts);
-			myObj.add("actaAprovacioResidus", llistatObj);
-			adjunts = InformeCore.getDocumentActaAprovacioProgramaTreballSignat(conn, idIncidencia, idActuacio, idInf);
-			llistatObj = gson.toJsonTree(adjunts);
-			myObj.add("actaAprovacioProgramaTreball", llistatObj);
-			adjunts = InformeCore.getDocumentActaRecepcioSignat(conn, idIncidencia, idActuacio, idInf);
-			llistatObj = gson.toJsonTree(adjunts);
-			myObj.add("actaRecepcio", llistatObj);
-			adjunts = InformeCore.getDocumentActaMedicioGeneralSignat(conn, idIncidencia, idActuacio, idInf);
-			llistatObj = gson.toJsonTree(adjunts);
-			myObj.add("actaMedicioGeneral", llistatObj);			
-		} catch (SQLException | NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
+		adjunts = InformeCore.getDocumentActaReplanteigSignat(conn, idIncidencia, idActuacio, idInf);		
+		llistatObj = gson.toJsonTree(adjunts);
+		myObj.add("actaReplanteig", llistatObj);
+		adjunts = InformeCore.getDocumentActaComprovacioReplanteigSignat(conn, idIncidencia, idActuacio, idInf);
+		llistatObj = gson.toJsonTree(adjunts);
+		myObj.add("actaComprovacioReplanteig", llistatObj);
+		adjunts = InformeCore.getDocumentActaIniciObraSignat(conn, idIncidencia, idActuacio, idInf);
+		llistatObj = gson.toJsonTree(adjunts);
+		myObj.add("actaIniciObra", llistatObj);
+		adjunts = InformeCore.getDocumentActaAprovacioPlaSeguretatSignat(conn, idIncidencia, idActuacio, idInf);
+		llistatObj = gson.toJsonTree(adjunts);
+		myObj.add("actaAprovacioPlaSeguretat", llistatObj);
+		adjunts = InformeCore.getDocumentActaAprovacioResidusSignat(conn, idIncidencia, idActuacio, idInf);
+		llistatObj = gson.toJsonTree(adjunts);
+		myObj.add("actaAprovacioResidus", llistatObj);
+		adjunts = InformeCore.getDocumentActaAprovacioProgramaTreballSignat(conn, idIncidencia, idActuacio, idInf);
+		llistatObj = gson.toJsonTree(adjunts);
+		myObj.add("actaAprovacioProgramaTreball", llistatObj);
+		adjunts = InformeCore.getDocumentActaRecepcioSignat(conn, idIncidencia, idActuacio, idInf);
+		llistatObj = gson.toJsonTree(adjunts);
+		myObj.add("actaRecepcio", llistatObj);
+		adjunts = InformeCore.getDocumentActaMedicioGeneralSignat(conn, idIncidencia, idActuacio, idInf);
+		llistatObj = gson.toJsonTree(adjunts);
+		myObj.add("actaMedicioGeneral", llistatObj);		
 		out.println(myObj.toString());
 		out.close();
 	}

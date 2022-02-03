@@ -2,11 +2,7 @@ package servlet.bastanteo;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,12 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import bean.Bastanteo;
 import bean.Bastanteo.Escritura;
-import bean.Empresa;
 import bean.User;
 import bean.ControlPage.SectionPage;
 import core.BastanteosCore;
 import core.ControlPageCore;
-import core.EmpresaCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
@@ -55,12 +49,7 @@ public class EditEscrituraServlet extends HttpServlet {
 			String refBastanteo = request.getParameter("refBastanteo");
 	        Escritura escritura = new Bastanteo().new Escritura();
 	        String errorString = null;	      
-	        try {
-	        	escritura = BastanteosCore.findEscritura(conn, ref);	        	
-	        } catch (SQLException | NamingException e) {
-	            e.printStackTrace();
-	            errorString = e.getMessage();
-	        }	
+	        escritura = BastanteosCore.findEscritura(conn, ref);	
 	        // If no error.
 	        // The product does not exist to edit.
 	        // Redirect to productList page.

@@ -95,12 +95,12 @@
                                 	<input class="form-control" name="fax" placeholder="123456789">
                                 </div>
                             </div>	
-                            <div class="form-group">
+                           <!-- <div class="form-group">
                                 <label class="col-xs-3 control-label">email</label>
                                 <div class="col-xs-3">
                                 	<input class="form-control" type="email" name="email" placeholder="test@test.es">
                                 </div>
-                            </div>	
+                            </div>	--> <!--Ocult a petició M.Garcia en data 10/11/21--> 
                              <div class="form-group">
                                 <label class="col-xs-3 control-label">Tipus</label>
                                 <div class="col-xs-3">

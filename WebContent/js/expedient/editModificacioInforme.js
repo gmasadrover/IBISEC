@@ -6,7 +6,7 @@ $(document).ready(function() {
 		$('#seccioTermini').addClass('hidden');
 		$('#seccioEmpresa').addClass('hidden');
 		$('#seccioPenalitzacio').removeClass('hidden');
-	} else if ($('#tipusIncidenciaPrev').val() == 'certfinal') { //Certificació Final
+	} else if ($('#tipusIncidenciaPrev').val() == 'certfinal' || $('#tipusIncidenciaPrev').val() == 'excesAmidament' || $('#tipusIncidenciaPrev').val() == 'decrementAmidament') { //Certificació Final
 		$('#seccioLlicendia').addClass('hidden');
 		$('#seccioPressupost').removeClass('hidden');
 		$('#seccioTermini').addClass('hidden');
@@ -35,6 +35,12 @@ $(document).ready(function() {
 		$('#seccioPressupost').removeClass('hidden');
 		$('#seccioTermini').addClass('hidden');
 		$('#seccioEmpresa').removeClass('hidden');
+		$('#seccioPenalitzacio').addClass('hidden');
+	} else if ($('#tipusIncidencia').val() == 'ocupacio'){ // Ocupació
+		$('#seccioLlicendia').addClass('hidden');
+		$('#seccioPressupost').addClass('hidden');
+		$('#seccioTermini').addClass('hidden');
+		$('#seccioEmpresa').addClass('hidden');
 		$('#seccioPenalitzacio').addClass('hidden');
 	} else { // Modificacions i preus contradictoris
 		$('#seccioLlicendia').removeClass('hidden');
@@ -147,7 +153,7 @@ $(document).ready(function() {
 			$('#seccioTermini').addClass('hidden');
 			$('#seccioEmpresa').addClass('hidden');
 			$('#seccioPenalitzacio').removeClass('hidden');
-		} else if ($('#tipusIncidencia').val() == 'certfinal') { //Certificació Final
+		} else if ($('#tipusIncidencia').val() == 'certfinal' || $('#tipusIncidenciaPrev').val() == 'excesAmidament' || $('#tipusIncidenciaPrev').val() == 'decrementAmidament') { //Certificació Final
 			$('#seccioLlicendia').addClass('hidden');
 			$('#seccioPressupost').removeClass('hidden');
 			$('#seccioTermini').addClass('hidden');
@@ -176,6 +182,12 @@ $(document).ready(function() {
 			$('#seccioPressupost').removeClass('hidden');
 			$('#seccioTermini').addClass('hidden');
 			$('#seccioEmpresa').removeClass('hidden');
+			$('#seccioPenalitzacio').addClass('hidden');
+		} else if ($('#tipusIncidencia').val() == 'ocupacio'){ // Ocupació
+			$('#seccioLlicendia').addClass('hidden');
+			$('#seccioPressupost').addClass('hidden');
+			$('#seccioTermini').addClass('hidden');
+			$('#seccioEmpresa').addClass('hidden');
 			$('#seccioPenalitzacio').addClass('hidden');
 		} else { // Modificacions i preus contradictoris
 			$('#seccioLlicendia').removeClass('hidden');

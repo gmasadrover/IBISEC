@@ -1,23 +1,13 @@
 package servlet.factura;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URLDecoder;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -25,18 +15,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileUploadException;
-
-import bean.Actuacio;
 import bean.Factura;
 import bean.InformeActuacio;
-import bean.Registre;
 import bean.User;
 import core.ActuacioCore;
+import core.ConfiguracioCore;
 import core.FacturaCore;
 import core.InformeCore;
-import core.RegistreCore;
-import core.TascaCore;
 import core.UsuariCore;
 import utils.Fitxers;
 import utils.MyUtils;
@@ -64,24 +49,18 @@ public class DoEditFacturaServlet extends HttpServlet {
 		Connection conn = MyUtils.getStoredConnection(request);		
 		
 		Fitxers.formParameters multipartParams = new Fitxers.formParameters();
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);
 		User Usuari = MyUtils.getLoginedUser(request.getSession());	   
 	    String idFactura = multipartParams.getParametres().get("idFactura");
 	    String idInforme = multipartParams.getParametres().get("expedientsList");
 	    String idActuacio = multipartParams.getParametres().get("incidenciesList");
-	    System.out.println(idInforme + " " + idActuacio);
 	    String procediment = multipartParams.getParametres().get("procedimentsList");	   
+	    String idUsuariConformador = multipartParams.getParametres().get("usuarisList");	    
 	    String idProveidor = multipartParams.getParametres().get("idEmpresa");	    
 	    String concepte = multipartParams.getParametres().get("concepte");	   
 	    double valor = Double.parseDouble(multipartParams.getParametres().get("import"));	  
 	    String nombreFactura = multipartParams.getParametres().get("nombre");
 	    String tipusFactura = multipartParams.getParametres().get("tipus");
-	    int idUsuariConformador = Integer.parseInt(multipartParams.getParametres().get("idConformador"));
 	    String notes = multipartParams.getParametres().get("notes");
 	    
 	    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -104,10 +83,9 @@ public class DoEditFacturaServlet extends HttpServlet {
 		}
 	    
 	    int idUsuari = MyUtils.getLoginedUser(request.getSession()).getIdUsuari();
-	    Factura factura = new Factura();
+	    Factura factura = FacturaCore.getFactura(conn, idFactura);	
 	    List<Fitxer> fitxers = multipartParams.getFitxersByName().get("factura");
-	    String errorString = null;	
-	    
+	    String errorString = null;		    
  	    if (idActuacio != null && idActuacio.equals("-1")) {
  	    	idActuacio = multipartParams.getParametres().get("incidenciesList");
  	    	idInforme = multipartParams.getParametres().get("expedientsList");
@@ -120,24 +98,20 @@ public class DoEditFacturaServlet extends HttpServlet {
  		    		idProveidor = "";
  		    	}
  		    }	  
- 	    	try {
- 				factura = FacturaCore.getFactura(conn, idFactura);	
- 				List<Fitxer> fitxerFactura = new ArrayList<Fitxer>();
- 				fitxerFactura.add(factura.getFactura());
- 				fitxers =  fitxerFactura;
- 			} catch (SQLException | NamingException e) {
- 				// TODO Auto-generated catch block
- 				e.printStackTrace();
- 			}
+			List<Fitxer> fitxerFactura = new ArrayList<Fitxer>();
+			fitxerFactura.add(factura.getFactura());
+			fitxers =  fitxerFactura;
  	    } else if(procediment != null) {
  	    	idActuacio = procediment;
  	    	idInforme = procediment;
  	    }
- 	    factura = new Factura();
+ 	    
  	    factura.setIdFactura(idFactura);
  	    factura.setIdActuacio(idActuacio);
- 	    factura.setIdInforme(idInforme);
+    	factura.setIdInforme(idInforme);
+    	
  	    factura.setIdProveidor(idProveidor);
+ 	    	   
  	    factura.setConcepte(concepte);
  	    factura.setValor(valor);
  	    factura.setDataFactura(dataFactura);
@@ -145,32 +119,26 @@ public class DoEditFacturaServlet extends HttpServlet {
  	    factura.setNombreFactura(nombreFactura);
  	    factura.setTipusFactura(tipusFactura);
  	    factura.setNotes(notes); 	    
-   		try {
-   			factura.setUsuariConformador(UsuariCore.findUsuariByID(conn, idUsuariConformador));	
-   			factura.setDataEnviatConformador(dataPasadaConformar);
-   			factura.setDataConformacio(dataConformada); 
-   			factura.setDataEnviatComptabilitat(dataPasadaComptabilitat);
-   			factura.setDataDescarregadaConformada(dataDescarregadaComptabilitat);
-   			FacturaCore.modificarFactura(conn, factura, idUsuari);		   			
-   			//Tancar actuacio si es menor i tots els expedients estan facturats
-   			if (dataPasadaComptabilitat!=null) {
-   				InformeActuacio informeActual = InformeCore.getInformePrevi(conn, idInforme, false);
-   				if (informeActual.getOfertaSeleccionada().getPlic() < Double.parseDouble(getServletContext().getInitParameter("importObraMajor"))) {
-	   				if (informeActual.getOfertaSeleccionada().getPlic() > valor) {
-	   					//	   				
-	   				} else {
-	   					InformeCore.modificarEstat(conn, idInforme, "garantia");
-	   					//InformeCore.tancar(conn, idInforme);
-	   				}		   				
-   				}
-   			}
-			FacturaCore.saveArxiu(ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia(), idActuacio, idInforme, idProveidor, idFactura, fitxers, conn, Usuari.getIdUsuari());
-			FacturaCore.saveArxiuAltres(ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia(), idActuacio, idInforme, idProveidor, idFactura, multipartParams.getFitxersByName().get("altres"), conn, Usuari.getIdUsuari());
-   			
-   		} catch (SQLException | NamingException e) {
-  			e.printStackTrace();
-  			errorString = e.getMessage();
-   		}
+ 	    factura.setUsuariConformador(UsuariCore.findUsuariByID(conn, Integer.parseInt(idUsuariConformador)));	 
+		factura.setDataEnviatConformador(dataPasadaConformar);
+		factura.setDataConformacio(dataConformada); 
+		factura.setDataEnviatComptabilitat(dataPasadaComptabilitat);
+		factura.setDataDescarregadaConformada(dataDescarregadaComptabilitat);
+		FacturaCore.modificarFactura(conn, factura, idUsuari);		   			
+		//Tancar actuacio si es menor i tots els expedients estan facturats
+		if (dataPasadaComptabilitat!=null) {
+			InformeActuacio informeActual = InformeCore.getInformePrevi(conn, idInforme, false);
+			if (informeActual.getOfertaSeleccionada().getPlic() < ConfiguracioCore.getConfiguracio(conn).getImportObraMajor()) {
+				if (informeActual.getOfertaSeleccionada().getPlic() > valor) {
+					//	   				
+				} else {
+					InformeCore.modificarEstat(conn, idInforme, "acabat");
+					//InformeCore.tancar(conn, idInforme);
+				}		   				
+			}
+		}
+		FacturaCore.saveArxiu(ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia(), idActuacio, idInforme, idProveidor, idFactura, fitxers, conn, Usuari.getIdUsuari());
+		FacturaCore.saveArxiuAltres(ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia(), idActuacio, idInforme, idProveidor, idFactura, multipartParams.getFitxersByName().get("altres"), conn, Usuari.getIdUsuari());
 	  	    
 	   	// Store infomation to request attribute, before forward to views.
 	   	request.setAttribute("errorString", errorString);

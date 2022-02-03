@@ -2,7 +2,6 @@ package servlet.empresa;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
  
 import javax.servlet.RequestDispatcher;
@@ -38,18 +37,12 @@ public class EmpresaListServlet extends HttpServlet {
     	}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.empreses_list)) {
     		response.sendRedirect(request.getContextPath() + "/");	 
  	   	}else{	 
-	        String errorString = null;
 	        List<Empresa> list = null;
-	        try {
-	            list = EmpresaCore.getEmpreses(conn);
-	            list.addAll(EmpresaCore.getEmpresesUTE(conn));
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	            errorString = e.getMessage();
-	        }
+	        list = EmpresaCore.getEmpreses(conn);
+			list.addAll(EmpresaCore.getEmpresesUTE(conn));
 	   
 	        // Store info in request attribute, before forward to views
-	        request.setAttribute("errorString", errorString);
+	        
 	        request.setAttribute("empresesList", list);
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Empreses")); 
 	     

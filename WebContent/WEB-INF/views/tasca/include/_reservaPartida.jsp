@@ -81,12 +81,54 @@
 		<p>			                     				
 			<label>Notes:</label> ${informePrevi.notes}
 		</p>
-		<p>
-			<label>Partida:</label> 
-			<c:forEach items="${informePrevi.assignacioCredit}" var="assignacioCredit" >
-				${assignacioCredit.partida.nom} (${assignacioCredit.partida.codi})<br/>			
-			</c:forEach>	
-		</p>
+		 <div class="row">
+			<div class="col-md-4">
+				<p>
+					<label>Partida:</label>									
+					<div class="table-responsive col-xs-offset-1 col-md-12">							                        
+	                    <table class="table table-striped table-bordered filerTable">
+	                    	<thead>
+	                            <tr>
+	                           		<th>Partida</th>	
+	                                <th>Valor</th>
+	                                <th></th>			                                        							                                       
+	                            </tr>
+	                        </thead>
+	                        <tbody>
+	                        <c:set var="total" value="0" />
+							<c:forEach items="${informePrevi.assignacioCredit}" var="assignacioCredit" >
+					          	<tr>		
+					          		<td><a target="_black" href="partidaDetalls?codi=${assignacioCredit.partida.codi}">${assignacioCredit.partida.codi} (${assignacioCredit.partida.nom})</a></td>	
+					          		<td>${assignacioCredit.getValorPAFormat()}</td>	
+					          		<td><input class="btn btn-primary carregarModal" data-idassignacio="${assignacioCredit.idAssignacio}" data-valorassignacio="${assignacioCredit.valorPA}" data-partidaprev="${assignacioCredit.partida.subpartidaDe}" data-subpartidaprev="${assignacioCredit.partida.codi}" data-toggle="modal" data-target="#modalAssignacio" name="modificar" value="Modificar"></td>
+					          		<c:set var="total" value="${total + assignacioCredit.valorPA}" />
+					          	</tr>
+					      	</c:forEach>  	
+					      		<tr>
+					      			<td>Total</td>
+					      			<td><m:formatNumber pattern= "#,##0.00" type = "number" value ="${total}"/>€</td>
+					      			<td><input class="btn btn-success carregarModal" data-idassignacio="-1" data-valorassignacio="${informePrevi.propostaInformeSeleccionada.plic - total}" data-toggle="modal" data-target="#modalAssignacio" name="novaAssignacio" value="Afegir"></td>
+					      		</tr>	
+					      	</tbody>					      		     
+	                    </table>
+	                </div>
+				</p>
+			</div>		
+		</div>						
+		<c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.size() > 0}">
+			<p>
+				<div class="document">
+					<label>Certificat d'existència de crèdit:</label>	
+					<div class="row col-md-12">
+						<c:forEach items="${informePrevi.conformeAreaEconomivaPropostaActuacio}" var="arxiu" >
+							<c:set var="arxiu" value="${arxiu}" scope="request"/>
+							<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+						</c:forEach>
+						<br>					            		
+					</div>
+				</div>																	
+			</p>	
+		</c:if>	
 	</div>
  </div>
  <c:if test="${canRealitzarTasca}">
@@ -96,17 +138,7 @@
 	   		<input type="hidden" name="idActuacio" value="${actuacio.referencia}">
 	   		<input type="hidden" name="idTasca" value="${tasca.idTasca}">
 	   		<input type="hidden" name="idInformePrevi" id="idInformePrevi" value="${informePrevi.idInf}">	
-	   		<input type="hidden" name="importReserva" value="${informePrevi.propostaInformeSeleccionada.plic}">					                    		
-	   		<div class="form-group">
-	    		<div class="col-md-4">	
-	      			<label>Partida asignada</label>									            	 										            	 	
-	                <select class="form-control selectpicker" name="llistaPartides" id="llistaPartides">
-	                	<c:forEach items="${partidesList}" var="partida">
-	                		<option value="${partida.codi}">${partida.codi} (${partida.nom} - Restant: ${partida.getPartidaPerAsignarFormat()})</option>
-	                	</c:forEach>					                                	
-	                </select>	
-	            </div>					                       		
-	       	</div>	
+	   		<input type="hidden" name="importReserva" value="${informePrevi.propostaInformeSeleccionada.plic}">	
 	   		<div class="form-group">
 	    		<div class="col-md-12">		
 	    			<div class="row">	 
@@ -142,14 +174,20 @@
 					<input type="hidden" name="idIncidencia" value="${incidencia.idIncidencia}">
 					<input type="hidden" name="idTasca" value="${tasca.idTasca}">
 					<input type="hidden" name="idInforme" value="${informePrevi.idInf}">																	
-			       	<c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.ruta}">
-						<div class="col-md-12">	
-			               	<p>Vistiplau proposta d'actuació signada:</p>													                  	
-			           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.conformeAreaEconomivaPropostaActuacio.getEncodedRuta()}">
-								${informePrevi.conformeAreaEconomivaPropostaActuacio.nom}
-							</a>																			
-						</div>
-					</c:if>																	
+			       <c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.size() > 0}">
+						<p>
+							<div class="document">
+								<label>Certificat d'existència de crèdit:</label>	
+								<div class="row col-md-12">
+									<c:forEach items="${informePrevi.conformeAreaEconomivaPropostaActuacio}" var="arxiu" >
+										<c:set var="arxiu" value="${arxiu}" scope="request"/>
+										<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+									</c:forEach>
+									<br>					            		
+								</div>
+							</div>																	
+						</p>	
+					</c:if>																
 					<div class="col-md-8">
 						<div class="row margin_top10">
 			    			<div class="col-md-12">
@@ -167,4 +205,55 @@
 		  		</form>	
 		  	</div>
 		</div>
+		 <form class="form-horizontal" method="POST" enctype="multipart/form-data" action="modificarAssignacioPartida">
+			<input class="hidden" name="expedient" value="${informePrevi.expcontratacio.expContratacio}">
+             		<input class="hidden" name="idActuacio" value="${informePrevi.actuacio.referencia}">
+             		<input class="hidden" name="idInforme" value="${informePrevi.idInf}">
+             		<input class="hidden" name="redireccio" value="/tasca?id=${tasca.idTasca}">	
+             		<input class="hidden" name="idAssignacio" id="idAssignacioModal" value="">	
+      			<!-- Modal -->	        			
+			<div id="modalAssignacio" class="modal fade" role="dialog">
+				<div class="modal-dialog">																	
+			    <!-- Modal content-->
+			    	<div class="modal-content">
+			      		<div class="modal-header">
+			        		<button type="button" class="close" data-dismiss="modal">&times;</button>
+			        		<h4 class="modal-title">Modificar assignació</h4>
+			      		</div>
+			      		<div class="modal-body">
+			        		<div class="form-group">
+					    		<div class="col-md-6">	
+					      			<label>Partida asignada</label>		
+					      			<input type="hidden" id="partidaPrev" value="" >							            	 										            	 	
+					                <select class="form-control selectpicker llistaPartides" name="llistaPartides" id="llistaPartides">
+					                	<option value="-1">No assignar partida</option>
+					                	<c:forEach items="${partidesList}" var="partida">
+					                		<option value="${partida.codi}">${partida.codi} (${partida.nom} - Restant: ${partida.getPartidaPerAsignarFormat()})</option>
+					                	</c:forEach>					                                	
+					                </select>	
+					            </div>					                       		
+					       	</div>	  
+					        <div class="form-group">
+					    		<div class="col-md-6">	
+					      			<label>SubPartida asignada</label>	
+					      			<input type="hidden" id="subPartidaPrev" value="" >										            	 										            	 	
+					                <select class="form-control selectpicker" name="llistaSubPartides" id="llistaSubPartides"></select>	
+					            </div>					                       		
+					       	</div>
+					       	<div class="form-group">
+						       	<div class="col-md-6">
+						          	<label>Valor</label>
+						          	<input name="valorAssignacio" class="valorAssignacio" required>
+						          	<label class="">€</label>
+						        </div>
+							</div>
+			      		</div>
+			      		<div class="modal-footer">
+			      			<input class="btn btn-danger" type="submit" name="eliminar" value="Eliminar">
+			      			<input class="btn btn-success" type="submit" name="modificar" value="Modificar">
+			      		</div>
+		    		</div>																	
+			  	</div>
+			</div> 
+		</form>
 	</c:if>

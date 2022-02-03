@@ -9,7 +9,42 @@ $(document).ready(function() {
 			$('#import').val('');
 		}
 	});
-	$('.filerTable').DataTable({
+	$('.filerTable.assignacionsTable').DataTable({
+		dom: 'Bfrtip',
+        buttons: [ {
+	            extend: 'excelHtml5',
+	            customize: function( xlsx ) {
+	                var sheet = xlsx.xl.worksheets['sheet1.xml']; 
+	                $('row c[r^="C"]', sheet).attr( 's', '2' );
+	            },
+	            exportOptions: {
+                    columns: ':visible'
+                }
+        	},
+	        {
+	            extend: 'collection',
+	            text: 'Editar columnes',
+	            buttons: [ 'columnsVisibility' ],
+	            visibility: true
+	        }
+        ],
+		"order": [[ 5, "desc" ]],
+		"aoColumns": [			
+    		null,   		
+    		null,
+    		null,
+    		null,
+    		{"iDataSort": 5},
+    		{"bVisible": false},
+    		{"iDataSort": 7},
+    		{"bVisible": false},
+    		{"iDataSort": 9},
+    		{"bVisible": false},
+    		{"iDataSort": 11},
+    		{"bVisible": false}
+		]			
+	});
+	$('.filerTable.subpartides').DataTable({
 		dom: 'Bfrtip',
         buttons: [ {
 	            extend: 'excelHtml5',
@@ -31,18 +66,12 @@ $(document).ready(function() {
 		"order": [[ 1, "desc" ]],
 		"aoColumns": [
 			null,
-    		null,
-    		{"iDataSort": 3},
-    		{"bVisible": false},
+    		null,    		
     		null,
     		null,
     		null,
-    		{"iDataSort": 8},
-    		{"bVisible": false},
-    		{"iDataSort": 10},
-    		{"bVisible": false},
-    		{"iDataSort": 12},
-    		{"bVisible": false}
+    		null,
+    		null    		
 		]			
 	});
 });	

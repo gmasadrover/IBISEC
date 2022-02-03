@@ -7,7 +7,7 @@ $(document).ready(function() {
 			$('#inputIVA').val($('#iva').val());
 			$('#plic').val((pbase * 1.21).toFixed(2));
 			$('#totalInforme').val((total + (pbase * 1.21)).toFixed(2) + '€');
-			if ($('#tipusObra').val() == 'obr' && parseFloat($('#valorpbase').val()) < 50000) {
+			if ($('#tipusIncidencia').val() != 'enriquimentInjust' && $('#tipusObra').val() == 'obr' && parseFloat($('#valorpbase').val()) < 50000) {
 				if ( parseFloat($('#valorpbase').val()) + parseFloat(pbase) > 50000) {
 					$('#errorModificacio').html("No és posible modificar aquest expedient amb aquest import. Supera el máxim permés pel tipus de contracte");
 					$('.potModificar').addClass('hidden');				
@@ -15,7 +15,7 @@ $(document).ready(function() {
 					$('#errorModificacio').html("");
 					$('.potModificar').removeClass('hidden');
 				}
-			} else if ($('#tipusObra').val() != 'obr' && parseFloat($('#valorPBase').val()) < 18000){
+			} else if ($('#tipusIncidencia').val() != 'enriquimentInjust' && $('#tipusObra').val() != 'obr' && parseFloat($('#valorPBase').val()) < 18000){
 				if ( parseFloat($('#valorPBase').val()) + parseFloat(pbase) > 18000) {
 					$('#errorModificacio').html("No és posible modificar aquest expedient amb aquest import. Supera el máxim permés pel tipus de contracte");
 					$('.potModificar').addClass('hidden');				
@@ -44,7 +44,7 @@ $(document).ready(function() {
 			$('#iva').val(($('#pbase').val() * 0.21).toFixed(2));
 			$('#inputIVA').val($('#iva').val());
 			$('#totalInforme').val((total + parseFloat(plic)).toFixed(2) + '€');	
-			if ($('#tipusObra').val() == 'obr' && parseFloat($('#valorPBase').val()) < 50000) {
+			if ($('#tipusIncidencia').val() != 'enriquimentInjust' && $('#tipusObra').val() == 'obr' && parseFloat($('#valorPBase').val()) < 50000) {
 				if ( parseFloat($('#valorPBase').val()) + parseFloat($('#pbase').val()) > 50000) {
 					$('#errorModificacio').html("No és posible modificar aquest expedient amb aquest import. Supera el máxim permés pel tipus de contracte");
 					$('.potModificar').addClass('hidden');				
@@ -52,7 +52,7 @@ $(document).ready(function() {
 					$('#errorModificacio').html("");
 					$('.potModificar').removeClass('hidden');
 				}
-			} else if ($('#tipusObra').val() != 'obr' && parseFloat($('#valorPBase').val()) < 18000){
+			} else if ($('#tipusIncidencia').val() != 'enriquimentInjust' && $('#tipusObra').val() != 'obr' && parseFloat($('#valorPBase').val()) < 18000){
 				if ( parseFloat($('#valorPBase').val()) + parseFloat($('#pbase').val()) > 18000) {
 					$('#errorModificacio').html("No és posible modificar aquest expedient amb aquest import. Supera el máxim permés pel tipus de contracte");
 					$('.potModificar').addClass('hidden');				
@@ -100,7 +100,7 @@ $(document).ready(function() {
 			$('#seccioTermini').addClass('hidden');
 			$('#seccioEmpresa').addClass('hidden');
 			$('#seccioPenalitzacio').removeClass('hidden');
-		} else if ($('#tipusIncidencia').val() == 'certfinal') { //Certificació Final
+		} else if ($('#tipusIncidencia').val() == 'certfinal' || $('#tipusIncidencia').val() == 'excesAmidament' || $('#tipusIncidencia').val() == 'decrementAmidament')  { //Certificació Final
 			$('#seccioLlicendia').addClass('hidden');
 			$('#seccioPressupost').removeClass('hidden');
 			$('#seccioTermini').addClass('hidden');
@@ -129,6 +129,12 @@ $(document).ready(function() {
 			$('#seccioPressupost').removeClass('hidden');
 			$('#seccioTermini').addClass('hidden');
 			$('#seccioEmpresa').removeClass('hidden');
+			$('#seccioPenalitzacio').addClass('hidden');
+		} else if ($('#tipusIncidencia').val() == 'ocupacio'){ // Ocupació
+			$('#seccioLlicendia').addClass('hidden');
+			$('#seccioPressupost').addClass('hidden');
+			$('#seccioTermini').addClass('hidden');
+			$('#seccioEmpresa').addClass('hidden');
 			$('#seccioPenalitzacio').addClass('hidden');
 		} else { // Modificacions i preus contradictoris
 			$('#seccioLlicendia').removeClass('hidden');

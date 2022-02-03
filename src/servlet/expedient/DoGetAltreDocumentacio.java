@@ -3,11 +3,9 @@ package servlet.expedient;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,7 +17,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import core.InformeCore;
-import utils.Fitxers;
 import utils.Fitxers.Fitxer;
 import utils.MyUtils;
 
@@ -66,13 +63,8 @@ public class DoGetAltreDocumentacio extends HttpServlet {
 		String idInf = request.getParameter("idInf");
 		String idTasca = request.getParameter("idTasca");
 		List<Fitxer> adjunts = new ArrayList<Fitxer>();
-		try {
-			adjunts = InformeCore.getDocumentacioAltre(conn, idIncidencia, idActuacio, idInf);
-			adjunts.addAll(utils.Fitxers.ObtenirFitxers(idIncidencia, idActuacio, "Informe previ", idTasca,""));	
-		} catch (SQLException | NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		adjunts = InformeCore.getDocumentacioAltre(conn, idIncidencia, idActuacio, idInf);
+		adjunts.addAll(utils.Fitxers.ObtenirFitxers(conn, idIncidencia, idActuacio, "Informe previ", idTasca,""));
 		
 		myObj.addProperty("success", true);	
 		JsonElement llistatObj = gson.toJsonTree(adjunts);

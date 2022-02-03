@@ -6,13 +6,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
@@ -20,11 +18,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.Factura;
 import bean.InformeActuacio;
 import bean.User;
 import bean.ControlPage.SectionPage;
-import core.FacturaCore;
 import core.InformeCore;
 import core.UsuariCore;
 import utils.MyUtils;
@@ -58,42 +54,36 @@ public class DoDownloadExpedientServlet extends HttpServlet {
 		} else {
 			//Create list for file URLs - these are files from all different locations
 		    List<String> filenames = new ArrayList<String>();
-		    try {
-		    	informe = InformeCore.getInformePrevi(conn, request.getParameter("idInforme"), true);
-				/*if (informe.getInformeSupervisio() != null && informe.getInformeSupervisio().getRuta() != null) {
-					filenames.add(informe.getInformeSupervisio().getRuta());
-				}*/
-				if (informe.getConformeAreaEconomivaPropostaActuacio() != null && informe.getConformeAreaEconomivaPropostaActuacio().getRuta() != null) {
-					filenames.add(informe.getConformeAreaEconomivaPropostaActuacio().getRuta());
-				}
-				if (informe.getAutoritzacioConseller() != null && informe.getAutoritzacioConseller().getRuta() != null) {
-					filenames.add(informe.getAutoritzacioConseller().getRuta());
-				}
-				/*if (informe.getAutoritzacioConsellDeGovern() != null && informe.getAutoritzacioConsellDeGovern().getRuta() != null) {
-					filenames.add(informe.getAutoritzacioConsellDeGovern().getRuta());
-				}*/
-				if (informe.getMemoriaOrdreInici() != null && informe.getMemoriaOrdreInici().getRuta() != null) {
-					filenames.add(informe.getMemoriaOrdreInici().getRuta());
-				}
-				if (informe.getJustProcForma() != null && informe.getJustProcForma().getRuta() != null) {
-					filenames.add(informe.getJustProcForma().getRuta());
-				}
-				if (informe.getAprovacioDispoTerrenys() != null && informe.getAprovacioDispoTerrenys().getRuta() != null) {
-					filenames.add(informe.getAprovacioDispoTerrenys().getRuta());
-				}
-				if (informe.getAprovacioEXPPlecsDespesa() != null && informe.getAprovacioEXPPlecsDespesa().getRuta() != null) {
-					filenames.add(informe.getAprovacioEXPPlecsDespesa().getRuta());
-				}
-				//if (informe.getAutoritzacioPropostaDespesa() != null && informe.getAutoritzacioPropostaDespesa().getRuta() != null) {
-				//	filenames.add(informe.getAutoritzacioPropostaDespesa().getRuta());
-				//}
-				if (informe.getContracteSignat() != null && informe.getContracteSignat().getRuta() != null) {
-					filenames.add(informe.getContracteSignat().getRuta());
-				}
-				
-			} catch (SQLException | NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		    informe = InformeCore.getInformePrevi(conn, request.getParameter("idInforme"), true);
+			/*if (informe.getInformeSupervisio() != null && informe.getInformeSupervisio().getRuta() != null) {
+				filenames.add(informe.getInformeSupervisio().getRuta());
+			}*/
+			if (informe.getConformeAreaEconomivaPropostaActuacio().size() > 0) {
+				//filenames.add(informe.getConformeAreaEconomivaPropostaActuacio().getRuta());
+			}
+			if (informe.getAutoritzacioConseller() != null && informe.getAutoritzacioConseller().getRuta() != null) {
+				filenames.add(informe.getAutoritzacioConseller().getRuta());
+			}
+			/*if (informe.getAutoritzacioConsellDeGovern() != null && informe.getAutoritzacioConsellDeGovern().getRuta() != null) {
+				filenames.add(informe.getAutoritzacioConsellDeGovern().getRuta());
+			}*/
+			if (informe.getMemoriaOrdreInici() != null && informe.getMemoriaOrdreInici().getRuta() != null) {
+				filenames.add(informe.getMemoriaOrdreInici().getRuta());
+			}
+			if (informe.getJustProcForma() != null && informe.getJustProcForma().getRuta() != null) {
+				filenames.add(informe.getJustProcForma().getRuta());
+			}
+			if (informe.getAprovacioDispoTerrenys() != null && informe.getAprovacioDispoTerrenys().getRuta() != null) {
+				filenames.add(informe.getAprovacioDispoTerrenys().getRuta());
+			}
+			if (informe.getAprovacioEXPPlecsDespesa() != null && informe.getAprovacioEXPPlecsDespesa().getRuta() != null) {
+				filenames.add(informe.getAprovacioEXPPlecsDespesa().getRuta());
+			}
+			//if (informe.getAutoritzacioPropostaDespesa() != null && informe.getAutoritzacioPropostaDespesa().getRuta() != null) {
+			//	filenames.add(informe.getAutoritzacioPropostaDespesa().getRuta());
+			//}
+			if (informe.getContracteSignat() != null && informe.getContracteSignat().getRuta() != null) {
+				filenames.add(informe.getContracteSignat().getRuta());
 			}		    
 		    
 		    //..code to add URLs to the list

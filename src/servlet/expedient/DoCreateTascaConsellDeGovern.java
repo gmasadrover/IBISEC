@@ -3,9 +3,7 @@ package servlet.expedient;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -59,15 +57,10 @@ public class DoCreateTascaConsellDeGovern extends HttpServlet {
 		User Usuari = MyUtils.getLoginedUser(request.getSession());	
 		String idInforme = request.getParameter("informe");
 		InformeActuacio informe = new InformeActuacio();
-		try {
-			informe = InformeCore.getInformePrevi(conn, idInforme, false);
-			int idUsuari = UsuariCore.finCap(conn, "juridica").getIdUsuari();
-			String comentari = "Sol·licitud aprovació consell de govern expedient: " + informe.getExpcontratacio().getExpContratacio();			
-			TascaCore.novaTasca(conn, "consellDeGovern", idUsuari, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getActuacio().getIdIncidencia(), comentari, "Sol·licitud aprovació consell de govern", idInforme, null, request.getRemoteAddr(), "automatic");
-		} catch (SQLException | NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		informe = InformeCore.getInformePrevi(conn, idInforme, false);
+		int idUsuari = UsuariCore.finCap(conn, "juridica").getIdUsuari();
+		String comentari = "Sol·licitud aprovació consell de govern expedient: " + informe.getExpcontratacio().getExpContratacio();			
+		TascaCore.novaTasca(conn, "consellDeGovern", idUsuari, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getActuacio().getIdIncidencia(), comentari, "Sol·licitud aprovació consell de govern", idInforme, null, request.getRemoteAddr(), "automatic");
 		myObj.addProperty("success", true);	
 		
         out.println(myObj.toString());

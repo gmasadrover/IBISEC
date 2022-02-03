@@ -98,12 +98,12 @@
 		                                	<input class="form-control" name="telefon" placeholder="123456789" value="${empresa.telefon}">
 		                                </div>
 		                            </div>		                            
-		                            <div class="form-group">
+		                            <!-- <div class="form-group"> 
 		                                <label class="col-xs-4 control-label">email</label>
 		                                <div class="col-xs-6">
 		                                	<input class="form-control" type="email" name="email" placeholder="test@test.es" value="${empresa.email}">
 		                                </div>
-		                            </div>
+		                            </div> --> <!--Ocult a petició M.Garcia en data 10/11/21--> 
 		                            <div class="form-group">
 		                				<label class="col-xs-4 control-label">PIME</label>
 		                				<div class="col-xs-6">
@@ -533,7 +533,7 @@
 		                				<div class="col-xs-offset-1 col-md-10">
 			                				<div class="checkbox">
 						                        <label>
-						                          	Certificat positiu de l'Agència Estatal d'Administració Tributària, 
+						                          	Certificat POSITIU de l'Agència Estatal d'Administració Tributària, 
 						                          	d'estar al corrent en el comliment de les seves obligacions tributàries amb l'Estat.
 						                        </label>
 						                	</div>
@@ -547,9 +547,34 @@
 											</div>				
 			                            </div>
 			                        </div>
-			                        <div class="col-md-6">
+			                         <div class="col-md-6">
 			                			<div class="form-group">		                                
 											<c:if test="${empresa.isCaducadaAcreditacio1()}">
+												<label class="col-xs-1 control-label">Caducat</label>
+											</c:if>								
+			                            </div>
+			                        </div>  
+			                        <div class="form-group">
+		                				<div class="col-xs-offset-1 col-md-10">
+			                				<div class="checkbox">
+						                        <label>
+						                          	Certificat NEGATIU de l'Agència Estatal d'Administració Tributària, 
+						                          	d'estar al corrent en el comliment de les seves obligacions tributàries amb l'Estat.
+						                        </label>
+						                	</div>
+						                </div>
+		                			</div>
+		                			<div class="col-md-6">
+			                			<div class="form-group">
+			                                <label class="col-xs-6 control-label">Expedit amb data</label>
+			                                <div class="input-group date col-xs-4 datepicker">
+											  	<input type="text" class="form-control" name="dateExpAcreditacio1" value="${empresa.getDateExpAcreditacio4String()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+											</div>				
+			                            </div>
+			                        </div>
+			                        <div class="col-md-6">
+			                			<div class="form-group">		                                
+											<c:if test="${empresa.isCaducadaAcreditacio4()}">
 												<label class="col-xs-1 control-label">Caducat</label>
 											</c:if>								
 			                            </div>
@@ -667,6 +692,51 @@
 							<div class="form-group">	                            
 						       	<div class="col-xs-offset-6 col-xs-9">
 						            <input type="submit" class="btn btn-danger" name="prohibicio" value="Prohibició contractar">							            
+						        </div>													        
+						    </div>
+	                	</div>    	
+	                	<div class="row">
+	                		<h4>En concurs</h4>
+	                		<c:if test="${empresa.documentsConcursList.size() > 0}">			                	   
+			                	<c:forEach items="${empresa.documentsConcursList}" var="arxiu" >
+		                			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+				            		<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+								</c:forEach>	         	
+		                	</c:if>	                		
+	                		<div class="form-group">	                		
+	                			<label class="col-xs-2 control-label">Document:</label>	                	
+		                        <div class="col-xs-5">   
+		                            <input type="file" class="btn" name="documentConcurs" /><br/>
+								</div>
+							</div>
+							<div class="form-group">
+	                			<label class="col-md-3 control-label">Data concurs:</label>
+                                <div class="input-group date col-md-2 datepicker">
+								  	<input type="text" class="form-control" name="dateConcurs" value="${empresa.getDataConcursString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+								</div>
+							</div> 
+							<div class="form-group">
+	                			<label class="col-xs-2  control-label">Informació</label>
+	                			<div class="col-md-6">
+	                                	<textarea class="form-control" name="infoConcurs" placeholder="Informació" rows="3">${empresa.infoConcurs}</textarea>
+	                            </div>						       					        
+						    </div> 
+						    <div class="form-group">
+	                			<div class="col-xs-6">
+	                				<div class="checkbox">
+				                        <input name="intervencio" type="checkbox" ${empresa.isIntervenida() ? 'checked' : ''}>
+				                	</div>
+				                </div>					       					        
+						    </div> 
+						    <div class="form-group">
+	                			<label class="col-xs-2  control-label">Informació intervenció</label>
+	                			<div class="col-md-6">
+	                                	<textarea class="form-control" name="infoIntervencio" placeholder="Informació" rows="3">${empresa.infoIntervencio}</textarea>
+	                            </div>						       					        
+						    </div> 
+							<div class="form-group">	                            
+						       	<div class="col-xs-offset-6 col-xs-9">
+						            <input type="submit" class="btn btn-danger" name="concurs" value="Actualitzar Concurs">							            
 						        </div>													        
 						    </div>
 	                	</div>    	

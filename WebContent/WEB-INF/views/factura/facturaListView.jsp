@@ -78,6 +78,7 @@
                                     <tr>
                                         <th>Factura</th>
                                         <th>Actuació</th>
+                                        <th>Expedient</th>
                                         <th>Data factura</th>
                                         <th>Data factura No Format</th>
                                         <th>Data entrada</th>
@@ -113,6 +114,7 @@
 							          	<tr class="${factura.anulada ? 'danger' : ''}">							          	
 							           		<td><a href="facturaDetalls?ref=${factura.idFactura}" class="loadingButton"  data-msg="obrint factura...">${factura.idFactura}</a></td>
 							            	<td><a href="actuacionsDetalls?ref=${factura.idActuacio}" class="loadingButton"  data-msg="obrint actuació...">${factura.idActuacio} - ${factura.actuacio.descripcio}</a></td>
+							            	<td>${factura.informe.expcontratacio.expContratacio}</td>
 							            	<td>${factura.getDataFacturaString()}</td>
 							            	<td>${factura.dataFactura}</td>
 							            	<td>${factura.getDataEntradaString()}</td>

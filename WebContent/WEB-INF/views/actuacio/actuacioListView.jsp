@@ -80,37 +80,7 @@
 							<div class="col-md-offset-10 col-md-2">
 						    	<input type="submit" class="btn btn-primary loadingButton"  data-msg="Aplicant filtres..." name="filtrar" value="Aplicar Filtres">
 							</div>
-						</div>
-						<div class="form-group">
-							<div class="row">
-								<div class="col-md-offset-1 col-md-2">
-									<div class="container">
-								 		<div class="circunferencia yellow">${actuacionsPendents}</div>		
-								 	</div>
-								</div>
-								<div class="col-md-2">
-									<div class="container">						
-										<div class="circunferencia blue">${actuacionsAprovadesPA}</div>
-									</div>
-								</div>
-								<div class="col-md-2">
-									<div class="container">
-										<div class="circunferencia green">${actuacionsAprovadesPT}</div>
-									</div>
-								</div>
-								<div class="col-md-2">
-									<div class="container">
-										<div class="circunferencia red">${actuacionsTancades}</div>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-offset-1 col-md-2">Actuacions pendents</div>							
-								<div class="col-md-2">Actuacions amb proposta d'actuacions aprovades</div>
-								<div class="col-md-2">Actuacions amb proposta tècnica aprovades</div>
-								<div class="col-md-2">Actuacions tancades</div>
-							</div>
-						</div>
+						</div>						
 					</form>
 				</div>
 				

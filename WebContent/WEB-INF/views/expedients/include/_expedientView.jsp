@@ -8,7 +8,7 @@
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h4 class="panel-title">
-			<a data-toggle="collapse" data-parent="#accordionInformes" href="#expedient${informePrevi.idInf}">Expedient: ${informePrevi.expcontratacio.expContratacio != '-1' ? informePrevi.expcontratacio.expContratacio : informePrevi.idInf} - ${informePrevi.expcontratacio.anulat ? 'Anul·lat' : informePrevi.getEstatEconomic()}</a>
+			<a data-toggle="collapse" data-parent="#accordionInformes" href="#expedient${informePrevi.idInf}">Expedient: ${informePrevi.expcontratacio.expContratacio != '-1' ? informePrevi.expcontratacio.expContratacio : informePrevi.idInf} - ${informePrevi.estat == 'anulat' ? 'Anul·lat' : informePrevi.getEstatEconomic()}</a>
 		</h4>
 	</div>
     <div id="expedient${informePrevi.idInf}" class="panel-collapse collapse ${informePrevi.idInf == informeSeleccionat ? 'in' : ''}">
@@ -91,7 +91,7 @@
 			                   	<ul class="nav nav-tabs">								   	
 								    <c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra != 'conveni' && informePrevi.propostaInformeSeleccionada.tipusObra != 'acordMarc'}">
 								   		<li class="active"><a data-toggle="tab" href="#documentacioTecnica${informePrevi.idInf}">Doc Tècnica</a></li>	
-								   		<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra == 'obr'}">							   
+								   		<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra == null || informePrevi.propostaInformeSeleccionada.tipusObra == 'obr'}">							   
 								   			<li><a data-toggle="tab" href="#urbanisme${informePrevi.idInf}" class="carregarDocumentsUrbanisme" data-iscap="${isCap}" data-idincidencia="${incidencia.idIncidencia}" data-idactuacio="${actuacio.referencia}" data-idinf="${informePrevi.idInf}">Aut Urb</a></li>	
 								  		</c:if>
 								  		<li><a data-toggle="tab" href="#documentacio${informePrevi.idInf}" class="carregarAltresDocuments" data-iscap="${isCap}" data-idincidencia="${incidencia.idIncidencia}" data-idactuacio="${actuacio.referencia}" data-idinf="${informePrevi.idInf}" data-idtasca="${informePrevi.idTasca}">Altre doc</a></li>

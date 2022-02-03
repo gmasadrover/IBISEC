@@ -3,11 +3,9 @@ package servlet.empresa;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -68,29 +66,16 @@ public class DoCreateEmpresaServlet extends HttpServlet {
 		empresa.setTipus(tipus);
 		empresa.setAdministradors(administradors);
 		
-		String errorString = null; 
-      
-		if (errorString == null) {
-			try {
-				EmpresaCore.insertEmpresa(conn, empresa, administradors, usuari.getIdUsuari());
-			} catch (SQLException e) {
-				e.printStackTrace();
-				errorString = e.getMessage();
-			}
-		}
+			EmpresaCore.insertEmpresa(conn, empresa, administradors, usuari.getIdUsuari());
+		
         
 		// Store infomation to request attribute, before forward to views.
-		request.setAttribute("errorString", errorString);
+		
 		request.setAttribute("empresa", empresa);
  
-		// If error, forward to Edit page.
-		if (errorString != null) {
-			RequestDispatcher dispatcher = request.getServletContext()
-               .getRequestDispatcher("/WEB-INF/views/empresa/createEmpresaView.jsp");
-           dispatcher.forward(request, response);
-		} else {
+		
 			response.sendRedirect(request.getContextPath() + "/empresaList");
-		}
+		
 	}
 
 	/**

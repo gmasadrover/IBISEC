@@ -79,6 +79,17 @@
 	                                </select>
 	                             </div>
                             </div>  
+                            <div class="form-group">
+                                <label class="col-xs-3  control-label">Subpartida de</label>
+                                <div class="col-xs-3">
+	                                <select class="form-control selectpicker" name="codiPare" id="codiPare">
+	                               		<option value="-1">----------</option>
+					                	<c:forEach items="${partidesList}" var="partida">
+					                		<option value="${partida.codi}">${partida.codi} (${partida.nom} - Restant: ${partida.getPartidaPerAsignarFormat()})</option>
+					                	</c:forEach>					                                	
+					                </select>	
+	                             </div>
+                            </div>  
 						    <div class="form-group">
 						        <div class="col-xs-offset-3 col-xs-9">
 						            <input type="submit" class="btn btn-primary" value="Guardar">

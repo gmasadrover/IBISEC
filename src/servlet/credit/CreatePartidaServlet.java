@@ -2,7 +2,8 @@ package servlet.credit;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import bean.Partida;
 import bean.User;
 import bean.ControlPage.SectionPage;
 import bean.Partida.PartidaTipus;
@@ -39,6 +41,7 @@ public class CreatePartidaServlet extends HttpServlet {
             throws ServletException, IOException {
     	User usuari = MyUtils.getLoginedUser(request.getSession());
     	Connection conn = MyUtils.getStoredConnection(request);
+    	List<Partida> partidesList = new ArrayList<Partida>();
     	if (usuari == null){
  		   response.sendRedirect(request.getContextPath() + "/");
     	}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.partides_crear)) {
@@ -46,13 +49,10 @@ public class CreatePartidaServlet extends HttpServlet {
  	   	}else{	    	
 	        RequestDispatcher dispatcher = request.getServletContext()
 	                .getRequestDispatcher("/WEB-INF/views/credit/createPartidaView.jsp");
-	        try {
-				request.setAttribute("nouCodi", CreditCore.getNewCode(conn));
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	        request.setAttribute("nouCodi", CreditCore.getNewCode(conn));
+			partidesList = CreditCore.getPartides(conn, false);
 	        request.setAttribute("tipusPartida", PartidaTipus.values());
+	        request.setAttribute("partidesList", partidesList);
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Partides"));
 	        dispatcher.forward(request, response);
  	   	}

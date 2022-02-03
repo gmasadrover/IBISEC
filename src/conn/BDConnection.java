@@ -14,7 +14,7 @@ public class BDConnection {
 	//static final String dbName = "IBISEC";
 	
 	
-	public static Connection getPostgreConnection() throws ClassNotFoundException, SQLException, NamingException 
+	public static Connection getPostgreConnection() 
 	  {
 	    Connection conn = null;
 	    String userName = "postgres";
@@ -22,22 +22,35 @@ public class BDConnection {
 	    // connect to the database
 	    
 	    // Get the base naming context
-	    Context env = (Context)new InitialContext().lookup("java:comp/env");
+	    Context env;
+		try {
+			env = (Context)new InitialContext().lookup("java:comp/env");
+			 String hostName = (String)env.lookup("hostName");
+		     String dbName = (String)env.lookup("dbName");
+		    conn = getPostgreConnection(hostName, dbName, userName, password);
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	    // Get a single value
-	    String hostName = (String)env.lookup("hostName");
-	    String dbName = (String)env.lookup("dbName");
-	    conn = getPostgreConnection(hostName, dbName, userName, password);
+	   
 	    return conn;	    
 	  }   
 
 	  public static Connection getPostgreConnection(String hostName, String dbName,
-		        String userName, String password) throws SQLException,
-      ClassNotFoundException
+		        String userName, String password) 
 	  {
 	    Connection conn = null;
-	   	Class.forName("org.postgresql.Driver");
-	   	String url = "jdbc:postgresql://" + hostName + ":5432/" + dbName;
-	   	conn = DriverManager.getConnection(url,userName, password);    	    
+	    String url = "jdbc:postgresql://" + hostName + ":5432/" + dbName;
+	   	try {
+			Class.forName("org.postgresql.Driver");
+			conn = DriverManager.getConnection(url,userName, password);    	    
+		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	   	
+	   	
 	    return conn;
 	  }
 

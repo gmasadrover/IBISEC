@@ -2,22 +2,16 @@ package servlet.expedient;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileUploadException;
-
-import bean.Expedient;
 import bean.InformeActuacio;
-import bean.Instalacions;
 import bean.User;
 import core.ExpedientCore;
 import core.InformeCore;
@@ -45,12 +39,7 @@ public class DoEditGarantiaServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Fitxers.formParameters multipartParams = new Fitxers.formParameters();
 		Connection conn = MyUtils.getStoredConnection(request);
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);
 		User Usuari = MyUtils.getLoginedUser(request.getSession());	   
 		String idActuacio = multipartParams.getParametres().get("idActuacio");
 	    String idIncidencia = multipartParams.getParametres().get("idIncidencia");
@@ -60,11 +49,15 @@ public class DoEditGarantiaServlet extends HttpServlet {
 			InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme, true);	
 			idActuacio = informe.getActuacio().getReferencia();
 			idIncidencia = informe.getIdIncidencia();
-			informe.getExpcontratacio().setGarantia(multipartParams.getParametres().get("terminiGarantia"));
 			if (multipartParams.getParametres().get("dataIniciGarantia") != null && ! multipartParams.getParametres().get("dataIniciGarantia").isEmpty()) {
 	    	    	informe.getExpcontratacio().setDataRecepcio(formatter.parse(multipartParams.getParametres().get("dataIniciGarantia")));
 	    	} else {
 	    		informe.getExpcontratacio().setDataRecepcio(null);
+	    	}
+			if (multipartParams.getParametres().get("dataFiGarantia") != null && ! multipartParams.getParametres().get("dataFiGarantia").isEmpty()) {
+    	    	informe.getExpcontratacio().setDataFiGarantia(formatter.parse(multipartParams.getParametres().get("dataFiGarantia")));
+	    	} else {
+	    		informe.getExpcontratacio().setDataFiGarantia(null);
 	    	}
 			if (multipartParams.getParametres().get("dataRetornGarantia") != null && ! multipartParams.getParametres().get("dataRetornGarantia").isEmpty()) {
     	    	informe.getExpcontratacio().setDataRetornGarantia(formatter.parse(multipartParams.getParametres().get("dataRetornGarantia")));
@@ -77,7 +70,7 @@ public class DoEditGarantiaServlet extends HttpServlet {
 			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentInformeDevolucio"), idIncidencia, idActuacio, "", "", "", idInforme, "Informe devolucio aval", Usuari.getIdUsuari());
 			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentLiquidacioAval"), idIncidencia, idActuacio, "", "", "", idInforme, "Liquidacio aval", Usuari.getIdUsuari());
 			
-		} catch (NamingException | SQLException | ParseException e) {
+		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

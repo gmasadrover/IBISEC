@@ -53,12 +53,15 @@
 					         		<label>Tipus incidència</label>									            	 										            	 	
 					            	<select class="selectpicker" name="tipusIncidencia" id="tipusIncidencia">						                                					                                	
 							        	<option value="modificacio">Modificació</option>
+							        	<option value="excesAmidament">Excés amidaments</option>		
 							        	<option value="certfinal">Certificació final</option>			
 							        	<option value="preusContradictoris">Preus contradictoris</option>							        	
 							        	<option value="penalitzacio">Penalització</option>								        	
 							        	<option value="termini">Ampliació termini</option>							        								        	
 							        	<option value="resolucioContracte">Resolució contracte</option>	
-							        	<option value="enriquimentInjust">Enriquiment injust</option>							        		
+							        	<option value="enriquimentInjust">Enriquiment injust</option>	
+							        	<option value="decrementAmidament">Decrement d'Amidament</option>
+							        	<option value="ocupacio">Ocupació</option>							        		
 							        	<option value="informeExecucio">Incidència genèrica</option>				                   	
 					                </select>	
 					        	</div>	
@@ -226,14 +229,21 @@
 					    			</div>
 					    		</div>																													        			
 				      		</div>							
-					      	<p></p>						
-							<div class="document">			
-				               	<label>Autorització àrea econòmica signada:</label>
-				               	<c:if test="${informeModificacio.conformeAreaEconomivaPropostaActuacio.ruta != null}">
-									<c:set var="arxiu" value="${informeModificacio.conformeAreaEconomivaPropostaActuacio}" scope="request"/>
-									<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
-								</c:if>
-							</div>
+					      	<p></p>				
+					      	<c:if test="${informeModificacio.conformeAreaEconomivaPropostaActuacio.size() > 0}">
+								<p>
+									<div class="document">
+										<label>Certificat d'existència de crèdit:</label>	
+										<div class="row col-md-12">
+											<c:forEach items="${informeModificacio.conformeAreaEconomivaPropostaActuacio}" var="arxiu" >
+												<c:set var="arxiu" value="${arxiu}" scope="request"/>
+												<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+											</c:forEach>
+											<br>					            		
+										</div>
+									</div>																	
+								</p>	
+							</c:if>
 							<div class="col-md-12">
 								<div class="row margin_top10">
 					    			<div class="col-md-12">

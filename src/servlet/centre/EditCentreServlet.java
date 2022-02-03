@@ -2,7 +2,6 @@ package servlet.centre;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -46,15 +45,14 @@ public class EditCentreServlet extends HttpServlet {
 	   		response.sendRedirect(request.getContextPath() + "/");	 	
 		   }else{				   
 			   String codi = request.getParameter("codi");
-		       String errorString = null;		      
-		       boolean canCreateTasca = true;
+		       String errorString = null;	
 		       Centre centre = new Centre();			      
 		       try {
-		    	  centre = CentreCore.findCentre(conn, codi, true);		    	  
-		       } catch (SQLException e) {
-		           e.printStackTrace();
-		           errorString = e.getMessage();
-		       }
+				centre = CentreCore.findCentre(conn, codi, true);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		  
 		       // Store info in request attribute, before forward to views
 		       request.setAttribute("errorString", errorString);

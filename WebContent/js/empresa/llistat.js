@@ -39,7 +39,7 @@ $(document).ready(function() {
 	            visibility: true
 	        }
         ],	
-		"order": [[ 10, "desc" ]],
+		"order": [[ 9, "desc" ]],
 		"aoColumns": [
     		null,
     		null,
@@ -47,10 +47,9 @@ $(document).ready(function() {
     		{"bVisible": false},
     		null,
     		null,
-    		null,
-    		{"iDataSort": 8},
+    		{"iDataSort": 7},
     		{"bVisible": false},
-    		{"iDataSort": 10},
+    		{"iDataSort": 9},
     		{"bVisible": false},
     		{"iDataSort": 12},
     		{"bVisible": false},

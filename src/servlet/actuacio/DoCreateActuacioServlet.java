@@ -2,9 +2,7 @@ package servlet.actuacio;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -40,7 +38,7 @@ public class DoCreateActuacioServlet extends HttpServlet {
 		//Registrar actuaci�
 	    String referencia = request.getParameter("referencia");
 	    String idCentre = request.getParameter("idCentre");	   
-	    String descripcio = request.getParameter("descripcio");	    
+	    String descripcio = request.getParameter("descripcio");	
 	    String idIncidencia = request.getParameter("idIncidencia");	   
 	    int idUsuari = MyUtils.getLoginedUser(request.getSession()).getIdUsuari();
 	    
@@ -49,34 +47,22 @@ public class DoCreateActuacioServlet extends HttpServlet {
 	    actuacio.setDescripcio(descripcio);
 	    try {
 			actuacio.setCentre(CentreCore.findCentre(conn, idCentre, false));
-		} catch (SQLException e1) {
+		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
 	    actuacio.setIdIncidencia(idIncidencia);
 	    actuacio.setIdUsuariCreacio(idUsuari);
 	    
-	    String errorString = null;	 	      
-	   	if (errorString == null) {
-	   		try {
-	   			ActuacioCore.novaActuacio(conn, actuacio);
-	   		} catch (SQLException e) {
-	  			e.printStackTrace();
-	  			errorString = e.getMessage();
-	   		}
-	   	}	
+	   
+	   	referencia = ActuacioCore.novaActuacio(conn, actuacio);
+	   	
 	   	// Store infomation to request attribute, before forward to views.
-	   	request.setAttribute("errorString", errorString);
 	   	request.setAttribute("actuacio", actuacio);
-	  	// If error, forward to Edit page.
-	   	if (errorString != null) {
-	   		RequestDispatcher dispatcher = request.getServletContext()
-	   				.getRequestDispatcher("/WEB-INF/views/actuacio/createActuacioView.jsp");
-	   		dispatcher.forward(request, response);
-	   	}// If everything nice. Redirect to the product listing page.            
-	   	else {
-	   		response.sendRedirect(request.getContextPath() + "/actuacionsDetalls?ref=" + referencia);
-	   	}
+	  	
+	    response.sendRedirect(request.getContextPath() + "/actuacionsDetalls?ref=" + referencia);
+	   	
 	}
 
 	/**

@@ -2,12 +2,10 @@ package servlet.registre;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -50,18 +48,13 @@ public class CreateEntradaServlet extends HttpServlet {
  	   	}else{ 	 
  	   		String idIncidencia = request.getParameter("idIncidencia");
  	   		String idInforme = request.getParameter("idInf");
-	        try {
-	        	if (request.getParameter("ref") != null) {
-	        		
-	        	}
-	        	request.setAttribute("llistaProcediment", JudicialCore.getProcediments(conn, "-1", "-1"));
-	        	request.setAttribute("idIncidencia", idIncidencia);
-	        	request.setAttribute("idInforme", idInforme);
-				request.setAttribute("nouCodi", RegistreCore.getNewCode(conn, "E"));
-			} catch (SQLException | NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+	        if (request.getParameter("ref") != null) {
+				
 			}
+			request.setAttribute("llistaProcediment", JudicialCore.getProcediments(conn, "-1", "-1"));
+			request.setAttribute("idIncidencia", idIncidencia);
+			request.setAttribute("idInforme", idInforme);
+			request.setAttribute("nouCodi", RegistreCore.getNewCode(conn, "E"));
 	        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 	        String today = df.format(new Date().getTime());	
 	        request.setAttribute("data", today);

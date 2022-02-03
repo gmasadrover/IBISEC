@@ -34,7 +34,7 @@
 			</div>
       	</div>
     </c:if>
-    <c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra != 'acordMarc'}">
+    <c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra != 'acordMarc' && isIBISEC}">
 	    <div class="panel-body">
 			<div class="row panel-body">			
 				<h4>Incidències</h4>
@@ -52,7 +52,7 @@
 </div>
 
 <div class="separator"></div>
-<c:if test="${informePrevi.expcontratacio.contracte == 'major'}">
+<c:if test="${informePrevi.expcontratacio.contracte == 'major' || informePrevi.informeAntic}">
 <div class="panel panel-default">
 	<div class="panel-body">
 		<div class="row panel-body">
@@ -107,7 +107,7 @@
        		</div>															
 		</div>
  	</div>
-  	<c:if test="${informePrevi.ofertaSeleccionada != null}">
+  	<c:if test="${(informePrevi.ofertaSeleccionada != null || informePrevi.informeAntic) && isIBISEC}">
     	<div class="panel-body">
 			<div class="row panel-body">	
             	<a href="registrarCertificacio?idInforme=${informePrevi.idInf}" class="btn btn-primary" role="button">Registrar certificació</a>							                    				                       	
@@ -171,7 +171,7 @@
        		</div>															
 		</div>
  	</div>
-  	<c:if test="${(informePrevi.ofertaSeleccionada != null || informePrevi.propostaInformeSeleccionada.tipusObra == 'acordMarc') && canCreateFactura}">
+  	<c:if test="${(informePrevi.ofertaSeleccionada != null || informePrevi.propostaInformeSeleccionada.tipusObra == 'acordMarc' || informePrevi.informeAntic) && canCreateFactura}">
     	<div class="panel-body">
 			<div class="row panel-body">	
             	<a href="registrarFactura?idInforme=${informePrevi.idInf}" class="btn btn-primary" role="button">Registrar factura</a>							                    				                       	
@@ -180,62 +180,6 @@
       	
    	</c:if>   
 </div>
-<c:if test="${informePrevi.propostaInformeSeleccionada.tipusObra != 'acordMarc'}">
-<div class="separator"></div>
-	<div class="panel panel-default">
-		<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadDocumentacioFinalObra">	
-			<input type="hidden" name="idActuacio" value="${informePrevi.actuacio.referencia}">
-			<input type="hidden" name="idIncidencia" value="${informePrevi.actuacio.idIncidencia}">
-			<input type="hidden" name="idInforme" value="${informePrevi.idInf}">			    
-			<div class="panel-body">
-				<div class="row panel-body">
-					<h4>Final d'obra</h4>			
-					<p>
-						<label>Medició general:</label>
-					</p>	
-					<div class="row col-md-12">
-						<c:forEach items="${informePrevi.documentMedicioGeneral}" var="arxiu" >
-							<c:set var="arxiu" value="${arxiu}" scope="request"/>
-							<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-						</c:forEach>
-						<br>					            		
-					</div>	
-					<div class="form-group">
-						<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-				           <div class="col-xs-5">   
-				           	<input type="file" class="btn" name="documentMedicioGeneral" multiple/><br/>
-						</div> 
-					</div>
-					<p>
-						<label>Convocatòria recepció:</label>
-					</p>	
-					<div class="row col-md-12">
-						<c:forEach items="${informePrevi.documentConvocatoriaRecepcio}" var="arxiu" >
-							<c:set var="arxiu" value="${arxiu}" scope="request"/>
-							<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
-						</c:forEach>
-						<br>					            		
-					</div>	
-					<div class="form-group">
-						<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-				           <div class="col-xs-5">   
-				           	<input type="file" class="btn" name="documentConvocatoriaRecepcio" multiple/><br/>
-						</div> 
-					</div>									
-				</div>
-		 	</div>
-		 	<div class="row">
-				<div class="col-md-12">
-					<div class="row">	  			
-						<div class="col-md-offset-9 col-md-2 margin_top30">
-							<input type="submit" class="btn btn-primary" value="Actualitzar" />
-						</div>
-			    	</div>       
-				</div>
-			</div>
-		 </form>
-	</div>
-</c:if>
 <div class="separator"></div>
 <br />
 <p>
@@ -248,22 +192,24 @@
 	</c:forEach>
 	<br>					            		
 </div>
-<div class="row">            			
-	<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadDocumentsAltresExecucio">
-		<div class="form-group">
-			<label class="col-xs-2 control-label">Adjuntar arxius:</label>
-            <div class="col-xs-5">   
-            	<input type="file" class="btn" name="file" multiple/><br/>
-			</div> 
-			<input type="hidden" name="idActuacio" value="${informePrevi.actuacio.referencia}">
-			<input type="hidden" name="idIncidencia" value="${informePrevi.actuacio.idIncidencia}">
-			<input type="hidden" name="idInforme" value="${informePrevi.idInf}">			    
-			<div class="col-xs-2"> 
-				<input type="submit" class="btn btn-primary loadingButton" value="Pujar" />
-			</div>    						
-		</div>         				
-	</form>							
-</div>	
+<c:if test="${isIBISEC}">
+	<div class="row">            			
+		<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="uploadDocumentsAltresExecucio">
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Adjuntar arxius:</label>
+	            <div class="col-xs-5">   
+	            	<input type="file" class="btn" name="file" multiple/><br/>
+				</div> 
+				<input type="hidden" name="idActuacio" value="${informePrevi.actuacio.referencia}">
+				<input type="hidden" name="idIncidencia" value="${informePrevi.actuacio.idIncidencia}">
+				<input type="hidden" name="idInforme" value="${informePrevi.idInf}">			    
+				<div class="col-xs-2"> 
+					<input type="submit" class="btn btn-primary loadingButton" value="Pujar" />
+				</div>    						
+			</div>         				
+		</form>							
+	</div>	
+</c:if>
 <div class="row">
 	<div class="col-md-12">
 		<div class="row">

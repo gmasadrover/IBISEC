@@ -2,16 +2,12 @@ package servlet.actuacio;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
-
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.Actuacio;
 import core.ActuacioCore;
 import utils.MyUtils;
 
@@ -39,27 +35,11 @@ public class DoModificarActuacioServlet extends HttpServlet {
 	    String referencia = request.getParameter("idActuacio");	   
 	    String descripcio = request.getParameter("descripcio");	       
 	    String notes = request.getParameter("observacio");
-	    String errorString = null;	 	      
-	   	if (errorString == null) {
-	   		try {
-	   			ActuacioCore.modificarActuacio(conn, referencia, descripcio, notes);
-	   		} catch (SQLException e) {
-	  			e.printStackTrace();
-	  			errorString = e.getMessage();
-	   		}
-	   	}	    
-	
-	   	// Store infomation to request attribute, before forward to views.
-	   	request.setAttribute("errorString", errorString);
-	  	// If error, forward to Edit page.
-	   	if (errorString != null) {
-	   		RequestDispatcher dispatcher = request.getServletContext()
-	   				.getRequestDispatcher("/WEB-INF/views/actuacio/editActuacioView.jsp");
-	   		dispatcher.forward(request, response);
-	   	}// If everything nice. Redirect to the product listing page.            
-	   	else {
-	   		response.sendRedirect(request.getContextPath() + "/actuacionsDetalls?ref=" + referencia);
-	   	}
+	    
+	   	ActuacioCore.modificarActuacio(conn, referencia, descripcio, notes);
+	   	    
+		response.sendRedirect(request.getContextPath() + "/actuacionsDetalls?ref=" + referencia);
+	   	
 	}
 
 	/**

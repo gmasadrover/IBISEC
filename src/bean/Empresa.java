@@ -3,7 +3,6 @@ package bean;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -13,30 +12,6 @@ import utils.Fitxers.Fitxer;
 
 public class Empresa {
  
-   public class Classificacio {
-	   private String grup;
-	   private String subGrup;
-	   private String categoria;
-	public String getGrup() {
-		return grup;
-	}
-	public void setGrup(String grup) {
-		this.grup = grup;
-	}
-	public String getSubGrup() {
-		return subGrup;
-	}
-	public void setSubGrup(String subGrup) {
-		this.subGrup = subGrup;
-	}
-	public String getCategoria() {
-		return categoria;
-	}
-	public void setCategoria(String categoria) {
-		this.categoria = categoria;
-	}
-   }
-	
    public class Administrador{
 	   private String nom;
 	   private String dni;
@@ -218,6 +193,14 @@ public class Empresa {
    private Date prohibitContractarFins;
    private List<Fitxers.Fitxer> documentsProhibicioContractarList;
    
+   private boolean enConcurs;
+   private Date dataConcurs;
+   private List<Fitxers.Fitxer> documentsConcursList;
+   private String infoConcurs;
+   
+   private boolean intervenida;
+   private String infoIntervencio;
+   
    public Empresa() {
  
    }
@@ -307,22 +290,6 @@ public class Empresa {
 	
 	public void setDataConstitucio(Date dataConstitucio) {
 		this.dataConstitucio = dataConstitucio;
-	}
-	
-	public List<Classificacio> getClassificacio() {
-		List<Empresa.Classificacio> classificacioList = new ArrayList<Empresa.Classificacio>();
-		if (this.getClassificacioString() != null && !this.getClassificacioString().isEmpty()) {
-			String[] classificacioString = this.getClassificacioString().split(";");
-			Empresa.Classificacio classificacio = new Classificacio();
-			for (String element : classificacioString) {
-				classificacio = new Classificacio();
-			    classificacio.setGrup(element.split("#")[0]);
-			    classificacio.setSubGrup(element.split("#")[1]);
-			    classificacio.setCategoria(element.split("#")[2]);
-			    classificacioList.add(classificacio);
-			}
-		}
-		return classificacioList;
 	}
 	
 	public List<Administrador> getAdministradors() {
@@ -709,6 +676,61 @@ public class Empresa {
 
 	public void setTipus(String tipus) {
 		this.tipus = tipus;
+	}
+
+	public boolean isEnConcurs() {
+		return enConcurs;
+	}
+
+	public void setEnConcurs(boolean enConcurs) {
+		this.enConcurs = enConcurs;
+	}
+
+	public Date getDataConcurs() {
+		return dataConcurs;
+	}
+	
+	public String getDataConcursString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+		String dataString = "";
+		if (this.dataConcurs != null) dataString = df.format(this.dataConcurs);
+		return dataString;
+	}
+
+	public void setDataConcurs(Date dataConcurs) {
+		this.dataConcurs = dataConcurs;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsConcursList() {
+		return documentsConcursList;
+	}
+
+	public void setDocumentsConcursList(List<Fitxers.Fitxer> documentsConcursList) {
+		this.documentsConcursList = documentsConcursList;
+	}
+
+	public String getInfoConcurs() {
+		return infoConcurs;
+	}
+
+	public void setInfoConcurs(String infoConcurs) {
+		this.infoConcurs = infoConcurs;
+	}
+
+	public boolean isIntervenida() {
+		return intervenida;
+	}
+
+	public void setIntervenida(boolean intervenida) {
+		this.intervenida = intervenida;
+	}
+
+	public String getInfoIntervencio() {
+		return infoIntervencio;
+	}
+
+	public void setInfoIntervencio(String infoIntervencio) {
+		this.infoIntervencio = infoIntervencio;
 	}
 
 }

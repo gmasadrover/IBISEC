@@ -2,9 +2,7 @@ package servlet.llicencia;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,9 +14,7 @@ import bean.Actuacio;
 import bean.Llicencia;
 import bean.User;
 import bean.ControlPage.SectionPage;
-import core.ActuacioCore;
 import core.ControlPageCore;
-import core.ExpedientCore;
 import core.InformeCore;
 import core.LlicenciaCore;
 import core.UsuariCore;
@@ -55,27 +51,12 @@ public class EditLlicenciaServlet extends HttpServlet {
 			String from = request.getParameter("from"); 
 			String mode = request.getParameter("mode");
 	        Llicencia llicencia = new Llicencia();	
-	        Actuacio actuacio = new Actuacio();	
-	        String errorString = null;	 
-	        try {
-	        	actuacio = InformeCore.getInformePrevi(conn, idInforme, false).getActuacio();
-	            llicencia = LlicenciaCore.findLlicencia(conn, codi);	            
-	        } catch (SQLException | NamingException e) {
-	            e.printStackTrace();
-	            errorString = e.getMessage();
-	        }
+	        Actuacio actuacio = new Actuacio();	 
+	        actuacio = InformeCore.getInformePrevi(conn, idInforme, false).getActuacio();
+			llicencia = LlicenciaCore.findLlicencia(conn, codi);
 	 
-	         
-	        // If no error.
-	        // The product does not exist to edit.
-	        // Redirect to productList page.
-	        if (errorString != null) {
-	            response.sendRedirect(request.getServletPath() + "/llicencies");
-	            return;
-	        }
-	 
+	  
 	        // Store errorString in request attribute, before forward to views.
-	        request.setAttribute("errorString", errorString);
 	        request.setAttribute("idInforme", idInforme);
 	        request.setAttribute("llicencia", llicencia);
 	        request.setAttribute("from", from);

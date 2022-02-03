@@ -2,7 +2,6 @@ package servlet.tasca;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import bean.User;
-import bean.ControlPage.SectionPage;
 import core.ActuacioCore;
 import core.ControlPageCore;
 import core.TascaCore;
@@ -46,32 +44,27 @@ public class CreateTascaServlet extends HttpServlet {
 		if (usuari == null){
  		   response.sendRedirect(request.getContextPath() + "/preLogin");		
  	   	}else{ 
-	        try {
-	        	String tipus = request.getParameter("tipus");
-	        	List<User> llistaUsuaris = new ArrayList<User>();
-	        	request.setAttribute("idActuacio", request.getParameter("idActuacio"));
-	        	request.setAttribute("idIncidencia", ActuacioCore.findActuacio(conn, request.getParameter("idActuacio")).getIdIncidencia());
-	        	request.setAttribute("idProcediment", request.getParameter("idProcediment"));
-	        	request.setAttribute("idFactura", request.getParameter("idfact"));
-	        	request.setAttribute("idInforme", request.getParameter("idInf"));
-	        	request.setAttribute("tipus", tipus);
-	        	request.setAttribute("centre", request.getParameter("centre"));
-				request.setAttribute("nouCodi", TascaCore.idNovaTasca(conn));
-				boolean canReasignar = (!usuari.getDepartament().equals("obres") && !usuari.getDepartament().equals("instalacions")) || usuari.getRol().contains("CAP") || usuari.getRol().contains("ADM");
-				
-				if (("infPrev".equals(tipus) || "factura".equals(tipus)) && !usuari.getRol().contains("MANUAL") && !usuari.getRol().contains("CAP") && !usuari.getRol().contains("ADMIN")) {
-					llistaUsuaris = UsuariCore.findUsuarisByRol(conn, "CAP");
-				} else {
-					llistaUsuaris = UsuariCore.findUsuarisByRol(conn, "");
-				}
-				
-				request.setAttribute("canReasignar", canReasignar);
-				request.setAttribute("llistaUsuaris", llistaUsuaris);
-				request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Tasques"));
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+	        String tipus = request.getParameter("tipus");
+			List<User> llistaUsuaris = new ArrayList<User>();
+			request.setAttribute("idActuacio", request.getParameter("idActuacio"));
+			request.setAttribute("idIncidencia", ActuacioCore.findActuacio(conn, request.getParameter("idActuacio")).getIdIncidencia());
+			request.setAttribute("idProcediment", request.getParameter("idProcediment"));
+			request.setAttribute("idFactura", request.getParameter("idfact"));
+			request.setAttribute("idInforme", request.getParameter("idInf"));
+			request.setAttribute("tipus", tipus);
+			request.setAttribute("centre", request.getParameter("centre"));
+			request.setAttribute("nouCodi", TascaCore.idNovaTasca(conn));
+			boolean canReasignar = (!usuari.getDepartament().equals("obres") && !usuari.getDepartament().equals("instalacions")) || usuari.getRol().contains("CAP") || usuari.getRol().contains("ADM");
+			
+			if (("infPrev".equals(tipus) || "factura".equals(tipus)) && !usuari.getRol().contains("MANUAL") && !usuari.getRol().contains("CAP") && !usuari.getRol().contains("ADMIN")) {
+				llistaUsuaris = UsuariCore.findUsuarisByRol(conn, "CAP");
+			} else {
+				llistaUsuaris = UsuariCore.findUsuarisByRol(conn, "");
 			}
+			
+			request.setAttribute("canReasignar", canReasignar);
+			request.setAttribute("llistaUsuaris", llistaUsuaris);
+			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Tasques"));
 	        RequestDispatcher dispatcher = request.getServletContext()
 	                .getRequestDispatcher("/WEB-INF/views/tasca/createTascaView.jsp");
 	        dispatcher.forward(request, response);

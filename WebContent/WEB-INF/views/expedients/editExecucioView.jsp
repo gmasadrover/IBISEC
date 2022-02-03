@@ -67,13 +67,13 @@
 	                                <div class="input-group date col-xs-6 datepicker">
 									  	<input type="text" class="form-control" name="dataIniciObra" value="${expedient.getDataIniciObratring()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 									</div>
-	                            </div>	  
-	                            <div class="form-group">
-	                                <label class="col-xs-3 control-label">Data retorn garantia</label>
+	                            </div>  
+	                             <div class="form-group">
+	                                <label class="col-xs-3 control-label">Data firma contracte</label>
 	                                <div class="input-group date col-xs-6 datepicker">
-									  	<input type="text" class="form-control" name="dataRetornGarantia" value="${expedient.getDataRetornGarantiaString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+									  	<input type="text" class="form-control" name="dataFirma" value="${expedient.getDataFirmaString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 									</div>
-	                            </div>	          
+	                            </div>	
 		                    </div>
 		                    <div class="col-md-6">  
 		                    	<div class="form-group">
@@ -87,19 +87,7 @@
 	                                <div class="input-group date col-xs-6 datepicker">
 									  	<input type="text" class="form-control" name="dataLimitOfertes" value="${expedient.getDataLimitPresentacioString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 									</div>
-	                            </div>	
-	                            <div class="form-group">
-	                                <label class="col-xs-3 control-label">Data firma contracte</label>
-	                                <div class="input-group date col-xs-6 datepicker">
-									  	<input type="text" class="form-control" name="dataFirma" value="${expedient.getDataFirmaString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-									</div>
-	                            </div>	   
-	                             <div class="form-group">
-	                                <label class="col-xs-3 control-label">Data recepció</label>
-	                                <div class="input-group date col-xs-6 datepicker">
-									  	<input type="text" class="form-control" name="dataRecepcio" value="${expedient.getDataRecepcioString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-									</div>
-	                            </div>
+	                            </div>		                           
 	                            <div class="form-group">
 	                                <label class="col-xs-3 control-label">Data liquidació obra</label>
 	                                <div class="input-group date col-xs-6 datepicker">
@@ -107,15 +95,7 @@
 									</div>
 	                            </div>	   		                            	                                                                        	
 		                    </div>	
-	                	</div>	                	
-	                	<div class="row">
-	                		<div class="form-group">
-                                <label class="col-xs-2 control-label">Garantia</label>
-                                <div class="col-xs-8">
-                                	<input class="form-control" name="garantia" placeholder="garantia" value="${expedient.garantia}">
-                                </div>
-                            </div>
-	                	</div>	                	
+	                	</div>	       	
 	                	<div class="row">
 	                		<div class="form-group">
 						        <div class="col-xs-offset-9 col-xs-9">

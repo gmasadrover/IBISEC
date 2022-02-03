@@ -94,7 +94,7 @@
                			<p style="color: red;">${errorString}</p>
                		</div>
                	</div>
-	            <c:if test="${tasca.tipus!='vacances' && tasca.tipus!='judicial' && tasca.tipus!='pagamentJudicial'  && tasca.tipus!='partidaJudicial' && tasca.tipus!='factura'}">					
+	            <c:if test="${tasca.tipus!='vacances' && tasca.tipus!='judicial' && tasca.tipus!='pagamentJudicial'  && tasca.tipus!='partidaJudicial' && tasca.tipus!='factura' && tasca.tipus!='reservaDron'}">					
 					<div class="row">					
 		                <div class="col-md-12">	  
 		                	<jsp:include page="../actuacio/include/_resumActuacio.jsp"></jsp:include>		                	
@@ -290,6 +290,9 @@
 										    <c:when test="${tasca.tipus=='pagamentJudicial'}">
 										    	<jsp:include page="include/_pagamentJudicial.jsp"></jsp:include>
 										    </c:when>
+										    <c:when test="${tasca.tipus=='reservaDron'}">
+										    	<jsp:include page="include/_solicitudDron.jsp"></jsp:include>
+										    </c:when>
 										</c:choose>
 									</div>
 								</c:if>
@@ -343,7 +346,7 @@
 											        	<div class="col-md-6"></div>
 											            <div><input class="btn btn-primary" type="submit" name="afegirComentari" value="Només afegir comentari"></div>
 											        </div>
-											        <c:if test="${esCap || tasca.tipus=='vacances' || tasca.tipus=='generic' || tasca.tipus=='previs' || tasca.tipus=='execucio' || tasca.tipus=='garantia' || tasca.tipus=='certificacioFirmada' || tasca.tipus=='firmaContracte' || tasca.tipus=='contracte'}">
+											        <c:if test="${esCap || tasca.tipus=='vacances' || tasca.tipus=='generica' || tasca.tipus=='previs' || tasca.tipus=='execucio' || tasca.tipus=='garantia' || tasca.tipus=='certificacioFirmada' || tasca.tipus=='firmaContracte' || tasca.tipus=='contracte'}">
 												        <div class="row margin_top10">
 												        	<div class="col-md-6"></div>
 												            <div><input class="btn btn-danger" type="submit" name="tancar" value="Tancar"></div>

@@ -2,9 +2,7 @@ package servlet.expedient;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,7 +17,6 @@ import core.ActuacioCore;
 import core.ControlPageCore;
 import core.ExpedientCore;
 import core.InformeCore;
-import core.TascaCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
@@ -50,18 +47,12 @@ public class CreateExpedientServlet extends HttpServlet {
 		}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.expedient_modificar)) {
     		response.sendRedirect(request.getContextPath() + "/");	
  	   	}else{ 
-	        try {
-	        	String idInforme = request.getParameter("idInforme");
-	        	double importObraMajor = Double.parseDouble(getServletContext().getInitParameter("importObraMajor"));
-	        	InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme, false);
-	        	request.setAttribute("informe", informe);	     
-	        	request.setAttribute("actuacio", ActuacioCore.findActuacio(conn, informe.getActuacio().getReferencia()));	     
-				request.setAttribute("nouCodi", ExpedientCore.getNouCodiExpedient(conn, informe, importObraMajor));
-				request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"expedients"));
-			} catch (SQLException | NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	        String idInforme = request.getParameter("idInforme");
+			InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme, false);
+			request.setAttribute("informe", informe);	     
+			request.setAttribute("actuacio", ActuacioCore.findActuacio(conn, informe.getActuacio().getReferencia()));	     
+			request.setAttribute("nouCodi", ExpedientCore.getNouCodiExpedient(conn, informe));
+			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"expedients"));
 	        RequestDispatcher dispatcher = request.getServletContext()
 	                .getRequestDispatcher("/WEB-INF/views/expedients/createExpedientView.jsp");
 	        dispatcher.forward(request, response);

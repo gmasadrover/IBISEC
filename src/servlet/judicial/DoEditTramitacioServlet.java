@@ -2,19 +2,15 @@ package servlet.judicial;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.fileupload.FileUploadException;
 
 import bean.Judicial;
 import bean.User;
@@ -46,12 +42,7 @@ public class DoEditTramitacioServlet extends HttpServlet {
 		Connection conn = MyUtils.getStoredConnection(request);
 		User usuari = MyUtils.getLoginedUser(request.getSession());
 		Fitxers.formParameters multipartParams = new Fitxers.formParameters();
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}       	
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);       	
        	String refPro = multipartParams.getParametres().get("procediment");
        	int idTramitacio = Integer.parseInt(multipartParams.getParametres().get("referencia"));
        	Tramitacio tramitacio = new Judicial().new Tramitacio();
@@ -80,7 +71,7 @@ public class DoEditTramitacioServlet extends HttpServlet {
 			//Cream tasca si hi ha termini
 			if (multipartParams.getParametres().get("termini") != null && !multipartParams.getParametres().get("termini").equals("") && !multipartParams.getParametres().get("termini").equals(multipartParams.getParametres().get("terminiOriginal"))) if (tramitacio.getTermini() != "") TascaCore.novaTasca(conn, "judicial", usuari.getIdUsuari(), usuari.getIdUsuari(), "-1", "-1", "S'ha afegit el termini de: " + tramitacio.getTermini(), "Nou termini procediment", refPro, null, request.getRemoteAddr(), "automatic");
 			
-		} catch (SQLException | ParseException | NamingException e) {
+		} catch (ParseException e) {
 			errorString = e.toString();
 		}
 		// Store infomation to request attribute, before forward to views.

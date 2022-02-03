@@ -2,14 +2,9 @@ package servlet.factura;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,8 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import bean.Empresa;
 import bean.Factura;
-import bean.InformeActuacio;
-import bean.Oferta;
 import bean.User;
 import bean.Actuacio;
 import bean.ControlPage.SectionPage;
@@ -28,8 +21,6 @@ import core.ActuacioCore;
 import core.ControlPageCore;
 import core.EmpresaCore;
 import core.FacturaCore;
-import core.InformeCore;
-import core.OfertaCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
@@ -64,23 +55,22 @@ public class EditFacturaServlet extends HttpServlet {
  	   		Factura factura = new Factura();
  	   		Actuacio actuacio = new Actuacio();
  	   		String idCentre = "";
-	        try {
-	        	factura = FacturaCore.getFactura(conn, idFactura);
-	        	System.out.println(factura.getIdActuacio());
-	        	if (factura.getIdActuacio() != null && !factura.getIdActuacio().equals("-1")) {
-	        		if (factura.getIdActuacio().contains("PRO-")) {
-	        			idCentre = "procediment";
-	        		} else {
-	        			actuacio = ActuacioCore.findActuacio(conn, factura.getIdActuacio());
-	        			idCentre = actuacio.getCentre().getIdCentre();
-	        		}	        		
-	        	}	        	
-				empresesList = EmpresaCore.getEmpreses(conn);
-				request.setAttribute("llistaUsuaris", UsuariCore.llistaUsuaris(conn, true));
-			} catch (SQLException | NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+ 	   		boolean informeAntic = false;
+	        factura = FacturaCore.getFactura(conn, idFactura);
+			if (factura.getIdActuacio() != null && !factura.getIdActuacio().equals("-1")) {
+				if (factura.getIdActuacio().contains("PRO-")) {
+					idCentre = "procediment";
+				} else {
+					actuacio = ActuacioCore.findActuacio(conn, factura.getIdActuacio());
+					idCentre = actuacio.getCentre().getIdCentre();
+				}	        		
+			}	        	
+			if (factura.getIdInforme() != null){
+				informeAntic = !factura.getIdInforme().contains("-INF-");
 			}
+			empresesList = EmpresaCore.getEmpreses(conn);
+			request.setAttribute("llistaUsuaris", UsuariCore.llistaUsuaris(conn, true));
+			request.setAttribute("informeAntic", informeAntic);
 	        request.setAttribute("factura", factura);
 	        request.setAttribute("idCentre", idCentre);
 	        request.setAttribute("empresesList", empresesList);

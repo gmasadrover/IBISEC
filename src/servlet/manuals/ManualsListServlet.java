@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import bean.User;
 import bean.ControlPage.SectionPage;
+import core.ConfiguracioCore;
 import core.ControlPageCore;
 import core.UsuariCore;
 import utils.Fitxers;
@@ -40,18 +38,10 @@ public class ManualsListServlet extends HttpServlet {
    		response.sendRedirect(request.getContextPath() + "/");	 	
 	   }else{	
 		   List<Fitxers.Fitxer> manuals;
-		try {
-			manuals = Fitxers.ObtenirManuals();
-			// Get the base naming context
-		    Context env = (Context)new InitialContext().lookup("java:comp/env");
-		    // Get a single value
-			String ruta =  (String)env.lookup("ruta_base") + "/Manuals/";
-			request.setAttribute("manuals", manuals);
-			request.setAttribute("ruta", ruta);
-		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		manuals = Fitxers.ObtenirManuals(conn);
+		String ruta =   ConfiguracioCore.getConfiguracio(conn).getRutaBaseDocumentacio() + "/Manuals/";
+		request.setAttribute("manuals", manuals);
+		request.setAttribute("ruta", ruta);
 	       request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "Manuals"));
 	       // Forward to /WEB-INF/views/homeView.jsp
 	       // (Users can not access directly into JSP pages placed in WEB-INF)

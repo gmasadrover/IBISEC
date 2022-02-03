@@ -2,7 +2,6 @@ package servlet.personal;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,12 +17,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.Resultat;
 import bean.User;
 import bean.Vacances;
 import bean.Vacances.Reserves;
 import bean.ControlPage.SectionPage;
-import core.ActuacioCore;
 import core.CalendarCore;
 import core.ControlPageCore;
 import core.UsuariCore;
@@ -95,7 +92,7 @@ public class VacancesListServlet extends HttpServlet {
 				vacancesList = CalendarCore.vacancesList(conn, idUsuari, estat, dataInici, dataFi);
 				llistaUsuaris = UsuariCore.llistaUsuaris(conn, true);
 				
-			} catch (ParseException | SQLException e) {
+			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

@@ -2,14 +2,7 @@ package servlet.gestio;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -18,12 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.Resultat;
 import bean.User;
 import bean.ControlPage.SectionPage;
 import bean.ReservaVehicle;
-import bean.ReservaVehicle.Reserva;
-import core.ActuacioCore;
 import core.CalendarCore;
 import core.ControlPageCore;
 import core.UsuariCore;
@@ -64,12 +54,7 @@ public class CalendariCotxeServlet extends HttpServlet {
 			Calendar cal = Calendar.getInstance();	
 	        int diaSetmana = cal.get(Calendar.DAY_OF_WEEK);
 	        String reservesPropies = "";
-			try {
-				reservesPropies = CalendarCore.pintarReservesUsuari(CalendarCore.getReservesUsuari(conn, cal.get(Calendar.WEEK_OF_YEAR), usuariLogetjat.getIdUsuari(), cal.get(Calendar.YEAR)));
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			reservesPropies = CalendarCore.pintarReservesUsuari(CalendarCore.getReservesUsuari(conn, cal.get(Calendar.WEEK_OF_YEAR), usuariLogetjat.getIdUsuari(), cal.get(Calendar.YEAR)));
 			
 	        ReservaVehicle setmanaCotxe = CalendarCore.getSetmana(conn, cal, "cotxe");
 	        ReservaVehicle setmanaCotxeElectric = CalendarCore.getSetmana(conn, cal, "cotxeElectric");

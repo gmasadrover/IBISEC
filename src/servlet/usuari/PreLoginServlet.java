@@ -2,10 +2,6 @@ package servlet.usuari;
 
 import java.io.IOException;
 
-import java.util.*;
-import javax.mail.*;
-import javax.mail.internet.*;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

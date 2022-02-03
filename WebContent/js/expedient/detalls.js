@@ -161,6 +161,28 @@ $(document).ready(function() {
 	        		content.parent().find('.documentPlaTreball').append(html);
 	        		numDocument++;
 	        	 }); 
+	        	
+	        	content.parent().find('.documentControlQualitat').html('');
+	        	$.each(data.documentControlQualitat, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';
+	        		
+	        		content.parent().find('.documentControlQualitat').append(html);
+	        		numDocument++;
+	        	 }); 
+	        	
 	        	content.parent().find('.documentFinalitzacioContratista').html('');
 	        	$.each(data.documentFinalitzacioContratista, function( key, arxiu ) {
 	        		html = '';
@@ -280,6 +302,28 @@ $(document).ready(function() {
 	        		content.parent().find('.documentDevolucioAval').append(html);
 	        		numDocument++;
 	        	 }); 
+	        	content.parent().find('.documentCertificatsBonaExecucio').html('');
+	        	$.each(data.documentCertificatsBonaExecucio, function( key, arxiu ) {
+	        		html = '';
+	        		html += '<div id="' + numDocument + '" class="document">';
+	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
+	        		html += arxiu.dataString + ' - ' + arxiu.nom;
+	        		html += '</a>';
+	        		if (isCap && arxiu.ruta != null) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="deleteFile(' + numDocument + ')" class="glyphicon glyphicon-remove deleteFile"></span>';
+	        		}
+	        		if (arxiu.signat) {
+	        			html += '<span data-ruta="' + arxiu.ruta + '" onclick="signedFile(' + numDocument + ')" class="glyphicon glyphicon-pencil signedFile"></span>';
+	        		}	        			
+	        		html += '<br>';
+	        		html += '<div class="infoSign hidden"></div>';
+	        		html += '</div>';	        		
+	        		content.parent().find('.documentCertificatsBonaExecucio').append(html);
+	        		numDocument++;
+	        	 }); 
+	        	
+	        	
+	        	
 	        	content.find('.loader').remove();
 	        },        
 	        //If there was no resonse from the server

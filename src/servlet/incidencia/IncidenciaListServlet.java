@@ -2,7 +2,6 @@ package servlet.incidencia;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -91,7 +90,7 @@ public class IncidenciaListServlet extends HttpServlet {
 				listActuacio = IncidenciaCore.searchIncidenciesWithActuacio(conn, idCentre, true, dataInici, dataFi, true);
 				listPendent = IncidenciaCore.searchIncidenciesWithActuacio(conn, idCentre, true, dataInici, dataFi, false);
 				listIgnorades = IncidenciaCore.searchIncidenciesIgnorades(conn, idCentreSelector, dataInici, dataFi);
-			} catch (SQLException | ParseException e) {
+			} catch (ParseException e) {
 				e.printStackTrace();
 				errorString = e.getMessage();
 			}

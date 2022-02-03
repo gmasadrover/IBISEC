@@ -49,10 +49,7 @@
 					</c:otherwise>
 				</c:choose>				
 			</c:if>
-			<c:if test="${propostaModificacio.tipusModificacio != 'termini' && propostaModificacio.tipusModificacio != 'resolucioContracte' && propostaModificacio.tipusModificacio != 'informeExecucio'}">
-				<p>
-					<label>Empresa:</label> ${propostaModificacio.ofertaSeleccionada.nomEmpresa} (${propostaModificacio.ofertaSeleccionada.cifEmpresa})
-				</p>
+			<c:if test="${propostaModificacio.tipusModificacio != 'termini' && propostaModificacio.tipusModificacio != 'resolucioContracte' && propostaModificacio.tipusModificacio != 'informeExecucio' && propostaModificacio.tipusModificacio != 'ocupacio'}">
 				<div class="row">
 					<div class="col-md-12">
 						<p>
@@ -80,10 +77,19 @@
 				<div class="row">
 					<div class="col-md-4">
 						<p>
-				       		<label>% sobre adjudicació:</label> <m:formatNumber type = "number" maxIntegerDigits="2" value = "${propostaModificacio.ofertaSeleccionada.pbase * 100 / informePrevi.ofertaSeleccionada.pbase}" />	%	
+				       		<label>% sobre adjudicació: </label> <m:formatNumber type = "number" maxIntegerDigits="2" value = "${propostaModificacio.ofertaSeleccionada.pbase * 100 / informePrevi.ofertaSeleccionada.pbase}" />	%	
 				       	</p>				                                
 					</div>					  
 				</div>
+				<c:if test="${propostaModificacio.tipusModificacio == 'certfinal'}">
+					<div class="row">
+						<div class="col-md-4">
+							<p>
+					       		<label>% total variació sobre adjudicació: </label> <m:formatNumber type = "number" maxIntegerDigits="2" value = "${(informePrevi.totalCertificat - informePrevi.ofertaSeleccionada.plic) * 100 / informePrevi.ofertaSeleccionada.plic}" />	%	
+					       	</p>				                                
+						</div>					  
+					</div>
+				</c:if>
 			</c:if>
 			<c:if test="${propostaModificacio.propostaTecnica.size() > 0}">	
 				<div class="document">			
@@ -115,13 +121,20 @@
 			</div>						
 			</c:if>	
 			<p></p>		
-			<c:if test="${propostaModificacio.conformeAreaEconomivaPropostaActuacio.ruta != null}">						
-				<div class="document">			
-	               	<label>Autorització àrea econòmica signada:</label>
-                    <c:set var="arxiu" value="${propostaModificacio.conformeAreaEconomivaPropostaActuacio}" scope="request"/>
-					<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>					
-				</div>	
-			</c:if>		
+			<c:if test="${propostaModificacio.conformeAreaEconomivaPropostaActuacio.size() > 0}">
+				<p>
+					<div class="document">
+						<label>Certificat d'existència de crèdit:</label>	
+						<div class="row col-md-12">
+							<c:forEach items="${propostaModificacio.conformeAreaEconomivaPropostaActuacio}" var="arxiu" >
+								<c:set var="arxiu" value="${arxiu}" scope="request"/>
+								<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+							</c:forEach>
+							<br>					            		
+						</div>
+					</div>																	
+				</p>	
+			</c:if>	
 			<p></p>
 			<c:if test="${propostaModificacio.tramitsModificacio.size() > 0}">
 				<div class="document">			
@@ -143,10 +156,10 @@
 				</div>			
 			</c:if>
 			<p></p>
-			<c:if test="${propostaModificacio.resFinal.size() > 0}">
+			<c:if test="${propostaModificacio.resolucioFinalModificacio.size() > 0}">
 				<div class="document">			
 	               	<label>Resolució Final</label>
-	                     <c:forEach items="${propostaModificacio.resFinal}" var="arxiu" >	
+	                     <c:forEach items="${propostaModificacio.resolucioFinalModificacio}" var="arxiu" >	
 						<c:set var="arxiu" value="${arxiu}" scope="request"/>
 						<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 					</c:forEach>
@@ -177,7 +190,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="row">
-			  			<c:if test="${true}">
+			  			<c:if test="${canModificarExpedient}">
 							<div class="col-md-offset-7 col-md-2 margin_top30">
 								<a href="editModificatInforme?idMod=${propostaModificacio.idInf}&idinf=${informePrevi.idInf}" class="btn btn-primary" role="button">Editar</a>
 							</div>	

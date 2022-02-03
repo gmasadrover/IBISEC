@@ -2,11 +2,9 @@ package servlet.empresa;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -44,27 +42,22 @@ public class EditEmpresaServlet extends HttpServlet {
 	 
 	        Empresa empresa = null;
 	        List<Empresa> empresesList = new ArrayList<Empresa>();
-	        String errorString = null;
+	    
 	 
-	        try {
-	            empresa = EmpresaCore.findEmpresa(conn, cif);
-	            empresesList = EmpresaCore.getEmpreses(conn);
-	        } catch (SQLException | NamingException e) {
-	            e.printStackTrace();
-	            errorString = e.getMessage();
-	        }
+	        empresa = EmpresaCore.findEmpresa(conn, cif);
+			empresesList = EmpresaCore.getEmpreses(conn);
 	 
 	         
 	        // If no error.
 	        // The product does not exist to edit.
 	        // Redirect to productList page.
-	        if (errorString != null && empresa == null) {
+	        if (empresa == null) {
 	            response.sendRedirect(request.getServletPath() + "/empresaList");
 	            return;
 	        }
 	 
 	        // Store errorString in request attribute, before forward to views.
-	        request.setAttribute("errorString", errorString);
+	        
 	        request.setAttribute("empresa", empresa);
 	        request.setAttribute("empresesList", empresesList);
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Empreses"));

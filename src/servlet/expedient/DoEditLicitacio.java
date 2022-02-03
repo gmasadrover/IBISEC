@@ -2,12 +2,10 @@ package servlet.expedient;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,12 +13,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileUploadException;
-
 import bean.Expedient;
 import bean.InformeActuacio;
 import bean.User;
-import bean.InformeActuacio.PropostaInforme;
 import bean.Oferta;
 import core.ActuacioCore;
 import core.CreditCore;
@@ -53,12 +48,7 @@ public class DoEditLicitacio extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Connection conn = MyUtils.getStoredConnection(request);
        	Fitxers.formParameters multipartParams = new Fitxers.formParameters();
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);
 		User Usuari = MyUtils.getLoginedUser(request.getSession());	
        	String refExp = multipartParams.getParametres().get("expedient");
        	String idInforme = multipartParams.getParametres().get("informe");
@@ -67,6 +57,7 @@ public class DoEditLicitacio extends HttpServlet {
 	    String termini = multipartParams.getParametres().get("termini");
 	    String seleccionada = multipartParams.getParametres().get("idOfertaSeleccionada");
 	    String capDobra = multipartParams.getParametres().get("capDobra");
+	    String correuLicitacio = multipartParams.getParametres().get("mailLicitacio");
        	String errorString = null;     
        	InformeActuacio informe = new InformeActuacio();
        	SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -104,6 +95,8 @@ public class DoEditLicitacio extends HttpServlet {
     	    }  
     	    if (multipartParams.getFitxersByName().get("ratificacioClassificacio") != null) {
     	    	Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("ratificacioClassificacio")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Ratificació classificació", Usuari.getIdUsuari());
+    	    	int idtasca = TascaCore.novaTasca(conn, "generica", 7, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "S'ha realitzat la ratificació de classificació de l'expedient: " + informe.getExpcontratacio().getExpContratacio(), "Comprovació certificats SS i Tributaris",informe.getIdInf(),null, request.getRemoteAddr(), "automatic");
+    	    	TascaCore.seguirTasca(conn, idtasca, 6);
     	    }  
     	    
     	    if (multipartParams.getParametres().get("dataPerfilContratant") != null && ! multipartParams.getParametres().get("dataPerfilContratant").isEmpty()) {
@@ -127,6 +120,10 @@ public class DoEditLicitacio extends HttpServlet {
 				ActuacioCore.actualitzarActuacio(conn, informe.getActuacio().getReferencia(), "Autorització generada");
 				OfertaCore.aprovarOferta(conn, idInforme, Usuari.getIdUsuari());
 				InformeCore.modificarEstat(conn, idInforme, "execucio");
+				if (informe.getPropostaInformeSeleccionada().isLlicencia() && informe.getPropostaInformeSeleccionada().getTipusLlicencia().equals("comun")) {
+					int usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariLlicencies"));   		
+					TascaCore.novaTasca(conn, "generic", usuariTasca, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "Sol·licitar comunicació prèvia obra", "Sol·licitud comunicació prèvia",informe.getIdInf(),null, request.getRemoteAddr(), "automatic");
+				}
     	    }
     	    if (multipartParams.getParametres().get("dataContracte") != null && ! multipartParams.getParametres().get("dataContracte").isEmpty()) {
     	    	expedient.setDataFormalitzacioContracte(formatter.parse(multipartParams.getParametres().get("dataContracte")));  
@@ -137,12 +134,20 @@ public class DoEditLicitacio extends HttpServlet {
     	    	String exp = informe.getIdInf();
     	    	if (informe.getExpcontratacio() != null && informe.getExpcontratacio().getExpContratacio() != null ) exp = informe.getExpcontratacio().getExpContratacio();
     	    	TascaCore.novaTasca(conn, "firmaContracte", UsuariCore.finCap(conn, informe.getUsuari().getDepartament()).getIdUsuari(), Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "S'ha pujat el contracte de l'expedient: " + exp, "Contracte",informe.getIdInf(),null, request.getRemoteAddr(), "automatic");
+    	    	
+    	    	if (informe.getExpcontratacio().getContracte().equals("major")) {
+    	    		TascaCore.novaTasca(conn, "generica", 2, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "Remetre contracte signat a l'empresa, de l'expedient: " + exp, "Contracte",informe.getIdInf(),null, request.getRemoteAddr(), "automatic");
+        	    } else {
+        	    	TascaCore.novaTasca(conn, "generica", 7, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "Remetre contracte a la Junta Consultiva, de l'expedient: " + exp, "Contracte",informe.getIdInf(),null, request.getRemoteAddr(), "automatic");
+        	    }
+    	    	
     	    	InformeCore.modificarEstat(conn, idInforme, "execucio");
     	    }
     	    if (capDobra != null && !capDobra.isEmpty()) OfertaCore.actualitzarCapDobra(conn, seleccionada, capDobra);
+    	    if (correuLicitacio != null && !correuLicitacio.isEmpty()) OfertaCore.actualitzarCorreuLicitacio(conn, seleccionada, correuLicitacio);
     	    Oferta oferta = OfertaCore.findOfertaById(conn, seleccionada);
     	    if (multipartParams.getFitxersByName().get("personalInscrit") != null) OfertaCore.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("personalInscrit")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), idInforme, oferta.getCifEmpresa(), "Personal Inscrit", Usuari.getIdUsuari());
-       	} catch (SQLException | NamingException | ParseException e) {
+       	} catch (ParseException e) {
 			errorString = e.toString();
 		}
 		// Store infomation to request attribute, before forward to views.

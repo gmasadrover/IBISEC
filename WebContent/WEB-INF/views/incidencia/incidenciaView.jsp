@@ -139,7 +139,7 @@
 				                                    </tr>
 				                                </thead>
 				                                <tbody>
-				                                	<c:forEach items="${incidencia.getLlistaActuacions().llistaActuacions}" var="actuacio" >
+				                                	<c:forEach items="${incidencia.getLlistaActuacions()}" var="actuacio" >
 											          	<tr class=${actuacio.activa ? actuacio.aprovada? "success" : "warning" : "danger"}>							          	
 											           		<td><a href="actuacionsDetalls?ref=${actuacio.referencia}">${actuacio.referencia}</a></td>	
 											           		<td>${actuacio.centre.getNomComplet()}</td>

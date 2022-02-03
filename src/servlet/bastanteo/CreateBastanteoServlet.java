@@ -2,7 +2,6 @@ package servlet.bastanteo;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,13 +47,8 @@ public class CreateBastanteoServlet extends HttpServlet {
     		response.sendRedirect(request.getContextPath() + "/");	
  	   	}else{ 
  	   		List<Empresa> empresesList = new ArrayList<Empresa>();
- 	   		try {
-				empresesList = EmpresaCore.getEmpreses(conn);
-				empresesList.addAll(EmpresaCore.getEmpresesUTE(conn));
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
+ 	   		empresesList = EmpresaCore.getEmpreses(conn);
+			empresesList.addAll(EmpresaCore.getEmpresesUTE(conn)); 
  	   		request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"bastanteos"));
 			request.setAttribute("empresesList", empresesList);
 	        RequestDispatcher dispatcher = request.getServletContext()

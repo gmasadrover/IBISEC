@@ -24,7 +24,6 @@ public class Tasca {
 	private String primerComentari;
 	private String darrerComentari;
 	private Date darreraModificacio;
-	private String duradaTasca;
 	private String departament;
 	private boolean seguiment;
 	private int prioritat;
@@ -237,7 +236,6 @@ public class Tasca {
 	}
 
 	public void setDuradaTasca(String duradaTasca) {
-		this.duradaTasca = duradaTasca;
 	}
 
 	public String getRegistre() {

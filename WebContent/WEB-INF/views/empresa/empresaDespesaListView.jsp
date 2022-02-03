@@ -49,7 +49,7 @@
                                         <th>CP</th>
                                         <th>Ciutat</th>
                                         <th>Provincia</th>
-                                        <th>Email</th>
+                                        <!-- <th>Email</th> --> <!--Ocult a petició M.Garcia en data 10/11/21--> 
                                         <th>Total base (adjudicat)</th>
                                         <th>Total base (adjudicat)</th>
                                         <th>Total base (proposta)</th>
@@ -68,7 +68,7 @@
 							            	<td>${empresa.getCP()}</td>
 							            	<td>${empresa.ciutat}</td>
 							            	<td>${empresa.provincia}</td>
-							            	<td>${empresa.email}</td>
+							            	<!-- <td>${empresa.email}</td>--> <!--Ocult a petició M.Garcia en data 10/11/21--> 
 							            	<td>${empresa.getTotalPbasePeriodeAdjudicatString()}</td>		
 							            	<td>${empresa.totalPbasePeriodeAdjudicat}</td>	
 							            	<td>${empresa.getTotalPbasePeriodeString()}</td>		

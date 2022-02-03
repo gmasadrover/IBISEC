@@ -3,11 +3,9 @@ package servlet.actuacio;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,8 +17,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import core.ActuacioCore;
-import core.InformeCore;
-import utils.Fitxers;
 import utils.MyUtils;
 import utils.Fitxers.Fitxer;
 
@@ -64,13 +60,8 @@ public class DoGetDocumentacioActuacio extends HttpServlet {
 		String idIncidencia = request.getParameter("idIncidencia");		
 		String idActuacio = request.getParameter("idActuacio");		
 		List<Fitxer> adjunts = new ArrayList<Fitxer>();
-		try {
-			adjunts = ActuacioCore.findDocumentsTasques(idIncidencia, conn);	
-			adjunts.addAll(ActuacioCore.findDocumentsAltres(idIncidencia, idActuacio, conn));
-		} catch (NamingException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		adjunts = ActuacioCore.findDocumentsTasques(idIncidencia, conn);	
+		adjunts.addAll(ActuacioCore.findDocumentsAltres(idIncidencia, idActuacio, conn));
 		
 		myObj.addProperty("success", true);	
 		JsonElement llistatObj = gson.toJsonTree(adjunts);

@@ -2,11 +2,9 @@ package servlet.incidencia;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -56,7 +54,6 @@ public class IncidenciaDetailsServlet extends HttpServlet {
 		   response.sendRedirect(request.getContextPath() + "/");	 	
 	   }else{		   
 		   String referencia = request.getParameter("ref");
-	       String errorString = null;
 	       Incidencia incidencia = new Incidencia();
 	       List<Registre> entrades = new ArrayList<Registre>();
 	       List<Registre> sortides = new ArrayList<Registre>();
@@ -68,23 +65,17 @@ public class IncidenciaDetailsServlet extends HttpServlet {
 	       boolean canCreateRegistre = false;
 	       boolean canCreateTasca = false;
 	       
-	       try {
-	    	   incidencia = IncidenciaCore.findIncidencia(conn, referencia);
-	    	   tasques = TascaCore.findTasquesIncidencia(conn, referencia);	    
-	    	   notificacions = TascaCore.findNotificacionsIncidencia(conn, referencia);
-	    	   entrades = RegistreCore.searchEntradesIncidencia(conn, referencia, incidencia.getIdCentre());
-	    	   sortides = RegistreCore.searchSortidesIncidencia(conn, referencia, incidencia.getIdCentre());
-	    	   arxius = Fitxers.ObtenirTotsFitxers(referencia);	    
-	    	   canCreateActuacio = UsuariCore.hasPermision(conn, usuari, SectionPage.actuacio_modificar);
-	    	   canCreateRegistre = UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_crear);
-	    	   canCreateTasca = UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_crear);
-	       } catch (SQLException | NamingException e) {
-	           e.printStackTrace();
-	           errorString = e.getMessage();
-	       }
+	       incidencia = IncidenciaCore.findIncidencia(conn, referencia);
+		   tasques = TascaCore.findTasquesIncidencia(conn, referencia);	    
+		   notificacions = TascaCore.findNotificacionsIncidencia(conn, referencia);
+		   entrades = RegistreCore.searchEntradesIncidencia(conn, referencia, incidencia.getIdCentre());
+		   sortides = RegistreCore.searchSortidesIncidencia(conn, referencia, incidencia.getIdCentre());
+		   arxius = Fitxers.ObtenirTotsFitxers(conn, referencia);	    
+		   canCreateActuacio = UsuariCore.hasPermision(conn, usuari, SectionPage.actuacio_modificar);
+		   canCreateRegistre = UsuariCore.hasPermision(conn, usuari, SectionPage.registre_ent_crear);
+		   canCreateTasca = UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_crear);
 	  
 	       // Store info in request attribute, before forward to views
-	       request.setAttribute("errorString", errorString);
 	       request.setAttribute("incidencia", incidencia);
 	       request.setAttribute("tasques", tasques);
 	       request.setAttribute("notificacions", notificacions);

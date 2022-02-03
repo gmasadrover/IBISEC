@@ -2,9 +2,6 @@ package servlet.tasca;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
-
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,13 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.lang.math.NumberUtils;
-
 import bean.Tasca;
 import bean.User;
 import core.TascaCore;
-import core.UsuariCore;
 import utils.Fitxers;
 import utils.MyUtils;
 
@@ -43,27 +36,22 @@ public class DoCanvisTascaServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Connection conn = MyUtils.getStoredConnection(request);
 		Fitxers.formParameters multipartParams = new Fitxers.formParameters();
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);
 		
-	    String idTasca = multipartParams.getParametres().get("idTasca");	   
+	    int idTasca = Integer.parseInt(multipartParams.getParametres().get("idTasca"));	   
 	    String tipus = multipartParams.getParametres().get("tipusTasca");
 	    String modificar= multipartParams.getParametres().get("modificar");
 	    User Usuari = MyUtils.getLoginedUser(request.getSession());	 	  
 	    String errorString = null;
 	  
 	    try {
-	    	Tasca tasca = TascaCore.findTascaId(conn, Integer.parseInt(idTasca), Usuari.getIdUsuari());
+	    	Tasca tasca = TascaCore.findTascaId(conn, idTasca, Usuari.getIdUsuari());
 	    	if (modificar != null) {
-	    		TascaCore.modificarTipus(conn, Integer.parseInt(idTasca), tipus);
+	    		TascaCore.modificarTipus(conn, idTasca, tipus);
 	    	} else {
-	    		TascaCore.reasignar(conn, Usuari.getIdUsuari(), Integer.parseInt(idTasca), tipus, tasca.getDescripcio());
+	    		TascaCore.reasignar(conn, Usuari.getIdUsuari(), idTasca, tipus, tasca.getDescripcio());
 	    	}
-		} catch (NumberFormatException | SQLException | NamingException e) {
+		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			errorString = e.toString();

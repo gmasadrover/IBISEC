@@ -1,12 +1,9 @@
 package servlet.tasca;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,13 +11,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.math.NumberUtils;
-
 import bean.Tasca;
 import bean.User;
 import bean.ControlPage.SectionPage;
 import core.ControlPageCore;
-import core.LoggerCore;
 import core.TascaCore;
 import core.UsuariCore;
 import utils.MyUtils;
@@ -51,18 +45,12 @@ public class NotificacioListServlet extends HttpServlet {
     	}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_list)) {
     		response.sendRedirect(request.getContextPath() + "/");	
  	   	}else{	   		
-	        String errorString = null;
 	        List<Tasca> list = null;
 	        String usuariSelected = String.valueOf(usuari.getIdUsuari());
-	        try {
-	        	list = TascaCore.llistaNotificacionsUsuari(conn, usuari.getIdUsuari());
-	        } catch (SQLException | NamingException e) {
-	            e.printStackTrace();
-	            errorString = e.getMessage();
-	        }	        
+	        list = TascaCore.llistaNotificacionsUsuari(conn, usuari.getIdUsuari());	        
 	        
 	        // Store info in request attribute, before forward to views
-	        request.setAttribute("errorString", errorString);
+	       
 	        request.setAttribute("notificacionsList", list);  
 	        request.setAttribute("usuariSelected", usuariSelected);
 		    request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "Notificacions"));

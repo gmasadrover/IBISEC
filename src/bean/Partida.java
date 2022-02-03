@@ -13,15 +13,17 @@ public class Partida {
 	private double reservaPartida;
 	private double contractatPartida;
 	private double pagatPartida;
+	private double bloquejat;
 	private String tipus;
 	private boolean estat;
 	private boolean perdefecte;
-	 
+	private String subpartidaDe; 
+	
 	public Partida() {
  
 	}
  
-	public Partida(String codi,String nom, double totalPartida, String tipus, boolean estat) {
+	public Partida(String codi,String nom, double totalPartida, String tipus, boolean estat, String partidaPare) {
 		this.codi = codi;
 		this.nom = nom;
 		this.totalPartida = totalPartida;
@@ -29,6 +31,7 @@ public class Partida {
 		this.contractatPartida = 0;
 		this.tipus = tipus;
 		this.estat = estat;
+		this.subpartidaDe = partidaPare;
 	}
 	 
 	public String getCodi() {
@@ -116,7 +119,8 @@ public class Partida {
 	}
 	
 	public double getPartidaPerAsignar(){
-		return this.totalPartida - this.getContractatPartida() - this.getReservaPartida() - this.getPagatPartida();
+		double partidaPerAsignar = this.totalPartida - this.getContractatPartida() - this.getReservaPartida() - this.getPagatPartida()- this.getBloquejat();
+		return partidaPerAsignar;
 	}
 	
 	public String getPartidaPerAsignarFormat(){
@@ -144,4 +148,26 @@ public class Partida {
 	public void setPerdefecte(boolean perdefecte) {
 		this.perdefecte = perdefecte;
 	}
+
+	public String getSubpartidaDe() {
+		return subpartidaDe;
+	}
+
+	public void setSubpartidaDe(String subpartidaDe) {
+		this.subpartidaDe = subpartidaDe;
+	}
+
+	public double getBloquejat() {
+		return bloquejat;
+	}
+	
+	public String getBloquejatFormat(){
+		DecimalFormat num = new DecimalFormat("#,##0.00");
+	    return num.format(this.bloquejat ) + '€';
+	}
+
+	public void setBloquejat(double bloquejat) {
+		this.bloquejat = bloquejat;
+	}
+	
 }

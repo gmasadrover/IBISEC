@@ -2,20 +2,16 @@ package servlet.factura;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.fileupload.FileUploadException;
 
 import bean.Actuacio;
 import bean.Factura;
@@ -24,9 +20,8 @@ import bean.User;
 import core.ActuacioCore;
 import core.EmpresaCore;
 import core.FacturaCore;
+import core.InformeCore;
 import core.RegistreCore;
-import core.TascaCore;
-import core.UsuariCore;
 import utils.Fitxers;
 import utils.MyUtils;
 
@@ -52,12 +47,7 @@ public class DoCreateFacturaServlet extends HttpServlet {
 		Connection conn = MyUtils.getStoredConnection(request);
 		
 		Fitxers.formParameters multipartParams = new Fitxers.formParameters();
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);
 		User Usuari = MyUtils.getLoginedUser(request.getSession());	   
 	    String idFactura = multipartParams.getParametres().get("idFactura");
 	    String idActuacio = multipartParams.getParametres().get("idActuacio");
@@ -67,17 +57,14 @@ public class DoCreateFacturaServlet extends HttpServlet {
 	    double valor = Double.parseDouble(multipartParams.getParametres().get("import").replace(",", "."));	  
 	    String nombreFactura = multipartParams.getParametres().get("nombre");
 	    String tipusFactura = multipartParams.getParametres().get("tipus");
-	    int idUsuariConformador = Integer.parseInt(multipartParams.getParametres().get("idConformador"));
 	    String notes = multipartParams.getParametres().get("notes");
 	    
 	    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 	    Date dataFactura = null;
 	    Date dataEntrada = null;
-	    Date dataPasadaConformar = null;
 		try {
 			if (multipartParams.getParametres().get("dataEntrada") != null && ! multipartParams.getParametres().get("dataEntrada").isEmpty()) dataEntrada = formatter.parse(multipartParams.getParametres().get("dataEntrada"));
 			if (multipartParams.getParametres().get("dataFactura") != null && ! multipartParams.getParametres().get("dataFactura").isEmpty()) dataFactura = formatter.parse(multipartParams.getParametres().get("dataFactura"));
-			if (multipartParams.getParametres().get("dataPasadaConformar") != null && ! multipartParams.getParametres().get("dataPasadaConformar").isEmpty()) dataPasadaConformar = formatter.parse(multipartParams.getParametres().get("dataPasadaConformar"));
 		} catch (ParseException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -101,7 +88,7 @@ public class DoCreateFacturaServlet extends HttpServlet {
 	   	if (errorString == null) {
 	   		try {
 	   			Actuacio actuacio = ActuacioCore.findActuacio(conn, idActuacio);
-	   			factura.setUsuariConformador(UsuariCore.findUsuariByID(conn, idUsuariConformador));
+	   			factura.setUsuariConformador(InformeCore.getResponsableContracte(conn, idInforme));
 	   			FacturaCore.newFactura(conn, factura, idUsuari);	
 	   			FacturaCore.saveArxiu(actuacio.getIdIncidencia(), idActuacio, idInforme, idProveidor, idFactura, multipartParams.getFitxers(), conn, Usuari.getIdUsuari());
 	   			//Registram la factura
@@ -109,7 +96,7 @@ public class DoCreateFacturaServlet extends HttpServlet {
 	   			peticio = formatter.parse(factura.getDataEntradaString());
 	   			Registre registre = new Registre(RegistreCore.getNewCode(conn, "E"), peticio, "E", EmpresaCore.findEmpresa(conn, idProveidor).getName(), "factura " + idFactura, actuacio.getIdIncidencia(), idInforme, actuacio.getCentre().getIdCentre(), idUsuari, new Date());
 	   			RegistreCore.nouRegistre(conn, "E", registre);
-	   		} catch (SQLException | NamingException | ParseException e) {
+	   		} catch (ParseException e) {
 	  			e.printStackTrace();
 	  			errorString = e.getMessage();
 	   		}

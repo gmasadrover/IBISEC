@@ -3,7 +3,6 @@ package handler;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -62,12 +61,7 @@ public class UserInformation extends HttpServlet {
         JsonObject myObj = new JsonObject();
         Connection conn = MyUtils.getStoredConnection(request);
         User usuari = null;
-		try {
-			usuari = UsuariCore.findUsuariByID(conn, usuariId);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		usuari = UsuariCore.findUsuariByID(conn, usuariId);
         JsonElement countryObj = gson.toJsonTree(usuari);
         if(usuari.getName() == null){
             myObj.addProperty("success", false);

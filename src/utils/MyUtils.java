@@ -11,8 +11,8 @@ import javax.servlet.http.HttpSession;
 import bean.User;
 
 public class MyUtils {
-	public static final String ATT_NAME_CONNECTION = "ATTRIBUTE_FOR_CONNECTION";	 
-	private static final String ATT_NAME_USER_NAME = "ATTRIBUTE_FOR_STORE_USER_NAME_IN_COOKIE";
+	public static final String ATT_NAME_CONNECTION = "IBISEC_INTRANET_CONNECTION";	 
+	private static final String ATT_NAME_USER_NAME = "IBISEC_INTRANET_USER_COOKIE";
 	 
 	// Store Connection in request attribute.
 	// (Information stored only exist during requests)

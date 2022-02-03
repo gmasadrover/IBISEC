@@ -361,6 +361,12 @@
 					        	</div>
 					       	</div>
 				       	</c:if> 
+			       		<div class="form-group">
+				        	<div class="col-md-6">
+				            	<label>Direcció electrònica habilitada</label>
+				             	<input name="mailLicitacio" placeholder="" value="${informePrevi.ofertaSeleccionada.correuLicitacio}">
+				        	</div>
+				       	</div>
 				       	<div class="form-group">
 				       		<div class="col-md-6">
 				       			<div class="document">

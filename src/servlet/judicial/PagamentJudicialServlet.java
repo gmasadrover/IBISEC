@@ -2,7 +2,6 @@ package servlet.judicial;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,11 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import bean.User;
-import bean.ControlPage.SectionPage;
 import bean.Partida;
 import core.ControlPageCore;
 import core.CreditCore;
-import core.UsuariCore;
 import utils.MyUtils;
 
 /**
@@ -46,12 +43,7 @@ public class PagamentJudicialServlet extends HttpServlet {
  		   response.sendRedirect(request.getContextPath() + "/preLogin");		
  	   	}else{ 	  
  	   		List<Partida> partidesList = new ArrayList<Partida>();
- 	   		try {
- 	   			partidesList = CreditCore.getPartides(conn, false);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 	  
+ 	   		partidesList = CreditCore.getPartides(conn, false); 	  
  	   		request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"judicials"));
  	   		request.setAttribute("procediment", request.getParameter("refPro"));
  	   		request.setAttribute("partidesList", partidesList);

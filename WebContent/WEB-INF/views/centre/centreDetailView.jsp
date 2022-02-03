@@ -72,7 +72,7 @@
 	                    </div>		            	
                 	</div>
                 	<div class="row margin_bottom10">  
-	                	<c:if test="${canCreateTasca}">
+	                	<c:if test="${canCreateTasca && isIBISEC}">
 				      		<div class="col-md-6 panel">
 								<a href="createTasca?centre=${centre.idCentre}&tipus=centre" class="btn btn-primary loadingButton"  data-msg="obrint formulari..." role="button">Nova incidència</a>
 							</div>
@@ -135,14 +135,14 @@
 		                            </tr>
 		                        </thead>
 		                        <tbody>
-								<c:forEach items="${centre.llistaActuacions.llistaActuacions}" var="actuacio" >
+								<c:forEach items="${centre.llistaActuacions}" var="actuacio" >
 						          	<tr class=${actuacio.activa ? actuacio.aprovada ? "success" : "warning" : "danger"}>							          	
 						           		<td><a href="actuacionsDetalls?ref=${actuacio.referencia}" class="loadingButton"  data-msg="obrint actuació...">${actuacio.referencia}</a></td>
 						            	<td>${actuacio.centre.getNomComplet()}</td>
 						            	<td>${actuacio.descripcio}</td>
 						            	<td>${actuacio.getDataCreacioString()}</td>
 						            	<td>${actuacio.dataCreacio}</td>						            	
-									   	<td>${actuacio.estatNom()}</td>
+									   	<td>${actuacio.getEstatNom()}</td>
 									   	<td>${actuacio.getDataTancamentString()}</td>
 									   	<td>${actuacio.dataTancament}</td>																            	
 						          	</tr>

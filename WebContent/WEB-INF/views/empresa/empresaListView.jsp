@@ -51,7 +51,7 @@
                                         <th>Ciutat</th>
                                         <th>Provincia</th>
                                         <th>Telèfon</th>
-                                        <th>Email</th>
+                                        <!-- <th>Email</th> --><!--Ocult a petició M.Garcia en data 10/11/21--> 
                                         <th>Pime</th>
                                         <th>Tipus</th>
                                     </tr>
@@ -66,7 +66,7 @@
 							            	<td>${empresa.ciutat}</td>
 							            	<td>${empresa.provincia}</td>
 							            	<td>${empresa.telefon}</td>
-							            	<td>${empresa.email}</td>	
+							            	<%-- <td>${empresa.email}</td>	 --%><!--Ocult a petició M.Garcia en data 10/11/21--> 
 							            	<td>${empresa.isPime() ? "Si" : "No"}</td>	
 							            	<td>${empresa.tipus}</td>						            	
 							          	</tr>

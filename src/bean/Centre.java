@@ -13,15 +13,10 @@ public class Centre {
 	private String cp;
 	private double lat;
 	private double lng;
-	private Resultat llistaActuacions;
+	private List<Actuacio> llistaActuacions;
 	private List<Incidencia> llistaIncidencies;
 	public Centre() {
 		 
-	}
-
-	public Centre(String idCentre, String nom) {		 
-		this.idCentre = idCentre;
-		this.nom = nom;		 
 	}
 	
 	public String getIdCentre() {
@@ -41,11 +36,11 @@ public class Centre {
 		return this.nom + " (" + this.localitat + ", " + this.municipi + ")";
 	}
 	
-	public void setActuacions(Resultat actuacions){
+	public void setActuacions(List<Actuacio> actuacions){
 		this.llistaActuacions = actuacions;
 	}
 	
-	public Resultat getLlistaActuacions(){
+	public List<Actuacio> getLlistaActuacions(){
 		return this.llistaActuacions;
 	}
 	
@@ -53,7 +48,7 @@ public class Centre {
 		String llistaIds = "";
 		String estat = "danger";
 		if (this.llistaActuacions != null) {
-			for (Actuacio actuacio: this.llistaActuacions.getLlistaActuacions()) {
+			for (Actuacio actuacio: this.llistaActuacions) {
 				if (actuacio.isActiva()) estat = "warning";
 				if (actuacio.isActiva() && actuacio.isAprovada()) estat = "success";
 				llistaIds += "<a style='margin:2px;' class='btn btn-" + estat + "' target='_blank' href='actuacionsDetalls?ref=" + actuacio.getReferencia() + "'>" + actuacio.getReferencia() + "</a>";

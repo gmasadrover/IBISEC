@@ -2,7 +2,6 @@ package servlet.credit;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,7 +10,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,7 +21,6 @@ import bean.Partida;
 import bean.User;
 import bean.AssignacioCredit;
 import bean.ControlPage.SectionPage;
-import core.ActuacioCore;
 import core.ControlPageCore;
 import core.CreditCore;
 import core.UsuariCore;
@@ -90,7 +87,7 @@ public class DespesesListServlet extends HttpServlet {
 					list = CreditCore.findAssignacions(conn, "", idCentre, dataInici, dataFi, "on".equals(filterWithBEI), "on".equals(filterWithFEDER));
 				}				
 				llistaPartides = CreditCore.getPartides(conn, true);
-			} catch (SQLException | ParseException | NamingException e) {
+			} catch (ParseException e) {
 				e.printStackTrace();
 				errorString = e.getMessage();
 			}

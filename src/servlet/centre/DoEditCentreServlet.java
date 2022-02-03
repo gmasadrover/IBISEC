@@ -2,9 +2,6 @@ package servlet.centre;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
-
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -47,10 +44,9 @@ public class DoEditCentreServlet extends HttpServlet {
 					
 		
 		Centre centre = new Centre();
-		String errorString = null; 
       
-		if (errorString == null) {
-			try {
+		
+			
 				centre = CentreCore.findCentre(conn, codiCentre, false);
 				centre.setNom(nom);
 				centre.setTipo(tipo);
@@ -60,24 +56,14 @@ public class DoEditCentreServlet extends HttpServlet {
 				centre.setMunicipi(municipi);
 				centre.setLocalitat(localitat);
 				CentreCore.editCentre(conn, centre);
-			} catch (SQLException e) {
-				e.printStackTrace();
-				errorString = e.getMessage();
-			}
-		}
+			
+		
         
 		// Store infomation to request attribute, before forward to views.
-		request.setAttribute("errorString", errorString);
 		request.setAttribute("centre", centre);
  
-		// If error, forward to Edit page.
-		if (errorString != null) {
-			RequestDispatcher dispatcher = request.getServletContext()
-               .getRequestDispatcher("/WEB-INF/views/centre/editCentre.jsp");
-           dispatcher.forward(request, response);
-		} else {
-			response.sendRedirect(request.getContextPath() + "/centreDetalls?codi=" + centre.getIdCentre());
-		}
+		response.sendRedirect(request.getContextPath() + "/centreDetalls?codi=" + centre.getIdCentre());
+		
 	}
 
 	/**

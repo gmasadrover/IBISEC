@@ -2,9 +2,7 @@ package servlet.credit;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -40,34 +38,18 @@ public class DoCreateCreditServlet extends HttpServlet {
 		double presupost =  Double.parseDouble(request.getParameter("presupost"));	  
 		Credit credit = new Credit(referencia, presupost);
  
-		String errorString = null;
-	 
+		
+	           CreditCore.nouCredit(conn, credit);
 	      
-	       if (errorString == null) {
-	           try {
-	               CreditCore.nouCredit(conn, credit);
-	           } catch (SQLException e) {
-	               e.printStackTrace();
-	               errorString = e.getMessage();
-	           }
-	       }
 	        
 	       // Store infomation to request attribute, before forward to views.
-	       request.setAttribute("errorString", errorString);
+	      
 	       request.setAttribute("credit", credit);
 	 
-	       // If error, forward to Edit page.
-	       if (errorString != null) {
-	           RequestDispatcher dispatcher = request.getServletContext()
-	                   .getRequestDispatcher("/WEB-INF/views/credit/createCreditView.jsp");
-	           dispatcher.forward(request, response);
-	       }
+	       
 	 
-	       // If everything nice.
-	       // Redirect to the product listing page.            
-	       else {
 	           response.sendRedirect(request.getContextPath() + "/credit");
-	       }
+	       
 	}
 
 	/**

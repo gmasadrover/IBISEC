@@ -14,6 +14,7 @@ public class Oferta {
 	private String cifEmpresa;
 	private String nomEmpresa;
 	private String capDobra;
+	private String correuLicitacio;
 	private Fitxers.Fitxer personalInscrit;
 	private double pbase;
 	private double iva;
@@ -251,5 +252,13 @@ public class Oferta {
 
 	public void setPbase(double pbase) {
 		this.pbase = pbase;
+	}
+
+	public String getCorreuLicitacio() {
+		return correuLicitacio;
+	}
+
+	public void setCorreuLicitacio(String correuLicitacio) {
+		this.correuLicitacio = correuLicitacio;
 	}
 }

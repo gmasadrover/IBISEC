@@ -3,9 +3,7 @@ package servlet.expedient;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,9 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonObject;
 
-import bean.User;
 import core.InformeCore;
-import core.OfertaCore;
 import utils.MyUtils;
 
 /**
@@ -57,12 +53,7 @@ public class DoDeletePersonalExpedientServlet extends HttpServlet {
         
 		Connection conn = MyUtils.getStoredConnection(request);	
 		int idRelacio = Integer.parseInt(request.getParameter("idRelacio"));
-		try {
-			InformeCore.deletePersonalAssociat(conn, idRelacio);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		InformeCore.deletePersonalAssociat(conn, idRelacio);
 		
 		myObj.addProperty("success", true);	
 		

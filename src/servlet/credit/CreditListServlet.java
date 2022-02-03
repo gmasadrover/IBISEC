@@ -2,7 +2,6 @@ package servlet.credit;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,12 +40,7 @@ public class CreditListServlet extends HttpServlet {
 	   }else{	  
 	       String errorString = null;
 	       List<Partida> list = new ArrayList<Partida>();
-	       try {
-	           list = CreditCore.getPartides(conn, true);
-	       } catch (SQLException e) {
-	           e.printStackTrace();
-	           errorString = e.getMessage();
-	       }
+	       list = CreditCore.getPartides(conn, true);
 	  
 	       // Store info in request attribute, before forward to views
 	       request.setAttribute("errorString", errorString);

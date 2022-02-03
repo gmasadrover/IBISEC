@@ -19,7 +19,6 @@ public class Expedient {
 	private Date dataRetornGarantia;
 	private Date dataLiquidacio;
 	
-	private String garantia;
 	private String tipus;
 	private String contracte;
 	
@@ -155,14 +154,6 @@ public class Expedient {
 	
 	public void setDataLiquidacio(Date dataLiquidacio) {
 		this.dataLiquidacio = dataLiquidacio;
-	}
-
-	public String getGarantia() {
-		return garantia;
-	}
-
-	public void setGarantia(String garantia) {
-		this.garantia = garantia;
 	}
 
 	public Date getDataFiGarantia() {

@@ -2,7 +2,6 @@ package servlet.usuari;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -44,17 +43,10 @@ public class UsuariDetailsServlet extends HttpServlet {
 	  		response.sendRedirect(request.getContextPath() + "/");	
 		}else{
 		  	int idUsuari = Integer.parseInt(request.getParameter("id"));
-		  	String errorString = null;
 		  	User usuari = new User();
-		  	try {
-		  		usuari = UsuariCore.findUsuariByID(conn, idUsuari);
-		  	} catch (SQLException e) {
-		  		e.printStackTrace();
-		  		errorString = e.getMessage();
-		  	}
+		  	usuari = UsuariCore.findUsuariByID(conn, idUsuari);
 		  
 		  	// Store info in request attribute, before forward to views
-		  	request.setAttribute("errorString", errorString);
 		  	request.setAttribute("usuari", usuari);
 		  	request.setAttribute("potModificar", usuari.getIdUsuari() == usuariLogetjat.getIdUsuari());
 		  	request.setAttribute("isAdmin", usuariLogetjat.getRol().contains("ADMIN"));

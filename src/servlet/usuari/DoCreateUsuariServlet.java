@@ -2,7 +2,6 @@ package servlet.usuari;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -48,11 +47,7 @@ public class DoCreateUsuariServlet extends HttpServlet {
 		  	nouUsuari.setLlinatges(request.getParameter("cognoms"));
 		  	nouUsuari.setCarreg(request.getParameter("carreg"));
 		  	nouUsuari.setDepartament(request.getParameter("departament"));
-		  	try {
-		  		codiUsuari = UsuariCore.nouUsuari(conn, nouUsuari);
-		  	} catch (SQLException e) {
-		  		e.printStackTrace();
-		  	}		  	  	
+		  	codiUsuari = UsuariCore.nouUsuari(conn, nouUsuari);		  	  	
 		  	response.sendRedirect(request.getContextPath() + "/UsuariDetails?id=" + codiUsuari);		  	
 		}
 	}

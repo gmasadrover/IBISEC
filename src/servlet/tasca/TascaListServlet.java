@@ -1,15 +1,11 @@
 package servlet.tasca;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -48,7 +44,7 @@ public class TascaListServlet extends HttpServlet {
     	if (usuari == null){
  		   response.sendRedirect(request.getContextPath() + "/preLogin");
     	}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.tasques_list)) {
-    		response.sendRedirect(request.getContextPath() + "/");	
+    		response.sendRedirect(request.getContextPath() + "/actuacions");	
  	   	}else{
  	   		
 	 	    String filtrar = request.getParameter("filtrar");
@@ -73,15 +69,12 @@ public class TascaListServlet extends HttpServlet {
 	     		        	String idUsuari = usuarisValues[i];
 	     		        	usuarisSeleccionats += idUsuari + "#";
 	     		        	if (NumberUtils.isNumber(idUsuari)) {
-	    	        			list = TascaCore.llistaTasquesUsuari(conn, Integer.parseInt(idUsuari), null, "on".equals(filterWithClosed));
-	    	        			obresAssignades = InformeCore.getObresUsuari(conn, Integer.parseInt(idUsuari));  	    	        			
+	    	        			list = TascaCore.llistaTasquesUsuari(conn, Integer.parseInt(idUsuari), null, "on".equals(filterWithClosed));      			
 	     		        	}else{
 	    	        			if ("totes".equals(idUsuari)) {
 	    	        				list = TascaCore.llistaTasquesUsuari(conn, -1, null, "on".equals(filterWithClosed));
-	    	        				obresAssignades = InformeCore.getObresUsuari(conn, -1);    
 	    	        			} else {
-	    	        				list = TascaCore.llistaTasquesUsuari(conn, -1, idUsuari, "on".equals(filterWithClosed));
-	    	        				obresAssignades = InformeCore.getInformesResumArea(conn, idUsuari);	    	        				
+	    	        				list = TascaCore.llistaTasquesUsuari(conn, -1, idUsuari, "on".equals(filterWithClosed));		
 	    	        			}	        			
 	    	        		}	
 	     		        }
@@ -95,14 +88,13 @@ public class TascaListServlet extends HttpServlet {
 	        				TascaCore.novaTasca(conn, "previsioLlicencies", usuari.getIdUsuari(), usuari.getIdUsuari(), "-1", "-1", "Previsió fons llicències", "Previsió fons llicències", String.valueOf(avui.get(Calendar.MONTH) + 1), null, request.getRemoteAddr(), "automàtica");
 	        			}
 	        		}
-	        		list = TascaCore.llistaTasquesUsuari(conn, usuari.getIdUsuari(), null, false);
-	        		obresAssignades = InformeCore.getObresUsuari(conn, usuari.getIdUsuari());       		
+	        		list = TascaCore.llistaTasquesUsuari(conn, usuari.getIdUsuari(), null, false);	
 	        		if (usuari.getRol().contains("GERENT")) usuarisSeleccionats = "totes#";
 	        	}
 	        	llistaUsuaris =  UsuariCore.findUsuarisByRol(conn, "");
 	        	listSeguiment.addAll(TascaCore.llistaTasquesSeguiment(conn, usuari.getIdUsuari()));
 	        	seguimentActuacionsList.addAll(ActuacioCore.llistaActuacionsSeguiment(conn, usuari.getIdUsuari()));
-	        } catch (SQLException | NumberFormatException | NamingException e) {
+	        } catch (NumberFormatException e) {
 	            e.printStackTrace();
 	            errorString = e.getMessage();
 	        }  
@@ -132,6 +124,7 @@ public class TascaListServlet extends HttpServlet {
 	        request.setAttribute("contractesFirmaList", list.get(15)); // 15
 	        request.setAttribute("altresList", list.get(16));  // 16	 
 	        request.setAttribute("notificacionsList", list.get(17));  // 17	 
+	        request.setAttribute("reservaDronList", list.get(18));  // 18	 
 	        request.setAttribute("seguimentList", listSeguiment);
 	        request.setAttribute("seguimentActuacionsList", seguimentActuacionsList);
 	        request.setAttribute("usuarisSeleccionats", usuarisSeleccionats);

@@ -2,9 +2,7 @@ package servlet.factura;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -45,38 +43,26 @@ public class FacturaDetailsServlet extends HttpServlet {
     	Connection conn = MyUtils.getStoredConnection(request);
     	if (MyUtils.getLoginedUser(request.getSession()) == null){
  		   response.sendRedirect(request.getContextPath() + "/");
-    	}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.factures_list)) {
+    	}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.factures_view)) {
     		response.sendRedirect(request.getContextPath() + "/");	 
  	   	}else{
 			String idFactura = request.getParameter("ref");	 
 			boolean isUsuariConformador = false;
 	        Factura factura = null;	 
 	        InformeActuacio informe = new InformeActuacio();
-	        String errorString = null;
+	      
 	 
-	        try {
-	            factura = FacturaCore.getFactura(conn, idFactura);
-	            if (factura.getUsuariConformador() != null) isUsuariConformador = factura.getUsuariConformador().getIdUsuari()  == usuari.getIdUsuari();
-	            if (factura.getIdInforme() != null && !factura.getIdInforme().equals("-1")) {
-	            	informe = InformeCore.getInformePrevi(conn, factura.getIdInforme(), false);
-	            }
-	        } catch (SQLException | NamingException e) {
-	            e.printStackTrace();
-	            errorString = e.getMessage();
-	        }
+	        factura = FacturaCore.getFactura(conn, idFactura);
+			if (factura.getUsuariConformador() != null) isUsuariConformador = factura.getUsuariConformador().getIdUsuari()  == usuari.getIdUsuari();
+			if (factura.getIdInforme() != null && !factura.getIdInforme().equals("-1")) {
+				informe = InformeCore.getInformePrevi(conn, factura.getIdInforme(), false);
+			}
 	 
 	         
-	        // If no error.
-	        // The product does not exist to edit.
-	        // Redirect to productList page.
-	        if (errorString != null && factura == null) {
-	            response.sendRedirect(request.getServletPath() + "/factures");
-	            return;
-	        }
-	 
+	      
 	        // Store errorString in request attribute, before forward to views.
 	        request.setAttribute("canModificar", UsuariCore.hasPermision(conn, usuari, SectionPage.factures_crear));
-	        request.setAttribute("errorString", errorString);
+	       
 	        request.setAttribute("factura", factura);
 	        request.setAttribute("informe", informe);
 	        request.setAttribute("isUsuariConformador", isUsuariConformador);

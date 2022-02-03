@@ -6,20 +6,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Connection;
-import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-//import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
@@ -35,6 +31,7 @@ import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 
 import bean.Actuacio;
+import bean.AssignacioCredit;
 import bean.Empresa;
 import bean.Expedient;
 import bean.InformeActuacio;
@@ -43,6 +40,7 @@ import bean.Judicial.Tramitacio;
 import bean.Oferta;
 import bean.User;
 import core.ActuacioCore;
+import core.ConfiguracioCore;
 import core.CreditCore;
 import core.EmpresaCore;
 import core.InformeCore;
@@ -77,7 +75,6 @@ public class DoCrearDocument extends HttpServlet {
     	Connection conn = MyUtils.getStoredConnection(request);		
     	InformeActuacio informe = new InformeActuacio();
     	Actuacio actuacio = new Actuacio();
-    	Oferta oferta = new Oferta();
     	if (idInforme != null) {
 	    	try {
 	    		if (idInforme.contains("-MOD-")) {
@@ -89,25 +86,11 @@ public class DoCrearDocument extends HttpServlet {
 			} catch (NumberFormatException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
     	}
-    	String filePath = "";
-    	File downloadFile = null;
-    	Context env;
+    	File downloadFile = null;    	
     	String ruta = "";
-		try {
-			env = (Context)new InitialContext().lookup("java:comp/env");
-			ruta = (String)env.lookup("ruta_base");
-		} catch (NamingException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
+		ruta = ConfiguracioCore.getConfiguracio(conn).getRutaBaseDocumentacio();
     	if (tipus.equals("autMen")) {	
 			// Crear directoris si no existeixen
 			File tmpFile = new File(ruta + "/documents/" + idIncidencia);
@@ -123,8 +106,7 @@ public class DoCrearDocument extends HttpServlet {
 				tmpFile.mkdir();
 			}
     		
-    		filePath = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio +"/autoritzacio_informe_"+ idInforme +".pdf";
-            try {
+    		try {
             	PdfReader reader = new PdfReader(ruta + "/base/MODELLICIMEN2v6.pdf"); // input PDF
     			PdfStamper stamper = new PdfStamper(reader,
     			  new FileOutputStream("/autoritzacio_informe_"+ idInforme +".pdf"));			
@@ -167,8 +149,7 @@ public class DoCrearDocument extends HttpServlet {
 				tmpFile.mkdir();
 			}
     		
-    		filePath = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio +"/proposta_actuacio_"+ idInforme +".pdf";
-            try {
+    		try {
             	
 	        	PdfReader reader = new PdfReader(ruta + "/base/PA tècnic.pdf"); // input PDF
 				PdfStamper stamper = new PdfStamper(reader,
@@ -215,7 +196,6 @@ public class DoCrearDocument extends HttpServlet {
 				tmpFile.mkdir();
 			}
    		
-			filePath = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio +"/vistiplau_proposta_actuacio_"+ idInforme +".pdf";
 			try {
 	        	PdfReader reader = new PdfReader(ruta + "/base/PA cap de servei.pdf"); // input PDF
 				PdfStamper stamper = new PdfStamper(reader,
@@ -248,7 +228,6 @@ public class DoCrearDocument extends HttpServlet {
    				tmpFile.mkdir();
    			}
       		
-   			filePath = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio +"/financera_proposta_actuacio_"+ idInforme +".pdf";
    			try {
    	        	PdfReader reader = new PdfReader(ruta + "/base/PA àrea econòmica.pdf"); // input PDF
    				PdfStamper stamper = new PdfStamper(reader,
@@ -268,7 +247,7 @@ public class DoCrearDocument extends HttpServlet {
    	   	       	stamper.close();
    	   	       	reader.close();
       		                
-   	   		} catch (DocumentException | SQLException e1) {
+   	   		} catch (DocumentException e1) {
    	   			// TODO Auto-generated catch block
    	   			e1.printStackTrace();
    	   		} // output PDF
@@ -288,12 +267,11 @@ public class DoCrearDocument extends HttpServlet {
   				tmpFile.mkdir();
   			}
      		
-  			filePath = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio +"/certificat_existència_crèdit_"+ informe.getExpcontratacio().getExpContratacio().replace("/", "_") +".pdf";
   			try {
   				Expedient expedient = informe.getExpcontratacio();
   	        	PdfReader reader = new PdfReader(ruta + "/base/certCredit.pdf"); // input PDF
   				PdfStamper stamper = new PdfStamper(reader,
-  				  new FileOutputStream("/certificat_existència_crèdit_"+ informe.getExpcontratacio().getExpContratacio().replace("/", "_") +".pdf"));			
+  				  new FileOutputStream(ruta + "/certificat_existència_crèdit_"+ informe.getExpcontratacio().getExpContratacio().replace("/", "_") +".pdf"));			
   				            
   	            AcroFields fields = stamper.getAcroFields();
   	            fields.setField("expedient",expedient.getExpContratacio());
@@ -304,18 +282,148 @@ public class DoCrearDocument extends HttpServlet {
   	        		objecte += " Incidència: " + informe.getIdInf();
   	        	}
   	        	fields.setField("objecte", objecte);	   	       
-  	   	       	fields.setField("partida", informe.getAssignacioCredit().get(0).getPartida().getCodi());	
-  	   	       	fields.setField("PBase", informe.getPropostaInformeSeleccionada().getPbaseFormat());
-  	   	       	fields.setField("IVA", informe.getPropostaInformeSeleccionada().getIvaFormat());
-  	   	       	fields.setField("PLic", informe.getPropostaInformeSeleccionada().getPlicFormat());
-  	   	       	stamper.close();
+  	   	       	
+  	        	
+  	        	
+  	        	
+  	        	PdfPTable table = new PdfPTable(4);
+    	        PdfPCell cell = new PdfPCell();   
+    	        Paragraph text = new Paragraph();    	
+    	        
+    	       // table.setWidths(new int[]{1,3});
+    	        List<AssignacioCredit> partidesList = informe.getAssignacioCredit();
+    	        Rectangle pagesize = reader.getPageSize(1);
+    	        String FONT = ruta + "/fonts/NotoSans-Regular.ttf";
+    	        FontFactory.register(FONT,"Noto-Sans");
+    	        Font f = FontFactory.getFont("Noto-Sans", "ISO-8859-1", true);
+    	        f.setSize(11);   	    
+    	        String FONTBOLD = ruta + "/fonts/NotoSans-Bold.ttf";
+    	        FontFactory.register(FONTBOLD,"Noto-Sans-Bold");
+    	        Font fb = FontFactory.getFont("Noto-Sans-Bold", "ISO-8859-1", true);
+    	        fb.setSize(11); 
+    	            
+    	        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+    	        cell.setPadding(3);
+    	        text = new Paragraph("Partida", fb);    	            
+	        	cell.addElement(text);    	            
+    	        table.addCell(cell);
+    	        
+    	        cell = new PdfPCell();   
+    	        cell.setHorizontalAlignment(Element.ALIGN_MIDDLE);
+    	        cell.setPadding(3);
+    	        text = new Paragraph("VEC", fb);    	
+    	        text.setAlignment(Element.ALIGN_CENTER);
+	        	cell.addElement(text);    	            
+    	        table.addCell(cell);
+    	        
+    	        cell = new PdfPCell();   
+    	        cell.setHorizontalAlignment(Element.ALIGN_MIDDLE);
+    	        cell.setPadding(3);
+    	        text = new Paragraph("IVA", fb);    
+    	        text.setAlignment(Element.ALIGN_CENTER);
+	        	cell.addElement(text);    	            
+    	        table.addCell(cell);
+    	        
+    	        cell = new PdfPCell();   
+    	        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+    	        cell.setPadding(3);
+    	        text = new Paragraph("IMPORT ÍNTEGRE", fb);    	  
+    	        text.setAlignment(Element.ALIGN_CENTER);
+	        	cell.addElement(text);    	            
+    	        table.addCell(cell);
+    	        
+    	        table.setHeaderRows(1);
+    	        
+    	        double vec = 0;
+    	        double totalVEC = 0;
+    	        double iva = 0;
+    	        double totalIVA = 0;
+    	        double plic = 0;
+    	        double totalPlic = 0;
+    	        DecimalFormat num = new DecimalFormat("#,##0.00");
+    	        for (AssignacioCredit partida : partidesList) {
+    	        	cell = new PdfPCell();
+    	        	cell.setPadding(3);
+    	            text = new Paragraph(partida.getPartida().getCodi(), f);    	            
+    	        	cell.addElement(text);    	            
+    	            table.addCell(cell);
+    	            plic = partida.getValorPA();
+    	            totalPlic += plic;
+    	           
+    	            vec =  plic / 1.21;
+    	            totalVEC += vec;
+    	            
+    	            iva = plic - vec;
+    	            totalIVA += iva;
+    	           
+    	            cell = new PdfPCell();
+    	            cell.setPadding(3);
+    	            text = new Paragraph(num.format(vec), f);      	         
+    	            text.setAlignment(Element.ALIGN_RIGHT);
+    	        	cell.addElement(text);    	            
+    	            table.addCell(cell);
+    	            
+    	            cell = new PdfPCell();
+    	            cell.setPadding(3);
+    	            text = new Paragraph(num.format(iva), f);    
+    	            text.setAlignment(Element.ALIGN_RIGHT);
+    	        	cell.addElement(text);    	            
+    	            table.addCell(cell);
+    	            
+    	            cell = new PdfPCell();
+    	            cell.setPadding(3);
+    	            text = new Paragraph(num.format(plic), f);    
+    	            text.setAlignment(Element.ALIGN_RIGHT);
+    	        	cell.addElement(text);    	            
+    	            table.addCell(cell);
+    	        }
+    	        
+    	        cell = new PdfPCell();
+	        	cell.setPadding(3);
+	            text = new Paragraph("TOTAL", f);    	            
+	        	cell.addElement(text);    	            
+	            table.addCell(cell);
+	          
+	            cell = new PdfPCell();
+	            cell.setPadding(3);
+	            text = new Paragraph(num.format(totalVEC), f);      	         
+	            text.setAlignment(Element.ALIGN_RIGHT);
+	        	cell.addElement(text);    	            
+	            table.addCell(cell);
+	            
+	            cell = new PdfPCell();
+	            cell.setPadding(3);
+	            text = new Paragraph(num.format(totalIVA), f);    
+	            text.setAlignment(Element.ALIGN_RIGHT);
+	        	cell.addElement(text);    	            
+	            table.addCell(cell);
+	            
+	            cell = new PdfPCell();
+	            cell.setPadding(3);
+	            text = new Paragraph(num.format(totalPlic), f);    
+	            text.setAlignment(Element.ALIGN_RIGHT);
+	        	cell.addElement(text);    	            
+	            table.addCell(cell);
+    	        
+    	        ColumnText column = new ColumnText(stamper.getOverContent(1));
+    	        Rectangle rectPage1 = new Rectangle(36, 36, 605, 430);
+    	        column.setSimpleColumn(rectPage1);
+    	        column.addElement(table);
+    	        int pagecount = 1;
+    	        Rectangle rectPage2 = new Rectangle(36, 36, 559, 806);
+    	        int status = column.go();
+    	        while (ColumnText.hasMoreText(status)) {
+    	           status = triggerNewPage(stamper, pagesize, column, rectPage2, ++pagecount);
+    	       	}    
+  	        		       	
+  	         	stamper.close();
   	   	       	reader.close();
      		                
-  	   		} catch (DocumentException | SQLException | NamingException e1) {
+  	   		} catch (DocumentException e1) {
   	   			// TODO Auto-generated catch block
   	   			e1.printStackTrace();
   	   		} // output PDF
-  			downloadFile = new File("/certificat_existència_crèdit_"+ informe.getExpcontratacio().getExpContratacio().replace("/", "_") +".pdf");
+  			downloadFile = new File(ruta + "/certificat_existència_crèdit_"+ informe.getExpcontratacio().getExpContratacio().replace("/", "_") +".pdf");
        } else if ("procedimentJudicial".equals(tipus)) {
     	    // Crear directoris si no existeixen
   		   	String idTramit =  request.getParameter("idTramit");
@@ -349,7 +457,7 @@ public class DoCrearDocument extends HttpServlet {
   	   	       	stamper.close();
   	   	       	reader.close();
      		                
-  	   		} catch (DocumentException | SQLException | NamingException e1) {
+  	   		} catch (DocumentException e1) {
   	   			// TODO Auto-generated catch block
   	   			e1.printStackTrace();
   	   		} // output PDF
@@ -369,7 +477,6 @@ public class DoCrearDocument extends HttpServlet {
   				tmpFile.mkdir();
   			}
      		
-  			filePath = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio +"/autoritzacio_proposta_actuacio_"+ idInforme +".pdf";
   			try {
   	        	PdfReader reader = new PdfReader(ruta + "/base/PA gerència.pdf"); // input PDF
   				PdfStamper stamper = new PdfStamper(reader,
@@ -382,7 +489,7 @@ public class DoCrearDocument extends HttpServlet {
   	   	       	stamper.close();
   	   	       	reader.close();
      		                
-  	   		} catch (DocumentException | SQLException e1) {
+  	   		} catch (DocumentException e1) {
   	   			// TODO Auto-generated catch block
   	   			e1.printStackTrace();
   	   		} // output PDF
@@ -402,23 +509,23 @@ public class DoCrearDocument extends HttpServlet {
 				tmpFile.mkdir();
 			}
     		
-    		filePath = ruta + "/documents/" + idIncidencia + "/Actuacio/" + idActuacio +"/proposta_tecnica_"+ idInforme +".pdf";
-            try {
+    		try {
 	        	PdfReader reader = new PdfReader(ruta + "/base/MODPTOBRES.pdf"); // input PDF
 	        	Rectangle pagesize = reader.getPageSize(1);
 				PdfStamper stamper = new PdfStamper(reader,
 				  new FileOutputStream("/proposta_tecnica_"+ idInforme +".pdf"));			
 				            
 	            AcroFields fields = stamper.getAcroFields();
-    	        fields.setField("tipusContracte",informe.getLlistaPropostes().get(0).getTipusObraFormat());
+    	        fields.setField("tipusContracte",informe.getPropostaInformeSeleccionada().getTipusObraFormat());
     	        fields.setField("nomCentre",actuacio.getCentre().getNomComplet());
-    	        fields.setField("objecte",informe.getLlistaPropostes().get(0).getObjecte());
-    	        fields.setField("pbase", informe.getOfertaSeleccionada().getPbaseFormat());
-    	        fields.setField("iva", informe.getOfertaSeleccionada().getIvaFormat());
-    	        fields.setField("plic", informe.getOfertaSeleccionada().getPlicFormat());
-    	        fields.setField("terminiInicial", informe.getOfertaSeleccionada().getTermini());
+    	        fields.setField("objecte",informe.getPropostaInformeSeleccionada().getObjecte());
+    	        fields.setField("pbase", informe.getPropostaInformeSeleccionada().getPbaseFormat());
+    	        fields.setField("iva", informe.getPropostaInformeSeleccionada().getIvaFormat());
+    	        fields.setField("plic", informe.getPropostaInformeSeleccionada().getPlicFormat());
+    	        fields.setField("terminiInicial", informe.getPropostaInformeSeleccionada().getTermini());
     	        fields.setField("idActuacio", actuacio.getReferencia());
-    	        fields.setField("empresaSeleccionada", informe.getOfertaSeleccionada().getNomEmpresa() + " (" + informe.getOfertaSeleccionada().getCifEmpresa() + ")" );    	 
+    	        fields.setField("empresaSeleccionada", informe.getOfertaSeleccionada().getNomEmpresa() + " (" + informe.getOfertaSeleccionada().getCifEmpresa() + ")" ); 
+    	        fields.setField("valoroferta", informe.getOfertaSeleccionada().getPlicFormat()); 
     	        fields.setField("comentaris", informe.getOfertaSeleccionada().getComentari());    	 
     	        fields.setField("terminiDefinitiu", informe.getOfertaSeleccionada().getTermini());
     	        fields.setField("data", getData());
@@ -708,14 +815,10 @@ public class DoCrearDocument extends HttpServlet {
  				
  		        stamper.close();
  		        reader.close();
-    		} catch (DocumentException | SQLException e1) {
+    		} catch (DocumentException e1) {
     			// TODO Auto-generated catch block
     			e1.printStackTrace();
     		} // output PDF
- catch (NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
     		 downloadFile = new File("/empresa_"+ cif +".pdf");
     	} 				
 		//Descarrega del document
@@ -762,12 +865,18 @@ public class DoCrearDocument extends HttpServlet {
 	
 	public int triggerNewPage(PdfStamper stamper,
 		    Rectangle pagesize, ColumnText column, Rectangle rect, int pagecount)
-		        throws DocumentException {
+		        {
 		    stamper.insertPage(pagecount, pagesize);
 		    PdfContentByte canvas = stamper.getOverContent(pagecount);
 		    column.setCanvas(canvas);
 		    column.setSimpleColumn(rect);
-		    return column.go();
+		    try {
+				return column.go();
+			} catch (DocumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		    return -1;
 		}
 	
 	private static String getData(){

@@ -58,7 +58,8 @@
 				            <select class="form-control selectpicker" name="tipusContracte" id="tipusContracte">
 					           	<option value="obr">Obra</option>
 					           	<option value="srv">Servei</option>
-					           	<option value="submi">subministrament</option>
+					           	<option value="submi">Subministrament</option>
+					            <option value="conveni">Conveni</option>
 				            </select>
 				       	</div>	
 				    	<div class="visibleObres visibleObres">					                             	
@@ -145,7 +146,7 @@
 			     		</div>
 	     			</div>	
 				</c:when>
-				<c:when test="${informePrevi.conformeAreaEconomivaPropostaActuacio == null || informePrevi.conformeAreaEconomivaPropostaActuacio.getEncodedRuta() == ''}">
+				<c:when test="${informePrevi.conformeAreaEconomivaPropostaActuacio.size() == 0}">
 					<div class="col-md-4">												        		
 			    		<div class="row">
 			        		<div class="col-md-12">															        																						 				
@@ -156,18 +157,18 @@
 				</c:when>
 				<c:otherwise>
 					<div class="col-md-12">
-			      		<div class="document">
-			              	<label>Certificat d'existència de credit:</label>											                  	
-			           		<a target="_blanck" href="downloadFichero?ruta=${informePrevi.conformeAreaEconomivaPropostaActuacio.getEncodedRuta()}">
-								${informePrevi.conformeAreaEconomivaPropostaActuacio.nom}
-							</a>	
-							<c:if test="${informePrevi.conformeAreaEconomivaPropostaActuacio.signat}">
-									<span data-ruta="${informePrevi.conformeAreaEconomivaPropostaActuacio.ruta}" class="glyphicon glyphicon-pencil signedFile"></span>
-							</c:if>
-							<br>
-							<div class="infoSign hidden">
-							</div>
-						</div>	
+			      		<p>
+							<div class="document">
+								<label>Certificat d'existència de crèdit:</label>	
+								<div class="row col-md-12">
+									<c:forEach items="${informePrevi.conformeAreaEconomivaPropostaActuacio}" var="arxiu" >
+										<c:set var="arxiu" value="${arxiu}" scope="request"/>
+										<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
+									</c:forEach>
+									<br>					            		
+								</div>
+							</div>																	
+						</p>	
 					</div>		
 				</c:otherwise>
      		</c:choose>						

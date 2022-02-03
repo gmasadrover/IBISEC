@@ -2,11 +2,9 @@ package servlet.actuacio;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -55,14 +53,9 @@ public class CreateModificacioInformeServlet extends HttpServlet {
  	       InformeActuacio informePrevi = new InformeActuacio();
  	       List<Empresa> empresesList = new ArrayList<Empresa>();      
  	      
- 	       try { 	    	   
- 	    	   informePrevi = InformeCore.getInformePrevi(conn, idInforme, false);
- 	    	   empresesList = EmpresaCore.getEmpreses(conn);
- 	    	   empresesList.addAll(EmpresaCore.getEmpresesUTE(conn));
- 	       } catch (SQLException | NamingException e) {
- 	           e.printStackTrace();
- 	           errorString = e.getMessage();
- 	       }
+ 	       informePrevi = InformeCore.getInformePrevi(conn, idInforme, false);
+		   empresesList = EmpresaCore.getEmpreses(conn);
+		   empresesList.addAll(EmpresaCore.getEmpresesUTE(conn));
  	       // Store info in request attribute, before forward to views
  	       request.setAttribute("errorString", errorString);
  	       request.setAttribute("informePrevi", informePrevi);

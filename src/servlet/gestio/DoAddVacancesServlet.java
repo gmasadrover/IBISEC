@@ -2,13 +2,11 @@ package servlet.gestio;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -63,7 +61,7 @@ public class DoAddVacancesServlet extends HttpServlet {
    			} else {
    				errorString = "No queden suficients dies per aquest període";
    			}   			   
-		} catch (SQLException | ParseException | NamingException e) {
+		} catch (ParseException e) {
 			errorString = e.toString();
 		}	          	
 	   	

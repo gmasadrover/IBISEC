@@ -1,21 +1,14 @@
 package servlet.factura;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -25,10 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -42,17 +31,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.itextpdf.text.pdf.AcroFields;
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PRAcroForm;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfStamper;
-import com.itextpdf.text.pdf.parser.PdfTextExtractor;
-
 import bean.Factura;
 import bean.User;
+import core.ConfiguracioCore;
 import core.FacturaCore;
-import core.LoggerCore;
 import utils.Fitxers;
 import utils.MyUtils;
 import utils.Fitxers.Fitxer;
@@ -102,15 +84,8 @@ public class ImportFacturesHandler extends HttpServlet {
             } 
         }
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Context env;
     	String ruta = "";
-		try {
-			env = (Context)new InitialContext().lookup("java:comp/env");
-			ruta = (String)env.lookup("ruta_base");
-		} catch (NamingException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
+		ruta =  ConfiguracioCore.getConfiguracio(conn).getRutaBaseDocumentacio();
 		List<FileItem> facturesPDF = new ArrayList<FileItem>();
 		List<String> facturesImport = new ArrayList<String>();
     	if (arxius != null) {
@@ -161,7 +136,12 @@ public class ImportFacturesHandler extends HttpServlet {
 							Node nNode = nList.item(temp);						            
 							if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 								Element eElement = (Element) nNode;
-								factura.setDataEntrada(formatter.parse(eElement.getElementsByTagName("etsi:ProducedAt").item(0).getTextContent()));
+								if (eElement.getElementsByTagName("etsi:ProducedAt").item(0)!=null) {
+									factura.setDataEntrada(formatter.parse(eElement.getElementsByTagName("etsi:ProducedAt").item(0).getTextContent()));
+								} else {
+									factura.setDataEntrada(formatter.parse(eElement.getElementsByTagName("etsi:IssueTime").item(0).getTextContent()));
+								}
+								
 							}
 						}
 	   		            factura.setIdFactura(FacturaCore.getNewCode(conn));
@@ -170,7 +150,7 @@ public class ImportFacturesHandler extends HttpServlet {
 		         	    factura.setTipusFactura("");
 		         	    FacturaCore.newFactura(conn, factura, Usuari.getIdUsuari());
 		         	    facturesImport.add(arxiu.getName().split("_")[0] + ";" + factura.getIdProveidor() + ";" + factura.getIdFactura());
-					} catch (ParserConfigurationException | SAXException | DOMException | ParseException | SQLException e) {
+					} catch (ParserConfigurationException | SAXException | DOMException | ParseException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
@@ -187,12 +167,7 @@ public class ImportFacturesHandler extends HttpServlet {
             	fitxer.setFitxer(facturaPDF);
             	for (String infoFact: facturesImport){
             		if (infoFact.split(";")[0].equals(facturaPDF.getName().split("_")[0])) {
-            			try {
-        					FacturaCore.saveArxiu("-1", "-1", "-1", infoFact.split(";")[1], infoFact.split(";")[2], new ArrayList<Fitxer>(Arrays.asList(fitxer)), conn, Usuari.getIdUsuari());
-        				} catch (NamingException | SQLException e) {
-        					// TODO Auto-generated catch block
-        					e.printStackTrace();
-        				}
+            			FacturaCore.saveArxiu("-1", "-1", "-1", infoFact.split(";")[1], infoFact.split(";")[2], new ArrayList<Fitxer>(Arrays.asList(fitxer)), conn, Usuari.getIdUsuari());
             			facturesImport.remove(infoFact);
             			break;
             		}

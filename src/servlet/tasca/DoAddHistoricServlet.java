@@ -2,9 +2,6 @@ package servlet.tasca;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
-
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.lang.math.NumberUtils;
 
 import bean.Tasca;
@@ -44,19 +40,11 @@ public class DoAddHistoricServlet extends HttpServlet {
 	
 		Connection conn = MyUtils.getStoredConnection(request);
 		Fitxers.formParameters multipartParams = new Fitxers.formParameters();
-		try {
-			multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		} catch (FileUploadException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		multipartParams = Fitxers.getParamsFromMultipartForm(request);
 		
-	    String idTasca = multipartParams.getParametres().get("idTasca");
+	    int idTasca = Integer.parseInt(multipartParams.getParametres().get("idTasca"));
 	   
-	    String idIncidencia = "-1";
-	    if (multipartParams.getParametres().get("idIncidencia") != null) idIncidencia = multipartParams.getParametres().get("idIncidencia");
-	    String idActuacio = "-1";
-	    if (multipartParams.getParametres().get("idActuacio") != null) idActuacio = multipartParams.getParametres().get("idActuacio");
+	  
 	    String reasignar = multipartParams.getParametres().get("reasignar");
 	    boolean urgent = "on".equals(multipartParams.getParametres().get("urgent"));
 	    String tancar = multipartParams.getParametres().get("tancar");
@@ -73,20 +61,14 @@ public class DoAddHistoricServlet extends HttpServlet {
 	   			comentari = comentari + "<br><span class='missatgeAutomatic'>Es tanca la tasca</span>";
 	   		}
 			TascaCore.nouHistoric(conn, idTasca, comentari, Usuari.getIdUsuari(), request.getRemoteAddr(), "manual");
-			tasca = TascaCore.findTascaId(conn, Integer.parseInt(idTasca), Usuari.getIdUsuari());
+			tasca = TascaCore.findTascaId(conn, idTasca, Usuari.getIdUsuari());
 			tipus = tasca.getTipus();
-		} catch (SQLException | NumberFormatException | NamingException e) {
+		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			errorString = e.getMessage();
 		}
-	   	//Guardar adjunts
-	   	try {
-			TascaCore.guardarFitxer(conn, idTasca, multipartParams.getFitxers(), Usuari.getIdUsuari());	   		
-		} catch (NamingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+	   	TascaCore.guardarFitxer(conn, idTasca, multipartParams.getFitxers(), Usuari.getIdUsuari());
 	   	
 	   	// Store infomation to request attribute, before forward to views.
 	   	request.setAttribute("errorString", errorString);
@@ -102,75 +84,64 @@ public class DoAddHistoricServlet extends HttpServlet {
 	   			if (idUsuariNou.equals("-1") ) {
 	   				idUsuariNou = String.valueOf(Usuari.getIdUsuari());		
 	   			}
-	   			try {
-	   				if (!NumberUtils.isNumber(idUsuariNou)) {
-	   					idUsuariNou =  String.valueOf(UsuariCore.finCap(conn, idUsuariNou).getIdUsuari());
-	   				}
-	   				User usuariNou = UsuariCore.findUsuariByID(conn, Integer.parseInt(idUsuariNou));
-   					if (tasca.getTipus().equals("facturaConformada")) {
-   						if (!usuariNou.getRol().contains("CONTA")) {
-   							tipus = "conformarFactura";
-   						}
-   					} else if(tasca.getTipus().equals("solInfPrev")) {
-   						if (!Usuari.getDepartament().equals("gerencia")) { //Si no es gerencia	   							
-   							if(usuariNou.getDepartament().equals("gerencia")) { //Si va a gerencia
-   								tipus = "infPrev";
-   							}else if(usuariNou.getRol().contains("CAP")) { //Si va a cap
-	   							tipus = "vistInfPrev";
-	   						}
-   						}	   						
-   					} else if(tasca.getTipus().equals("vistInfPrev")) {
-   						if(usuariNou.getDepartament().equals("gerencia")) { //Si va a gerencia
-							tipus = "infPrev";
-						}else if(!usuariNou.getRol().contains("CAP")) { //Si va tecnic
-   							tipus = "solInfPrev";
-   						}
-   					} else if(tasca.getTipus().equals("infPrev")) {
-   						if(!usuariNou.getDepartament().equals("gerencia")) { //Si no va a gerencia
-   							tipus = "solInfPrev";
-   						}
-   					} else if(tasca.getTipus().equals("doctecnica")) {
-   						if (!Usuari.getDepartament().equals("gerencia")) { //Si no es gerencia	   							
-   							if(usuariNou.getRol().contains("CAP")) { //Si va a cap
-	   							tipus = "vistDocTecnica";
-	   						}
-   						}	 
-   					} else if(tasca.getTipus().equals("vistDocTecnica")) {
-   						if(!usuariNou.getRol().contains("CAP")) { //Si va tecnic
-   							tipus = "doctecnica";
-   						}
-   					} else if(tasca.getTipus().equals("docprelicitacio")) {
-   						if(!usuariNou.getDepartament().equals("gerencia") && !usuariNou.getDepartament().equals("juridica")) { //Si no va a gerencia ni juridica
-   							tipus = "doctecnica";
-   						}
-   					}
-   					String descripcio = tasca.getDescripcio();
-   					if (urgent) {
-   						if (!descripcio.contains("URGENT - ")) {
-   							descripcio = "URGENT - " + descripcio;
-   						}
-   					} else {
-   						descripcio = descripcio.replaceAll("URGENT - ", "");
-   					}
-   					TascaCore.reasignar(conn, Integer.parseInt(idUsuariNou), Integer.parseInt(idTasca), tipus, descripcio);
-	   				
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+	   			if (!NumberUtils.isNumber(idUsuariNou)) {
+					idUsuariNou =  String.valueOf(UsuariCore.finCap(conn, idUsuariNou).getIdUsuari());
 				}
+				User usuariNou = UsuariCore.findUsuariByID(conn, Integer.parseInt(idUsuariNou));
+				if (tasca.getTipus().equals("facturaConformada")) {
+					if (!usuariNou.getRol().contains("CONTA")) {
+						tipus = "conformarFactura";
+					}
+				} else if(tasca.getTipus().equals("solInfPrev")) {
+					if (!Usuari.getDepartament().equals("gerencia")) { //Si no es gerencia	   							
+						if(usuariNou.getDepartament().equals("gerencia")) { //Si va a gerencia
+							tipus = "infPrev";
+						}else if(usuariNou.getRol().contains("CAP")) { //Si va a cap
+							tipus = "vistInfPrev";
+						}
+					}	   						
+				} else if(tasca.getTipus().equals("vistInfPrev")) {
+					if(usuariNou.getDepartament().equals("gerencia")) { //Si va a gerencia
+						tipus = "infPrev";
+					}else if(!usuariNou.getRol().contains("CAP")) { //Si va tecnic
+						tipus = "solInfPrev";
+					}
+				} else if(tasca.getTipus().equals("infPrev")) {
+					if(!usuariNou.getDepartament().equals("gerencia")) { //Si no va a gerencia
+						tipus = "solInfPrev";
+					}
+				} else if(tasca.getTipus().equals("doctecnica")) {
+					if (!Usuari.getDepartament().equals("gerencia")) { //Si no es gerencia	   							
+						if(usuariNou.getRol().contains("CAP")) { //Si va a cap
+							tipus = "vistDocTecnica";
+						}
+					}	 
+				} else if(tasca.getTipus().equals("vistDocTecnica")) {
+					if(!usuariNou.getRol().contains("CAP")) { //Si va tecnic
+						tipus = "doctecnica";
+					}
+				} else if(tasca.getTipus().equals("docprelicitacio")) {
+					if(!usuariNou.getDepartament().equals("gerencia") && !usuariNou.getDepartament().equals("juridica")) { //Si no va a gerencia ni juridica
+						tipus = "doctecnica";
+					}
+				}
+				String descripcio = tasca.getDescripcio();
+				if (urgent) {
+					if (!descripcio.contains("URGENT - ")) {
+						descripcio = "URGENT - " + descripcio;
+					}
+				} else {
+					descripcio = descripcio.replaceAll("URGENT - ", "");
+				}
+				TascaCore.reasignar(conn, Integer.parseInt(idUsuariNou), idTasca, tipus, descripcio);
 	   			response.sendRedirect(request.getContextPath() + "/tascaList");
 	   		}else if (tancar != null) { // tancam incid�ncia
-	   			try {
-					TascaCore.tancar(conn, Integer.parseInt(idTasca));
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+	   			TascaCore.tancar(conn, idTasca);
 	   			response.sendRedirect(request.getContextPath() + "/tascaList");
 	   		}else {	   		
 	   			try {
-					TascaCore.marcarNoLlegida(conn,  Integer.parseInt(idTasca));
-				} catch (NumberFormatException | SQLException e) {
+					TascaCore.marcarNoLlegida(conn,  idTasca);
+				} catch (NumberFormatException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}

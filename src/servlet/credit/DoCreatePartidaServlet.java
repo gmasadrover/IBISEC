@@ -2,9 +2,7 @@ package servlet.credit;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -40,33 +38,21 @@ public class DoCreatePartidaServlet extends HttpServlet {
 		String nom = request.getParameter("nom");
 		double totalPartida =  Double.parseDouble(request.getParameter("import").replace(",", "."));	
 		String tipus = request.getParameter("idTipus");		
-		Partida partida = new Partida(codi, nom, totalPartida, tipus, true); 
-		String errorString = null;	
-	       if (errorString == null) {
-	           try {
-	        	   int idUsuari = MyUtils.getLoginedUser(request.getSession()).getIdUsuari();
-	               CreditCore.novaPartida(conn, partida, idUsuari);
-	           } catch (SQLException e) {
-	               e.printStackTrace();
-	               errorString = e.getMessage();
-	           }
-	       }
+		String partidaPare = request.getParameter("codiPare");
+		Partida partida = new Partida(codi, nom, totalPartida, tipus, true, partidaPare); 
+	
+	      
+	           int idUsuari = MyUtils.getLoginedUser(request.getSession()).getIdUsuari();
+			   CreditCore.novaPartida(conn, partida, idUsuari);
+	       
 	        
 	       // Store infomation to request attribute, before forward to views.
-	       request.setAttribute("errorString", errorString);
+	       
 	       request.setAttribute("partida", partida);	      
 	       // If error, forward to Edit page.
-	       if (errorString != null) {
-	           RequestDispatcher dispatcher = request.getServletContext()
-	                   .getRequestDispatcher("/WEB-INF/views/credit/createPartidaView.jsp");
-	           dispatcher.forward(request, response);
-	       }
-	 
-	       // If everything nice.
-	       // Redirect to the product listing page.            
-	       else {
+	      
 	           response.sendRedirect(request.getContextPath() + "/credit");
-	       }
+	       
 	}
 
 	/**

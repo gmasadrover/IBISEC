@@ -58,12 +58,15 @@
 					         		<label>Tipus incidència</label>									            	 										            	 	
 					            	<select class="selectpicker" name="tipusIncidencia" id="tipusIncidencia">	
 							        	<option value="modificacio">Modificació</option>
+							        	<option value="excesAmidament">Excés amidaments</option>		
 							        	<option value="certfinal">Certificació final</option>			
 							        	<option value="preusContradictoris">Preus contradictoris</option>							        	
 							        	<option value="penalitzacio">Penalització</option>								        	
 							        	<option value="termini">Ampliació termini</option>							        								        	
 							        	<option value="resolucioContracte">Resolució contracte</option>	
-							        	<option value="enriquimentInjust">Enriquiment injust</option>							        		
+							        	<option value="enriquimentInjust">Enriquiment injust</option>		
+							        	<option value="decrementAmidament">Decrement d'Amidament</option>
+							        	<option value="ocupacio">Ocupació</option>						
 							        	<option value="informeExecucio">Incidència genèrica</option>			 						                   	
 					                </select>	
 					        	</div>	
@@ -147,20 +150,7 @@
 									<input type="checkbox" name="partsOcultes">
 								</div>
 							</div>	
-                            <div id="seccioEmpresa">						
-						       	<div class="form-group">
-						        	<div class="col-md-6">
-						        		<input type="hidden" id="empresaPrev" value="${informeModificacio.ofertaSeleccionada.cifEmpresa}" >	
-						         		<label>Empresa modificació</label>									            	 										            	 	
-						            	<select class="selectpicker" name="llistaEmpreses" id="llistaEmpreses" data-live-search="true" data-size="10">						                                					                                	
-						               		<c:forEach items="${empresesList}" var="empresa">
-						                   		<option value="${empresa.cif}">${empresa.name}</option>
-						                   	</c:forEach>	
-						                </select>	
-						        	</div>					         			                       		
-						   		</div>	
-						   	</div>		
-						   	<div id="seccioPenalitzacio">						    						      		
+                           	<div id="seccioPenalitzacio">						    						      		
 						    	<div class="form-group">									
 									<div class="col-md-4">
 										<label>Valor</label>

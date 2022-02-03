@@ -2,7 +2,6 @@ package servlet.feina;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -48,12 +47,7 @@ public class EditFeinaServlet extends HttpServlet {
  	   	}else{ 	   		
 	        Feina feina = new Actuacio().new Feina();
 	        String idActuacio = request.getParameter("idActuacio");
-	        try {
-				feina = ActuacioCore.findFeina(conn, request.getParameter("idFeina"));
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	        feina = ActuacioCore.findFeina(conn, request.getParameter("idFeina"));
 	        request.setAttribute("feina", feina);
 	        request.setAttribute("idActuacio", idActuacio);
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Actuacions"));

@@ -2,11 +2,9 @@ package servlet.expedient;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -50,12 +48,7 @@ public class ModificacionsListServlet extends HttpServlet {
 		}else{		   
 			
 			List<InformeActuacio> modificacionsList = new ArrayList<InformeActuacio>();
-			try {
-				modificacionsList = InformeCore.getMoficacionsInforme(conn, null, false);
-			} catch (SQLException | NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			modificacionsList = InformeCore.getMoficacionsInforme(conn, null, false);
 			
 			// Store info in request attribute, before forward to views
 			

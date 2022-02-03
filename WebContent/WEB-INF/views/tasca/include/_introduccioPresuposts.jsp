@@ -178,12 +178,7 @@
 	           		<label>Oferta seleccionada: </label>
 	           		<label id="ofertaSeleccionada">${informePrevi.ofertaSeleccionada.nomEmpresa} (${informePrevi.ofertaSeleccionada.cifEmpresa})</label>	           		
 	           	</div>	
-	           	<div class="hidden" id="superaMaximPermes">
-					<div class="col-md-12">
-						<p style="color: red;">L'empresa seleccionada supera l'import màxim permès de contractació menor.</p>
-					</div>
-				</div>         	
-	       	</div>					                    	
+	        </div>					                    	
 	       	<div class="form-group">					                    			
 	        	<div class="col-md-12">							                    			
 	     			<div class="row">	 

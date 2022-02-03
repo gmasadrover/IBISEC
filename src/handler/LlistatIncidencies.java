@@ -3,7 +3,6 @@ package handler;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,18 +59,12 @@ public class LlistatIncidencies extends HttpServlet {
         JsonObject myObj = new JsonObject();
         Connection conn = MyUtils.getStoredConnection(request);
         List<Incidencia> llistatIncidencies = new ArrayList<Incidencia>();
-		try {
-			llistatIncidencies = IncidenciaCore.searchIncidencies(conn, idCentre, true, true, null, null);
-			myObj.addProperty("success", true);
-			JsonElement llistatObj = gson.toJsonTree(llistatIncidencies);
-			myObj.add("llistatIncidencies", llistatObj);
-			JsonElement nomCentreObj = gson.toJsonTree(CentreCore.nomCentre(conn, idCentre));
-			myObj.add("nomCentre", nomCentreObj);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			myObj.addProperty("success", false);
-		}              
+		llistatIncidencies = IncidenciaCore.searchIncidencies(conn, idCentre, true, true, null, null);
+		myObj.addProperty("success", true);
+		JsonElement llistatObj = gson.toJsonTree(llistatIncidencies);
+		myObj.add("llistatIncidencies", llistatObj);
+		JsonElement nomCentreObj = gson.toJsonTree(CentreCore.nomCentre(conn, idCentre));
+		myObj.add("nomCentre", nomCentreObj);              
         out.println(myObj.toString());
  
         out.close();
