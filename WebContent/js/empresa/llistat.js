@@ -1,0 +1,59 @@
+$(document).ready(function() {
+	$('.filerTable').DataTable({
+		dom: 'Bfrtip',
+        buttons: [ {
+	            extend: 'excelHtml5',
+	            customize: function( xlsx ) {
+	                var sheet = xlsx.xl.worksheets['sheet1.xml']; 
+	                $('row c[r^="C"]', sheet).attr( 's', '2' );
+	            },
+	            exportOptions: {
+                    columns: ':visible'
+                }
+        	},
+	        {
+	            extend: 'collection',
+	            text: 'Editar columnes',
+	            buttons: [ 'columnsVisibility' ],
+	            visibility: true
+	        }
+        ],	
+		"order": [[ 1, "asc" ]]		
+	});		
+	$('.despesaTable').DataTable({
+		dom: 'Bfrtip',
+        buttons: [ {
+	            extend: 'excelHtml5',
+	            customize: function( xlsx ) {
+	                var sheet = xlsx.xl.worksheets['sheet1.xml']; 
+	                $('row c[r^="C"]', sheet).attr( 's', '2' );
+	            },
+	            exportOptions: {
+                    columns: ':visible'
+                }
+        	},
+	        {
+	            extend: 'collection',
+	            text: 'Editar columnes',
+	            buttons: [ 'columnsVisibility' ],
+	            visibility: true
+	        }
+        ],	
+		"order": [[ 9, "desc" ]],
+		"aoColumns": [
+    		null,
+    		null,
+    		null,
+    		{"bVisible": false},
+    		null,
+    		null,
+    		{"iDataSort": 7},
+    		{"bVisible": false},
+    		{"iDataSort": 9},
+    		{"bVisible": false},
+    		{"iDataSort": 12},
+    		{"bVisible": false},
+    		null
+		]	
+	});	
+});	

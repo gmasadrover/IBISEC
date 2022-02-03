@@ -1,0 +1,279 @@
+body{
+	background-color: #FFFFFF;
+}
+.fullbody{
+	margin-top: 0px;
+}
+.load{
+    padding-top:180px;
+}
+#loading{
+    display: none;
+}
+.loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.logo {
+	width: 30px;
+	float: left;
+}
+.tittleLogo{
+	margin-left: 10px;
+    line-height: 25px;
+}
+.separator{
+	border: solid 2px;
+    color: #000000;
+    display: block;
+    margin: 30px;
+}
+ #map {
+  	height: 100%;
+}
+.footer{
+	background: #E0E0E0; 
+	text-align: center; 
+	padding: 5px; 
+    width: 100%;
+    margin-top: 50px;
+    font-size:11px;
+    display:none;
+}
+.fa-user:before {
+	margin-right:10px;
+}
+.form-login{
+	margin-top:10px;
+}
+.form-login .form-group{
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.form-login .login-button {
+	position: absolute;
+    right: 12px;
+    top: 75%;
+    background: #ffffff;
+    color: #999999;
+    padding: 11px 0;
+    width: 50px;
+    height: 50px;
+    margin-top: -25px;
+    border: 5px solid #efefef;
+    border-radius: 50%;
+    transition: all ease-in-out 500ms;
+}
+.login-group-checkbox {
+  padding: 5px 0;
+}
+.margin_top10{
+    margin-top: 10px;
+}
+.margin_top20{
+    margin-top: 20px;
+}
+.margin_top25{
+    margin-top: 25px;
+}
+.margin_top30{
+    margin-top: 28px;
+}
+.margin_bottom10{
+    margin-bottom: 10px;
+}
+.margin_bottom30{
+    margin-bottom: 30px;
+}
+.margin_left10{
+    margin-left: 10px;
+}
+.margin_left30{
+    margin-left: 30px;
+}
+.margin_right10{
+    margin-right: 10px;
+}
+.margin_right30{
+    margin-right: 30px;
+}
+.margin_left100{
+    margin-left: 100px;
+}
+.right{
+	float:right;
+}
+.dataHistorial{
+	float:right;
+	padding-right:10px;
+}
+.deleteFile, .deleteReservaVehicle, .deleteReservaVacances{
+	color:red;
+	cursor:pointer;
+}
+
+.signedFile{
+	cursor: pointer;
+	color:green;
+}
+.infoSign{
+	border: solid 1px;
+    border-color: green;
+    margin: 10px;
+    padding: 10px;
+}
+
+.longText {
+	white-space: pre-line;
+	height: 200px;
+    overflow-y: scroll;
+}
+.circunferencia{
+    width: 100px;
+    height: 100px;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    background: #5cb85c;     
+  	text-align: center;  
+  	vertical-align: middle;
+  	padding-top: 36px;
+  	font-size:20px;
+	color: #FFFFFF;
+}
+.green{
+	background: #449d44;	
+}
+.red{
+	background: #d9534f;	
+}
+.yellow{
+	background: #f0ad4e;	
+}
+.blue{
+	background: #286090;	
+}
+#wrapper{
+	display:block;
+}
+.bloqued {	
+	background: #A9A9A9;	
+	cursor:not-allowed;
+}
+.weekend {
+	width: 10%;	
+}
+.today {
+	background: #e0ebe0;
+}
+.reserved {
+	background: #f8b9c6;
+}
+.smallDay {
+	width: 2%;
+	font-size: 10px;
+}
+.festiu {
+	background: #d9534f;
+}
+.vacances {
+	background: #0000FF;
+	opacity: 0.1;
+}
+.p7 {
+	background: #006400;
+	opacity: 0.1;
+}
+.viatges {
+	background: #f8b9c6;
+}
+.permis {
+	background: #f8b9c6;
+}
+.visita {
+	background: #f8b9c6;
+}
+.autoritzat{
+	opacity: 0.5;
+}
+.vistiplau{
+	opacity: 1;
+}
+.nameUserTable {
+	font-size: 13px;
+}
+.bordertab{
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-top-color: transparent;
+}
+.square{
+	display:block;
+	width: 20px;
+	height: 20px;
+}
+.left{
+	float: left;
+}
+.documentsModal{
+	padding: 20px;
+	overflow-x: auto;
+}
+.dataTable{
+	width: inherit !important;
+}
+
+.borderbox {
+	border: solid;
+    margin: 60px;
+    padding: 10px;
+    height: 150px;
+}
+.estatExp a {
+	background: #dff0d8;
+}
+.estatExp.active a{
+	background: #dff0d8 !important;
+}
+.notif {
+  background-color: #fa3e3e;
+  border-radius: 10px;
+  color: white;
+ 
+  padding: 1px 3px;
+  font-size: 10px;
+  
+  position: absolute; /* Position the badge within the relatively positioned button */
+  top: 0;
+  right: 0;
+}
+.inline{
+	margin-top: 0;
+}
+.ipRemote {
+	color: #d9edf7;
+}
+.automatic {
+	border-color:#ffe4b5;
+}
+.automatic .ipRemote {
+	color:#ffe4b5;
+}
+.automatic .panel-heading{
+    color: #800000;
+    background-color: #ffe4b5;
+    border-color: #ffe4b5;
+}
+.exclamationimg {
+	width: 30px;
+    height: 30px;
+}
