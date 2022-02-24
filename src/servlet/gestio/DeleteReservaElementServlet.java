@@ -1,4 +1,4 @@
-package servlet.empresa;
+package servlet.gestio;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,22 +12,20 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonObject;
 
-import bean.User;
-import core.EmpresaCore;
-import utils.Fitxers;
+import core.CalendarCore;
 import utils.MyUtils;
 
 /**
- * Servlet implementation class DoUploadEscritura
+ * Servlet implementation class DeleteReservaVehicleServlet
  */
-@WebServlet("/uploadEscritura")
-public class DoUploadEscritura extends HttpServlet {
+@WebServlet("/DeleteReservaElement")
+public class DeleteReservaElementServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public DoUploadEscritura() {
+    public DeleteReservaElementServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -36,7 +34,7 @@ public class DoUploadEscritura extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doPost(request,response);		
+		doPost(request,response);	
 	}
 
 	/**
@@ -50,14 +48,14 @@ public class DoUploadEscritura extends HttpServlet {
         response.setHeader("Access-Control-Allow-Methods", "POST");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type");
         response.setHeader("Access-Control-Max-Age", "86400");
- 
+    	Connection conn = MyUtils.getStoredConnection(request);
         JsonObject myObj = new JsonObject();      
-        Connection conn = MyUtils.getStoredConnection(request);	
-		User Usuari = MyUtils.getLoginedUser(request.getSession());	   
-        Fitxers.formParameters multipartParams = new Fitxers.formParameters();
-		multipartParams = Fitxers.getParamsFromMultipartForm(request);
-		String cif = multipartParams.getParametres().get("cif");	   
-		EmpresaCore.guardarFitxer(conn, Usuari.getIdUsuari(), multipartParams.getFitxers(), cif, "");			
+		try {
+			CalendarCore.eliminarReserva(conn, Integer.parseInt(request.getParameter("any")), Integer.parseInt(request.getParameter("setmana")), Integer.parseInt(request.getParameter("dia")), request.getParameter("element"), Integer.parseInt(request.getParameter("idusuari")));
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		myObj.addProperty("success", true);	
 		
         out.println(myObj.toString());

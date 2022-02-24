@@ -110,8 +110,6 @@ public class DoCanvisActuacioServlet extends HttpServlet {
 					TascaCore.novaTasca(conn, "contracte", usuariTascaContracte, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Redactar contracte per expedient " + informe.getExpcontratacio().getExpContratacio(), "Redacció contracte",informe.getIdInf(),null, ipRemota, "automatic");
 					int novaTasca = TascaCore.novaTasca(conn, "generic", usuariTascaActualitzarEmpresa, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Actualitzar informació empresa per expedient " + informe.getExpcontratacio().getExpContratacio(), "Actualització informació empresa",informe.getIdInf(),null, ipRemota, "automatic");
 					TascaCore.seguirTasca(conn, novaTasca, UsuariCore.findUsuarisByRol(conn, "CAP,JUR").get(0).getIdUsuari());
-					novaTasca = TascaCore.novaTasca(conn, "generica", usuariTascaActualitzarEmpresa, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "S'ha realitzat l'adjudicació de l'expedient: " + informe.getExpcontratacio().getExpContratacio(), "Comprovació certificats SS i Tributaris",informe.getIdInf(),null, request.getRemoteAddr(), "automatic");
-	    	    	TascaCore.seguirTasca(conn, novaTasca, UsuariCore.findUsuarisByRol(conn, "CAP,JUR").get(0).getIdUsuari());
 					
 					//Nova tasca llicència
 					if (informe.getPropostaInformeSeleccionada().isLlicencia() && informe.getPropostaInformeSeleccionada().getTipusLlicencia().equals("comun")) {

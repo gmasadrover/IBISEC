@@ -19,7 +19,8 @@ public class ControlPage {
 		llistats_list,
 		manuals,
 		personal, modificarPersonal, personalIBISEC,
-		control
+		control,
+		dades_bancaries
 	}
 	public ControlPage(){
 		

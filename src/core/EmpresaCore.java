@@ -1,6 +1,8 @@
 package core;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -40,6 +42,7 @@ public class EmpresaCore {
 			empresa.setTipus(rs.getString("tipus"));
 			empresa.setDataConstitucio(rs.getTimestamp("dataconstitucio"));	
 			empresa.setDocumentsEscrituraList(getEscritures(conn, empresa.getCif()));
+			empresa.setDocumentsBancList(getDocumentsBanc(conn, empresa.getCif()));
 			empresa.setDocumentREA(getDocumentREA(conn, empresa.getCif()));
 			empresa.setDateExpAcreditacio1(rs.getTimestamp("dataexpacreditacio1"));
 			empresa.setDateExpAcreditacio2(rs.getTimestamp("dataexpacreditacio2"));
@@ -817,6 +820,31 @@ public class EmpresaCore {
 		 return fitxersList;
 	 }
 	 
+	 public static List<Fitxer> getDocumentsBanc(Connection conn, String cif) {
+		 List<Fitxer> fitxersList = new ArrayList<Fitxer>();		
+		 String ruta =  ConfiguracioCore.getConfiguracio(conn).getRutaBaseDocumentacio();
+		 File dir = new File(ruta + "/documents/Empreses/" + cif + "/IBAN");
+		 File[] fichers = dir.listFiles();
+		 Fitxer fitxer = new Fitxer();
+		 if (fichers == null) {
+			
+		 } else { 
+			 for (int x=0;x<fichers.length;x++) {
+				 fitxer = new Fitxer();
+				 fitxer.setNom(fichers[x].getName());
+				 fitxer.setRuta(ruta + "/documents/Empreses/" + cif + "/IBAN/" + fichers[x].getName());
+				 try {
+					fitxer.setData(Files.getLastModifiedTime(fichers[x].toPath()));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				 fitxersList.add(fitxer);
+			 }
+		 }
+		 return fitxersList;
+	 }
+	 
 	 public static List<Fitxer> getDocumentsProhibicioContractar(Connection conn, String cif) {
 		 List<Fitxer> fitxersList = new ArrayList<Fitxer>();
 		 String ruta =  ConfiguracioCore.getConfiguracio(conn).getRutaBaseDocumentacio();
@@ -1115,6 +1143,13 @@ public class EmpresaCore {
 							tmpFile.mkdir();
 						}
 						fileName = ruta + "/documents/Empreses/" + cif + "/Concurs/";
+					}
+					if (("fileIBAN").equals(fitxer.getNomCamp())) {
+						tmpFile = new File(ruta + "/documents/Empreses/" + cif + "/IBAN");
+						if (!tmpFile.exists()) {
+							tmpFile.mkdir();
+						}
+						fileName = ruta + "/documents/Empreses/" + cif + "/IBAN/";
 					}
 		            if (fitxer.getFitxer().getName() != "") {	
 		            	File archivo_server = new File(fileName + fitxer.getFitxer().getName());

@@ -133,6 +133,15 @@
 											<br>
 										</c:if>
 				                	</div>
+				                	<c:if test="${canViewDadesBancaries}">
+					                	<div class="row">
+					                		<label class="col-xs-offset-1 col-xs-5 control-label">IBAN certificat:</label>
+					                		<c:forEach items="${empresa.documentsBancList}" var="arxiu" >
+					                			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+							            		<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+											</c:forEach>	
+					                	</div>
+				                	</c:if>
 		                		</div>
 		                	</div>
 		                </div>

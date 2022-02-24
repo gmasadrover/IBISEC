@@ -87,13 +87,7 @@
 	                                <div class="input-group date col-xs-6 datepicker">
 									  	<input type="text" class="form-control" name="dataLimitOfertes" value="${expedient.getDataLimitPresentacioString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 									</div>
-	                            </div>		                           
-	                            <div class="form-group">
-	                                <label class="col-xs-3 control-label">Data liquidació obra</label>
-	                                <div class="input-group date col-xs-6 datepicker">
-									  	<input type="text" class="form-control" name="dataLiquidacioObra" value="${expedient.getDataLiquidacioString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-									</div>
-	                            </div>	   		                            	                                                                        	
+	                            </div>   		                            	                                                                        	
 		                    </div>	
 	                	</div>	       	
 	                	<div class="row">

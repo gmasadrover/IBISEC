@@ -52,9 +52,6 @@ public class DoEditExecucioServlet extends HttpServlet {
 			}
 			if (multipartParams.getParametres().get("dataIniciObra") != null && ! multipartParams.getParametres().get("dataIniciObra").isEmpty()) {
 				expedient.setDataIniciExecucio(formatter.parse(multipartParams.getParametres().get("dataIniciObra")));
-			}
-			if (multipartParams.getParametres().get("dataLiquidacioObra") != null && ! multipartParams.getParametres().get("dataLiquidacioObra").isEmpty()) {
-				expedient.setDataLiquidacio(formatter.parse(multipartParams.getParametres().get("dataLiquidacioObra")));
 			}	
 			ExpedientCore.updateExpedient(conn, expedient);
 		} catch (ParseException e) {

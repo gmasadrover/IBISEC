@@ -64,6 +64,13 @@ public class DoEditGarantiaServlet extends HttpServlet {
 	    	} else {
 	    		informe.getExpcontratacio().setDataRetornGarantia(null);
 	    	}
+			if (multipartParams.getParametres().get("dataLiquidacio") != null && ! multipartParams.getParametres().get("dataLiquidacio").isEmpty()) {
+				informe.getExpcontratacio().setDataLiquidacio(formatter.parse(multipartParams.getParametres().get("dataLiquidacio")));	
+				InformeCore.modificarEstat(conn, idInforme, "acabat");				
+			} else {
+	    		informe.getExpcontratacio().setDataLiquidacio(null);
+	    		InformeCore.modificarEstat(conn, idInforme, "garantia");	
+	    	}
 			ExpedientCore.updateExpedient(conn, informe.getExpcontratacio());
 			
 			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentSolDevolucio"), idIncidencia, idActuacio, "", "", "", idInforme, "Solicitud devolucio aval", Usuari.getIdUsuari());

@@ -46,7 +46,8 @@ public class DoCanviarPasswordServlet extends HttpServlet {
 			String passwordNou = request.getParameter("nouPassword");
 			String passwordNouRepetit = request.getParameter("repetirNouPassword");
 		  	String errorString = null;
-		  	if (!UsuariCore.coincideixPassword(conn, usuariLogetjat.getIdUsuari(), passwordActual)) { //No coincideix el password actual
+		  	String entorn = getServletContext().getInitParameter("entorn");   
+		  	if (!UsuariCore.coincideixPassword(conn, usuariLogetjat.getIdUsuari(), passwordActual, entorn)) { //No coincideix el password actual
 				errorString += "No coincideix el password actual introduit amb el password actual<br>";
 			}
 			if (passwordNou.isEmpty()) {

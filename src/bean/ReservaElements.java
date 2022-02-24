@@ -1,15 +1,15 @@
 package bean;
 
-public class ReservaVehicle {
+public class ReservaElements {
 	
 	public static final String[] horesCotxe = {"9:00","9:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00"};
 	public static final String[] horesCotxeElectric = {"9:00","9:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00"};
-	public static final String[] horesFurgoneta = {"7:30","8:00","8:30","9:00","9:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30"};
+	public static final String[] horesSala = {"7:30","8:00","8:30","9:00","9:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30"};
 	
 	public class Reserva {
 		private User usuari;
 		private String motiu;
-		private String vehicle;
+		private String element;
 		private int setmana;
 		private int dia;
 		private int hora;
@@ -27,11 +27,11 @@ public class ReservaVehicle {
 		public void setMotiu(String motiu) {
 			this.motiu = motiu;
 		}
-		public String getVehicle() {
-			return vehicle;
+		public String getElement() {
+			return element;
 		}
-		public void setVehicle(String vehicle) {
-			this.vehicle = vehicle;
+		public void setElement(String element) {
+			this.element = element;
 		}
 		public int getSetmana() {
 			return setmana;

@@ -160,6 +160,7 @@ public class Empresa {
    private String tipus;
    private Date dataConstitucio;
    private List<Fitxers.Fitxer> documentsEscrituraList;
+   private List<Fitxers.Fitxer> documentsBancList;
    private Fitxers.Fitxer documentREA;
    private String classificacioString;
    private Fitxers.Fitxer classificacioFileROLECE;
@@ -731,6 +732,14 @@ public class Empresa {
 
 	public void setInfoIntervencio(String infoIntervencio) {
 		this.infoIntervencio = infoIntervencio;
+	}
+
+	public List<Fitxers.Fitxer> getDocumentsBancList() {
+		return documentsBancList;
+	}
+
+	public void setDocumentsBancList(List<Fitxers.Fitxer> documentsBancList) {
+		this.documentsBancList = documentsBancList;
 	}
 
 }

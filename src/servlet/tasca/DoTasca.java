@@ -514,7 +514,7 @@ public class DoTasca extends HttpServlet {
 				 				
 				 				} else if(informe.getTotalCertificat() < informe.getOfertaSeleccionada().getPlic() + informe.getTotalModificacions()) {
 				 					//Finalització amb import menor.
-				 					String comentari = "S'ha realitzat la proposta de modificació " + idInforme + " que conté parts que quedaran ocultes";
+				 					String comentari = "Certificació final amb import menor";
 				 					int idUsuariTasca = UsuariCore.findUsuarisByRol(conn, "CAP,CONTA").get(0).getIdUsuari();
 				 		  			TascaCore.novaTasca(conn, "generica", idUsuariTasca, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getActuacio().getIdIncidencia(), comentari, "Certificació final amb import menor", idInforme, null, request.getRemoteAddr(), "automatic");
 				 				}

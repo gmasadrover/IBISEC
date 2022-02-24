@@ -311,7 +311,7 @@ public class UsuariCore {
 		
 	}
 	
-	public static boolean coincideixPassword(Connection conn, int idUsuari, String oldPassword) {
+	public static boolean coincideixPassword(Connection conn, int idUsuari, String oldPassword, String entorn) {
 		boolean coincideix = false;
 		String sql = "SELECT password FROM public.tbl_usuaris"
 			  		+ " WHERE idusuari=?";	
@@ -325,7 +325,7 @@ public class UsuariCore {
 					String oldPasswordMD5=DigestUtils.md5Hex(oldPassword); 
 					coincideix = oldPasswordMD5.equals(rs.getString("password"));
 				}
-			} else {
+			} else if (entorn.equals("proves")) {
 				coincideix = true;
 			}
 		} catch (SQLException e) {
@@ -473,6 +473,8 @@ public class UsuariCore {
 				break;
 			case modificarPersonal:
 				permision = rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("PERSO");
+			case dades_bancaries:
+				permision = rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("DADESBANC");
 			default:
 				break;
 		}

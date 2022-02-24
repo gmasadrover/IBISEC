@@ -60,7 +60,7 @@
                                 	<option data-divider="true"></option>
                                 		<option value='gerencia'>Gerència</option>
                                 		<option value='juridica'>Assessoria Jurídica</option>
-                                		<option value='obres'>Obres , Projectes i Supervisió</option>
+                                		<option value='obres'>Projectes, Obres i Supervisió</option>
                                 		<option value='comptabilitat'>Administració i comptabilitat</option>
                                 		<option value='instalacions'>Instal·lacions i Manteniment</option>                               
                                 </select>				    

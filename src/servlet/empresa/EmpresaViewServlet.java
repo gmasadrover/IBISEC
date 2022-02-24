@@ -76,6 +76,7 @@ public class EmpresaViewServlet extends HttpServlet {
 	        request.setAttribute("empresa", empresa);
 	        request.setAttribute("validacions", validacions);
 	        request.setAttribute("canModificar", UsuariCore.hasPermision(conn, usuari, SectionPage.empreses_crear));
+	        request.setAttribute("canViewDadesBancaries", UsuariCore.hasPermision(conn, usuari, SectionPage.dades_bancaries));
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Empreses"));
 	        
 	        RequestDispatcher dispatcher = request.getServletContext()

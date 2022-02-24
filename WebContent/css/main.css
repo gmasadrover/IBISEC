@@ -116,7 +116,7 @@ body{
 	float:right;
 	padding-right:10px;
 }
-.deleteFile, .deleteReservaVehicle, .deleteReservaVacances{
+.deleteFile, .deleteReservaElement, .deleteReservaVacances{
 	color:red;
 	cursor:pointer;
 }

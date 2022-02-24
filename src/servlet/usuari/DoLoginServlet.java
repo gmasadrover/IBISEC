@@ -47,11 +47,12 @@ public class DoLoginServlet extends HttpServlet {
 			}
 			else {
 				if (repeatPassword == null) {    
+					String entorn = getServletContext().getInitParameter("entorn");   
 					if (user.getPassword().isEmpty()) {
 						hasError = true;
 						newUser = true;
 						errorString = "És el teu primer accès? Introdueix la contrasenya que desitgis";            			
-					} else if (! UsuariCore.coincideixPassword(conn, user.getIdUsuari(), password)) {
+					} else if (! UsuariCore.coincideixPassword(conn, user.getIdUsuari(), password, entorn)) {
 			            hasError = true;
 			            errorString = "Password invalid";
 			        }

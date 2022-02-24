@@ -95,8 +95,6 @@ public class DoEditLicitacio extends HttpServlet {
     	    }  
     	    if (multipartParams.getFitxersByName().get("ratificacioClassificacio") != null) {
     	    	Fitxers.guardarFitxer(conn, Arrays.asList(multipartParams.getFitxersByName().get("ratificacioClassificacio")).get(0), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", "", idInforme, "Ratificació classificació", Usuari.getIdUsuari());
-    	    	int idtasca = TascaCore.novaTasca(conn, "generica", 7, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "S'ha realitzat la ratificació de classificació de l'expedient: " + informe.getExpcontratacio().getExpContratacio(), "Comprovació certificats SS i Tributaris",informe.getIdInf(),null, request.getRemoteAddr(), "automatic");
-    	    	TascaCore.seguirTasca(conn, idtasca, 6);
     	    }  
     	    
     	    if (multipartParams.getParametres().get("dataPerfilContratant") != null && ! multipartParams.getParametres().get("dataPerfilContratant").isEmpty()) {

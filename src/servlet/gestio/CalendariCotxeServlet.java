@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import bean.User;
 import bean.ControlPage.SectionPage;
-import bean.ReservaVehicle;
+import bean.ReservaElements;
 import core.CalendarCore;
 import core.ControlPageCore;
 import core.UsuariCore;
@@ -54,28 +54,25 @@ public class CalendariCotxeServlet extends HttpServlet {
 			Calendar cal = Calendar.getInstance();	
 	        int diaSetmana = cal.get(Calendar.DAY_OF_WEEK);
 	        String reservesPropies = "";
-			reservesPropies = CalendarCore.pintarReservesUsuari(CalendarCore.getReservesUsuari(conn, cal.get(Calendar.WEEK_OF_YEAR), usuariLogetjat.getIdUsuari(), cal.get(Calendar.YEAR)));
+			reservesPropies = CalendarCore.pintarReservesUsuari(CalendarCore.getReservesUsuari(conn, cal.get(Calendar.WEEK_OF_YEAR), usuariLogetjat.getIdUsuari(), cal.get(Calendar.YEAR), null));
 			
-	        ReservaVehicle setmanaCotxe = CalendarCore.getSetmana(conn, cal, "cotxe");
-	        ReservaVehicle setmanaCotxeElectric = CalendarCore.getSetmana(conn, cal, "cotxeElectric");
-	       // ReservaVehicle setmanaFurgoneta = CalendarCore.getSetmana(conn, cal, "furgoneta");
+			ReservaElements setmanaCotxe = CalendarCore.getSetmana(conn, cal, "cotxe");
+			ReservaElements setmanaCotxeElectric = CalendarCore.getSetmana(conn, cal, "cotxeElectric");
+			
 	        cal.add(Calendar.DATE, 7);
-	        ReservaVehicle seguentSetmanaCotxe = CalendarCore.getSetmana(conn, cal, "cotxe");
-	        ReservaVehicle seguentSetmanaCotxeElectric = CalendarCore.getSetmana(conn, cal, "cotxeElectric");
-	       // ReservaVehicle seguentSetmanaFurgoneta = CalendarCore.getSetmana(conn, cal, "furgoneta");
+	        ReservaElements seguentSetmanaCotxe = CalendarCore.getSetmana(conn, cal, "cotxe");
+	        ReservaElements seguentSetmanaCotxeElectric = CalendarCore.getSetmana(conn, cal, "cotxeElectric");
+	        
 	        String optionDies = CalendarCore.getDiesPossibles();
 	        	        
 	        request.setAttribute("reservesPropies", reservesPropies);
 	        request.setAttribute("optionDies", optionDies);
-	        request.setAttribute("horesCotxe", ReservaVehicle.horesCotxe);
+	        request.setAttribute("horesCotxe", ReservaElements.horesCotxe);
 	        request.setAttribute("setmanaCotxe", setmanaCotxe);
 	        request.setAttribute("seguentSetmanaCotxe", seguentSetmanaCotxe);
-	        request.setAttribute("horesCotxeElectric", ReservaVehicle.horesCotxeElectric);
+	        request.setAttribute("horesCotxeElectric", ReservaElements.horesCotxeElectric);
 	        request.setAttribute("setmanaCotxeElectric", setmanaCotxeElectric);
-	        request.setAttribute("seguentSetmanaCotxeElectric", seguentSetmanaCotxeElectric);
-	        request.setAttribute("horesFurgoneta", ReservaVehicle.horesFurgoneta);
-	       // request.setAttribute("setmanaFurgoneta", setmanaFurgoneta);
-	       // request.setAttribute("seguentSetmanaFurgoneta", seguentSetmanaFurgoneta);
+	        request.setAttribute("seguentSetmanaCotxeElectric", seguentSetmanaCotxeElectric);	       
 	        request.setAttribute("diaSetmana", diaSetmana);
 	        request.setAttribute("errorString", errorString);
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuariLogetjat, "Usuari"));

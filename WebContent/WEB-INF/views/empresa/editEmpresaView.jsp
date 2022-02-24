@@ -171,10 +171,7 @@
 				                		<label class="col-xs-2 control-label">Adjuntar escritura:</label>	                	
 				                        <div class="col-xs-5">   
 				                            <input type="file" class="btn fileEscritura" name="fileEscritura" /><br/>
-										</div>			    
-										<div class="col-xs-2"> 
-			         						<input type="button" id="uploadEscritura" data-cif="${empresa.cif}" class="btn btn-primary" value="Pujar" />
-			         					</div> 								
+										</div>						
 									</div> 	                      
 	                            </div>
                             </div>
@@ -183,7 +180,7 @@
 	                		<div class="col-md-12">
 		                		<div class="form-group">			                	
 				                	<div class="row">
-				                		<label class="col-xs-8 control-label">Documentació acreditativa d'estar d'alta com a constructor(REA, o últim rebut d'autònom i model 036 0 037):</label>
+				                		<label class="col-xs-2 control-label">Documentació acreditativa d'estar d'alta com a constructor(REA, o últim rebut d'autònom i model 036 0 037):</label>
 				                		<c:if test="${empresa.documentREA.getEncodedRuta() != ''}">
 						            		<a target="_blanck" href="downloadFichero?ruta=${empresa.documentREA.getEncodedRuta()}">${empresa.documentREA.nom}</a>
 											<a href="#"><span data-ruta="${empresa.documentREA.ruta}" class="glyphicon glyphicon-remove deleteFile"></span></a>
@@ -199,6 +196,27 @@
 	                            </div>
                             </div>
 	                	</div>
+	                	<c:if test="${canViewDadesBancaries}">
+		                	<div class="row">
+		                		<div class="col-md-12">
+			                		<div class="form-group">			                	
+					                	<div class="row">
+					                		<label class="col-xs-2 control-label">IBAN certificat:</label>
+					                		<c:forEach items="${empresa.documentsBancList}" var="arxiu" >
+					                			<c:set var="arxiu" value="${arxiu}" scope="request"/>
+							            		<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	
+											</c:forEach>	
+					                	</div>
+					                	<div class="row">
+					                		<label class="col-xs-2 control-label">Adjuntar IBAN certificat:</label>	                	
+					                        <div class="col-xs-5">   
+					                            <input type="file" class="btn fileIBAN" name="fileIBAN" /><br/>
+											</div>					
+										</div> 	                      
+		                            </div>
+	                            </div>
+		                	</div>
+		                </c:if>
 		                <c:choose>
 		                 	<c:when test="${empresa.isUte()}"> 
 	                			<h2 class="margin_bottom30">Gerents</h2>
@@ -568,13 +586,13 @@
 			                			<div class="form-group">
 			                                <label class="col-xs-6 control-label">Expedit amb data</label>
 			                                <div class="input-group date col-xs-4 datepicker">
-											  	<input type="text" class="form-control" name="dateExpAcreditacio1" value="${empresa.getDateExpAcreditacio4String()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+											  	<input type="text" class="form-control" name="dateExpAcreditacio1" value="${empresa.getDateExpAcreditacio1String()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 											</div>				
 			                            </div>
 			                        </div>
 			                        <div class="col-md-6">
 			                			<div class="form-group">		                                
-											<c:if test="${empresa.isCaducadaAcreditacio4()}">
+											<c:if test="${empresa.isCaducadaAcreditacio1()}">
 												<label class="col-xs-1 control-label">Caducat</label>
 											</c:if>								
 			                            </div>

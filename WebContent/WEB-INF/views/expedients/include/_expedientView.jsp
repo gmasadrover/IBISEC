@@ -8,7 +8,7 @@
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h4 class="panel-title">
-			<a data-toggle="collapse" data-parent="#accordionInformes" href="#expedient${informePrevi.idInf}">Expedient: ${informePrevi.expcontratacio.expContratacio != '-1' ? informePrevi.expcontratacio.expContratacio : informePrevi.idInf} - ${informePrevi.estat == 'anulat' ? 'Anul·lat' : informePrevi.getEstatEconomic()}</a>
+			<a data-toggle="collapse" data-parent="#accordionInformes" href="#expedient${informePrevi.idInf}">Expedient: ${informePrevi.expcontratacio.expContratacio != '-1' ? informePrevi.expcontratacio.expContratacio : informePrevi.idInf} - ${informePrevi.expcontratacio.getDataLiquidacio()!=null ? 'Contracte liquidat' : informePrevi.estat == 'anulat' ? 'Anul·lat' : informePrevi.getEstatEconomic()}</a>
 		</h4>
 	</div>
     <div id="expedient${informePrevi.idInf}" class="panel-collapse collapse ${informePrevi.idInf == informeSeleccionat ? 'in' : ''}">

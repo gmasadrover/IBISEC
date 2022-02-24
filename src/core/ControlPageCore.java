@@ -79,7 +79,7 @@ public class ControlPageCore {
 			active = "";
 			collapse = "";
 		}
-		//Actuacions Manuals
+		/*//Actuacions Manuals
 		if (UsuariCore.hasPermision(conn, usuari, SectionPage.actuacio_manual)) {			
 			if (seccio.equals("ActuacionsManuals")) active = "active"; 
 			menu.append("<li class='" + active + "'>");
@@ -87,7 +87,7 @@ public class ControlPageCore {
 			menu.append("</li>");
 			active = "";
 			collapse = "";
-		}
+		}*/
 		/*//Assignar tècnic actuació
 		if (UsuariCore.hasPermision(conn, usuari, SectionPage.tecnic_actiacio)) {			
 			if (seccio.equals("TecnicActuacio")) active = "active"; 
@@ -108,6 +108,9 @@ public class ControlPageCore {
 			menu.append("	<ul id='personalMenu' class='nav nav-second-level collapse " + collapse + "'>");
 			menu.append("		<li>");
 			menu.append("       	<a href='CalendariCotxe' class='loadingButton'  data-msg='Carregant vehicles...'>Reserva Vehicles</a>");
+			menu.append("    	</li>");
+			menu.append("		<li>");
+			menu.append("       	<a href='CalendariSala' class='loadingButton'  data-msg='Carregant reserves...'>Reserva Sala</a>");
 			menu.append("    	</li>");
 			menu.append("		<li>");
 			menu.append("       	<a href='CalendariDron' class='loadingButton'  data-msg='Carregant dron...'>Reserva Dron</a>");

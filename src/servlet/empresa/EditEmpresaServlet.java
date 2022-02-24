@@ -60,6 +60,8 @@ public class EditEmpresaServlet extends HttpServlet {
 	        
 	        request.setAttribute("empresa", empresa);
 	        request.setAttribute("empresesList", empresesList);
+	        request.setAttribute("canViewDadesBancaries", UsuariCore.hasPermision(conn, usuari, SectionPage.dades_bancaries));
+	        request.setAttribute("isCap", usuari.getRol().contains("CAP") || usuari.getRol().contains("ADMIN"));
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"Empreses"));
 	        
 	        RequestDispatcher dispatcher = request.getServletContext()

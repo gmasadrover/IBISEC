@@ -2,10 +2,7 @@ package servlet.gestio;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -19,21 +16,20 @@ import bean.User;
 import bean.ControlPage.SectionPage;
 import core.CalendarCore;
 import core.ControlPageCore;
-import core.GestioDron;
 import core.UsuariCore;
 import utils.MyUtils;
 
 /**
- * Servlet implementation class CalendariDronServlet
+ * Servlet implementation class CalendariSalaServlet
  */
-@WebServlet("/CalendariDron")
-public class CalendariDronServlet extends HttpServlet {
+@WebServlet("/CalendariSala")
+public class CalendariSalaServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public CalendariDronServlet() {
+    public CalendariSalaServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -53,25 +49,28 @@ public class CalendariDronServlet extends HttpServlet {
 			if (request.getParameter("error") != null) {
 				errorString = "No es pot realitzar la reserva";
 			}
+			Calendar cal = Calendar.getInstance();	
+	        int diaSetmana = cal.get(Calendar.DAY_OF_WEEK);
+	        String reservesPropies = "";
+			reservesPropies = CalendarCore.pintarReservesUsuari(CalendarCore.getReservesUsuari(conn, cal.get(Calendar.WEEK_OF_YEAR), usuariLogetjat.getIdUsuari(), cal.get(Calendar.YEAR), "sala"));
 			
-			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		    String today = df.format(new Date().getTime());	
-		        
-			
-	        String reservesPropies = GestioDron.pintarReservesUsuari(conn, usuariLogetjat.getIdUsuari());
-			String totesReserves = GestioDron.pintarTotesReserves(conn);	        	        
-	       
+			ReservaElements setmanaSala = CalendarCore.getSetmana(conn, cal, "sala");
+	        cal.add(Calendar.DATE, 7);
+	        ReservaElements seguentSetmanaSala = CalendarCore.getSetmana(conn, cal, "sala");
+	      
+	        String optionDies = CalendarCore.getDiesPossibles();
+	        	        
 	        request.setAttribute("reservesPropies", reservesPropies);
-	        request.setAttribute("totesReserves", totesReserves);
-	        
-	       // request.setAttribute("setmanaFurgoneta", setmanaFurgoneta);
-	       // request.setAttribute("seguentSetmanaFurgoneta", seguentSetmanaFurgoneta);
-	        request.setAttribute("data", today);
+	        request.setAttribute("optionDies", optionDies);
+	        request.setAttribute("horesSala", ReservaElements.horesSala);
+	        request.setAttribute("setmanaSala", setmanaSala);
+	        request.setAttribute("seguentSetmanaSala", seguentSetmanaSala);
+	        request.setAttribute("diaSetmana", diaSetmana);
 	        request.setAttribute("errorString", errorString);
 	        request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuariLogetjat, "Usuari"));
 	        request.setAttribute("idUsuariLogg", usuariLogetjat.getIdUsuari());
 			RequestDispatcher dispatcher = this.getServletContext()
-				.getRequestDispatcher("/WEB-INF/views/gestio/calendariDronView.jsp");
+				.getRequestDispatcher("/WEB-INF/views/gestio/calendariSalaView.jsp");
 	
 			dispatcher.forward(request, response);
 		}

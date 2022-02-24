@@ -11,15 +11,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import bean.ReservaVehicle;
-import bean.ReservaVehicle.Reserva;
+import bean.ReservaElements;
+import bean.ReservaElements.Reserva;
 import bean.User;
 import bean.Vacances;
 import bean.Vacances.Reserves;
 
 public class CalendarCore {
-	public static ReservaVehicle getSetmana(Connection conn, Calendar cal, String vehicle) {
-		ReservaVehicle setmana = new ReservaVehicle();		     
+	public static ReservaElements getSetmana(Connection conn, Calendar cal, String element) {
+		ReservaElements setmana = new ReservaElements();		     
         int week = cal.get(Calendar.WEEK_OF_YEAR);
         int year = cal.get(Calendar.YEAR);
         setmana.setSetmana(week);
@@ -38,11 +38,11 @@ public class CalendarCore {
         cal.add(Calendar.DATE, 1);
         setmana.setDiumenge(cal.get(Calendar.DAY_OF_MONTH));
         
-        setmana.setReservesDilluns(getReserves(conn, week, year, Calendar.MONDAY, vehicle));
-        setmana.setReservesDimarts(getReserves(conn, week, year, Calendar.TUESDAY, vehicle));
-        setmana.setReservesDimecres(getReserves(conn, week, year, Calendar.WEDNESDAY, vehicle));
-        setmana.setReservesDijous(getReserves(conn, week, year, Calendar.THURSDAY, vehicle));
-        setmana.setReservesDivendres(getReserves(conn, week, year, Calendar.FRIDAY, vehicle));        
+        setmana.setReservesDilluns(getReserves(conn, week, year, Calendar.MONDAY, element));
+        setmana.setReservesDimarts(getReserves(conn, week, year, Calendar.TUESDAY, element));
+        setmana.setReservesDimecres(getReserves(conn, week, year, Calendar.WEDNESDAY, element));
+        setmana.setReservesDijous(getReserves(conn, week, year, Calendar.THURSDAY, element));
+        setmana.setReservesDivendres(getReserves(conn, week, year, Calendar.FRIDAY, element));        
       
 		return setmana;
 	}
@@ -60,7 +60,7 @@ public class CalendarCore {
 		return dies;
 	}
 	
-	public static boolean potReservar(Connection conn, int idUsuari, String vehicle, int setmana, int dia, int year, int horaIni, int horaFi, boolean controlarMesDunaSetmana) {
+	public static boolean potReservar(Connection conn, int idUsuari, String element, int setmana, int dia, int year, int horaIni, int horaFi, boolean controlarMesDunaSetmana) {
 		boolean potReservar = true;
 		String sql = "";
 		PreparedStatement pstm;
@@ -76,18 +76,27 @@ public class CalendarCore {
 			if (horaFi < horaIni) horaFi = horaIni;
 			pstm.setInt(4, horaFi);
 			pstm.setInt(5, year);
-			pstm.setString(6, vehicle);
+			pstm.setString(6, element);
 			rs = pstm.executeQuery();
+			System.out.println("1.-" + pstm.toString());
 			if (rs.next()) potReservar = false;	
 			if (controlarMesDunaSetmana && idUsuari != 36) { // Maria Mateu pot reservar sempre
 				sql = "SELECT setmana"
 						+ " FROM public.tbl_vehicles"
-						+ " WHERE setmana = ? AND year = ? AND idusuari = ? LIMIT 1";
+						+ " WHERE setmana = ? AND year = ? AND idusuari = ?";						
+				if (element.contains("sala")) {
+					sql += " AND vehicle = ?";
+				} else {
+					sql += " AND vehicle IN ('cotxe','cotxeElectric')";
+				}
+				sql += " LIMIT 1";
 				pstm = conn.prepareStatement(sql);
 				pstm.setInt(1, setmana);	
 				pstm.setInt(2, year);
 				pstm.setInt(3, idUsuari);
+				if (element.contains("sala")) pstm.setString(4, element);
 				rs = pstm.executeQuery();
+				System.out.println("2.-" + pstm.toString());
 				if (rs.next()) potReservar = false;
 			}
 		} catch (SQLException e) {
@@ -98,7 +107,7 @@ public class CalendarCore {
 		return potReservar;
 	}
 	
-	public static void reservar(Connection conn, int idUsuari, String vehicle, int setmana, int dia, int any, int horaIni, int horaFi, String motiu) {
+	public static void reservar(Connection conn, int idUsuari, String element, int setmana, int dia, int any, int horaIni, int horaFi, String motiu) {
 		String sql = "INSERT INTO public.tbl_vehicles(setmana, dia, hora, idusuari, motiu, vehicle, year)"
 					+ " VALUES (?, ?, ?, ?, ?, ?, ?)";
 		PreparedStatement pstm;
@@ -114,7 +123,7 @@ public class CalendarCore {
 			pstm.setInt(3, horaIni);
 			pstm.setInt(4, idUsuari);
 			pstm.setString(5, motiu);
-			pstm.setString(6, vehicle);
+			pstm.setString(6, element);
 			pstm.setInt(7, any);
 			cont = horaIni + 1;
 			int numVar = 8;
@@ -124,7 +133,7 @@ public class CalendarCore {
 				pstm.setInt(numVar + 2, cont);
 				pstm.setInt(numVar + 3, idUsuari);
 				pstm.setString(numVar + 4, motiu);
-				pstm.setString(numVar + 5, vehicle);
+				pstm.setString(numVar + 5, element);
 				pstm.setInt(numVar + 6, any);
 				cont += 1;
 				numVar += 7;
@@ -137,7 +146,7 @@ public class CalendarCore {
 		
 	}
 	
-	public static void eliminarReserva(Connection conn, int any, int setmana, int dia, String vehicle, int idusuari) {
+	public static void eliminarReserva(Connection conn, int any, int setmana, int dia, String element, int idusuari) {
 		String sql = "DELETE FROM public.tbl_vehicles"
 				+ " WHERE setmana = ? AND year = ? AND dia = ? AND vehicle = ? AND idusuari = ?";
  
@@ -147,7 +156,7 @@ public class CalendarCore {
 			pstm.setInt(1, setmana);
 			pstm.setInt(2, any);
 			pstm.setInt(3, dia);
-			pstm.setString(4, vehicle);
+			pstm.setString(4, element);
 			pstm.setInt(5, idusuari);
 			pstm.executeUpdate();
 		} catch (SQLException e) {
@@ -157,12 +166,16 @@ public class CalendarCore {
 	
 	}
 	
-	public static List<Reserva> getReservesUsuari(Connection conn, int setmana, int idUsuari, int year) {
+	public static List<Reserva> getReservesUsuari(Connection conn, int setmana, int idUsuari, int year, String element) {
 		List<Reserva> reservesList = new ArrayList<Reserva>();
 		String sql = "SELECT setmana, dia, hora, idusuari, motiu, vehicle, year"
 				+ " FROM public.tbl_vehicles"
 				+ " WHERE (setmana = ? OR setmana = ?)  AND idusuari = ? AND year = ?";
- 
+		if (element != null) {
+			sql += " AND vehicle = ?";
+		} else {
+			sql += " AND vehicle IN ('cotxe','cotxeElectric')";
+		}
 		PreparedStatement pstm;
 		try {
 			pstm = conn.prepareStatement(sql);
@@ -170,16 +183,17 @@ public class CalendarCore {
 			pstm.setInt(2, setmana + 1);	
 			pstm.setInt(3, idUsuari);
 			pstm.setInt(4, year);
+			if (element != null) pstm.setString(5, element);
 			ResultSet rs = pstm.executeQuery();
-			Reserva reserva = new ReservaVehicle().new Reserva();
+			Reserva reserva = new ReservaElements().new Reserva();
 			while (rs.next()) {			
-				reserva = new ReservaVehicle().new Reserva();
+				reserva = new ReservaElements().new Reserva();
 				reserva.setMotiu(rs.getString("motiu"));
 				reserva.setUsuari(UsuariCore.findUsuariByID(conn, rs.getInt("idusuari")));
 				reserva.setSetmana(rs.getInt("setmana"));
 				reserva.setDia(rs.getInt("dia"));
 				reserva.setHora(rs.getInt("hora"));
-				reserva.setVehicle(rs.getString("vehicle"));
+				reserva.setElement(rs.getString("vehicle"));
 				reserva.setYear(rs.getInt("year"));
 				reservesList.add(reserva);
 			}
@@ -199,14 +213,14 @@ public class CalendarCore {
 		String horaFinal = "";
 		Calendar date = Calendar.getInstance();
 		String horesFormat = "";
-		String vehicle = "";
+		String element = "";
 		Reserva reservaAnt = null;
 		for (Reserva reserva: reserves) {				
 			if (diaAnterior != reserva.getDia() || setmanaAnterior != reserva.getSetmana()) { // Nova reserva				
 				if (!reservaActual.isEmpty()) { // acabam la reserva anterior					
 					reservesHTML += "<span>" + reservaActual + horaFinal + "</span>";
 					if (date.getTime().after(Calendar.getInstance().getTime())) {
-						reservesHTML += "<span data-any=" + reservaAnt.getYear() + " data-setmana=" + reservaAnt.getSetmana() + " data-dia=" + reservaAnt.getDia() + " data-vehicle=" + reservaAnt.getVehicle() + " data-idusuari=" + reservaAnt.getUsuari().getIdUsuari() + " class='glyphicon glyphicon-remove deleteReservaVehicle'></span>"; 
+						reservesHTML += "<span data-any=" + reservaAnt.getYear() + " data-setmana=" + reservaAnt.getSetmana() + " data-dia=" + reservaAnt.getDia() + " data-element=" + reservaAnt.getElement() + " data-idusuari=" + reservaAnt.getUsuari().getIdUsuari() + " class='glyphicon glyphicon-remove deleteReservaElement'></span>"; 
 					}
 					reservesHTML +="</br>";				}
 				date = Calendar.getInstance();
@@ -214,43 +228,43 @@ public class CalendarCore {
 				date.set(Calendar.WEEK_OF_YEAR, reserva.getSetmana());
 				date.set(Calendar.DAY_OF_WEEK, reserva.getDia());
 				DateFormat df = new SimpleDateFormat("dd/MM/yyyy");					
-				if (reserva.getVehicle().equals("cotxe")) {
-					horesFormat = ReservaVehicle.horesCotxe[reserva.getHora()-1];
-					vehicle = " del cotxe";
-				} else if (reserva.getVehicle().equals("cotxeElectric")) {
-					horesFormat = ReservaVehicle.horesCotxeElectric[reserva.getHora()-1];
-					vehicle = " del cotxe elèctric";
-				} else {
-					horesFormat = ReservaVehicle.horesFurgoneta[reserva.getHora()-1];
-					vehicle = " de la furgoneta";
-				}
+				if (reserva.getElement().equals("cotxe")) {
+					horesFormat = ReservaElements.horesCotxe[reserva.getHora()-1];
+					element = " del cotxe";
+				} else if (reserva.getElement().equals("cotxeElectric")) {
+					horesFormat = ReservaElements.horesCotxeElectric[reserva.getHora()-1];
+					element = " del cotxe elèctric";
+				} else if (reserva.getElement().equals("sala")) {
+					horesFormat = ReservaElements.horesSala[reserva.getHora()-1];
+					element = " de la sala";
+				}				
 				date.set(Calendar.HOUR_OF_DAY, Integer.parseInt(horesFormat.split(":")[0]));
 				date.set(Calendar.MINUTE, Integer.parseInt(horesFormat.split(":")[1]));
-				reservaActual = "Reserva dia " + df.format(date.getTime()) + vehicle + " de " + horesFormat + " a ";				
+				reservaActual = "Reserva dia " + df.format(date.getTime()) + element + " de " + horesFormat + " a ";				
 				diaAnterior = reserva.getDia();
 				setmanaAnterior = reserva.getSetmana();
 			}
-			if (reserva.getVehicle().equals("cotxe")) {
-				horaFinal = ReservaVehicle.horesCotxe[reserva.getHora()];
-			} else if (reserva.getVehicle().equals("cotxeElectric")) {
-				horaFinal = ReservaVehicle.horesCotxeElectric[reserva.getHora()];
-			} else{
-				horaFinal = ReservaVehicle.horesFurgoneta[reserva.getHora()];
-			}			
+			if (reserva.getElement().equals("cotxe")) {
+				horaFinal = ReservaElements.horesCotxe[reserva.getHora()];
+			} else if (reserva.getElement().equals("cotxeElectric")) {
+				horaFinal = ReservaElements.horesCotxeElectric[reserva.getHora()];
+			} else if (reserva.getElement().equals("sala")) {
+				horaFinal = ReservaElements.horesSala[reserva.getHora()];
+			} 				
 			reservaAnt = reserva;
 		}	
 		if (!reservaActual.isEmpty()) { // acabam la reserva anterior	
 			
 			reservesHTML += "<span>" + reservaActual + horaFinal + "  </span>";		
 			if (date.getTime().after(Calendar.getInstance().getTime())) {
-				reservesHTML += "<span data-any=" + reservaAnt.getYear() + " data-setmana=" + reservaAnt.getSetmana() + " data-dia=" + reservaAnt.getDia() + " data-vehicle=" + reservaAnt.getVehicle() + " data-idusuari=" + reservaAnt.getUsuari().getIdUsuari() + " class='glyphicon glyphicon-remove deleteReservaVehicle'></span>"; 
+				reservesHTML += "<span data-any=" + reservaAnt.getYear() + " data-setmana=" + reservaAnt.getSetmana() + " data-dia=" + reservaAnt.getDia() + " data-element=" + reservaAnt.getElement() + " data-idusuari=" + reservaAnt.getUsuari().getIdUsuari() + " class='glyphicon glyphicon-remove deleteReservaElement'></span>"; 
 			}
 			reservesHTML +="</br>";
 		}
 		return reservesHTML;
 	}
 	
-	private static Reserva[] getReserves(Connection conn, int setmana, int year, int dia, String vehicle) {
+	private static Reserva[] getReserves(Connection conn, int setmana, int year, int dia, String element) {
 		Reserva[] reserves = new Reserva[19];
 		String sql = "SELECT setmana, dia, hora, idusuari, motiu, vehicle"
 				+ " FROM public.tbl_vehicles"
@@ -262,13 +276,13 @@ public class CalendarCore {
 			pstm.setInt(1, setmana);	
 			pstm.setInt(2, dia);	
 			pstm.setInt(3, year);
-			pstm.setString(4, vehicle);
+			pstm.setString(4, element);
 			ResultSet rs = pstm.executeQuery();
 			int hora = 1;
-			Reserva reserva = new ReservaVehicle().new Reserva();
+			Reserva reserva = new ReservaElements().new Reserva();
 			while (rs.next()) {
 				hora = rs.getInt("hora");
-				reserva = new ReservaVehicle().new Reserva();
+				reserva = new ReservaElements().new Reserva();
 				reserva.setMotiu(rs.getString("motiu"));
 				reserva.setUsuari(UsuariCore.findUsuariByID(conn, rs.getInt("idusuari")));
 				reserves[hora -1] = reserva;

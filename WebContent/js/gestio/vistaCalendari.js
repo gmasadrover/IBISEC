@@ -24,13 +24,13 @@ $(document).ready(function() {
 		
 	});;
 	
-	$('.deleteReservaVehicle').on('click', function() {
+	$('.deleteReservaElement').on('click', function() {
 		if(confirm("Segur que voleu eliminar aquesta reserva?")) {
 			$.ajax({
 		        type: "POST",
-		        url: "DeleteReservaVehicle",
+		        url: "DeleteReservaElement",
 		        dataType: "json",
-		        data: {"any": $(this).data('any'), "setmana": $(this).data('setmana'), "dia": $(this).data('dia'), "vehicle": $(this).data('vehicle'), "idusuari": $(this).data('idusuari')},
+		        data: {"any": $(this).data('any'), "setmana": $(this).data('setmana'), "dia": $(this).data('dia'), "element": $(this).data('element'), "idusuari": $(this).data('idusuari')},
 		        //if received a response from the server
 		        success: function( data, textStatus, jqXHR) {
 		            //our country code was correct so we have some information to display
