@@ -50,9 +50,9 @@
         	<jsp:include page="../../utils/_renderDocument.jsp"></jsp:include>	
 		</c:forEach>
 	</p>
-	<p>
+	<!--<p>
 		<label>Import total adjudicat menor a l'empresa expedients iniciats després de 01/01/2020</label> ${totalAdjudicatEmpresa} € (SENSE IVA)
-	</p>
+	</p>  -->
 	<c:if test="${informePrevi.propostaTecnica.size() > 0}">
 		<div class="panel-body">										    		
     		<div class="col-md-12">

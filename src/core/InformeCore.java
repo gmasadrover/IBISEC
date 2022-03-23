@@ -34,7 +34,7 @@ import utils.Fitxers.Fitxer.infoFirma;
 public class InformeCore {
 	
 	private static InformeActuacio initInforme(Connection conn, ResultSet rs, boolean ambDocuments) {
-		System.out.println("5.1. //" + java.time.LocalTime.now());
+		//System.out.println("5.1. //" + java.time.LocalTime.now());
 		InformeActuacio informe = new InformeActuacio();
 		try {
 			informe.setIdInf(rs.getString("idinf"));
@@ -42,15 +42,15 @@ public class InformeCore {
 			informe.setIdTasca(rs.getInt("idtasca"));
 			informe.setIdIncidencia(rs.getString("idincidencia"));
 			informe.setActuacio(ActuacioCore.findActuacio(conn, rs.getString("idactuacio")));	
-			System.out.println("5.2. //" + java.time.LocalTime.now());
+			//System.out.println("5.2. //" + java.time.LocalTime.now());
 			User usuari = UsuariCore.findUsuariByID(conn, rs.getInt("usucre"));
 			informe.setUsuari(usuari);
 			informe.setDataCreacio(rs.getTimestamp("datacre"));
 			informe.setLlistaPropostes(getPropostesInforme(conn, rs.getString("idinf")));
-			System.out.println("5.3. //" + java.time.LocalTime.now());
+			//System.out.println("5.3. //" + java.time.LocalTime.now());
 			informe.setPropostaInformeSeleccionada(getPropostaSeleccionada(conn, rs.getString("idinf")));
 	
-			System.out.println("5.4. //" + java.time.LocalTime.now());
+			//System.out.println("5.4. //" + java.time.LocalTime.now());
 			informe.setAssignacioCredit(CreditCore.getPartidaInforme(conn, rs.getString("idinf")));	
 			informe.setComentariPartida(CreditCore.getComentariPartida(conn, rs.getString("idinf")));
 			informe.setUsuariCapValidacio(UsuariCore.findUsuariByID(conn, rs.getInt("usucapvalidacio")));
@@ -60,18 +60,18 @@ public class InformeCore {
 			informe.setDataAprovacio(rs.getTimestamp("dataaprovacio"));
 			informe.setNotes(rs.getString("notes"));
 			informe.setLlistaOfertes(OfertaCore.findOfertes(conn, rs.getString("idinf")));
-			System.out.println("5.5. //" + java.time.LocalTime.now());
+			//System.out.println("5.5. //" + java.time.LocalTime.now());
 			informe.setOfertaSeleccionada(OfertaCore.findOfertaSeleccionada(conn, rs.getString("idinf")));
-			System.out.println("5.6. //" + java.time.LocalTime.now());
+			//System.out.println("5.6. //" + java.time.LocalTime.now());
 			informe.setLlistaFactures(FacturaCore.getFacturesInforme(conn, rs.getString("idinf")));
-			System.out.println("5.7. //" + java.time.LocalTime.now());
+			//System.out.println("5.7. //" + java.time.LocalTime.now());
 			informe.setLlistaCertificacions(FacturaCore.getCertificacionsInforme(conn, rs.getString("idinf")));
-			System.out.println("5.8. //" + java.time.LocalTime.now()); 
+			//System.out.println("5.8. //" + java.time.LocalTime.now()); 
 			informe.setDataRebujada(rs.getTimestamp("datapartidarebujada"));
 			informe.setPartidaRebutjadaMotiu(rs.getString("motiupartidarebujada"));
 			informe.setTipo(rs.getString("tipo"));
 			informe.setExpcontratacio(ExpedientCore.findExpedient(conn, rs.getString("expcontratacio")));
-			System.out.println("5.9. //" + java.time.LocalTime.now());
+			//System.out.println("5.9. //" + java.time.LocalTime.now());
 			informe.setDataPD(rs.getTimestamp("datapd"));
 			informe.setTipoPD(rs.getString("tipopd"));			
 			informe.setLlistaModificacions(getTotesMoficacionsInforme(conn, rs.getString("idinf")));
@@ -92,7 +92,7 @@ public class InformeCore {
 			informe.setDataPublicacioDGTresoreria(rs.getDate("publicaciodgtresoreria"));
 			informe.setPersonal(getPersonalAssociat(conn, rs.getString("idinf")));
 			if (ambDocuments) {
-				System.out.println("5.10. //" + java.time.LocalTime.now());
+				//System.out.println("5.10. //" + java.time.LocalTime.now());
 				informe.setInformesPrevis(getInformesPrevis(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
 				informe.setPropostaActuacio(getPropostaActuacio(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
 				informe.setVistiplauPropostaActuacio(getVisiplauPropostaActuacio(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
@@ -129,7 +129,7 @@ public class InformeCore {
 				
 				informe.setDocumentMedicioGeneral(getDocumentMedicioGeneralSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
 				informe.setDocumentConvocatoriaRecepcio(getDocumentConvocatoriaRecepcioSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
-				System.out.println("5.11. //" + java.time.LocalTime.now());
+				//System.out.println("5.11. //" + java.time.LocalTime.now());
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -983,7 +983,70 @@ public class InformeCore {
 		return actes;
 	}	
 	
-	public static List<InformeActuacio> getInformesActuacio(Connection conn, String idActuacio) {
+	
+	public static List<InformeActuacio> getLlistaInformesActuacio(Connection conn, String idActuacio) {
+		 List<InformeActuacio> informes = new ArrayList<InformeActuacio>();
+		 String sql = "SELECT i.idinf AS idinf, i.idactuacio AS idactuacio, i.expcontratacio AS expedient, p.tipusobra AS tipusobra, p.objecte AS objecte, o.plic AS plic " 
+					+ " FROM public.tbl_informeactuacio i LEFT JOIN public.tbl_actuacio a ON i.idinf = a.id"
+					+ " 	LEFT JOIN public.tbl_propostesinforme p ON i.idinf = p.idinf"
+					+ " 	LEFT JOIN public.tbl_empresaoferta o ON i.idinf = o.idinforme"
+					+ " WHERE i.idactuacio = ? AND p.seleccionada = true AND o.seleccionada = true"
+					+ " ORDER BY i.idinf DESC;";		 
+		
+		 PreparedStatement pstm;
+		try {
+			pstm = conn.prepareStatement(sql);
+			 pstm.setString(1, idActuacio);	
+			 ResultSet rs = pstm.executeQuery();
+			 InformeActuacio informe;
+			 Actuacio actuacio;
+			 PropostaInforme proposta;
+			 Oferta oferta;
+			 while (rs.next()) {
+				 informe = new InformeActuacio();
+					
+				 informe.setIdInf(rs.getString("idinf"));
+				 
+				 actuacio = new Actuacio();
+				 actuacio.setReferencia(rs.getString("idactuacio"));
+				 actuacio.setRefExt(rs.getString("expedient"));
+				 informe.setActuacio(actuacio);	
+					
+				 proposta = new InformeActuacio().new PropostaInforme();
+				 proposta.setObjecte(rs.getString("objecte"));
+				 proposta.setTipusObra(rs.getString("tipusobra"));
+				 informe.setPropostaInformeSeleccionada(proposta);
+				 
+				 oferta = new Oferta();
+				 oferta.setPlic(rs.getDouble("plic"));
+				 informe.setOfertaSeleccionada(oferta);
+				 
+				 informe.setLlistaFactures(FacturaCore.getFacturesInforme(conn, rs.getString("idinf")));
+				
+				 informes.add(informe);			
+			 }
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		 Collections.sort(informes, new Comparator<InformeActuacio>() {
+		        @Override
+		        public int compare(InformeActuacio o1, InformeActuacio o2) {
+		        	int order = 0;
+		            if (o1.getPropostaInformeSeleccionada().getTipusObraFormat().equals("Obra Major")) {
+		            	order = -2;
+		            } else if (o1.getPropostaInformeSeleccionada().getTipusObraFormat().equals("Obra menor")){
+		            	order = -1;
+		            }
+		        	return order;		        	
+		        }
+		    });
+		 return informes;
+	}
+		
+	public static List<InformeActuacio> getInformesActuacio(Connection conn, String idActuacio, boolean ambDocuments) {
 		 List<InformeActuacio> informes = new ArrayList<InformeActuacio>();
 		 String sql = "SELECT idinf, idtasca, idincidencia, idactuacio, usucre, datacre, usucapvalidacio, datacapvalidacio, comentaricap, usuaprovacio, dataaprovacio, notes, datapartidarebujada, motiupartidarebujada, tipo, expcontratacio, datapd, tipopd, databoib, recursadministratiu, estat, organismedependencia, publicacioregistreconvenis, publicacioperfilcontractant, publicaciodgpressuposts, publicaciodgtresoreria, cessiocredit" 
 					+ " FROM public.tbl_informeactuacio"
@@ -996,7 +1059,7 @@ public class InformeCore {
 			 pstm.setString(1, idActuacio);	
 			 ResultSet rs = pstm.executeQuery();
 			 while (rs.next()) {
-				 informes.add(initInforme(conn, rs, true));			
+				 informes.add(initInforme(conn, rs, ambDocuments));			
 			 }
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -2527,8 +2590,7 @@ public class InformeCore {
 	}
 	
 	public static List<InformeActuacio> getObresUsuari(Connection conn, int idUsuari) {
-		List<InformeActuacio> informesList = new ArrayList<InformeActuacio>();
-			
+		List<InformeActuacio> informesList = new ArrayList<InformeActuacio>();			
 		String sql = "SELECT per.funcio AS funcio, per.tecnic AS tecnic, i.idinf AS idinforme, p.tipusobra AS tipus, i.expcontratacio AS expedient, i.estat AS estat"
 					+ " FROM public.tbl_personaexpedient per LEFT JOIN public.tbl_informeactuacio i ON per.idinf = i.idinf"
 					+ "      LEFT JOIN public.tbl_propostesinforme p ON i.idinf = p.idinf AND p.seleccionada = true"
@@ -2545,7 +2607,6 @@ public class InformeCore {
 			while (rs.next()) {
 				informe = getInformePreviInfo(conn, rs.getString("idinforme"));
 				if (informe.getExpcontratacio() == null || !informe.getExpcontratacio().isAnulat()) {
-					informe.setLlistaFactures(FacturaCore.getFacturesInforme(conn, rs.getString("idinforme")));
 					personal.setFuncio(rs.getString("funcio"));
 					personal.setTecnic(rs.getString("tecnic"));
 					personal.setUsuari(UsuariCore.findUsuariByID(conn, idUsuari));
@@ -2871,6 +2932,68 @@ public class InformeCore {
 		}	 
 		
 		return instalacions;
+	}
+	
+	public static List<Instalacions> getInstalacionsCentre(Connection conn, String codiCentre) {
+		List<Instalacions> instalacionsList = new ArrayList<Instalacions>();
+		String sql = "SELECT i.idinf, i.baixatensioexpedient, i.baixatensiodataoca, i.fotovoltaicaexpedient, i.fotovoltaicadataoca, i.contraincendisexpedient, i.termiquesexpedient, i.petrolifersexpedient, i.gasexpedient, i.ascensorexpedient, i.eficienciaexpedient, i.eficienciadataregistre, i.autoproteccioexpedient, i.habitabilitatdatacedula, i.petrolifersdata, i.petrolifersinstalacio, i.petrolifersdiposits, i.petroliferscapacitattotal, i.instalaciogasexpedient, i.instalaciogastipus, i.instalaciogasdata, a.id AS actuacio, a.idincidencia AS incidencia, f.expcontratacio AS expedient"
+				+ " FROM public.tbl_instalacions i LEFT JOIN public.tbl_informeactuacio f ON i.idinf = f.idinf"
+				+ "     LEFT JOIN public.tbl_actuacio a ON f.idactuacio = a.id"
+				+ " WHERE a.idcentre = ?;";
+		PreparedStatement pstm;
+		try {
+			pstm = conn.prepareStatement(sql);
+			pstm.setString(1, codiCentre);	
+			ResultSet rs = pstm.executeQuery();	
+			Instalacions instalacions = new Instalacions();
+			while (rs.next()) {
+				instalacions.setIdInf(rs.getString("idinf"));
+				instalacions.setIdActuacio(rs.getString("actuacio"));
+				instalacions.setExpedient(rs.getString("expedient"));
+				instalacions.setExpedientBaixaTensio(rs.getString("baixatensioexpedient"));
+				instalacions.setDataOCABaixaTensio(rs.getTimestamp("baixatensiodataoca"));
+				instalacions.setExpedientFotovoltaica(rs.getString("fotovoltaicaexpedient"));
+				instalacions.setDataOCAFotovoltaica(rs.getTimestamp("fotovoltaicadataoca"));
+				instalacions.setExpedientContraincendis(rs.getString("contraincendisexpedient"));
+				instalacions.setExpedientTermiques(rs.getString("termiquesexpedient"));
+				instalacions.setExpedientPetrolifers(rs.getString("petrolifersexpedient"));
+				instalacions.setDataPetrolifers(rs.getTimestamp("petrolifersdata"));
+				instalacions.setInstalacioPetrolifers(rs.getString("petrolifersinstalacio"));
+				instalacions.setDipositsPetrolifers(rs.getString("petrolifersdiposits"));
+				instalacions.setCapTotalPetrolifers(rs.getString("petroliferscapacitattotal"));
+				instalacions.setExpedientGas(rs.getString("gasexpedient"));
+				instalacions.setExpedientAscensor(rs.getString("ascensorexpedient"));
+				instalacions.setExpedientEficienciaEnergetica(rs.getString("eficienciaexpedient"));
+				instalacions.setDataRegistreEficienciaEnergetica(rs.getTimestamp("eficienciadataregistre"));
+				instalacions.setExpedientPlaAutoproteccio(rs.getString("autoproteccioexpedient"));
+				instalacions.setDataCedulaHabitabilitat(rs.getTimestamp("habitabilitatdatacedula"));
+				instalacions.setExpedientInstalacioGas(rs.getString("instalaciogasexpedient"));
+				instalacions.setTipusInstalacioGas(rs.getString("instalaciogastipus"));
+				instalacions.setDataInstalacioGas(rs.getTimestamp("instalaciogasdata"));
+				
+				instalacions.setDocumentsIntalacioBaixaTensio(getDocumentsIntalacioBaixaTensio(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));				
+				instalacions.setDocumentsIntalacioFotovoltaica(getDocumentsIntalacioFotovoltaica(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
+				instalacions.setDocumentsIntalacioContraincendis(getDocumentsIntalacioContraincendis(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
+				instalacions.setDocumentsCertificatEficienciaEnergetica(getDocumentsCertificatEficienciaEnergetica(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
+				instalacions.setDocumentsIntalacioTermica(getDocumentsIntalacioTermica(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
+				instalacions.setDocumentsIntalacioAscensor(getDocumentsIntalacioAscensor(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
+				instalacions.setDocumentsIntalacioAlarma(getDocumentsIntalacioAlarma(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
+				instalacions.setDocumentsIntalacioSubministreAigua(getDocumentsIntalacioSubministreAigua(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
+				instalacions.setDocumentsPlaAutoproteccio(getDocumentsPlaAutoproteccio(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
+				instalacions.setDocumentsCedulaDeHabitabilitat(getDocumentsCedulaDeHabitabilitat(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
+				instalacions.setDocumentsInstalacioPetrolifera(getDocumentsInstalacioPetrolifera(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
+				instalacions.setDocumentsInstalacioGas(getDocumentsInstalacioGas(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
+				instalacions.setDocumentsIniciActivitat(getDocumentsIniciActivitat(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
+								
+				instalacionsList.add(instalacions);
+				instalacions = new Instalacions();
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return instalacionsList;
 	}
 	
 	public static void modificarEstat(Connection conn, String idinf, String estat) {

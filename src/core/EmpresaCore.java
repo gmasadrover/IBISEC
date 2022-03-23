@@ -24,7 +24,8 @@ public class EmpresaCore {
 								+ " dataexpacreditacio1, dataexpacreditacio2, dataexpacreditacio3,"
 								+ " classificacio, dataconstitucio, informacioadicional, exercicieconomic, dataregistremercantil, ratioap,"
 								+ " datavigenciaclassificaciorolece, datavigenciaclassificaciojccaib, datavigenciaclassificaciojca, pime, activa,"
-								+ " cifsuccesora, motiuextincio, prohibiciocontractar, prohibitcontractarfins, tipus, enconcurs, dataconcurs, infoconcurs, empresesute, intervencio, infointervencio";
+								+ " cifsuccesora, motiuextincio, prohibiciocontractar, prohibitcontractarfins, tipus, enconcurs, dataconcurs, infoconcurs, empresesute, intervencio, infointervencio,"
+								+ " negatiuacreditacio1, negatiuacreditacio2, negatiuacreditacio3";
 	
 	
 	private static Empresa initEmpresa(Connection conn, ResultSet rs) {		
@@ -45,8 +46,11 @@ public class EmpresaCore {
 			empresa.setDocumentsBancList(getDocumentsBanc(conn, empresa.getCif()));
 			empresa.setDocumentREA(getDocumentREA(conn, empresa.getCif()));
 			empresa.setDateExpAcreditacio1(rs.getTimestamp("dataexpacreditacio1"));
+			empresa.setIsNegativaAcreditacio1(rs.getBoolean("negatiuacreditacio1"));
 			empresa.setDateExpAcreditacio2(rs.getTimestamp("dataexpacreditacio2"));
+			empresa.setIsNegativaAcreditacio2(rs.getBoolean("negatiuacreditacio2"));
 			empresa.setDateExpAcreditacio3(rs.getTimestamp("dataexpacreditacio3"));	
+			empresa.setIsNegativaAcreditacio3(rs.getBoolean("negatiuacreditacio3"));
 			empresa.setClassificacioString(rs.getString("classificacio"));
 			empresa.setAdministradorsString(getAdministradorsString(conn, empresa.getCif()));
 			List<Empresa.Administrador> administradorsList = getAdministradors(conn, empresa.getCif());				
@@ -230,7 +234,8 @@ public class EmpresaCore {
 				 	+ " SET cif=?, nom=?, direccio=?, cp=?, ciutat=?, provincia=?, telefon=?, fax=?, email=?, usumod=?, datamod=localtimestamp," 
 				 		+ " dataexpacreditacio1=?, dataexpacreditacio2=?, dataexpacreditacio3=?," 
 				 		+ " classificacio=?, dataconstitucio=?, informacioadicional=?, exercicieconomic=?,  dataregistremercantil=?,  ratioap=?,"
-				 		+ " datavigenciaclassificaciorolece=?, datavigenciaclassificaciojccaib=?, datavigenciaclassificaciojca=?, pime=?, prohibiciocontractar=?, prohibitcontractarfins=?, tipus=?"
+				 		+ " datavigenciaclassificaciorolece=?, datavigenciaclassificaciojccaib=?, datavigenciaclassificaciojca=?, pime=?, prohibiciocontractar=?, prohibitcontractarfins=?, tipus=?,"
+				 		+ " negatiuacreditacio1 = ?, negatiuacreditacio2 = ?, negatiuacreditacio3 = ?"
 				 	+ " WHERE cif = ?";	 
 		 PreparedStatement pstm;
 		try {
@@ -303,7 +308,10 @@ public class EmpresaCore {
 				 pstm.setDate(25, null);
 			 }	
 			 pstm.setString(26, empresa.getTipus());
-			 pstm.setString(27, cifActual);
+			 pstm.setBoolean(27, empresa.isNegativaAcreditacio1());
+			 pstm.setBoolean(28, empresa.isNegativaAcreditacio2());
+			 pstm.setBoolean(29, empresa.isNegativaAcreditacio3());
+			 pstm.setString(30, cifActual);
 			 pstm.executeUpdate();	
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

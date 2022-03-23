@@ -366,76 +366,77 @@
 					                		<div class="col-md-12">
 					                			<div class="form-group">
 					                				<div class="col-xs-offset-1 col-md-10">
-						                				<div class="checkbox">
-									                        <label>
-									                          	Certificat positiu de l'Agència Estatal d'Administració Tributària, 
-									                          	d'estar al corrent en el comliment de les seves obligacions tributàries amb l'Estat.
-									                        </label>
-									                	</div>
+								                   		<p>Certificat de l'Agència Estatal d'Administració Tributària, 
+								                          	d'estar al corrent en el comliment de les seves obligacions tributàries amb l'Estat.</p>
 									                </div>
 					                			</div>
-					                			<div class="col-xs-offset-2 col-md-4">
-						                			<div class="form-group">
-						                                <div class="form-group">
+					                			<div class="form-group">
+						                			<div class="col-xs-offset-1 col-md-10">			                				
+							                			<div class="col-md-4">
 							                                <label>Expedit amb data: </label> ${empresa.getDateExpAcreditacio1String()}
-							                            </div>			
-						                            </div>
-						                        </div>
-						                        <div class="col-md-6">
-						                			<div class="form-group">		                                
-														<c:if test="${empresa.isCaducadaAcreditacio1()}">
-															<label class="col-xs-1 control-label">Caducat</label>
-														</c:if>								
-						                            </div>
-						                        </div>      
-					                			<div class="form-group">
+								                        </div>
+								                        <div class="col-md-4">
+								                        	<c:if test="${empresa.isNegativaAcreditacio1()}">
+							                					<label class="col-xs-4 control-label">NEGATIU</label>
+							                				</c:if>
+							                			</div>
+								                        <div class="col-md-4">		                                
+															<c:if test="${empresa.isCaducadaAcreditacio1()}">
+																<label><p style="color: red;">Caducat</p></label>
+															</c:if>		
+								                        </div>    
+							                        </div>  
+							                    </div>
+							                    
+							                    <div class="form-group">
 					                				<div class="col-xs-offset-1 col-md-10">
-						                				<div class="checkbox">
-									                        <label>
-									                          	Certificat de la Tresoreria General de la Seguretat Social del Ministeri
+								                   		<p>Certificat de la Tresoreria General de la Seguretat Social del Ministeri
 									                          	d'Ocupació i Seguretat Social, de què l'empresa està al corren en el compliment de les obligacions
-									                          	de pagamanet de la Seguretat Social.
-									                        </label>
-									                	</div>
+									                          	de pagamanet de la Seguretat Social.</p>
 									                </div>
 					                			</div>
-					                			<div class="col-xs-offset-2 col-md-4">
-						                			<div class="form-group">
-						                                <label>Expedit amb data: </label> ${empresa.getDateExpAcreditacio2String()}
-						                            </div>
-						                        </div>
-						                        <div class="col-md-6">
-						                			<div class="form-group">		                                
-														<c:if test="${empresa.isCaducadaAcreditacio2()}">
-															<label class="col-xs-1 control-label">Caducat</label>
-														</c:if>								
-						                            </div>
-						                        </div>        
 					                			<div class="form-group">
+						                			<div class="col-xs-offset-1 col-md-10">			                				
+							                			<div class="col-md-4">
+							                                <label>Expedit amb data: </label> ${empresa.getDateExpAcreditacio2String()}
+								                        </div>
+								                        <div class="col-md-4">
+								                        	<c:if test="${empresa.isNegativaAcreditacio2()}">
+							                					<label class="col-xs-4 control-label">NEGATIU</label>
+							                				</c:if>
+							                			</div>
+								                        <div class="col-md-4">		                                
+															<c:if test="${empresa.isCaducadaAcreditacio2()}">
+																<label><p style="color: red;">Caducat</p></label>
+															</c:if>		
+								                        </div>    
+							                        </div>  
+							                    </div>
+							                    
+							                    <div class="form-group">
 					                				<div class="col-xs-offset-1 col-md-10">
-						                				<div class="checkbox">
-									                        <label>
-									                          	Certificat de la secretària de la Junta Consultiva de Contratació Administrativa
+								                   		<p>Certificat de la secretària de la Junta Consultiva de Contratació Administrativa
 									                          	de què l'empresa no té deutes de naturalesa tributària amb la Comunitat Autònoma de les Illes Balears, en
-									                          	via de constrenyiment.
-									                        </label>
-									                	</div>
+									                          	via de constrenyiment.</p>
 									                </div>
 					                			</div>
-					                			<div class="col-xs-offset-2 col-md-4">
-						                			<div class="form-group">
-						                                <div class="form-group">
+					                			<div class="form-group">
+						                			<div class="col-xs-offset-1 col-md-10">			                				
+							                			<div class="col-md-4">
 							                                <label>Expedit amb data: </label> ${empresa.getDateExpAcreditacio3String()}
-							                            </div>
-						                            </div>
-						                        </div>
-						                        <div class="col-md-6">
-						                			<div class="form-group">		                                
-														<c:if test="${empresa.isCaducadaAcreditacio3()}">
-															<label class="col-xs-1 control-label">Caducat</label>
-														</c:if>								
-						                            </div>
-						                        </div>        
+								                        </div>
+								                        <div class="col-md-4">
+								                        	<c:if test="${empresa.isNegativaAcreditacio3()}">
+							                					<label class="col-xs-4 control-label">NEGATIU</label>
+							                				</c:if>
+							                			</div>
+								                        <div class="col-md-4">		                                
+															<c:if test="${empresa.isCaducadaAcreditacio3()}">
+																<label><p style="color: red;">Caducat</p></label>
+															</c:if>		
+								                        </div>    
+							                        </div>  
+							                    </div>
 					                		</div>
 					                	</div>
 					                </div>

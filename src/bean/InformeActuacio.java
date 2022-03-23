@@ -450,21 +450,7 @@ public class InformeActuacio {
 	
 	private String recursAdministratiu;
 	private List<Fitxers.Fitxer> documentsRecursosAdministratius;
-	
-	private List<Fitxers.Fitxer> documentsIntalacioBaixaTensio;
-	private List<Fitxers.Fitxer> documentsIntalacioFotovoltaica;
-	private List<Fitxers.Fitxer> documentsIntalacioContraincendis;
-	private List<Fitxers.Fitxer> documentsCertificatEficienciaEnergetica;
-	private List<Fitxers.Fitxer> documentsIntalacioTermica;
-	private List<Fitxers.Fitxer> documentsIntalacioAscensor;
-	private List<Fitxers.Fitxer> documentsIntalacioAlarma;
-	private List<Fitxers.Fitxer> documentsIntalacioSubministreAigua;
-	private List<Fitxers.Fitxer> documentsPlaAutoproteccio;
-	private List<Fitxers.Fitxer> documentsCedulaDeHabitabilitat;
-	private List<Fitxers.Fitxer> documentsInstalacioPetrolifera;
-	private List<Fitxers.Fitxer> documentsInstalacioGas;
-	private List<Fitxers.Fitxer> documentsIniciActivitat;
-	
+		
 	private List<Fitxers.Fitxer> documentActaReplanteig;
 	private List<Fitxers.Fitxer> documentActaComprovacioReplanteig;
 	private List<Fitxers.Fitxer> documentActaIniciObra;
@@ -1175,93 +1161,13 @@ public class InformeActuacio {
 		this.documentsRecursosAdministratius = documentsRecursosAdministratius;
 	}
 
-	public List<Fitxers.Fitxer> getDocumentsIntalacioBaixaTensio() {
-		return documentsIntalacioBaixaTensio;
-	}
-
-	public void setDocumentsIntalacioBaixaTensio(List<Fitxers.Fitxer> documentsIntalacioBaixaTensio) {
-		this.documentsIntalacioBaixaTensio = documentsIntalacioBaixaTensio;
-	}
-
-	public List<Fitxers.Fitxer> getDocumentsIntalacioContraincendis() {
-		return documentsIntalacioContraincendis;
-	}
-
-	public void setDocumentsIntalacioContraincendis(List<Fitxers.Fitxer> documentsIntalacioContraincendis) {
-		this.documentsIntalacioContraincendis = documentsIntalacioContraincendis;
-	}
-
-	public List<Fitxers.Fitxer> getDocumentsCertificatEficienciaEnergetica() {
-		return documentsCertificatEficienciaEnergetica;
-	}
-
-	public void setDocumentsCertificatEficienciaEnergetica(List<Fitxers.Fitxer> documentsCertificatEficienciaEnergetica) {
-		this.documentsCertificatEficienciaEnergetica = documentsCertificatEficienciaEnergetica;
-	}
-
-	public List<Fitxers.Fitxer> getDocumentsIntalacioTermica() {
-		return documentsIntalacioTermica;
-	}
-
-	public void setDocumentsIntalacioTermica(List<Fitxers.Fitxer> documentsIntalacioTermica) {
-		this.documentsIntalacioTermica = documentsIntalacioTermica;
-	}
-
-	public List<Fitxers.Fitxer> getDocumentsIntalacioAscensor() {
-		return documentsIntalacioAscensor;
-	}
-
-	public void setDocumentsIntalacioAscensor(List<Fitxers.Fitxer> documentsIntalacioAscensor) {
-		this.documentsIntalacioAscensor = documentsIntalacioAscensor;
-	}
-
-	public List<Fitxers.Fitxer> getDocumentsIntalacioAlarma() {
-		return documentsIntalacioAlarma;
-	}
-
-	public void setDocumentsIntalacioAlarma(List<Fitxers.Fitxer> documentsIntalacioAlarma) {
-		this.documentsIntalacioAlarma = documentsIntalacioAlarma;
-	}
-
-	public List<Fitxers.Fitxer> getDocumentsIntalacioSubministreAigua() {
-		return documentsIntalacioSubministreAigua;
-	}
-
-	public void setDocumentsIntalacioSubministreAigua(List<Fitxers.Fitxer> documentsIntalacioSubministreAigua) {
-		this.documentsIntalacioSubministreAigua = documentsIntalacioSubministreAigua;
-	}
-
-	public List<Fitxers.Fitxer> getDocumentsPlaAutoproteccio() {
-		return documentsPlaAutoproteccio;
-	}
-
-	public void setDocumentsPlaAutoproteccio(List<Fitxers.Fitxer> documentsPlaAutoproteccio) {
-		this.documentsPlaAutoproteccio = documentsPlaAutoproteccio;
-	}
-
-	public List<Fitxers.Fitxer> getDocumentsCedulaDeHabitabilitat() {
-		return documentsCedulaDeHabitabilitat;
-	}
-
-	public void setDocumentsCedulaDeHabitabilitat(List<Fitxers.Fitxer> documentsCedulaDeHabitabilitat) {
-		this.documentsCedulaDeHabitabilitat = documentsCedulaDeHabitabilitat;
-	}
-
 	public Instalacions getInstalacions() {
 		return instalacions;
 	}
 
 	public void setInstalacions(Instalacions instalacions) {
 		this.instalacions = instalacions;
-	}
-
-	public List<Fitxers.Fitxer> getDocumentsInstalacioPetrolifera() {
-		return documentsInstalacioPetrolifera;
-	}
-
-	public void setDocumentsInstalacioPetrolifera(List<Fitxers.Fitxer> documentsInstalacioPetrolifera) {
-		this.documentsInstalacioPetrolifera = documentsInstalacioPetrolifera;
-	}
+	}	
 
 	public String getEstat() {
 		return estat;
@@ -1325,14 +1231,6 @@ public class InformeActuacio {
 
 	public void setResolucioVAD(List<Fitxer> resolucioVAD) {
 		this.resolucioVAD = resolucioVAD;
-	}
-
-	public List<Fitxers.Fitxer> getDocumentsIntalacioFotovoltaica() {
-		return documentsIntalacioFotovoltaica;
-	}
-
-	public void setDocumentsIntalacioFotovoltaica(List<Fitxers.Fitxer> documentsIntalacioFotovoltaica) {
-		this.documentsIntalacioFotovoltaica = documentsIntalacioFotovoltaica;
 	}
 
 	public String getTipusModificacio() {
@@ -1619,14 +1517,6 @@ public class InformeActuacio {
 		this.motiuAnulat = motiuAnulat;
 	}
 
-	public List<Fitxers.Fitxer> getDocumentsInstalacioGas() {
-		return documentsInstalacioGas;
-	}
-
-	public void setDocumentsInstalacioGas(List<Fitxers.Fitxer> documentsInstalacioGas) {
-		this.documentsInstalacioGas = documentsInstalacioGas;
-	}
-
 	public List<Fitxers.Fitxer> getInformeDF() {
 		return informeDF;
 	}
@@ -1709,14 +1599,6 @@ public class InformeActuacio {
 	
 	public void setDataPublicacioDGTresoreria(Date dataPublicacioDGTresoreria) {
 		this.dataPublicacioDGTresoreria = dataPublicacioDGTresoreria;
-	}
-
-	public List<Fitxers.Fitxer> getDocumentsIniciActivitat() {
-		return documentsIniciActivitat;
-	}
-
-	public void setDocumentsIniciActivitat(List<Fitxers.Fitxer> documentsIniciActivitat) {
-		this.documentsIniciActivitat = documentsIniciActivitat;
 	}
 
 	public boolean isCessioCredit() {

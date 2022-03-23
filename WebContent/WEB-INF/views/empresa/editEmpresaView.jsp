@@ -454,201 +454,101 @@
 	                            <div class="input-group date col-xs-2 datepicker">
 								  	<input type="text" class="form-control" name="dataVigenciaClassificacioJCA" id="dataVigenciaClassificacio" value="${empresa.getDataVigenciaClassificacioJCAString()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 								</div>	                		
-		                	</div>
-		                	<%-- <div class="row">
-		                		<div class="col-md-3">
-			                		<div class="form-group">
-		                                <label class="col-xs-8 control-label">Grup</label>
-		                                <div class="col-xs-4">
-		                                	<select class="form-control" name="grup" id="grupList">
-		                                		<option value="A">A</option>
-		                                		<option value="B">B</option>
-		                                		<option value="C">C</option>
-		                                		<option value="D">D</option>
-		                                		<option value="E">E</option>
-		                                		<option value="F">F</option>
-		                                		<option value="G">G</option>
-		                                		<option value="H">H</option>
-		                                		<option value="I">I</option>
-		                                		<option value="J">J</option>
-		                                		<option value="K">K</option>
-			                                </select>
-		                                </div>
-		                            </div>	
-		                        </div>
-		                        <div class="col-md-3">
-			                		<div class="form-group">
-		                                <label class="col-xs-8 control-label">Subgrup</label>
-		                                <div class="col-xs-4">
-		                                	<select class="form-control" name="subGrup" id="subGrupList">
-		                                		<option value="-">-</option>
-		                                		<option value="1">1</option>
-		                                		<option value="2">2</option>
-		                                		<option value="3">3</option>
-		                                		<option value="4">4</option>
-		                                		<option value="5">5</option>
-			                                </select>
-		                                </div>
-		                            </div>	
-		                        </div>
-		                        <div class="col-md-3">
-			                		<div class="form-group">
-		                                <label class="col-xs-8 control-label">Categoria</label>
-		                                <div class="col-xs-4">
-		                                	<select class="form-control" name="categoria" id="categoriaList">
-		                                		<option value="A">A</option>
-		                                		<option value="B">B</option>
-		                                		<option value="C">C</option>
-		                                		<option value="D">D</option>
-		                                		<option value="E">E</option>
-		                                		<option value="F">F</option>
-		                                		<option value="1">1</option>
-		                                		<option value="2">2</option>
-		                                		<option value="3">3</option>
-		                                		<option value="4">4</option>
-		                                		<option value="5">5</option>
-		                                		<option value="6">6</option>
-			                                </select>
-		                                </div>
-		                            </div>	
-		                        </div>
-		                        <div class="col-md-3">
-			                		<div class="form-group">
-		                                <input class="btn btn-primary" type="button" name="afegirClassificacio" id="afegirClassificacio" value="Afegir">
-		                            </div>	
-		                        </div>
-	                        	<input type="hidden" name="llistatClassificacio" id="llistatClassificacio" value="${empresa.classificacioString}">                        
-					     		<div class="col-xs-offset-2 col-md-7">	
-									<label>Classificació</label>							                        
-					                <div class="table-responsive">							                        
-					                    <table class="table table-striped table-bordered filerTable" id="classificacioTable">
-					                        <thead>
-					                            <tr>
-					                                <th>Grup</th>
-					                                <th>Subgrup</th>
-					                                <th>Categoria</th>
-					                                <th>Control</th>					                                        							                                       
-					                            </tr>
-					                        </thead>
-					                        <tbody>	
-						                        <c:forEach items="${empresa.getClassificacio()}" var="classificacio" >
-										          	<tr>							          	
-										           		<td>${classificacio.grup}</td>
-										            	<td>${classificacio.subGrup}</td>
-										            	<td>${classificacio.categoria}</td>
-										            	<td><input class='btn btn-danger btn-sm eliminarClassificacioSeleccionada margin_left10' type='button' value='Eliminar'></td>					            	
-										          	</tr>
-									       		</c:forEach>							                                	                              	
-					                        </tbody>
-					                    </table>
-					                </div>
-					           	</div>									
-		                	</div>  --%>
+		                	</div>		                
 		                	<h2 class="margin_bottom30">Acreditació d'obligacions fiscals i de seguretat social</h2>
 		                	<div class="row">
 		                		<div class="col-md-12">
 		                			<div class="form-group">
 		                				<div class="col-xs-offset-1 col-md-10">
-			                				<div class="checkbox">
-						                        <label>
-						                          	Certificat POSITIU de l'Agència Estatal d'Administració Tributària, 
-						                          	d'estar al corrent en el comliment de les seves obligacions tributàries amb l'Estat.
-						                        </label>
-						                	</div>
+					                   		<p>Certificat de l'Agència Estatal d'Administració Tributària, 
+					                          	d'estar al corrent en el comliment de les seves obligacions tributàries amb l'Estat.</p>
 						                </div>
 		                			</div>
-		                			<div class="col-md-6">
-			                			<div class="form-group">
-			                                <label class="col-xs-6 control-label">Expedit amb data</label>
-			                                <div class="input-group date col-xs-4 datepicker">
-											  	<input type="text" class="form-control" name="dateExpAcreditacio1" value="${empresa.getDateExpAcreditacio1String()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-											</div>				
-			                            </div>
-			                        </div>
-			                         <div class="col-md-6">
-			                			<div class="form-group">		                                
-											<c:if test="${empresa.isCaducadaAcreditacio1()}">
-												<label class="col-xs-1 control-label">Caducat</label>
-											</c:if>								
-			                            </div>
-			                        </div>  
-			                        <div class="form-group">
-		                				<div class="col-xs-offset-1 col-md-10">
-			                				<div class="checkbox">
-						                        <label>
-						                          	Certificat NEGATIU de l'Agència Estatal d'Administració Tributària, 
-						                          	d'estar al corrent en el comliment de les seves obligacions tributàries amb l'Estat.
-						                        </label>
-						                	</div>
-						                </div>
-		                			</div>
-		                			<div class="col-md-6">
-			                			<div class="form-group">
-			                                <label class="col-xs-6 control-label">Expedit amb data</label>
-			                                <div class="input-group date col-xs-4 datepicker">
-											  	<input type="text" class="form-control" name="dateExpAcreditacio1" value="${empresa.getDateExpAcreditacio1String()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-											</div>				
-			                            </div>
-			                        </div>
-			                        <div class="col-md-6">
-			                			<div class="form-group">		                                
-											<c:if test="${empresa.isCaducadaAcreditacio1()}">
-												<label class="col-xs-1 control-label">Caducat</label>
-											</c:if>								
-			                            </div>
-			                        </div>      
+		                			<div class="form-group">
+			                			<div class="col-xs-offset-1 col-md-10">			                				
+				                			<div class="col-md-4">
+				                                <label class="col-xs-6 control-label">Expedit amb data</label>
+				                                <div class="input-group date col-xs-4 datepicker">
+												  	<input type="text" class="form-control" name="dateExpAcreditacio1" value="${empresa.getDateExpAcreditacio1String()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+												</div>	
+					                        </div>
+					                        <div class="col-md-4">
+				                				<label class="col-xs-4 control-label">NEGATIU</label>
+				                				<div class="col-xs-2">
+					                				<div class="checkbox">
+								                        <input name="acreditacio1negatiu" type="checkbox" ${empresa.isNegativaAcreditacio1() ? 'checked' : ''}>
+								                	</div>
+								                </div>
+				                			</div>
+					                        <div class="col-md-4">		                                
+												<c:if test="${empresa.isCaducadaAcreditacio1()}">
+													<label><p style="color: red;">Caducat</p></label>
+												</c:if>		
+					                        </div>    
+				                        </div>  
+				                    </div>
 		                			<div class="form-group">
 		                				<div class="col-xs-offset-1 col-md-10">
-			                				<div class="checkbox">
-						                        <label>
-						                          	Certificat de la Tresoreria General de la Seguretat Social del Ministeri
+			                				<p>Certificat de la Tresoreria General de la Seguretat Social del Ministeri
 						                          	d'Ocupació i Seguretat Social, de què l'empresa està al corren en el compliment de les obligacions
-						                          	de pagamanet de la Seguretat Social.
-						                        </label>
-						                	</div>
+						                          	de pagamanet de la Seguretat Social.</p>
 						                </div>
+						               
 		                			</div>
-		                			<div class="col-md-6">
-			                			<div class="form-group">
-			                                <label class="col-xs-6 control-label">Expedit amb data</label>
-			                                <div class="input-group date col-xs-4 datepicker">
-											  	<input type="text" class="form-control" name="dateExpAcreditacio2" value="${empresa.getDateExpAcreditacio2String()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-											</div>
-			                            </div>
+		                			<div class="form-group">
+			                			<div class="col-xs-offset-1 col-md-10">			                				
+				                			<div class="col-md-4">
+			                                	<label class="col-xs-6 control-label">Expedit amb data</label>
+				                                <div class="input-group date col-xs-4 datepicker">
+												  	<input type="text" class="form-control" name="dateExpAcreditacio2" value="${empresa.getDateExpAcreditacio2String()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+												</div>
+			                            	</div>
+			                            	<div class="col-md-4">
+				                				<label class="col-xs-4 control-label">NEGATIU</label>
+				                				<div class="col-xs-2">
+					                				<div class="checkbox">
+								                        <input name="acreditacio2negatiu" type="checkbox" ${empresa.isNegativaAcreditacio2() ? 'checked' : ''}>
+								                	</div>
+								                </div>
+				                			</div>
+					                        <div class="col-md-4">		                                
+												<c:if test="${empresa.isCaducadaAcreditacio2()}">
+													<label><p style="color: red;">Caducat</p></label>
+												</c:if>		
+					                        </div>   
+			                        	</div>
 			                        </div>
-			                        <div class="col-md-6">
-			                			<div class="form-group">		                                
-											<c:if test="${empresa.isCaducadaAcreditacio2()}">
-												<label class="col-xs-1 control-label">Caducat</label>
-											</c:if>								
-			                            </div>
-			                        </div>        
+			                        
 		                			<div class="form-group">
 		                				<div class="col-xs-offset-1 col-md-10">
-			                				<div class="checkbox">
-						                        <label>
-						                          	Certificat de la secretària de la Junta Consultiva de Contratació Administrativa
+			                				<p>Certificat de la secretària de la Junta Consultiva de Contratació Administrativa
 						                          	de què l'empresa no té deutes de naturalesa tributària amb la Comunitat Autònoma de les Illes Balears, en
-						                          	via de constrenyiment.
-						                        </label>
-						                	</div>
+						                          	via de constrenyiment.</p>
 						                </div>
 		                			</div>
-		                			<div class="col-md-6">
-			                			<div class="form-group">
-			                                <label class="col-xs-6 control-label">Expedit amb data</label>
-			                                <div class="input-group date col-xs-4 datepicker">
-											  	<input type="text" class="form-control" name="dateExpAcreditacio3" value="${empresa.getDateExpAcreditacio3String()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-											</div>
-			                            </div>
-			                        </div>
-			                        <div class="col-md-6">
-			                			<div class="form-group">		                                
-											<c:if test="${empresa.isCaducadaAcreditacio3()}">
-												<label class="col-xs-1 control-label">Caducat</label>
-											</c:if>								
-			                            </div>
-			                        </div>        
+		                			<div class="form-group">
+			                			<div class="col-xs-offset-1 col-md-10">			                				
+				                			<div class="col-md-4">
+			                                	<label class="col-xs-6 control-label">Expedit amb data</label>
+				                                <div class="input-group date col-xs-4 datepicker">
+												  	<input type="text" class="form-control" name="dateExpAcreditacio3" value="${empresa.getDateExpAcreditacio3String()}"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+												</div>
+			                           		</div>
+			                           		<div class="col-md-4">
+				                				<label class="col-xs-4 control-label">NEGATIU</label>
+				                				<div class="col-xs-2">
+					                				<div class="checkbox">
+								                        <input name="acreditacio3negatiu" type="checkbox" ${empresa.isNegativaAcreditacio3() ? 'checked' : ''}>
+								                	</div>
+								                </div>
+				                			</div>
+					                        <div class="col-md-4">		                                
+												<c:if test="${empresa.isCaducadaAcreditacio3()}">
+													<label><p style="color: red;">Caducat</p></label>
+												</c:if>		
+					                        </div>   
+			                       		</div> 
+			                       	</div>      
 		                		</div>
 		                	</div>
 		                </c:if>
@@ -708,11 +608,11 @@
 								</div>
 							</div> 
 							<div class="form-group">	                            
-						       	<div class="col-xs-offset-6 col-xs-9">
+						       	<div class="col-xs-offset-8 col-xs-4">
 						            <input type="submit" class="btn btn-danger" name="prohibicio" value="Prohibició contractar">							            
 						        </div>													        
 						    </div>
-	                	</div>    	
+	                	</div>	
 	                	<div class="row">
 	                		<h4>En concurs</h4>
 	                		<c:if test="${empresa.documentsConcursList.size() > 0}">			                	   
@@ -753,11 +653,11 @@
 	                            </div>						       					        
 						    </div> 
 							<div class="form-group">	                            
-						       	<div class="col-xs-offset-6 col-xs-9">
+						       	<div class="col-xs-offset-8 col-xs-4">
 						            <input type="submit" class="btn btn-danger" name="concurs" value="Actualitzar Concurs">							            
 						        </div>													        
 						    </div>
-	                	</div>    	
+	                	</div>  	
 	                	<div class="row">
 	                		<h4>Extinció</h4>
 	                		<c:if test="${empresa.extincioFile.ruta != null}">
@@ -784,7 +684,7 @@
 						            <input type="submit" class="btn btn-danger" name="extincio" value="Extinció">							            
 						        </div>						        
 						    </div> 
-	                	</div>    	        
+	                	</div>  	        
 	                	<div class="row">
 	                		<h4>Successió</h4>
 	                		<c:if test="${empresa.succesoraFile.ruta != null}">
@@ -819,10 +719,10 @@
 						            <input type="submit" class="btn btn-warning" name="succecio" value="Succeció">							            
 						        </div>
 						    </div> 
-						</div>  	                	        	              	
+						</div> 	                	        	              	
 	                	<div class="row">
 	                		<div class="form-group">
-						        <div class="col-xs-offset-9 col-xs-9">
+						        <div class="col-xs-offset-9 col-xs-3">
 						            <input type="submit" class="btn btn-primary" value="Guardar Canvis">							            
 						        </div>
 						    </div> 

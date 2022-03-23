@@ -157,9 +157,7 @@ function searchExpedients(idActuacio, idCentre) {
         		$.each(data.llistatExpedients, function( key, data ) {
         			var refExt = '';
         			if (data.expcontratacio.expContratacio != '-1') refExt = ' EXP ' + data.expcontratacio.expContratacio + ' ';
-        			if (data.ofertaSeleccionada != null) {
-        				$('#expedientsList' + idCentre).append('<option data-idactuacio="' + data.actuacio.referencia + '" data-idinf="' + data.idInf + '" data-objecte="' + data.propostaInformeSeleccionada.objecte + '" data-total="' + data.propostaInformeSeleccionada.plic + '" data-pagat="' + data.totalFacturat + '" value=' + data.idInf + '>' + refExt + '-' + data.propostaInformeSeleccionada.objecte + '</option>');
-        			}
+        			$('#expedientsList' + idCentre).append('<option data-idactuacio="' + data.actuacio.referencia + '" data-idinf="' + data.idInf + '" data-objecte="' + data.propostaInformeSeleccionada.objecte + '" data-total="' + data.ofertasSeleccionada.plic + '" data-pagat="' + data.totalFacturat + '" value=' + data.idInf + '>' + refExt + '-' + data.propostaInformeSeleccionada.objecte + '</option>');
         		});     
         		$('.selectpicker').selectpicker('refresh');   
              } 

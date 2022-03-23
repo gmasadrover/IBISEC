@@ -139,14 +139,4 @@
     <p> 
     	<label>Data retorn garantia: </label> ${informePrevi.expcontratacio.getDataRetornGarantiaString()}
    </p> 
-</div>  
-<div class="col-md-offset-10 col-md-2">
-	<form class="form-horizontal" method="POST" action="doDownloadExpedient">
-		<input type="hidden" name="idInforme" value="${informePrevi.idInf}">
-		<div class="form-group">					  				 
-		  	<div class="col-md-2">
-		    	<input type="submit" class="btn btn-primary margin_top30"  value="Descarregar">
-			</div>
-		</div>	
-	</form>
-</div>
+</div> 

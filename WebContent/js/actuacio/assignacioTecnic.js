@@ -131,9 +131,8 @@ function searchExpedients(idActuacio) {
         		$.each(data.llistatExpedients, function( key, data ) {
         			var refExt = '';
         			if (data.expcontratacio.expContratacio != '-1') refExt = ' EXP ' + data.expcontratacio.expContratacio + ' ';
-        			if (data.ofertaSeleccionada != null) {
-        				$('#expedientsList').append('<option data-idactuacio="' + data.actuacio.referencia + '" data-idinf="' + data.idInf + '" data-objecte="' + data.propostaInformeSeleccionada.objecte + '" data-total="' + data.propostaInformeSeleccionada.plic + '" data-pagat="' + data.totalFacturat + '" value=' + data.idInf + '>' + refExt + '-' + data.propostaInformeSeleccionada.objecte + '</option>');
-        			}
+        			$('#expedientsList').append('<option data-idactuacio="' + data.actuacio.referencia + '" data-idinf="' + data.idInf + '" data-objecte="' + data.propostaInformeSeleccionada.objecte + '" data-total="' + data.propostaInformeSeleccionada.plic + '" data-pagat="' + data.totalFacturat + '" value=' + data.idInf + '>' + refExt + '-' + data.propostaInformeSeleccionada.objecte + '</option>');
+        			
         		});     
         		$('#expedientsList option[value="' + $('#idInforme').val() + '"]').attr('selected', 'selected');
         		$('.selectpicker').selectpicker('refresh');      

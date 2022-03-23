@@ -78,7 +78,11 @@
                 <div class="row">
                 	<div class="tabbable">
 	                   	<ul class="nav nav-tabs">		
-	                   		<c:set var="primera" value="true" scope="request"/>							   
+	                   		<c:set var="primera" value="true" scope="request"/>		
+	                   		<c:if test="${obresAssignades.size() > 0}"> 
+								<li class="${primera ? 'active' : ''}"><a data-toggle="tab" href="#encarrecs">Encàrrecs<span class="notif">${obresAssignades.size()}</span></a></li>
+						    	<c:if test="${primera}"><c:set var="primera" value="false" scope="request"/></c:if> 
+						    </c:if>					   
 							<c:if test="${solInfPrevList.size() > 0}"> 
 								<li class="${primera ? 'active' : ''}"><a data-toggle="tab" href="#solInfPrev">Sol·licitud informes previs<span class="notif">${solInfPrevList.size()}</span></a></li>
 						    	<c:if test="${primera}"><c:set var="primera" value="false" scope="request"/></c:if> 
@@ -158,6 +162,15 @@
 					 	</ul>					 	
 					  	<div class="tab-content">
 					  		<c:set var="primera" value="true" scope="request"/>	
+					  		<c:if test="${obresAssignades.size() > 0}"> 	
+						  		<div id="encarrecs" class="tab-pane fade ${primera ? 'in active' : ''}">
+									<div class="col-md-12 bordertab">
+										<c:set var="encarrecsList" value="${obresAssignades}" scope="request"/>
+										<jsp:include page="include/_encarrecsList.jsp"></jsp:include>		
+										<c:if test="${primera}"><c:set var="primera" value="false" scope="request"/></c:if> 									    
+									</div>
+								</div>
+							</c:if>
 					  		<c:if test="${solInfPrevList.size() > 0}"> 	
 						  		<div id="solInfPrev" class="tab-pane fade ${primera ? 'in active' : ''}">
 									<div class="col-md-12 bordertab">

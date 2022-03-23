@@ -345,7 +345,7 @@ public class UsuariCore {
 				permision = rols.toUpperCase().contains("ADMIN") || (rols.toUpperCase().contains("GER"));
 				break;
 			case actuacio_list:
-				permision = true;
+				permision = (rols.toUpperCase().contains("ADMIN")) || (rols.toUpperCase().contains("GER"));
 				break;
 			case projectes_list:
 				permision = rols.toUpperCase().contains("ADMIN");
@@ -473,8 +473,10 @@ public class UsuariCore {
 				break;
 			case modificarPersonal:
 				permision = rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("PERSO");
+				break;
 			case dades_bancaries:
 				permision = rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("DADESBANC");
+				break;
 			default:
 				break;
 		}

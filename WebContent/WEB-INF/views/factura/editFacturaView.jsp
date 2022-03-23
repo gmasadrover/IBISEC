@@ -66,7 +66,7 @@
 	                            </div> 
 	                            <div id="incidencies"></div>   
 	                            <div id="procediments"></div>   
-	                            <div id="expedients"></div>      
+	                            <div id="expedients"></div>
 	                    	</div>	                    	
                             <div class="form-group proveidor">
                                 <label class="col-xs-3 control-label">Proveidor</label>

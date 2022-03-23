@@ -482,9 +482,9 @@ public class DoTasca extends HttpServlet {
 				 				if (informe.getTotalCertificat() > informe.getOfertaSeleccionada().getPlic() + informe.getTotalModificacions()) {
 				 					//Excés d'amidaments.
 				 					Double totalExces = (informe.getTotalCertificat()) - (informe.getOfertaSeleccionada().getPlic() + informe.getTotalModificacions());
-				 					System.out.println("total certificat " + informe.getTotalCertificat());
-				 					System.out.println("total oferta " + informe.getOfertaSeleccionada().getPlic());
-				 					System.out.println("total modificacions " + informe.getTotalModificacions());
+				 					//System.out.println("total certificat " + informe.getTotalCertificat());
+				 					//System.out.println("total oferta " + informe.getOfertaSeleccionada().getPlic());
+				 					//System.out.println("total modificacions " + informe.getTotalModificacions());
 				 					PropostaInforme proposta = informe.new PropostaInforme();
 				 			  		proposta.setTipusObra(informe.getPropostaInformeSeleccionada().getTipusObra());
 				 			  		proposta.setLlicencia(false);

@@ -69,12 +69,15 @@ public class TascaListServlet extends HttpServlet {
 	     		        	String idUsuari = usuarisValues[i];
 	     		        	usuarisSeleccionats += idUsuari + "#";
 	     		        	if (NumberUtils.isNumber(idUsuari)) {
-	    	        			list = TascaCore.llistaTasquesUsuari(conn, Integer.parseInt(idUsuari), null, "on".equals(filterWithClosed));      			
+	    	        			list = TascaCore.llistaTasquesUsuari(conn, Integer.parseInt(idUsuari), null, "on".equals(filterWithClosed));      
+	    	        			obresAssignades = InformeCore.getObresUsuari(conn, Integer.parseInt(idUsuari));  	    	      
 	     		        	}else{
 	    	        			if ("totes".equals(idUsuari)) {
 	    	        				list = TascaCore.llistaTasquesUsuari(conn, -1, null, "on".equals(filterWithClosed));
+	    	        				obresAssignades = InformeCore.getObresUsuari(conn, -1);    
 	    	        			} else {
-	    	        				list = TascaCore.llistaTasquesUsuari(conn, -1, idUsuari, "on".equals(filterWithClosed));		
+	    	        				list = TascaCore.llistaTasquesUsuari(conn, -1, idUsuari, "on".equals(filterWithClosed));
+	    	        				obresAssignades = InformeCore.getInformesResumArea(conn, idUsuari);	    	 
 	    	        			}	        			
 	    	        		}	
 	     		        }
@@ -89,6 +92,7 @@ public class TascaListServlet extends HttpServlet {
 	        			}
 	        		}
 	        		list = TascaCore.llistaTasquesUsuari(conn, usuari.getIdUsuari(), null, false);	
+	        		obresAssignades = InformeCore.getObresUsuari(conn, usuari.getIdUsuari());    
 	        		if (usuari.getRol().contains("GERENT")) usuarisSeleccionats = "totes#";
 	        	}
 	        	llistaUsuaris =  UsuariCore.findUsuarisByRol(conn, "");

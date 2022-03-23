@@ -124,6 +124,16 @@
 								</form>
 							</div>
 						</c:if>
+						<c:if test="${isPersonal}">  
+							<div class="row">
+			                	<div class="col-md-12">
+			               			 <h2>Reserves vehicle</h2>
+			               			 <div class="col-md-offset-1 col-md-10">
+			               			 	${reservesPropies}
+			               			 </div>
+			               		</div>
+			               	 </div>
+			            </c:if>
                     </div>
                 </div>
             </div>

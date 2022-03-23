@@ -21,7 +21,7 @@ import core.TascaCore;
 import utils.MyUtils;
 
 /**
- * Servlet implementation class LlistatActuacionsActives
+ * Servlet implementation class TasquesActuacio
  */
 @WebServlet("/TasquesActuacio")
 public class TasquesActuacio extends HttpServlet {

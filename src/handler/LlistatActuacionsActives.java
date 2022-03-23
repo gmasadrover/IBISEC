@@ -59,7 +59,7 @@ public class LlistatActuacionsActives extends HttpServlet {
         JsonObject myObj = new JsonObject();
         Connection conn = MyUtils.getStoredConnection(request);
         List<Actuacio> llistatActuacions = new ArrayList<Actuacio>();
-		llistatActuacions = ActuacioCore.searchActuacionsList(conn, idCentre, "-1", null, null, null, null, null);
+		llistatActuacions = ActuacioCore.searchActuacionsCentre(conn, idCentre);
 		myObj.addProperty("success", true);
 		JsonElement llistatObj = gson.toJsonTree(llistatActuacions);
 		myObj.add("llistatActuacions", llistatObj);

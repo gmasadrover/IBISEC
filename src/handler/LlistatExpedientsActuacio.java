@@ -60,7 +60,7 @@ public class LlistatExpedientsActuacio extends HttpServlet {
         JsonObject myObj = new JsonObject();
         Connection conn = MyUtils.getStoredConnection(request);
         List<InformeActuacio> llistatExpedients = new ArrayList<InformeActuacio>();
-		llistatExpedients = InformeCore.getInformesActuacio(conn, idActuacio);
+		llistatExpedients = InformeCore.getLlistaInformesActuacio(conn, idActuacio);
 		myObj.addProperty("success", true);
 		JsonElement llistatObj = gson.toJsonTree(llistatExpedients);
 		myObj.add("llistatExpedients", llistatObj);

@@ -30,7 +30,6 @@ $(document).ready(function() {
 
 	$('#centresList').on('change', function(){
 		$('.proveidor').removeClass('hidden');
-		$('#seleccionarInforme').append('<div class="loader"></div>');
 		$('#incidencies').html('');	
 		$('#expedients').html('');	
 		$('#procediments').html('');
@@ -42,7 +41,6 @@ $(document).ready(function() {
 				searchIncidencies($(this).val());
 			}			
 		} else {
-			$('#seleccionarInforme .loader').remove();
 		}
 	});
 	$('.selectpicker').selectpicker('refresh');	
@@ -51,6 +49,7 @@ $(document).ready(function() {
 function searchIncidencies(idCentre) {
 	var optionDefault = '';	
 	var html = '';
+	$('#incidencies').append('<div class="loader"></div>');
 	$.ajax({
         type: "POST",
         url: "LlistatActuacionsActives",
@@ -70,22 +69,21 @@ function searchIncidencies(idCentre) {
             	html += '</div>';
             	$('#incidencies').append(html);            	
         		$.each(data.llistatActuacions, function( key, data ) {
-        			var refExt = '';
-        			if (data.refExt != '') refExt = ' <b>(EXP ' + data.refExt + ')</b> ';
-        			$('#incidenciesList').append('<option value=' + data.referencia + '>' + data.referencia + refExt + '-' + data.descripcio + '</option>');
+        			$('#incidenciesList').append('<option value=' + data.referencia + '>' + data.referencia + '-' + data.descripcio + '</option>');
         		});     
         		$('#incidenciesList option[value="' + $('#idActuacio').val() + '"]').attr('selected', 'selected');
         		$('.selectpicker').selectpicker('refresh');   
-        		$('#seleccionarInforme .loader').remove();
+        		$('#incidencies .loader').remove();
         		$('#incidenciesList').on('change', function(){
         			$('#expedients').html('');	
-        			$('#seleccionarInforme').append('<div class="loader"></div>');
+        			$('#incidencies').append('<div class="loader"></div>');
         			$('.expedients').addClass('hidden');
     				if ($(this).val() != "-1") {
     					searchExpedients($(this).val());    					
     				} else {
-    					$('#seleccionarInforme .loader').remove();
-    				}	    				
+    					
+    				}	
+    				$('#incidencies .loader').remove();
         			$('.selectpicker').selectpicker('refresh');	
         			
         		});
@@ -102,6 +100,7 @@ function searchIncidencies(idCentre) {
 function searchProcediments() {
 	var optionDefault = '';	
 	var html = '';
+	$('#procediments').append('<div class="loader"></div>');
 	$.ajax({
         type: "POST",
         url: "LlistatProcediments",
@@ -125,7 +124,7 @@ function searchProcediments() {
         		});     
         		$('#procedimentsList option[value="' + $('#idInforme').val() + '"]').attr('selected', 'selected');
         		$('.selectpicker').selectpicker('refresh');   
-        		$('#seleccionarInforme .loader').remove();        		
+        		$('#procediments .loader').remove();        		
              }                 
         },        
         //If there was no resonse from the server
@@ -139,6 +138,7 @@ function searchProcediments() {
 function searchExpedients(idActuacio) {
 	var optionDefault = '';	
 	var html = '';
+	$('#expedients').append('<div class="loader"></div>');
 	$.ajax({
         type: "POST",
         url: "LlistatExpedientsActuacio",
@@ -159,10 +159,8 @@ function searchExpedients(idActuacio) {
             	$('#expedients').append(html);
         		$.each(data.llistatExpedients, function( key, data ) {
         			var refExt = '';
-        			if (data.expcontratacio.expContratacio != '-1') refExt = ' EXP ' + data.expcontratacio.expContratacio + ' ';
-        			if (data.ofertaSeleccionada != null || data.propostaInformeSeleccionada.tipusObra == 'acordMarc') {
-        				$('#expedientsList').append('<option data-idactuacio="' + data.actuacio.referencia + '" data-idinf="' + data.idInf + '" data-objecte="' + data.propostaInformeSeleccionada.objecte + '" data-total="' + data.propostaInformeSeleccionada.plic + '" data-pagat="' + data.totalFacturat + '" value=' + data.idInf + '>' + refExt + '-' + data.propostaInformeSeleccionada.objecte + '</option>');
-        			}
+        			if (data.actuacio.refExt != '-1') refExt = ' EXP ' + data.actuacio.refExt + ' ';
+        			$('#expedientsList').append('<option data-idactuacio="' + data.actuacio.referencia + '" data-idinf="' + data.idInf + '" data-objecte="' + data.propostaInformeSeleccionada.objecte + '" data-total="' + data.propostaInformeSeleccionada.plic + '" data-pagat="' + data.totalFacturat + '" value=' + data.idInf + '>' + refExt + '-' + data.propostaInformeSeleccionada.objecte + '</option>');
         		});     
         		$('#expedientsList option[value="' + $('#idInforme').val() + '"]').attr('selected', 'selected');
         		$('.selectpicker').selectpicker('refresh');      
@@ -175,7 +173,7 @@ function searchExpedients(idActuacio) {
         			$('.infoExpedient').append('<span><a href="actuacionsDetalls?ref=' + $('#expedientsList option:selected').data('idactuacio') + '&exp=' + $('#expedientsList option:selected').data('idinf') + '" target="_blank">Anar a l\'actuació</a></span>');
         		});
              }    
-             $('#seleccionarInforme .loader').remove();
+             $('#expedients .loader').remove();
         },        
         //If there was no resonse from the server
         error: function(jqXHR, textStatus, errorThrown){

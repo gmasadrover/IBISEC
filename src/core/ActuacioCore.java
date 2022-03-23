@@ -266,6 +266,39 @@ public class ActuacioCore {
 		return list;
 	}
 	
+	
+	public static List<Actuacio> searchActuacionsCentre(Connection conn, String idCentre) {
+		String sql = "SELECT DISTINCT a.id AS idactuacio, a.descripcio AS descripcio, a.datatancament AS datatancament, a.dataaprovacio AS dataaprovacio, a.dataaprovarpa AS dataaprovarpa, a.datacre AS datacre, a.darreramodificacio AS darreramodificacio, a.datamodificacio AS datamodificacio"
+				+ 	" FROM public.tbl_actuacio a"
+				+ 	" WHERE a.idcentre = ?";
+		
+		PreparedStatement pstm;	
+		List<Actuacio> list = new ArrayList<Actuacio>();
+		try {
+			pstm = conn.prepareStatement(sql);			
+			pstm.setString(1, idCentre);
+			ResultSet rs = pstm.executeQuery();		
+			while (rs.next()) {			
+				Actuacio actuacio = new Actuacio();
+				actuacio.setReferencia(rs.getString("idactuacio"));
+				actuacio.setDescripcio(rs.getString("descripcio"));
+				actuacio.setDataTancament(rs.getDate("datatancament"));
+				actuacio.setDataAprovacio(rs.getDate("dataaprovacio"));
+				actuacio.setDataAprovarPa(rs.getDate("dataaprovarpa"));
+				actuacio.setDataCreacio(rs.getDate("datacre"));
+				actuacio.setDarreraModificacio(rs.getDate("datamodificacio"));
+				actuacio.setModificacio(rs.getString("darreramodificacio"));
+				list.add(actuacio);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return list;
+	}
+	
+	
 	/** 
      * Retorna una llista amb les actuacions associades a l'incidència
      * @param conn Connexió

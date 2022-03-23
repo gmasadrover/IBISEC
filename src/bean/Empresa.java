@@ -174,6 +174,9 @@ public class Empresa {
    private Date dateExpAcreditacio1;
    private Date dateExpAcreditacio2;
    private Date dateExpAcreditacio3;
+   boolean isNegatiuAcreditacio1;
+   boolean isNegatiuAcreditacio2;
+   boolean isNegatiuAcreditacio3;   
    private Fitxers.Fitxer solEconomica;
    private Date exerciciEconomic;
    private Date registreMercantilData;
@@ -316,6 +319,14 @@ public class Empresa {
 		this.dateExpAcreditacio1 = dateExpAcreditacio1;
 	}
 	
+	public void setIsNegativaAcreditacio1(boolean negatiu) {
+		this.isNegatiuAcreditacio1 = negatiu;
+	}
+	
+	public boolean isNegativaAcreditacio1() {
+		return this.isNegatiuAcreditacio1;
+	}
+	
 	public boolean isCaducadaAcreditacio1() {
 		boolean caducat = false;
 		if (this.dateExpAcreditacio1 != null) {
@@ -342,6 +353,14 @@ public class Empresa {
 		this.dateExpAcreditacio2 = dateExpAcreditacio2;
 	}
 	
+	public void setIsNegativaAcreditacio2(boolean negatiu) {
+		this.isNegatiuAcreditacio2 = negatiu;
+	}
+	
+	public boolean isNegativaAcreditacio2() {
+		return this.isNegatiuAcreditacio2;
+	}
+	
 	public boolean isCaducadaAcreditacio2() {
 		boolean caducat = false;
 		if (this.dateExpAcreditacio2 != null) {
@@ -366,6 +385,14 @@ public class Empresa {
 	
 	public void setDateExpAcreditacio3(Date dateExpAcreditacio3) {
 		this.dateExpAcreditacio3 = dateExpAcreditacio3;
+	}
+	
+	public void setIsNegativaAcreditacio3(boolean negatiu) {
+		this.isNegatiuAcreditacio3 = negatiu;
+	}
+	
+	public boolean isNegativaAcreditacio3() {
+		return this.isNegatiuAcreditacio3;
 	}
 	
 	public boolean isCaducadaAcreditacio3() {

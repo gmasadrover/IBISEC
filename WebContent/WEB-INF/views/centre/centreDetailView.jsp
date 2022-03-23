@@ -81,7 +81,10 @@
 						    <div class="col-md-6 panel">
 								<a href="editCentre?codi=${centre.idCentre}" class="btn btn-success loadingButton"  data-msg="obrint centre..." role="button">Editar Centre</a>
 							</div>
-				    	</c:if>
+				    	</c:if>				    	
+					    <div class="col-md-6 panel">
+							<a href="instalacionsDetail?codi=${centre.idCentre}" class="btn btn-success loadingButton"  data-msg="obrint instal·lacions..." role="button">Veure Instal·lacions</a>
+						</div>				    	
 			    	</div>
                 	<c:if test="${canViewIncidencies}">              	
 	                	<h2 class="margin_bottom30">Incidencies</h2>

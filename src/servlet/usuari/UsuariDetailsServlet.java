@@ -2,6 +2,7 @@ package servlet.usuari;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.Calendar;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import bean.User;
 import bean.ControlPage.SectionPage;
+import core.CalendarCore;
 import core.ControlPageCore;
 import core.UsuariCore;
 import utils.MyUtils;
@@ -45,11 +47,13 @@ public class UsuariDetailsServlet extends HttpServlet {
 		  	int idUsuari = Integer.parseInt(request.getParameter("id"));
 		  	User usuari = new User();
 		  	usuari = UsuariCore.findUsuariByID(conn, idUsuari);
-		  
+		    String reservesPropies = CalendarCore.pintarReservesUsuari(CalendarCore.getReservesUsuari(conn, -1, idUsuari, -1, null));
 		  	// Store info in request attribute, before forward to views
 		  	request.setAttribute("usuari", usuari);
+		  	request.setAttribute("reservesPropies", reservesPropies);
 		  	request.setAttribute("potModificar", usuari.getIdUsuari() == usuariLogetjat.getIdUsuari());
 		  	request.setAttribute("isAdmin", usuariLogetjat.getRol().contains("ADMIN"));
+		  	request.setAttribute("isPersonal", UsuariCore.hasPermision(conn, usuariLogetjat, SectionPage.personal));
 		  	request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuariLogetjat,"Usuaris"));    
 		  	// Forward to /WEB-INF/views/homeView.jsp
 		  	// (Users can not access directly into JSP pages placed in WEB-INF)

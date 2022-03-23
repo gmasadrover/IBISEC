@@ -147,8 +147,11 @@ public class DoEditEmpresaServlet extends HttpServlet {
 				empresa.setDataConstitucio(dataConstitucio);
 				empresa.setClassificacioString(classificacio);
 				empresa.setDateExpAcreditacio1(dateExpAcreditacio1);
+				empresa.setIsNegativaAcreditacio1("on".equals(multipartParams.getParametres().get("acreditacio1negatiu")));
 				empresa.setDateExpAcreditacio2(dateExpAcreditacio2);
+				empresa.setIsNegativaAcreditacio2("on".equals(multipartParams.getParametres().get("acreditacio2negatiu")));
 				empresa.setDateExpAcreditacio3(dateExpAcreditacio3);
+				empresa.setIsNegativaAcreditacio3("on".equals(multipartParams.getParametres().get("acreditacio3negatiu")));
 				empresa.setInformacioAdicional(informacioAdicional);
 				empresa.setRegistreMercantilData(dataRegistreMercantil);
 				empresa.setExerciciEconomic(dataExerciciEconomic);

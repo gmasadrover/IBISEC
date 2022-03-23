@@ -22,7 +22,7 @@
   </error-page>
   <context-param>
     <param-name>datakey</param-name>
-    <param-value>211118_0900</param-value>
+    <param-value>220224_1000</param-value>
   </context-param>
   <context-param>
     <param-name>idUsuariRecercaPresuposts</param-name>
@@ -34,7 +34,7 @@
   </context-param>
   <context-param>
     <param-name>idUsuariCertificacions</param-name>
-    <param-value>18</param-value>
+    <param-value>29</param-value>
   </context-param>
   <context-param>
     <param-name>idUsuariOrdreInici</param-name>
@@ -63,6 +63,10 @@
   <context-param>
     <param-name>pageName</param-name>
     <param-value>Intranet IBISEC</param-value>
+  </context-param>
+  <context-param>
+    <param-name>entorn</param-name>
+    <param-value>IBISEC</param-value>
   </context-param>
   <env-entry>
     <env-entry-name>hostName</env-entry-name>

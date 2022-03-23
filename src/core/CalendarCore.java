@@ -170,19 +170,29 @@ public class CalendarCore {
 		List<Reserva> reservesList = new ArrayList<Reserva>();
 		String sql = "SELECT setmana, dia, hora, idusuari, motiu, vehicle, year"
 				+ " FROM public.tbl_vehicles"
-				+ " WHERE (setmana = ? OR setmana = ?)  AND idusuari = ? AND year = ?";
+				+ " WHERE idusuari = ?";
+		
+		if (setmana > -1) {
+			sql += " AND (setmana = ? OR setmana = ?)";
+		}
+		if (year > -1) {
+			sql += " AND year = ?";
+		}
 		if (element != null) {
 			sql += " AND vehicle = ?";
 		} else {
 			sql += " AND vehicle IN ('cotxe','cotxeElectric')";
 		}
+		sql += " ORDER BY year DESC, setmana DESC, dia DESC, hora";
 		PreparedStatement pstm;
 		try {
 			pstm = conn.prepareStatement(sql);
-			pstm.setInt(1, setmana);	
-			pstm.setInt(2, setmana + 1);	
-			pstm.setInt(3, idUsuari);
-			pstm.setInt(4, year);
+			pstm.setInt(1, idUsuari);
+			if (setmana > -1) {
+				pstm.setInt(2, setmana);	
+				pstm.setInt(3, setmana + 1);	
+			}
+			if (year > -1) pstm.setInt(4, year);
 			if (element != null) pstm.setString(5, element);
 			ResultSet rs = pstm.executeQuery();
 			Reserva reserva = new ReservaElements().new Reserva();
@@ -218,7 +228,7 @@ public class CalendarCore {
 		for (Reserva reserva: reserves) {				
 			if (diaAnterior != reserva.getDia() || setmanaAnterior != reserva.getSetmana()) { // Nova reserva				
 				if (!reservaActual.isEmpty()) { // acabam la reserva anterior					
-					reservesHTML += "<span>" + reservaActual + horaFinal + "</span>";
+					reservesHTML += "<span>" + reservaActual + horaFinal + " - " + reserva.getMotiu() + "</span>";
 					if (date.getTime().after(Calendar.getInstance().getTime())) {
 						reservesHTML += "<span data-any=" + reservaAnt.getYear() + " data-setmana=" + reservaAnt.getSetmana() + " data-dia=" + reservaAnt.getDia() + " data-element=" + reservaAnt.getElement() + " data-idusuari=" + reservaAnt.getUsuari().getIdUsuari() + " class='glyphicon glyphicon-remove deleteReservaElement'></span>"; 
 					}
@@ -255,7 +265,7 @@ public class CalendarCore {
 		}	
 		if (!reservaActual.isEmpty()) { // acabam la reserva anterior	
 			
-			reservesHTML += "<span>" + reservaActual + horaFinal + "  </span>";		
+			reservesHTML += "<span>" + reservaActual + horaFinal + " - " + reservaAnt.getMotiu() + "</span>";
 			if (date.getTime().after(Calendar.getInstance().getTime())) {
 				reservesHTML += "<span data-any=" + reservaAnt.getYear() + " data-setmana=" + reservaAnt.getSetmana() + " data-dia=" + reservaAnt.getDia() + " data-element=" + reservaAnt.getElement() + " data-idusuari=" + reservaAnt.getUsuari().getIdUsuari() + " class='glyphicon glyphicon-remove deleteReservaElement'></span>"; 
 			}
