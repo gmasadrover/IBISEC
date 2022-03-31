@@ -128,7 +128,7 @@ public class DoModificacioInformeServlet extends HttpServlet {
 		String idModificacio = InformeCore.afegirModificacioInforme(conn, idInforme, proposta, ofertaProposta, Usuari, tipusIncidencia);
 		ofertaProposta.setIdInforme(idModificacio.split("#")[0]);
 		ofertaProposta.setSeleccionada(true);	  		
-		if (tipusIncidencia.equals("modificacio") || tipusIncidencia.equals("certfinal") || tipusIncidencia.equals("preusContradictoris") || (tipusIncidencia.equals("penalitzacio") && !proposta.isRetencio())) {	 
+		if (tipusIncidencia.equals("modificacio") || tipusIncidencia.equals("liquidacio") || tipusIncidencia.equals("certfinal") || tipusIncidencia.equals("preusContradictoris") || (tipusIncidencia.equals("penalitzacio") && !proposta.isRetencio())) {	 
 			OfertaCore.novaOferta(conn, ofertaProposta, Usuari.getIdUsuari());
 		}
 		

@@ -16,6 +16,7 @@ import bean.Expedient;
 import bean.InformeActuacio;
 import bean.User;
 import core.ActuacioCore;
+import core.ConfiguracioCore;
 import core.CreditCore;
 import core.ExpedientCore;
 import core.InformeCore;
@@ -97,8 +98,8 @@ public class DoCanvisActuacioServlet extends HttpServlet {
 				if (OfertaCore.findOfertaSeleccionada(conn, idInforme) != null) {	   					
 					//Crear tasca redacció contracte
 					InformeCore.modificarEstat(conn, idInforme, "execucio");
-					int usuariTascaContracte = Integer.parseInt(getServletContext().getInitParameter("idUsuariRedaccioContracte"));   	
-					int usuariTascaActualitzarEmpresa = Integer.parseInt(getServletContext().getInitParameter("idUsuariActualitzarEmpresa")); 
+					int usuariTascaContracte = ConfiguracioCore.getConfiguracio(conn).getIdUsuariRedaccioContracte();
+					int usuariTascaActualitzarEmpresa = ConfiguracioCore.getConfiguracio(conn).getIdUsuariActualitzarEmpresa();
 					if (informe.getExpcontratacio().getContracte().equals("major")) {
 						usuariTascaContracte = UsuariCore.findUsuarisByRol(conn, "CAP,JUR").get(0).getIdUsuari();
 					} 
@@ -113,7 +114,7 @@ public class DoCanvisActuacioServlet extends HttpServlet {
 					
 					//Nova tasca llicència
 					if (informe.getPropostaInformeSeleccionada().isLlicencia() && informe.getPropostaInformeSeleccionada().getTipusLlicencia().equals("comun")) {
-						usuariTascaContracte = Integer.parseInt(getServletContext().getInitParameter("idUsuariLlicencies"));   		
+						usuariTascaContracte = ConfiguracioCore.getConfiguracio(conn).getIdUsuariLlicencies();  		
 						TascaCore.novaTasca(conn, "generic", usuariTascaContracte, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Sol·licitar comunicació prèvia obra", "Sol·licitud comunicació prèvia",informe.getIdInf(),null, ipRemota, "automatic");
 						//LlicenciaCore.novaLlicencia(conn, informe.getExpcontratacio().getExpContratacio(), informe.getPropostaInformeSeleccionada().getTipusLlicencia());
 					}

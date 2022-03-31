@@ -204,6 +204,12 @@
 	                </c:if>         	
                 </c:if>
                 <!-- /.row -->     
+                <div class="row panel-body">
+					<c:set var="tasquesList" value="${tasques}" scope="request"/>
+					<c:set var="tipus" value="notificacio" scope="request"/>
+					<c:set var="idInfActual" value="-1" scope="request"/>
+					<jsp:include page="../tasca/include/_tasquesListResum.jsp"></jsp:include>
+               	</div> 
            	</div>
     		<!-- /.container-fluid -->
 		</div>

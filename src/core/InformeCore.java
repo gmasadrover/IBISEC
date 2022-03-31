@@ -990,7 +990,7 @@ public class InformeCore {
 					+ " FROM public.tbl_informeactuacio i LEFT JOIN public.tbl_actuacio a ON i.idinf = a.id"
 					+ " 	LEFT JOIN public.tbl_propostesinforme p ON i.idinf = p.idinf"
 					+ " 	LEFT JOIN public.tbl_empresaoferta o ON i.idinf = o.idinforme"
-					+ " WHERE i.idactuacio = ? AND p.seleccionada = true AND o.seleccionada = true"
+					+ " WHERE i.idactuacio = ? AND ((p.seleccionada = true AND o.seleccionada = true) OR (i.estat = 'anulat'))"
 					+ " ORDER BY i.idinf DESC;";		 
 		
 		 PreparedStatement pstm;

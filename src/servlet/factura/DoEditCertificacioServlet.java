@@ -16,6 +16,7 @@ import bean.Factura;
 import bean.User;
 import bean.ControlPage.SectionPage;
 import core.ActuacioCore;
+import core.ConfiguracioCore;
 import core.FacturaCore;
 import core.InformeCore;
 import core.TascaCore;
@@ -103,7 +104,7 @@ public class DoEditCertificacioServlet extends HttpServlet {
 	    	idProveidor = certificacio.getIdProveidor();
 	    }
 		
-	    int usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariCertificacions")); 
+	    int usuariTasca = ConfiguracioCore.getConfiguracio(conn).getIdUsuariCertificacions();
 		String idIncidencia = ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia();
 		if (multipartParams.getFitxersByName().get("certificacio") != null) {
 			FacturaCore.saveArxiuCertificacio(idIncidencia, idActuacio, idInforme, idProveidor, idCertificacio, multipartParams.getFitxersByName().get("certificacio"), conn, Usuari.getIdUsuari());

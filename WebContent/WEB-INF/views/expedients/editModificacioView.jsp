@@ -53,6 +53,7 @@
 					         		<label>Tipus incidència</label>									            	 										            	 	
 					            	<select class="selectpicker" name="tipusIncidencia" id="tipusIncidencia">						                                					                                	
 							        	<option value="modificacio">Modificació</option>
+							        	<option value="liquidacio">Liquidació</option>
 							        	<option value="excesAmidament">Excés amidaments</option>		
 							        	<option value="certfinal">Certificació final</option>			
 							        	<option value="preusContradictoris">Preus contradictoris</option>							        	

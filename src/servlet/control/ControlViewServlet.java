@@ -51,23 +51,26 @@ public class ControlViewServlet extends HttpServlet {
 		}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.control)) {
 	   		response.sendRedirect(request.getContextPath() + "/");	 	
 		}else{
-			List<ControlInfo> controlCentres = new ArrayList<ControlInfo>();
-			List<InformeActuacio> controlExpedients = new ArrayList<InformeActuacio>();
-			List<Historic> controlHistoric = new ArrayList<Historic>();
-			List<String> dictionary = new ArrayList<String>();
-			List<Tasca> tasques = new ArrayList<Tasca>();
+			//List<ControlInfo> controlCentres = new ArrayList<ControlInfo>();
+			//List<InformeActuacio> controlExpedients = new ArrayList<InformeActuacio>();
+			//List<Historic> controlHistoric = new ArrayList<Historic>();
+			//List<String> dictionary = new ArrayList<String>();
+			//List<Tasca> tasques = new ArrayList<Tasca>();
+			List<User> llistaUsuaris = new ArrayList<User>(); 	    
 			Configuracio configuracioActual = new Configuracio();
 			//tasques = TascaCore.getTasquesEstatActuacio(conn);
 			//controlHistoric = TascaCore.findHistorialComplet(conn);
-			controlHistoric = TascaCore.getTasquesSetmanals(conn, usuari.getIdUsuari());
+			//controlHistoric = TascaCore.getTasquesSetmanals(conn, usuari.getIdUsuari());
+			llistaUsuaris.addAll(UsuariCore.llistaUsuaris(conn, true));
 			configuracioActual = ConfiguracioCore.getConfiguracio(conn);
 			
 			
-			request.setAttribute("controlExpedients", controlExpedients);
-			request.setAttribute("controlCentres", controlCentres);
-			request.setAttribute("controlHistoric", controlHistoric);
-			request.setAttribute("dictionary", dictionary);
-			request.setAttribute("tasques", tasques);
+			//request.setAttribute("controlExpedients", controlExpedients);
+			//request.setAttribute("controlCentres", controlCentres);
+			//request.setAttribute("controlHistoric", controlHistoric);
+			//request.setAttribute("dictionary", dictionary);
+			//request.setAttribute("tasques", tasques);
+			request.setAttribute("llistaUsuaris", llistaUsuaris);
 			request.setAttribute("configuracioActual", configuracioActual);
 			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "Control"));
 	     

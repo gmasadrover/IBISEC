@@ -268,7 +268,7 @@ public class DoTasca extends HttpServlet {
 		   					usuariTasca = UsuariCore.finCap(conn, "juridica").getIdUsuari();
 		   					tipus = "liciMajor";	   					
 		   				}else{ //Contracte d'obres menor
-		   					usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariRecercaPresuposts"));   			
+		   					usuariTasca = ConfiguracioCore.getConfiguracio(conn).getIdUsuariRecercaPresuposts();
 		   					tipus = "liciMenor";
 		   				}
 		   				//Registrar tasca nova
@@ -285,7 +285,7 @@ public class DoTasca extends HttpServlet {
 		   				
 		   				//Nova tasca llicència
 		   				if (informe.getLlicencia() == null && informe.getPropostaInformeSeleccionada().isLlicencia() && informe.getPropostaInformeSeleccionada().getTipusLlicencia().equals("llicencia")) {
-	   						usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariLlicencies"));   		
+	   						usuariTasca = ConfiguracioCore.getConfiguracio(conn).getIdUsuariLlicencies();
 	   						tipus = "";
 	   						TascaCore.novaTasca(conn, tipus, usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Sol·licitar llicència obra per expedient " + nouCodi, "Sol·licitud llicència",informe.getIdInf(),null, ipRemote, "automatic");
 	   						//LlicenciaCore.novaLlicencia(conn, nouCodi, informe.getPropostaInformeSeleccionada().getTipusLlicencia());
@@ -356,7 +356,7 @@ public class DoTasca extends HttpServlet {
 							idInforme = InformeCore.nouInforme(conn, informe, Usuari.getIdUsuari());
 							TascaCore.actualitzarInforme(conn, idTasca, idInforme);
 						}
-						int usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariOrdreInici"));   	
+						int usuariTasca = ConfiguracioCore.getConfiguracio(conn).getIdUsuariOrdreInici();	
 						//TascaCore.novaTasca(conn, "docprelicitacio", usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Prepara documentació per a licitació expedient ", "Preparació documentació expedient",informe.getIdInf(),null, ipRemote, "automatic");
 						TascaCore.nouHistoric(conn, idTasca, "Documentació enviada per licitar", Usuari.getIdUsuari(), ipRemote, "automatic");
 						TascaCore.reasignar(conn, usuariTasca, idTasca, "docprelicitacio", "Preparar documentació per a la licitació");
@@ -438,7 +438,7 @@ public class DoTasca extends HttpServlet {
 			    	TascaCore.tancar(conn, idTasca);
 			    	Factura factura = FacturaCore.getFactura(conn, idFactura);
 			    	factura.setDataConformacio(new Date());
-			    	int usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariFactures"));   	
+			    	int usuariTasca = ConfiguracioCore.getConfiguracio(conn).getIdUsuariFactures();	
 			    	TascaCore.novaTasca(conn, "facturaConformada", usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "factura conformada", "Factura conformada", idFactura, null, ipRemote, "automatic");
 			    	FacturaCore.saveArxiu(ActuacioCore.findActuacio(conn, idActuacio).getIdIncidencia(), idActuacio, idInforme, factura.getIdProveidor(), idFactura, multipartParams.getFitxers(), conn, Usuari.getIdUsuari());
 			    	FacturaCore.modificarFactura(conn, factura, Usuari.getIdUsuari());
@@ -475,7 +475,7 @@ public class DoTasca extends HttpServlet {
 			    	Factura certificacio = FacturaCore.getCertificacio(conn, idFactura);
 			    	int usuariTasca = UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari();
 			    	if (Usuari.getDepartament().equals("gerencia")) {
-			    		usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariCertificacions")); 
+			    		usuariTasca = ConfiguracioCore.getConfiguracio(conn).getIdUsuariCertificacions();
 			    		TascaCore.novaTasca(conn, "certificacioFirmada", usuariTasca, Usuari.getIdUsuari(), idActuacio, idIncidencia, "Certificació firmada", "Certificació firmada", idFactura, null, ipRemote, "automatic");
 			    		InformeActuacio informe = InformeCore.getInformePrevi(conn, idInforme, false);
 				 		if (certificacio.getTipus().equals("final")) {

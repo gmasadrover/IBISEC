@@ -47,12 +47,28 @@ public class UpdateConfiguracio extends HttpServlet {
 		double importServeiMajor =  Double.parseDouble(multipartParams.getParametres().get("importServeiMajor"));
 		double importSubministramentMajor =  Double.parseDouble(multipartParams.getParametres().get("importSubministramentMajor"));
 	    String rutaBaseDocumentacio = multipartParams.getParametres().get("rutaBaseDocumentacio");	   
+		int idUsuariRecercaPresuposts = Integer.parseInt(multipartParams.getParametres().get("idUsuariRecercaPresuposts"));
+		int idUsuariFactures = Integer.parseInt(multipartParams.getParametres().get("idUsuariFactures"));	
+		int idUsuariCertificacions = Integer.parseInt(multipartParams.getParametres().get("idUsuariCertificacions"));	
+		int idUsuariOrdreInici = Integer.parseInt(multipartParams.getParametres().get("idUsuariOrdreInici"));	
+		int idUsuariRedaccioContracte = Integer.parseInt(multipartParams.getParametres().get("idUsuariRedaccioContracte"));	
+		int idUsuariActualitzarEmpresa = Integer.parseInt(multipartParams.getParametres().get("idUsuariActualitzarEmpresa"));	
+		int idUsuariLlicencies = Integer.parseInt(multipartParams.getParametres().get("idUsuariLlicencies")); 
 	   	Configuracio novaConfiguracio = new Configuracio(); 
 	    String errorString = null;
 	    novaConfiguracio.setImportObraMajor(importObraMajor);
 		novaConfiguracio.setImportServeiMajor(importServeiMajor);
 		novaConfiguracio.setImportSubministramentMajor(importSubministramentMajor);
 		novaConfiguracio.setRutaBaseDocumentacio(rutaBaseDocumentacio);
+		novaConfiguracio.setIdUsuariRecercaPresuposts(idUsuariRecercaPresuposts);
+		novaConfiguracio.setIdUsuariFactures(idUsuariFactures);
+		novaConfiguracio.setIdUsuariCertificacions(idUsuariCertificacions);
+		novaConfiguracio.setIdUsuariOrdreInici(idUsuariOrdreInici);
+		novaConfiguracio.setIdUsuariRedaccioContracte(idUsuariRedaccioContracte);
+		novaConfiguracio.setIdUsuariActualitzarEmpresa(idUsuariActualitzarEmpresa);
+		novaConfiguracio.setIdUsuariLlicencies(idUsuariLlicencies);
+		
+		
 		ConfiguracioCore.updateConfiguracio(conn, novaConfiguracio);
 	    
 	   	// Store infomation to request attribute, before forward to views.

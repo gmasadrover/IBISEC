@@ -60,7 +60,7 @@ public class DoEditModificacioInformeServlet extends HttpServlet {
 	    if (tipusIncidencia.equals("penalitzacio")) {	
 	    	plic = Double.parseDouble(multipartParams.getParametres().get("plicPenalitzacio").replace(',','.'));
 	    	if (plic > 0) plic = -1*plic;	    
-	    } else if(tipusIncidencia.equals("certfinal") || tipusIncidencia.equals("excesAmidament")  || tipusIncidencia.equals("decrementAmidament") ||  tipusIncidencia.equals("enriquimentInjust") || tipusIncidencia.equals("modificacio") || tipusIncidencia.equals("preusContradictoris")) {
+	    } else if(tipusIncidencia.equals("certfinal") || tipusIncidencia.equals("excesAmidament")  || tipusIncidencia.equals("decrementAmidament") ||  tipusIncidencia.equals("enriquimentInjust") || tipusIncidencia.equals("modificacio") || tipusIncidencia.equals("liquidacio") || tipusIncidencia.equals("preusContradictoris")) {
 	    	pbase = Double.parseDouble(multipartParams.getParametres().get("pbase").replace(',','.'));
 	    	iva = Double.parseDouble(multipartParams.getParametres().get("iva"));
 	    	plic = Double.parseDouble(multipartParams.getParametres().get("plic").replace(',','.'));	

@@ -18,6 +18,7 @@ import bean.InformeActuacio;
 import bean.User;
 import bean.Oferta;
 import core.ActuacioCore;
+import core.ConfiguracioCore;
 import core.CreditCore;
 import core.ExpedientCore;
 import core.InformeCore;
@@ -119,7 +120,7 @@ public class DoEditLicitacio extends HttpServlet {
 				OfertaCore.aprovarOferta(conn, idInforme, Usuari.getIdUsuari());
 				InformeCore.modificarEstat(conn, idInforme, "execucio");
 				if (informe.getPropostaInformeSeleccionada().isLlicencia() && informe.getPropostaInformeSeleccionada().getTipusLlicencia().equals("comun")) {
-					int usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariLlicencies"));   		
+					int usuariTasca = ConfiguracioCore.getConfiguracio(conn).getIdUsuariLlicencies();
 					TascaCore.novaTasca(conn, "generic", usuariTasca, Usuari.getIdUsuari(), informe.getActuacio().getReferencia(), informe.getIdIncidencia(), "Sol·licitar comunicació prèvia obra", "Sol·licitud comunicació prèvia",informe.getIdInf(),null, request.getRemoteAddr(), "automatic");
 				}
     	    }

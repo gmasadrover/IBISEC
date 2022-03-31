@@ -2,6 +2,8 @@ package servlet.factura;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -12,11 +14,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import bean.Factura;
 import bean.InformeActuacio;
+import bean.Tasca;
 import bean.User;
 import bean.ControlPage.SectionPage;
 import core.ControlPageCore;
 import core.FacturaCore;
 import core.InformeCore;
+import core.TascaCore;
 import core.UsuariCore;
 import utils.MyUtils;
 
@@ -50,19 +54,18 @@ public class FacturaDetailsServlet extends HttpServlet {
 			boolean isUsuariConformador = false;
 	        Factura factura = null;	 
 	        InformeActuacio informe = new InformeActuacio();
-	      
-	 
+	        List<Tasca> tasques = new ArrayList<Tasca>();
+	        tasques = TascaCore.findTasquesFactura(conn, idFactura);
 	        factura = FacturaCore.getFactura(conn, idFactura);
 			if (factura.getUsuariConformador() != null) isUsuariConformador = factura.getUsuariConformador().getIdUsuari()  == usuari.getIdUsuari();
 			if (factura.getIdInforme() != null && !factura.getIdInforme().equals("-1")) {
 				informe = InformeCore.getInformePrevi(conn, factura.getIdInforme(), false);
 			}
 	 
-	         
-	      
 	        // Store errorString in request attribute, before forward to views.
+			request.setAttribute("isIBISEC", true);
 	        request.setAttribute("canModificar", UsuariCore.hasPermision(conn, usuari, SectionPage.factures_crear));
-	       
+	        request.setAttribute("tasques", tasques);
 	        request.setAttribute("factura", factura);
 	        request.setAttribute("informe", informe);
 	        request.setAttribute("isUsuariConformador", isUsuariConformador);

@@ -1242,6 +1242,8 @@ public class InformeActuacio {
 		
 		if (this.tipusModificacio.equals("modificacio")) {
 			estat = "Modificació";
+		} else if (this.tipusModificacio.equals("liquidacio")) {
+			estat = "Liquidació";
 		} else if (this.tipusModificacio.equals("preusContradictoris")) {
 			estat = "Preus contradictoris";
 		} else if (this.tipusModificacio.equals("termini")) {

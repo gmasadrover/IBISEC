@@ -16,6 +16,7 @@ import bean.Actuacio;
 import bean.Factura;
 import bean.User;
 import core.ActuacioCore;
+import core.ConfiguracioCore;
 import core.FacturaCore;
 import core.InformeCore;
 import core.TascaCore;
@@ -92,7 +93,7 @@ public class DoCreateCertificacioServlet extends HttpServlet {
 			certificacio.setUsuariConformador(InformeCore.getResponsableContracte(conn, idInforme));
 			certificacio.setDataEnviatConformador(dataPasadaConformar);
 			FacturaCore.newCertificacio(conn, certificacio, idUsuari);	
-			int usuariTasca = Integer.parseInt(getServletContext().getInitParameter("idUsuariCertificacions")); 
+			int usuariTasca = ConfiguracioCore.getConfiguracio(conn).getIdUsuariCertificacions();
 			if (multipartParams.getFitxersByName().get("certificacio") != null) {
 				FacturaCore.saveArxiuCertificacio(actuacio.getIdIncidencia(), idActuacio, idInforme, idProveidor, idCertificacio, multipartParams.getFitxersByName().get("certificacio"), conn, Usuari.getIdUsuari());
 				if (usuariTasca != idUsuari) {

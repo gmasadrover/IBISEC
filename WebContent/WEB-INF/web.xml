@@ -22,35 +22,7 @@
   </error-page>
   <context-param>
     <param-name>datakey</param-name>
-    <param-value>220224_1000</param-value>
-  </context-param>
-  <context-param>
-    <param-name>idUsuariRecercaPresuposts</param-name>
-    <param-value>12</param-value>
-  </context-param>
-  <context-param>
-    <param-name>idUsuariFactures</param-name>
-    <param-value>12</param-value>
-  </context-param>
-  <context-param>
-    <param-name>idUsuariCertificacions</param-name>
-    <param-value>29</param-value>
-  </context-param>
-  <context-param>
-    <param-name>idUsuariOrdreInici</param-name>
-    <param-value>1</param-value>
-  </context-param>
-  <context-param>
-    <param-name>idUsuariRedaccioContracte</param-name>
-    <param-value>12</param-value>
-  </context-param>
-  <context-param>
-    <param-name>idUsuariActualitzarEmpresa</param-name>
-    <param-value>7</param-value>
-  </context-param>
-  <context-param>
-    <param-name>idUsuariLlicencies</param-name>
-    <param-value>29</param-value>
+    <param-value>220330_0800</param-value>
   </context-param>
   <context-param>
     <param-name>idUsuariPersonal</param-name>

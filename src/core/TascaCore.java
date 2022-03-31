@@ -454,6 +454,29 @@ public class TascaCore {
 	     return list;
 	}
 	
+	public static List<Tasca> findTasquesFactura(Connection conn, String idFactura) {
+		List<Tasca> list = new ArrayList<Tasca>(); 
+		String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament, prioritat, registre, usucre"
+				 	+ " FROM public.tbl_tasques"
+				 	+ " WHERE idinforme = ? AND tipus IN ('factura', 'conformarFactura', 'facturaConformada', 'generic')";	 
+		 PreparedStatement pstm;
+		try {
+			pstm = conn.prepareStatement(sql);
+			pstm.setString(1, idFactura);		
+			 ResultSet rs = pstm.executeQuery();
+			
+			 while (rs.next()) {
+				 Tasca tasca = initTasca(conn, rs, false);
+				 list.add(tasca);
+			 }
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	 
+		 
+	     return list;
+	}
+	
 	public static Tasca findTascaVacances(Connection conn, int idSolicitud) {
 		 Tasca tasca = new Tasca(); 
 		String sql = "SELECT idtasca, idusuari, idactuacio, descripcio, tipus, activa, idincidencia, idinforme, llegida, departament, prioritat, registre, usucre"

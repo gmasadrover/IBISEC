@@ -64,6 +64,83 @@
 								<input name="rutaBaseDocumentacio" placeholder="" value="${configuracioActual.rutaBaseDocumentacio}" required>
 							</div>
 						</div>
+						<div class="form-group">
+							<div class="col-md-3">
+								<label>Usuari Recerca Pressuposts</label>
+                                <input type="hidden" id="idUsuariRecercaPresupostsPrevi" value="${configuracioActual.idUsuariRecercaPresuposts}" >														            	 										            	 	
+				                <select class="form-control selectpicker" data-live-search="true" data-size="6" name="idUsuariRecercaPresuposts" id="idUsuariRecercaPresuposts">
+				                	<c:forEach items="${llistaUsuaris}" var="usuari">
+				                		<option value="${usuari.idUsuari}">${usuari.getNomCompletReal()}</option>
+				                	</c:forEach>					                                	
+				                </select>	
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-3">
+								<label>Usuari Comprovació factures</label>
+                                <input type="hidden" id="idUsuariFacturesPrevi" value="${configuracioActual.idUsuariFactures}" >														            	 										            	 	
+				                <select class="form-control selectpicker" data-live-search="true" data-size="6" name="idUsuariFactures" id="idUsuariFactures">
+				                	<c:forEach items="${llistaUsuaris}" var="usuari">
+				                		<option value="${usuari.idUsuari}">${usuari.getNomCompletReal()}</option>
+				                	</c:forEach>					                                	
+				                </select>	
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-3">
+								<label>Usuari Comprovació certificacions</label>
+                                <input type="hidden" id="idUsuariCertificacionsPrevi" value="${configuracioActual.idUsuariCertificacions}" >														            	 										            	 	
+				                <select class="form-control selectpicker" data-live-search="true" data-size="6" name="idUsuariCertificacions" id="idUsuariCertificacions">
+				                	<c:forEach items="${llistaUsuaris}" var="usuari">
+				                		<option value="${usuari.idUsuari}">${usuari.getNomCompletReal()}</option>
+				                	</c:forEach>					                                	
+				                </select>	
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-3">
+								<label>Usuari realització Memòries d'Inici</label>
+                                <input type="hidden" id="idUsuariOrdreIniciPrevi" value="${configuracioActual.idUsuariOrdreInici}" >														            	 										            	 	
+				                <select class="form-control selectpicker" data-live-search="true" data-size="6" name="idUsuariOrdreInici" id="idUsuariOrdreInici">
+				                	<c:forEach items="${llistaUsuaris}" var="usuari">
+				                		<option value="${usuari.idUsuari}">${usuari.getNomCompletReal()}</option>
+				                	</c:forEach>					                                	
+				                </select>	
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-3">
+								<label>Usuari redacció contractes</label>
+                                <input type="hidden" id="idUsuariRedaccioContractePrevi" value="${configuracioActual.idUsuariRedaccioContracte}" >														            	 										            	 	
+				                <select class="form-control selectpicker" data-live-search="true" data-size="6" name="idUsuariRedaccioContracte" id="idUsuariRedaccioContracte">
+				                	<c:forEach items="${llistaUsuaris}" var="usuari">
+				                		<option value="${usuari.idUsuari}">${usuari.getNomCompletReal()}</option>
+				                	</c:forEach>					                                	
+				                </select>	
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-3">
+								<label>Usuari actualització dades empresa</label>
+                                <input type="hidden" id="idUsuariActualitzarEmpresaPrevi" value="${configuracioActual.idUsuariActualitzarEmpresa}" >														            	 										            	 	
+				                <select class="form-control selectpicker" data-live-search="true" data-size="6" name="idUsuariActualitzarEmpresa" id="idUsuariActualitzarEmpresa">
+				                	<c:forEach items="${llistaUsuaris}" var="usuari">
+				                		<option value="${usuari.idUsuari}">${usuari.getNomCompletReal()}</option>
+				                	</c:forEach>					                                	
+				                </select>	
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-3">
+								<label>Usuari tramitació llicències</label>
+                                <input type="hidden" id="idUsuariLlicenciesPrevi" value="${configuracioActual.idUsuariLlicencies}" >	
+                                <select class="form-control selectpicker" data-live-search="true" data-size="6" name="idUsuariLlicencies" id="idUsuariLlicencies">													            	 										            	 	
+				                	<c:forEach items="${llistaUsuaris}" var="usuari">
+				                		<option value="${usuari.idUsuari}">${usuari.getNomCompletReal()}</option>
+				                	</c:forEach>					                                	
+				                </select>	
+							</div>
+						</div>
 						<div class="col-md-4">												        		
 				    		<div class="row">
 				        		<div class="col-md-12">															        																						 				
@@ -74,47 +151,6 @@
                 	</form>
                 </div>
 			</div>
-		
-	       	<div class="row">				
-				<div class="col-md-12">
-                	<h2>Historial usuari</h2>
-                 	<div class="table-responsive">                        
-                         <table class="table table-striped table-bordered filerTable informes">
-                             <thead>
-                                 <tr> 
-                                 	<th>Data</th> 
-                                 	<th>Expedient/Registre</th>
-                                 	<th>Actuacio</th>                              	
-                                     <th>Comentari</th>
-                                     <th>Descripcio tasca</th> 
-                                     <th>Centre</th>  
-                                     <th>Responsable</th>
-                                 </tr>
-                             </thead>
-                             <tbody>
-                             	<c:forEach items="${controlHistoric}" var="historic" >
-				          	<tr>
-				          		<td>${historic.getDataString()}</td>
-				          		<c:choose>
-					          		<c:when test="${historic.tasca.registre != null}">
-					          			<td>${historic.tasca.registre}</td>	
-					          		</c:when>
-					          		<c:otherwise>
-					          			<td>${historic.actuacio.refExt}</td>	
-					          		</c:otherwise>
-				          		</c:choose>
-				            	<td>${historic.actuacio.descripcio}</td>		
-				            	<td>${historic.comentari}</td>	
-				            	<td>${historic.tasca.descripcio}</td>									            										            	
-				            	<td>${historic.actuacio.centre.getNomComplet()}</td>	
-				            	<td>${historic.usuari.getNomComplet()}</td>					            	
-				          	</tr>
-				       	</c:forEach>
-                             </tbody>
-                         </table>
-                	</div>
-               	</div>
-	   		</div> 	            
         </div>
         <!-- /#page-wrapper -->
 

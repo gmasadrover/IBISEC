@@ -1,32 +1,11 @@
 $(document).ready(function() {
-	$('.filerTable.informes').DataTable({
-		dom: 'Bfrtip',
-        buttons: [ {
-	            extend: 'excelHtml5',
-	            customize: function( xlsx ) {
-	                var sheet = xlsx.xl.worksheets['sheet1.xml']; 
-	                $('row c[r^="C"]', sheet).attr( 's', '2' );
-	            },
-	            exportOptions: {
-                    columns: ':visible'
-                }
-        	},
-	        {
-	            extend: 'collection',
-	            text: 'Editar columnes',
-	            buttons: [ 'columnsVisibility' ],
-	            visibility: true
-	        }
-        ],	
-        "order": [[ 0, "desc" ]],
-		"aoColumns": [
-    		null,
-    		null,    		
-    		null,
-    		null,
-    		null,
-    		null,
-    		null
-		]
-	});
+	$('#idUsuariRecercaPresuposts').selectpicker('val', $('#idUsuariRecercaPresupostsPrevi').val());
+	$('#idUsuariFactures').selectpicker('val', $('#idUsuariFacturesPrevi').val());
+	$('#idUsuariCertificacions').selectpicker('val', $('#idUsuariCertificacionsPrevi').val());
+	$('#idUsuariOrdreInici').selectpicker('val', $('#idUsuariOrdreIniciPrevi').val());
+	$('#idUsuariRedaccioContracte').selectpicker('val', $('#idUsuariRedaccioContractePrevi').val());
+	$('#idUsuariActualitzarEmpresa').selectpicker('val', $('#idUsuariActualitzarEmpresaPrevi').val());
+	$('#idUsuariLlicencies').selectpicker('val', $('#idUsuariLlicenciesPrevi').val());
+	
+	$('.selectpicker').selectpicker('refresh');
 });
