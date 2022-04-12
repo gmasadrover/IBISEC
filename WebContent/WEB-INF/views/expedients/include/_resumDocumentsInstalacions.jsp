@@ -26,7 +26,7 @@
 		</div>
 	</div>	
 	<div class="row col-md-12">
-		<div class="documentsIntalacioBaixaTensio"></div>
+		<div class="documentsInstalacioBaixaTensio"></div>
 		<br>					            		
 	</div>
 	<p>
@@ -45,7 +45,7 @@
 		</div>
 	</div>	
 	<div class="row col-md-12">
-		<div class="documentsIntalacioFotovoltaica"></div>
+		<div class="documentsInstalacioFotovoltaica"></div>
 		<br>					            		
 	</div>
 	<p>
@@ -59,7 +59,7 @@
 		</div>		
 	</div>		
 	<div class="row col-md-12">
-		<div class="documentsIntalacioContraincendis"></div>
+		<div class="documentsInstalacioContraincendis"></div>
 		<br>					            		
 	</div>
 	<p>
@@ -133,7 +133,7 @@
 		</div>		
 	</div>	
 	<div class="row col-md-12">
-		<div class="documentsIntalacioTermica"></div>
+		<div class="documentsInstalacioTermica"></div>
 		<br>					            		
 	</div>	
 	<p>
@@ -147,21 +147,21 @@
 		</div>		
 	</div>		
 	<div class="row col-md-12">
-		<div class="documentsIntalacioAscensor"></div>
+		<div class="documentsInstalacioAscensor"></div>
 		<br>					            		
 	</div>
 	<p>
 		<label>Documentació Instal·lació alarma:</label>
 	</p>	
 	<div class="row col-md-12">
-		<div class="documentsIntalacioAlarma"></div>
+		<div class="documentsInstalacioAlarma"></div>
 		<br>					            		
 	</div>
 	<p>
 		<label>Documentació Instal·lació subministrament aigua:</label>
 	</p>	
 	<div class="row col-md-12">
-		<div class="documentsIntalacioSubministreAigua"></div>
+		<div class="documentsInstalacioSubministreAigua"></div>
 		<br>					            		
 	</div>
 	<p>

@@ -40,7 +40,7 @@ public class ErrorServlet extends HttpServlet {
 		if (usuari == null) {
 			response.sendRedirect(request.getContextPath() + "/preLogin");
 		}else if (!UsuariCore.hasPermision(conn, usuari, SectionPage.actuacio_list)) {
-    		response.sendRedirect(request.getContextPath() + "/");	
+    		response.sendRedirect(request.getContextPath() + "/centres");	
 		} else {
 			RequestDispatcher dispatcher = this.getServletContext()
 					.getRequestDispatcher("/WEB-INF/views/errorView.jsp");

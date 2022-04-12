@@ -14,9 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import bean.Empresa;
 import bean.InformeActuacio;
+import bean.Partida;
 import bean.User;
 import bean.ControlPage.SectionPage;
 import core.ControlPageCore;
+import core.CreditCore;
 import core.EmpresaCore;
 import core.InformeCore;
 import core.UsuariCore;
@@ -48,16 +50,26 @@ public class EditModificatInformeServlet extends HttpServlet {
  	   	}else{
 			String idMod = request.getParameter("idMod");
 			String idInf = request.getParameter("idinf");		
+			List<Partida> partidesList = new ArrayList<Partida>();
+		    String partidaPare = null;
+		    String partida = null;
 	        List<Empresa> empresesList = new ArrayList<Empresa>();      
 	        InformeActuacio informePrevi = new InformeActuacio();
 	        InformeActuacio informeModificacio = new InformeActuacio();
 	        informeModificacio = InformeCore.getMoficacioInforme(conn, idMod, true);	
+	        if (informeModificacio.getAssignacioCredit().size() > 0) {
+	        	partidaPare = informeModificacio.getAssignacioCredit().get(0).getPartida().getSubpartidaDe();
+	        	partida = informeModificacio.getAssignacioCredit().get(0).getPartida().getCodi();
+	        }
 			informePrevi = InformeCore.getInformePrevi(conn, idInf, false);
 			empresesList = EmpresaCore.getEmpreses(conn);
 			empresesList.addAll(EmpresaCore.getEmpresesUTE(conn));
-	 
+			partidesList = CreditCore.getPartides(conn, true);
 	        
 	        // Store errorString in request attribute, before forward to views.  
+			request.setAttribute("partidesList", partidesList);
+		   	request.setAttribute("partidaPare", partidaPare);
+		   	request.setAttribute("partida", partida);
 	        request.setAttribute("informeModificacio", informeModificacio);
 	        request.setAttribute("informePrevi", informePrevi);
 	 	    request.setAttribute("empresesList", empresesList);

@@ -47,7 +47,7 @@ public class UsuariDetailsServlet extends HttpServlet {
 		  	int idUsuari = Integer.parseInt(request.getParameter("id"));
 		  	User usuari = new User();
 		  	usuari = UsuariCore.findUsuariByID(conn, idUsuari);
-		    String reservesPropies = CalendarCore.pintarReservesUsuari(CalendarCore.getReservesUsuari(conn, -1, idUsuari, -1, null));
+		    String reservesPropies = CalendarCore.pintarReservesUsuari(CalendarCore.getReservesUsuari(conn, -1, idUsuari, -1, null), true);
 		  	// Store info in request attribute, before forward to views
 		  	request.setAttribute("usuari", usuari);
 		  	request.setAttribute("reservesPropies", reservesPropies);

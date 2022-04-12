@@ -256,7 +256,7 @@ public class UsuariCore {
 	
 	public static void modificarDades(Connection conn, int idUsuari, User newUsuari) {
 		String sql = "UPDATE public.tbl_usuaris"
-					+ " SET nom=?, cognoms=?, carreg=?"
+					+ " SET nom=?, cognoms=?, carreg=?, rol=?"
 				  	+ " WHERE idusuari=?";		 
 		PreparedStatement pstm;
 		try {
@@ -264,7 +264,8 @@ public class UsuariCore {
 			pstm.setString(1, newUsuari.getName());
 			pstm.setString(2, newUsuari.getLlinatges());
 			pstm.setString(3, newUsuari.getCarreg());
-			pstm.setInt(4, idUsuari);
+			pstm.setString(4, newUsuari.getRol());
+			pstm.setInt(5, idUsuari);
 			pstm.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -342,71 +343,71 @@ public class UsuariCore {
 		String rols = usuari.getRol();
 		switch (section) {
 			case control:
-				permision = rols.toUpperCase().contains("ADMIN") || (rols.toUpperCase().contains("GER"));
+				permision = rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString()) || (rols.toUpperCase().contains(User.RolsUsuaris.GER.toString()));
 				break;
 			case actuacio_list:
-				permision = (rols.toUpperCase().contains("ADMIN")) || (rols.toUpperCase().contains("GER"));
+				permision = (rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString()) || rols.toUpperCase().contains(User.RolsUsuaris.CONSELLERIA.toString()));
 				break;
 			case projectes_list:
-				permision = rols.toUpperCase().contains("ADMIN");
+				permision = rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString());
 			case projectes_crear:
-				permision = rols.toUpperCase().contains("ADMIN");
+				permision = rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString());
 			case actuacio_modificar:
-				permision = (rols.toUpperCase().contains("ADMIN")) || (rols.toUpperCase().contains("MANUAL"));
+				permision = (rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString())) || (rols.toUpperCase().contains(User.RolsUsuaris.MANUAL.toString()));
 				break;
 			case actuacio_detalls:
 				permision = true;
 				break;
 			case actuacio_manual:
-				permision = (rols.toUpperCase().contains("ADMIN")) || (rols.toUpperCase().contains("MANUAL"));
+				permision = (rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString())) || (rols.toUpperCase().contains(User.RolsUsuaris.MANUAL.toString()));
 				break;
 			case tecnic_actiacio:
-				permision = (rols.toUpperCase().contains("ADMIN")) || (rols.toUpperCase().contains("CAP"));
+				permision = (rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString())) || (rols.toUpperCase().contains(User.RolsUsuaris.CAP.toString()));
 				break;
 			case incidencia_list:
-				permision = (rols.toUpperCase().contains("ADMIN")) || (rols.toUpperCase().contains("GER"));
+				permision = (rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString())) || (rols.toUpperCase().contains(User.RolsUsuaris.GER.toString()));
 				break;
 			case incidencia_modificar:
-				permision = (rols.toUpperCase().contains("ADMIN")) || (rols.toUpperCase().contains("GER"));
+				permision = (rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString())) || (rols.toUpperCase().contains(User.RolsUsuaris.GER.toString()));
 				break;
 			case incidencia_detalls:
-				permision = (rols.toUpperCase().contains("ADMIN")) || (rols.toUpperCase().contains("GER"));
+				permision = (rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString())) || (rols.toUpperCase().contains(User.RolsUsuaris.GER.toString()));
 				break;
 			case empreses_crear:
-				permision = (rols.toUpperCase().contains("ADM") || rols.toUpperCase().contains("JUR"));
+				permision = (rols.toUpperCase().contains(User.RolsUsuaris.ADM.toString()) || rols.toUpperCase().contains(User.RolsUsuaris.JUR.toString()));
 				break;
 			case empreses_list:
-				permision = !rols.toUpperCase().contains("CONSELLERIA");
+				permision = !rols.toUpperCase().contains(User.RolsUsuaris.CONSELLERIA.toString());
 				break;
 			case expedient_list:
-				permision = !rols.toUpperCase().contains("CONSELLERIA");
+				permision = !rols.toUpperCase().contains(User.RolsUsuaris.CONSELLERIA.toString());
 				break;
 			case expedient_detalls:
-				permision = !rols.toUpperCase().contains("CONSELLERIA");
+				permision = !rols.toUpperCase().contains(User.RolsUsuaris.CONSELLERIA.toString());
 				break;
 			case expedient_modificar:
-				permision = rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("JUR") || rols.toUpperCase().contains("MANUAL");
+				permision = rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString()) || rols.toUpperCase().contains(User.RolsUsuaris.JUR.toString()) || rols.toUpperCase().contains(User.RolsUsuaris.MANUAL.toString());
 				break;
 			case bastanteos_list:
-				permision = rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("JUR");
+				permision = rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString()) || rols.toUpperCase().contains(User.RolsUsuaris.JUR.toString());
 				break;
 			case bastanteos_modificar:
-				permision = rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("JUR");
+				permision = rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString()) || rols.toUpperCase().contains(User.RolsUsuaris.JUR.toString());
 				break;
 			case judicials_list:
-				permision = !rols.toUpperCase().contains("CONSELLERIA");
+				permision = !rols.toUpperCase().contains(User.RolsUsuaris.CONSELLERIA.toString());
 				break;
 			case judicials_modificar:
-				permision = rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("JUR");
+				permision = rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString()) || rols.toUpperCase().contains(User.RolsUsuaris.JUR.toString());
 				break;
 			case llicencia_list:
-				permision = !rols.toUpperCase().contains("CONSELLERIA");
+				permision = !rols.toUpperCase().contains(User.RolsUsuaris.CONSELLERIA.toString());
 				break;
 			case llicencia_detalls:
 				permision = true;
 				break;
 			case llicencia_modificar:
-				permision = rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("ADM");
+				permision = rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString()) || rols.toUpperCase().contains(User.RolsUsuaris.ADM.toString());
 				break;
 			case centres_list:
 				permision = true;
@@ -415,67 +416,67 @@ public class UsuariCore {
 				permision = true;
 				break;
 			case centres_crear:
-				permision = rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("ADM");
+				permision = rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString()) || rols.toUpperCase().contains(User.RolsUsuaris.ADM.toString());
 				break;
 			case partides_crear:
-				permision = rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("CONTA");
+				permision = rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString()) || rols.toUpperCase().contains(User.RolsUsuaris.CONTA.toString());
 				break;
 			case partides_list:
-				permision = !rols.toUpperCase().contains("CONSELLERIA");
+				permision = !rols.toUpperCase().contains(User.RolsUsuaris.CONSELLERIA.toString());
 				break;
 			case registre_detalls:
 				permision = true;
 				break;
 			case registre_ent_crear:
-				permision = rols.toUpperCase().contains("ADM");
+				permision = rols.toUpperCase().contains(User.RolsUsuaris.ADM.toString());
 				break;
 			case registre_ent_list:
 				permision = true;
 				break;
 			case registre_sort_crear:
-				permision = rols.toUpperCase().contains("ADM");
+				permision = rols.toUpperCase().contains(User.RolsUsuaris.ADM.toString());
 				break;
 			case registre_sort_list:
 				permision = true;
 				break;
 			case tasques_crear:
-				permision = (rols.toUpperCase().contains("MANUAL")) || (rols.toUpperCase().contains("CAP")) || (rols.toUpperCase().contains("ADM")) ;
+				permision = (rols.toUpperCase().contains(User.RolsUsuaris.MANUAL.toString())) || (rols.toUpperCase().contains(User.RolsUsuaris.CAP.toString())) || (rols.toUpperCase().contains(User.RolsUsuaris.ADM.toString())) ;
 				break;
 			case tasques_list:
-				permision = !rols.toUpperCase().contains("CONSELLERIA");
+				permision = !rols.toUpperCase().contains(User.RolsUsuaris.CONSELLERIA.toString());
 				break;
 			case tasques_detalls:
-				permision = !rols.toUpperCase().contains("CONSELLERIA");
+				permision = !rols.toUpperCase().contains(User.RolsUsuaris.CONSELLERIA.toString());
 				break;
 			case usuari_detalls:
 				permision = true;
 				break;			
 			case factures_list:
-				permision = !rols.toUpperCase().contains("CONSELLERIA");
+				permision = !rols.toUpperCase().contains(User.RolsUsuaris.CONSELLERIA.toString());
 				break;
 			case factures_view:
 				permision = true;
 				break;
 			case factures_crear:
-				permision = rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("CONTA");
+				permision = rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString()) || rols.toUpperCase().contains(User.RolsUsuaris.CONTA.toString());
 				break;
 			case llistats_list:
-				permision = rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("GER");
+				permision = rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString()) || rols.toUpperCase().contains(User.RolsUsuaris.GER.toString());
 				break;
 			case manuals:
 				permision = true;
 				break;
 			case personal:
-				permision = rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("PERSO");
+				permision = rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString()) || rols.toUpperCase().contains(User.RolsUsuaris.PERSO.toString());
 				break;
 			case personalIBISEC:
-				permision = !rols.toUpperCase().contains("CONSELLERIA");
+				permision = !rols.toUpperCase().contains(User.RolsUsuaris.CONSELLERIA.toString());
 				break;
 			case modificarPersonal:
-				permision = rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("PERSO");
+				permision = rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString()) || rols.toUpperCase().contains(User.RolsUsuaris.PERSO.toString());
 				break;
 			case dades_bancaries:
-				permision = rols.toUpperCase().contains("ADMIN") || rols.toUpperCase().contains("DADESBANC");
+				permision = rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString()) || rols.toUpperCase().contains(User.RolsUsuaris.DADESBANC.toString());
 				break;
 			default:
 				break;

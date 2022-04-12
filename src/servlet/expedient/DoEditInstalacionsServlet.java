@@ -93,14 +93,14 @@ public class DoEditInstalacionsServlet extends HttpServlet {
 	    	}	
 			
 			InformeCore.actualitzarInstalacions(conn, idInforme, instalacions);
-			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsIntalacioBaixaTensio"), idIncidencia, idActuacio, "", "", "", idInforme, "Instalacio baixa tensio", Usuari.getIdUsuari());
-			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsIntalacioFotovoltaica"), idIncidencia, idActuacio, "", "", "", idInforme, "Instalacio fotovoltaica", Usuari.getIdUsuari());
-			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsIntalacioContraincendis"), idIncidencia, idActuacio, "", "", "", idInforme, "Instalacio contraincencis", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsInstalacioBaixaTensio"), idIncidencia, idActuacio, "", "", "", idInforme, "Instalacio baixa tensio", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsInstalacioFotovoltaica"), idIncidencia, idActuacio, "", "", "", idInforme, "Instalacio fotovoltaica", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsInstalacioContraincendis"), idIncidencia, idActuacio, "", "", "", idInforme, "Instalacio contraincencis", Usuari.getIdUsuari());
 			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsCertificatEficienciaEnergetica"), idIncidencia, idActuacio, "", "", "", idInforme, "Certificat eficiència energètica", Usuari.getIdUsuari());
-			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsIntalacioTermica"), idIncidencia, idActuacio, "", "", "", idInforme, "Instalacio termica", Usuari.getIdUsuari());
-			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsIntalacioAscensor"), idIncidencia, idActuacio, "", "", "", idInforme, "Instalacio ascensor", Usuari.getIdUsuari());
-			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsIntalacioAlarma"), idIncidencia, idActuacio, "", "", "", idInforme, "Instalacio alarma", Usuari.getIdUsuari());
-			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsIntalacioSubministreAigua"), idIncidencia, idActuacio, "", "", "", idInforme, "Subministre aigua", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsInstalacioTermica"), idIncidencia, idActuacio, "", "", "", idInforme, "Instalacio termica", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsInstalacioAscensor"), idIncidencia, idActuacio, "", "", "", idInforme, "Instalacio ascensor", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsInstalacioAlarma"), idIncidencia, idActuacio, "", "", "", idInforme, "Instalacio alarma", Usuari.getIdUsuari());
+			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsInstalacioSubministreAigua"), idIncidencia, idActuacio, "", "", "", idInforme, "Subministre aigua", Usuari.getIdUsuari());
 			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsPlaAutoproteccio"), idIncidencia, idActuacio, "", "", "", idInforme, "Pla autoproteccio", Usuari.getIdUsuari());
 			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsCedulaDeHabitabilitat"), idIncidencia, idActuacio, "", "", "", idInforme, "Cedula habitabilitat", Usuari.getIdUsuari());
 			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("documentsInstalacioPetrolifera"), idIncidencia, idActuacio, "", "", "", idInforme, "Instalació petrolifers", Usuari.getIdUsuari());

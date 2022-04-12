@@ -44,8 +44,82 @@ public class DoCanviarDadesServlet extends HttpServlet {
 		  	usuariModificat.setName(request.getParameter("nom"));
 		  	usuariModificat.setLlinatges(request.getParameter("cognoms"));
 		  	usuariModificat.setCarreg(request.getParameter("carreg"));
-		  	UsuariCore.modificarDades(conn, usuari.getIdUsuari(), usuariModificat);		  	  	
-		  	response.sendRedirect(request.getContextPath() + "/UsuariDetails?id=" + usuari.getIdUsuari());		  	
+		  	
+		  	String rols = "";
+		  	boolean primer = true;
+		  	if ("on".equals(request.getParameter("ADMIN"))) {
+		  		rols = "ADMIN";
+		  		primer = false;
+		  	}
+		  	if ("on".equals(request.getParameter("GER"))) {
+		  		if (primer) {
+		  			primer = false;
+		  			rols = "GER";
+		  		} else {
+		  			rols += ",GER";
+		  		}
+		  	}
+		  	if ("on".equals(request.getParameter("CAP"))) {
+		  		if (primer) {
+		  			primer = false;
+		  			rols = "CAP";
+		  		} else {
+		  			rols += ",CAP";
+		  		}
+		  	}
+		  	if ("on".equals(request.getParameter("ADM"))) {
+		  		if (primer) {
+		  			primer = false;
+		  			rols = "ADM";
+		  		} else {
+		  			rols += ",ADM";
+		  		}
+		  	}
+		  	if ("on".equals(request.getParameter("JUR"))) {
+		  		if (primer) {
+		  			primer = false;
+		  			rols = "JUR";
+		  		} else {
+		  			rols += ",JUR";
+		  		}
+		  	}
+		  	if ("on".equals(request.getParameter("CONSELLERIA"))) {
+		  		if (primer) {
+		  			primer = false;
+		  			rols = "CONSELLERIA";
+		  		} else {
+		  			rols += ",CONSELLERIA";
+		  		}
+		  	}
+		  	if ("on".equals(request.getParameter("CONTA"))) {
+		  		if (primer) {
+		  			primer = false;
+		  			rols = "CONTA";
+		  		} else {
+		  			rols += ",CONTA";
+		  		}
+		  	}
+		  	if ("on".equals(request.getParameter("PERSO"))) {
+		  		if (primer) {
+		  			primer = false;
+		  			rols = "PERSO";
+		  		} else {
+		  			rols += ",PERSO";
+		  		}
+		  	}
+		  	if ("on".equals(request.getParameter("DADESBANC"))) {
+		  		if (primer) {
+		  			primer = false;
+		  			rols = "DADESBANC";
+		  		} else {
+		  			rols += ",DADESBANC";
+		  		}
+		  	}
+		 
+		  	usuariModificat.setRol(rols);
+		  	int idUsuari = Integer.parseInt(request.getParameter("idUsuari"));
+		  	UsuariCore.modificarDades(conn, idUsuari, usuariModificat);		  	  	
+		  	response.sendRedirect(request.getContextPath() + "/UsuariDetails?id=" + idUsuari);		  	
 		}
 	}
 

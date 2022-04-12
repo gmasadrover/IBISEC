@@ -13,6 +13,11 @@ public class User {
 	private int vacances;
 	private int permisos;
 	private boolean actiu;
+	
+	public enum RolsUsuaris{
+		ADMIN, GER, MANUAL, CAP, ADM, JUR, CONSELLERIA, CONTA, PERSO, DADESBANC
+	}
+	
 	   public User() {
 	 
 	   }

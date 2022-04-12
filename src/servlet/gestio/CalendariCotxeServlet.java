@@ -54,7 +54,11 @@ public class CalendariCotxeServlet extends HttpServlet {
 			Calendar cal = Calendar.getInstance();	
 	        int diaSetmana = cal.get(Calendar.DAY_OF_WEEK);
 	        String reservesPropies = "";
-			reservesPropies = CalendarCore.pintarReservesUsuari(CalendarCore.getReservesUsuari(conn, cal.get(Calendar.WEEK_OF_YEAR), usuariLogetjat.getIdUsuari(), cal.get(Calendar.YEAR), null));
+	        int idUsuari = usuariLogetjat.getIdUsuari();
+	        if (usuariLogetjat.getRol().contains(User.RolsUsuaris.ADMIN.toString())) {
+	        	idUsuari = -1;
+	        }
+			reservesPropies = CalendarCore.pintarReservesUsuari(CalendarCore.getReservesUsuari(conn, cal.get(Calendar.WEEK_OF_YEAR), idUsuari, cal.get(Calendar.YEAR), null), false);
 			
 			ReservaElements setmanaCotxe = CalendarCore.getSetmana(conn, cal, "cotxe");
 			ReservaElements setmanaCotxeElectric = CalendarCore.getSetmana(conn, cal, "cotxeElectric");

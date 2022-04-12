@@ -644,8 +644,8 @@ $(document).ready(function() {
 	        data: {"idIncidencia": $(this).data('idincidencia'), "idActuacio": $(this).data('idactuacio'), "idInf": $(this).data('idinf'), "idTasca": $(this).data('idtasca')},
 	        //if received a response from the server
 	        success: function( data, textStatus, jqXHR) {	
-	        	content.parent().find('.documentsIntalacioBaixaTensio').html('');
-	        	$.each(data.documentsIntalacioBaixaTensio, function( key, arxiu ) {
+	        	content.parent().find('.documentsInstalacioBaixaTensio').html('');
+	        	$.each(data.documentsInstalacioBaixaTensio, function( key, arxiu ) {
 	        		html = '';
 	        		html += '<div id="' + numDocument + '" class="document">';
 	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
@@ -661,11 +661,11 @@ $(document).ready(function() {
 	        		html += '<div class="infoSign hidden"></div>';
 	        		html += '</div>';
 	        		
-	        		content.parent().find('.documentsIntalacioBaixaTensio').append(html);
+	        		content.parent().find('.documentsInstalacioBaixaTensio').append(html);
 	        		numDocument++;
 	        	 });  
-	        	content.parent().find('.documentsIntalacioFotovoltaica').html('');
-	        	$.each(data.documentsIntalacioFotovoltaica, function( key, arxiu ) {
+	        	content.parent().find('.documentsInstalacioFotovoltaica').html('');
+	        	$.each(data.documentsInstalacioFotovoltaica, function( key, arxiu ) {
 	        		html = '';
 	        		html += '<div id="' + numDocument + '" class="document">';
 	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
@@ -681,11 +681,11 @@ $(document).ready(function() {
 	        		html += '<div class="infoSign hidden"></div>';
 	        		html += '</div>';
 	        		
-	        		content.parent().find('.documentsIntalacioFotovoltaica').append(html);
+	        		content.parent().find('.documentsInstalacioFotovoltaica').append(html);
 	        		numDocument++;
 	        	 });  
-	        	content.parent().find('.documentsIntalacioContraincendis').html('');
-	        	$.each(data.documentsIntalacioContraincendis, function( key, arxiu ) {
+	        	content.parent().find('.documentsInstalacioContraincendis').html('');
+	        	$.each(data.documentsInstalacioContraincendis, function( key, arxiu ) {
 	        		html = '';
 	        		html += '<div id="' + numDocument + '" class="document">';
 	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
@@ -701,7 +701,7 @@ $(document).ready(function() {
 	        		html += '<div class="infoSign hidden"></div>';
 	        		html += '</div>';
 	        		
-	        		content.parent().find('.documentsIntalacioContraincendis').append(html);
+	        		content.parent().find('.documentsInstalacioContraincendis').append(html);
 	        		numDocument++;
 	        	 });  
 	        	content.parent().find('.documentsCertificatEficienciaEnergetica').html('');
@@ -724,8 +724,8 @@ $(document).ready(function() {
 	        		content.parent().find('.documentsCertificatEficienciaEnergetica').append(html);
 	        		numDocument++;
 	        	 }); 
-	        	content.parent().find('.documentsIntalacioTermica').html('');
-	        	$.each(data.documentsIntalacioTermica, function( key, arxiu ) {
+	        	content.parent().find('.documentsInstalacioTermica').html('');
+	        	$.each(data.documentsInstalacioTermica, function( key, arxiu ) {
 	        		html = '';
 	        		html += '<div id="' + numDocument + '" class="document">';
 	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
@@ -741,11 +741,11 @@ $(document).ready(function() {
 	        		html += '<div class="infoSign hidden"></div>';
 	        		html += '</div>';
 	        		
-	        		content.parent().find('.documentsIntalacioTermica').append(html);
+	        		content.parent().find('.documentsInstalacioTermica').append(html);
 	        		numDocument++;
 	        	 }); 
-	        	content.parent().find('.documentsIntalacioAscensor').html('');
-	        	$.each(data.documentsIntalacioAscensor, function( key, arxiu ) {
+	        	content.parent().find('.documentsInstalacioAscensor').html('');
+	        	$.each(data.documentsInstalacioAscensor, function( key, arxiu ) {
 	        		html = '';
 	        		html += '<div id="' + numDocument + '" class="document">';
 	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
@@ -761,11 +761,11 @@ $(document).ready(function() {
 	        		html += '<div class="infoSign hidden"></div>';
 	        		html += '</div>';
 	        		
-	        		content.parent().find('.documentsIntalacioAscensor').append(html);
+	        		content.parent().find('.documentsInstalacioAscensor').append(html);
 	        		numDocument++;
 	        	 });
-	        	content.parent().find('.documentsIntalacioAlarma').html('');
-	        	$.each(data.documentsIntalacioAlarma, function( key, arxiu ) {
+	        	content.parent().find('.documentsInstalacioAlarma').html('');
+	        	$.each(data.documentsInstalacioAlarma, function( key, arxiu ) {
 	        		html = '';
 	        		html += '<div id="' + numDocument + '" class="document">';
 	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
@@ -781,11 +781,11 @@ $(document).ready(function() {
 	        		html += '<div class="infoSign hidden"></div>';
 	        		html += '</div>';
 	        		
-	        		content.parent().find('.documentsIntalacioAlarma').append(html);
+	        		content.parent().find('.documentsInstalacioAlarma').append(html);
 	        		numDocument++;
 	        	 }); 
-	        	content.parent().find('.documentsIntalacioSubministreAigua').html('');
-	        	$.each(data.documentsIntalacioSubministreAigua, function( key, arxiu ) {
+	        	content.parent().find('.documentsInstalacioSubministreAigua').html('');
+	        	$.each(data.documentsInstalacioSubministreAigua, function( key, arxiu ) {
 	        		html = '';
 	        		html += '<div id="' + numDocument + '" class="document">';
 	        		html += '<a target="_blanck" href="downloadFichero?ruta=' + arxiu.encodedRuta + '">';
@@ -801,7 +801,7 @@ $(document).ready(function() {
 	        		html += '<div class="infoSign hidden"></div>';
 	        		html += '</div>';
 	        		
-	        		content.parent().find('.documentsIntalacioSubministreAigua').append(html);
+	        		content.parent().find('.documentsInstalacioSubministreAigua').append(html);
 	        		numDocument++;
 	        	 }); 
 	        	content.parent().find('.documentsPlaAutoproteccio').html('');

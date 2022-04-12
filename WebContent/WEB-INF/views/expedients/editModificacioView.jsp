@@ -230,7 +230,41 @@
 					    			</div>
 					    		</div>																													        			
 				      		</div>							
-					      	<p></p>				
+					      	<p></p>		
+					      	<div class="row">
+								<div class="col-md-4">
+									<p>
+										<label>Partida:</label>									
+										<div class="table-responsive col-xs-offset-1 col-md-12">							                        
+						                    <table class="table table-striped table-bordered filerTable">
+						                    	<thead>
+						                            <tr>
+						                           		<th>Partida</th>	
+						                                <th>Valor</th>
+						                                <th></th>			                                        							                                       
+						                            </tr>
+						                        </thead>
+						                        <tbody>
+						                        <c:set var="total" value="0" />
+												<c:forEach items="${informeModificacio.assignacioCredit}" var="assignacioCredit" >
+										          	<tr>		
+										          		<td><a target="_black" href="partidaDetalls?codi=${assignacioCredit.partida.codi}">${assignacioCredit.partida.codi} (${assignacioCredit.partida.nom})</a></td>	
+										          		<td>${assignacioCredit.getValorPAFormat()}</td>	
+										          		<td><input class="btn btn-primary carregarModal" data-idassignacio="${assignacioCredit.idAssignacio}" data-valorassignacio="${assignacioCredit.valorPA}" data-partidaprev="${assignacioCredit.partida.subpartidaDe}" data-subpartidaprev="${assignacioCredit.partida.codi}" data-toggle="modal" data-target="#modalAssignacio" name="modificar" value="Modificar"></td>
+										          		<c:set var="total" value="${total + assignacioCredit.valorPA}" />
+										          	</tr>
+										      	</c:forEach>  	
+										      		<tr>
+										      			<td>Total</td>
+										      			<td><m:formatNumber pattern= "#,##0.00" type = "number" value ="${total}"/>€</td>
+										      			<td><input class="btn btn-success carregarModal" data-idassignacio="-1" data-valorassignacio="0" data-toggle="modal" data-target="#modalAssignacio" name="novaAssignacio" value="Afegir"></td>
+										      		</tr>	
+										      	</tbody>					      		     
+						                    </table>
+						                </div>
+									</p>
+								</div>		
+							</div>			
 					      	<c:if test="${informeModificacio.conformeAreaEconomivaPropostaActuacio.size() > 0}">
 								<p>
 									<div class="document">
@@ -352,6 +386,56 @@
 						        </div>
 						    </div>
 		    			</form>
+		    			<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="modificarAssignacioPartida">
+							<input class="hidden" name="expedient" value="${informeModificacio.expcontratacio.expContratacio}">
+	                		<input class="hidden" name="idActuacio" value="${informeModificacio.actuacio.referencia}">
+	                		<input class="hidden" name="idInforme" value="${informeModificacio.idInf}">
+	                		<input class="hidden" name="redireccio" value="/editInforme?ref=${informeModificacio.expcontratacio.expContratacio}&from=${redireccio}">	
+	                		<input class="hidden" name="idAssignacio" id="idAssignacioModal" value="">	
+		        			<!-- Modal -->	        			
+							<div id="modalAssignacio" class="modal fade" role="dialog">
+								<div class="modal-dialog">																	
+							    <!-- Modal content-->
+							    	<div class="modal-content">
+							      		<div class="modal-header">
+							        		<button type="button" class="close" data-dismiss="modal">&times;</button>
+							        		<h4 class="modal-title">Modificar assignació</h4>
+							      		</div>
+							      		<div class="modal-body">
+							        		<div class="form-group">
+									    		<div class="col-md-6">	
+									      			<label>Partida asignada</label>		
+									      			<input type="hidden" id="partidaPrev" value="${partidaPare}" >							            	 										            	 	
+									                <select class="form-control selectpicker llistaPartides" name="llistaPartides" id="llistaPartides">
+									                	<option value="-1">No assignar partida</option>
+									                	<c:forEach items="${partidesList}" var="partida">
+									                		<option value="${partida.codi}">${partida.codi} (${partida.nom} - Restant: ${partida.getPartidaPerAsignarFormat()})</option>
+									                	</c:forEach>					                                	
+									                </select>	
+									            </div>					                       		
+									       	</div>	  
+									        <div class="form-group">
+									    		<div class="col-md-6">	
+									      			<label>SubPartida asignada</label>	
+									      			<input type="hidden" id="subPartidaPrev" value="${partida}" >										            	 										            	 	
+									                <select class="form-control selectpicker" name="llistaSubPartides" id="llistaSubPartides"></select>	
+									            </div>					                       		
+									       	</div>
+									       	<div class="form-group">
+										       	<div class="col-md-6">
+										          	<label>Valor</label>
+										          	<input name="valorAssignacio" class="valorAssignacio" required>
+										          	<label class="">€</label>
+										        </div>
+											</div>
+							      		</div>
+							      		<div class="modal-footer">
+							      			<input class="btn btn-success" type="submit" name="modificar" value="Modificar">
+							      		</div>
+						    		</div>																	
+							  	</div>
+							</div> 
+						</form>
                     </div>
                 </div>
                 <!-- /.row -->     

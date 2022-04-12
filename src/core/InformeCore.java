@@ -509,7 +509,7 @@ public class InformeCore {
 		return informesPrevis;
 	}	
 	
-	public static List<Fitxer> getDocumentsIntalacioBaixaTensio(Connection conn, String idIncidencia, String idActuacio, String idInforme) {
+	public static List<Fitxer> getDocumentsInstalacioBaixaTensio(Connection conn, String idIncidencia, String idActuacio, String idInforme) {
 		List<Fitxer> informesPrevis = new ArrayList<Fitxer>();
 		
 		String ruta =  ConfiguracioCore.getConfiguracio(conn).getRutaBaseDocumentacio();
@@ -517,7 +517,7 @@ public class InformeCore {
 		return informesPrevis;
 	}
 	
-	public static List<Fitxer> getDocumentsIntalacioFotovoltaica(Connection conn, String idIncidencia, String idActuacio, String idInforme) {
+	public static List<Fitxer> getDocumentsInstalacioFotovoltaica(Connection conn, String idIncidencia, String idActuacio, String idInforme) {
 		List<Fitxer> informesPrevis = new ArrayList<Fitxer>();
 		
 		String ruta =  ConfiguracioCore.getConfiguracio(conn).getRutaBaseDocumentacio();
@@ -525,7 +525,7 @@ public class InformeCore {
 		return informesPrevis;
 	}
 	
-	public static List<Fitxer> getDocumentsIntalacioContraincendis(Connection conn, String idIncidencia, String idActuacio, String idInforme) {
+	public static List<Fitxer> getDocumentsInstalacioContraincendis(Connection conn, String idIncidencia, String idActuacio, String idInforme) {
 		List<Fitxer> informesPrevis = new ArrayList<Fitxer>();
 		
 		String ruta =  ConfiguracioCore.getConfiguracio(conn).getRutaBaseDocumentacio();
@@ -541,7 +541,7 @@ public class InformeCore {
 		return informesPrevis;
 	}
 	
-	public static List<Fitxer> getDocumentsIntalacioTermica(Connection conn, String idIncidencia, String idActuacio, String idInforme) {
+	public static List<Fitxer> getDocumentsInstalacioTermica(Connection conn, String idIncidencia, String idActuacio, String idInforme) {
 		List<Fitxer> informesPrevis = new ArrayList<Fitxer>();
 		
 		String ruta =  ConfiguracioCore.getConfiguracio(conn).getRutaBaseDocumentacio();
@@ -549,7 +549,7 @@ public class InformeCore {
 		return informesPrevis;
 	}
 	
-	public static List<Fitxer> getDocumentsIntalacioAscensor(Connection conn, String idIncidencia, String idActuacio, String idInforme) {
+	public static List<Fitxer> getDocumentsInstalacioAscensor(Connection conn, String idIncidencia, String idActuacio, String idInforme) {
 		List<Fitxer> informesPrevis = new ArrayList<Fitxer>();
 		
 		String ruta =  ConfiguracioCore.getConfiguracio(conn).getRutaBaseDocumentacio();
@@ -557,7 +557,7 @@ public class InformeCore {
 		return informesPrevis;
 	}
 	
-	public static List<Fitxer> getDocumentsIntalacioAlarma(Connection conn, String idIncidencia, String idActuacio, String idInforme) {
+	public static List<Fitxer> getDocumentsInstalacioAlarma(Connection conn, String idIncidencia, String idActuacio, String idInforme) {
 		List<Fitxer> informesPrevis = new ArrayList<Fitxer>();
 		
 		String ruta =  ConfiguracioCore.getConfiguracio(conn).getRutaBaseDocumentacio();
@@ -565,7 +565,7 @@ public class InformeCore {
 		return informesPrevis;
 	}
 	
-	public static List<Fitxer> getDocumentsIntalacioSubministreAigua(Connection conn, String idIncidencia, String idActuacio, String idInforme) {
+	public static List<Fitxer> getDocumentsInstalacioSubministreAigua(Connection conn, String idIncidencia, String idActuacio, String idInforme) {
 		List<Fitxer> informesPrevis = new ArrayList<Fitxer>();
 		
 		String ruta =  ConfiguracioCore.getConfiguracio(conn).getRutaBaseDocumentacio();
@@ -2971,14 +2971,14 @@ public class InformeCore {
 				instalacions.setTipusInstalacioGas(rs.getString("instalaciogastipus"));
 				instalacions.setDataInstalacioGas(rs.getTimestamp("instalaciogasdata"));
 				
-				instalacions.setDocumentsIntalacioBaixaTensio(getDocumentsIntalacioBaixaTensio(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));				
-				instalacions.setDocumentsIntalacioFotovoltaica(getDocumentsIntalacioFotovoltaica(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
-				instalacions.setDocumentsIntalacioContraincendis(getDocumentsIntalacioContraincendis(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
+				instalacions.setDocumentsInstalacioBaixaTensio(getDocumentsInstalacioBaixaTensio(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));				
+				instalacions.setDocumentsInstalacioFotovoltaica(getDocumentsInstalacioFotovoltaica(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
+				instalacions.setDocumentsInstalacioContraincendis(getDocumentsInstalacioContraincendis(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
 				instalacions.setDocumentsCertificatEficienciaEnergetica(getDocumentsCertificatEficienciaEnergetica(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
-				instalacions.setDocumentsIntalacioTermica(getDocumentsIntalacioTermica(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
-				instalacions.setDocumentsIntalacioAscensor(getDocumentsIntalacioAscensor(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
-				instalacions.setDocumentsIntalacioAlarma(getDocumentsIntalacioAlarma(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
-				instalacions.setDocumentsIntalacioSubministreAigua(getDocumentsIntalacioSubministreAigua(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
+				instalacions.setDocumentsInstalacioTermica(getDocumentsInstalacioTermica(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
+				instalacions.setDocumentsInstalacioAscensor(getDocumentsInstalacioAscensor(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
+				instalacions.setDocumentsInstalacioAlarma(getDocumentsInstalacioAlarma(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
+				instalacions.setDocumentsInstalacioSubministreAigua(getDocumentsInstalacioSubministreAigua(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
 				instalacions.setDocumentsPlaAutoproteccio(getDocumentsPlaAutoproteccio(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
 				instalacions.setDocumentsCedulaDeHabitabilitat(getDocumentsCedulaDeHabitabilitat(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));
 				instalacions.setDocumentsInstalacioPetrolifera(getDocumentsInstalacioPetrolifera(conn, rs.getString("incidencia"), rs.getString("actuacio"), rs.getString("idinf")));

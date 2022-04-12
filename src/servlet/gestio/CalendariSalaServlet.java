@@ -52,7 +52,7 @@ public class CalendariSalaServlet extends HttpServlet {
 			Calendar cal = Calendar.getInstance();	
 	        int diaSetmana = cal.get(Calendar.DAY_OF_WEEK);
 	        String reservesPropies = "";
-			reservesPropies = CalendarCore.pintarReservesUsuari(CalendarCore.getReservesUsuari(conn, cal.get(Calendar.WEEK_OF_YEAR), usuariLogetjat.getIdUsuari(), cal.get(Calendar.YEAR), "sala"));
+			reservesPropies = CalendarCore.pintarReservesUsuari(CalendarCore.getReservesUsuari(conn, cal.get(Calendar.WEEK_OF_YEAR), usuariLogetjat.getIdUsuari(), cal.get(Calendar.YEAR), "sala"), false);
 			
 			ReservaElements setmanaSala = CalendarCore.getSetmana(conn, cal, "sala");
 	        cal.add(Calendar.DATE, 7);

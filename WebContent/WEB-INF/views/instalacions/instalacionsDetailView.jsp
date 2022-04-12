@@ -45,7 +45,7 @@
 	              	<p>
 	               		<label>Dades introduïdes a l'expedient <a href="actuacionsDetalls?ref=${instalacions.idActuacio}&exp=${instalacions.idInf}" target="_blanck">${instalacions.expedient}</a></label>
 	               	</p>
-	               	<c:if test="${instalacions.documentsIntalacioBaixaTensio.size() > 0}">
+	               	<c:if test="${instalacions.documentsInstalacioBaixaTensio.size() > 0}">
 						<p>
 							<label>Documentació Instal·lació baixa tensió:</label>
 						</p>
@@ -62,8 +62,8 @@
 							</div>
 						</div>	
 						<div class="row col-md-12">
-							<div class="documentsIntalacioBaixaTensio">
-								<c:forEach items="${instalacions.documentsIntalacioBaixaTensio}" var="arxiu" >
+							<div class="documentsInstalacioBaixaTensio">
+								<c:forEach items="${instalacions.documentsInstalacioBaixaTensio}" var="arxiu" >
 				            		<c:set var="arxiu" value="${arxiu}" scope="request"/>
 									<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	         		
 								</c:forEach>								
@@ -71,7 +71,7 @@
 							<br>					            		
 						</div>
 					</c:if>
-					<c:if test="${instalacions.documentsIntalacioFotovoltaica.size() > 0}">
+					<c:if test="${instalacions.documentsInstalacioFotovoltaica.size() > 0}">
 						<p>
 							<label>Documentació Instal·lació fotovoltàica:</label>
 						</p>
@@ -88,8 +88,8 @@
 							</div>
 						</div>	
 						<div class="row col-md-12">
-							<div class="documentsIntalacioFotovoltaica">
-								<c:forEach items="${instalacions.documentsIntalacioFotovoltaica}" var="arxiu" >
+							<div class="documentsInstalacioFotovoltaica">
+								<c:forEach items="${instalacions.documentsInstalacioFotovoltaica}" var="arxiu" >
 				            		<c:set var="arxiu" value="${arxiu}" scope="request"/>
 									<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	         		
 								</c:forEach>	
@@ -97,7 +97,7 @@
 							<br>					            		
 						</div>
 					</c:if>
-					<c:if test="${instalacions.documentsIntalacioContraincendis.size() > 0}">
+					<c:if test="${instalacions.documentsInstalacioContraincendis.size() > 0}">
 						<p>
 							<label>Documentació Instal·lació contraincendis:</label>
 						</p>
@@ -109,8 +109,8 @@
 							</div>		
 						</div>		
 						<div class="row col-md-12">
-							<div class="documentsIntalacioContraincendis">
-								<c:forEach items="${instalacions.documentsIntalacioContraincendis}" var="arxiu" >
+							<div class="documentsInstalacioContraincendis">
+								<c:forEach items="${instalacions.documentsInstalacioContraincendis}" var="arxiu" >
 				            		<c:set var="arxiu" value="${arxiu}" scope="request"/>
 									<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	         		
 								</c:forEach>
@@ -192,7 +192,7 @@
 							<br>					            		
 						</div>
 					</c:if>	
-					<c:if test="${instalacions.documentsIntalacioTermica.size() > 0}">
+					<c:if test="${instalacions.documentsInstalacioTermica.size() > 0}">
 						<p>
 							<label>Documentació Instal·lació tèrmica:</label>
 						</p>	
@@ -204,8 +204,8 @@
 							</div>		
 						</div>	
 						<div class="row col-md-12">
-							<div class="documentsIntalacioTermica">
-								<c:forEach items="${instalacions.documentsIntalacioTermica}" var="arxiu" >
+							<div class="documentsInstalacioTermica">
+								<c:forEach items="${instalacions.documentsInstalacioTermica}" var="arxiu" >
 				            		<c:set var="arxiu" value="${arxiu}" scope="request"/>
 									<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	         		
 								</c:forEach>
@@ -213,7 +213,7 @@
 							<br>					            		
 						</div>	
 					</c:if>
-					<c:if test="${instalacions.documentsIntalacioAscensor.size() > 0}">
+					<c:if test="${instalacions.documentsInstalacioAscensor.size() > 0}">
 						<p>
 							<label>Documentació Instal·lació ascensor:</label>
 						</p>
@@ -225,8 +225,8 @@
 							</div>		
 						</div>		
 						<div class="row col-md-12">
-							<div class="documentsIntalacioAscensor">
-								<c:forEach items="${instalacions.documentsIntalacioAscensor}" var="arxiu" >
+							<div class="documentsInstalacioAscensor">
+								<c:forEach items="${instalacions.documentsInstalacioAscensor}" var="arxiu" >
 				            		<c:set var="arxiu" value="${arxiu}" scope="request"/>
 									<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	         		
 								</c:forEach>		
@@ -234,13 +234,13 @@
 							<br>					            		
 						</div>
 					</c:if>
-					<c:if test="${instalacions.documentsIntalacioAlarma.size() > 0}">
+					<c:if test="${instalacions.documentsInstalacioAlarma.size() > 0}">
 						<p>
 							<label>Documentació Instal·lació alarma:</label>
 						</p>	
 						<div class="row col-md-12">
-							<div class="documentsIntalacioAlarma">
-								<c:forEach items="${instalacions.documentsIntalacioAlarma}" var="arxiu" >
+							<div class="documentsInstalacioAlarma">
+								<c:forEach items="${instalacions.documentsInstalacioAlarma}" var="arxiu" >
 				            		<c:set var="arxiu" value="${arxiu}" scope="request"/>
 									<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	         		
 								</c:forEach>
@@ -248,13 +248,13 @@
 							<br>					            		
 						</div>
 					</c:if>
-					<c:if test="${instalacions.documentsIntalacioSubministreAigua.size() > 0}">
+					<c:if test="${instalacions.documentsInstalacioSubministreAigua.size() > 0}">
 						<p>
 							<label>Documentació Instal·lació subministrament aigua:</label>
 						</p>	
 						<div class="row col-md-12">
-							<div class="documentsIntalacioSubministreAigua">
-								<c:forEach items="${instalacions.documentsIntalacioSubministreAigua}" var="arxiu" >
+							<div class="documentsInstalacioSubministreAigua">
+								<c:forEach items="${instalacions.documentsInstalacioSubministreAigua}" var="arxiu" >
 				            		<c:set var="arxiu" value="${arxiu}" scope="request"/>
 									<jsp:include page="../utils/_renderDocument.jsp"></jsp:include>	         		
 								</c:forEach>

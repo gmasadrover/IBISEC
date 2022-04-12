@@ -195,6 +195,7 @@ public class CalendarCore {
 			if (year > -1) pstm.setInt(4, year);
 			if (element != null) pstm.setString(5, element);
 			ResultSet rs = pstm.executeQuery();
+			System.out.println(pstm.toString());
 			Reserva reserva = new ReservaElements().new Reserva();
 			while (rs.next()) {			
 				reserva = new ReservaElements().new Reserva();
@@ -215,7 +216,7 @@ public class CalendarCore {
 		return reservesList;
 	}
 	
-	public static String pintarReservesUsuari(List<Reserva> reserves) {
+	public static String pintarReservesUsuari(List<Reserva> reserves, boolean poderEliminar) {
 		String reservesHTML = "";
 		String reservaActual = "";
 		int diaAnterior = -1;
@@ -224,12 +225,13 @@ public class CalendarCore {
 		Calendar date = Calendar.getInstance();
 		String horesFormat = "";
 		String element = "";
+		String motiu = "";
 		Reserva reservaAnt = null;
 		for (Reserva reserva: reserves) {				
 			if (diaAnterior != reserva.getDia() || setmanaAnterior != reserva.getSetmana()) { // Nova reserva				
 				if (!reservaActual.isEmpty()) { // acabam la reserva anterior					
-					reservesHTML += "<span>" + reservaActual + horaFinal + " - " + reserva.getMotiu() + "</span>";
-					if (date.getTime().after(Calendar.getInstance().getTime())) {
+					reservesHTML += "<span>" + reservaActual + horaFinal + " - " + motiu + "</span>";
+					if (poderEliminar || date.getTime().after(Calendar.getInstance().getTime())) {
 						reservesHTML += "<span data-any=" + reservaAnt.getYear() + " data-setmana=" + reservaAnt.getSetmana() + " data-dia=" + reservaAnt.getDia() + " data-element=" + reservaAnt.getElement() + " data-idusuari=" + reservaAnt.getUsuari().getIdUsuari() + " class='glyphicon glyphicon-remove deleteReservaElement'></span>"; 
 					}
 					reservesHTML +="</br>";				}
@@ -261,6 +263,7 @@ public class CalendarCore {
 			} else if (reserva.getElement().equals("sala")) {
 				horaFinal = ReservaElements.horesSala[reserva.getHora()];
 			} 				
+			motiu = reserva.getMotiu();
 			reservaAnt = reserva;
 		}	
 		if (!reservaActual.isEmpty()) { // acabam la reserva anterior	
