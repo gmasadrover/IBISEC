@@ -3,25 +3,6 @@ $(document).ready(function() {
 	    language: "es"    	
 	});
 	loadCentres();   
-	setInterval(function() {
-		$.ajax({
-	        type: "POST",
-	        url: "NewNotificacio",
-	        dataType: "json",
-	        //if received a response from the server
-	        success: function( data, textStatus, jqXHR) {
-	            //our country code was correct so we have some information to display
-	        	if (data.novesTasques) {
-	        		//prueba_notificacion();
-	        		alert('Hi ha noves tasques')
-	        	}	        	
-	        },        
-	        //If there was no resonse from the server
-	        error: function(jqXHR, textStatus, errorThrown){
-	             console.log("Something really bad happened " + jqXHR.responseText);
-	        }  
-	    });
-	}, 5 * 60 * 1000); // 60 * 1000 milsec
 	
 	$('.upload').on("click",function() { 
         var imgVal = $(this).parents('.form-horizontal').find('.uploadImage').val(); 

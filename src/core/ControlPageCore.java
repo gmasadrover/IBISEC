@@ -163,6 +163,15 @@ public class ControlPageCore {
 			active = "";
 			collapse = "";
 		}
+		//Aules Modulars
+		if (UsuariCore.hasPermision(conn, usuari, SectionPage.aulesmodulars_list)) {			
+			if (seccio.equals("AulesModulars")) active = "active"; 
+			menu.append("<li class='" + active + "'>");
+			menu.append("	<a href='aulesModulars' class='loadingButton'  data-msg='Carregant aules modulars...'><i class='fa fa-fw fa-university'></i> Aules Modulars</a>");
+			menu.append("</li>");
+			active = "";
+			collapse = "";
+		}
 		//Judicials
 		if (UsuariCore.hasPermision(conn, usuari, SectionPage.judicials_list)) {			
 			if (seccio.equals("judicials")) active = "active"; 

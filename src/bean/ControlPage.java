@@ -20,7 +20,8 @@ public class ControlPage {
 		manuals,
 		personal, modificarPersonal, personalIBISEC,
 		control,
-		dades_bancaries
+		dades_bancaries,
+		aulesmodulars_list
 	}
 	public ControlPage(){
 		

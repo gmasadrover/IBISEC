@@ -478,6 +478,9 @@ public class UsuariCore {
 			case dades_bancaries:
 				permision = rols.toUpperCase().contains(User.RolsUsuaris.ADMIN.toString()) || rols.toUpperCase().contains(User.RolsUsuaris.DADESBANC.toString());
 				break;
+			case aulesmodulars_list:
+				permision = !rols.toUpperCase().contains(User.RolsUsuaris.CONSELLERIA.toString());
+				break;
 			default:
 				break;
 		}

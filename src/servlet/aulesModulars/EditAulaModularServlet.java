@@ -12,27 +12,37 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.User;
+import bean.Actuacio;
 import bean.AulesModulars;
-import bean.Centre;
+import bean.Incidencia;
+import bean.InformeActuacio;
+import bean.Registre;
+import bean.Tasca;
+import bean.User;
 import bean.ControlPage.SectionPage;
+import core.ActuacioCore;
 import core.AulesModularsCore;
-import core.CentreCore;
+import core.ConfiguracioCore;
 import core.ControlPageCore;
+import core.IncidenciaCore;
+import core.InformeCore;
+import core.RegistreCore;
+import core.TascaCore;
 import core.UsuariCore;
+import utils.Fitxers;
 import utils.MyUtils;
 
 /**
- * Servlet implementation class IncidenciaListServlet
+ * Servlet implementation class EditAulaModularServlet
  */
-@WebServlet("/aulesModulars")
-public class AulesModularsServlet extends HttpServlet {
+@WebServlet("/editAulaModular")
+public class EditAulaModularServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public AulesModularsServlet() {
+    public EditAulaModularServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -49,21 +59,22 @@ public class AulesModularsServlet extends HttpServlet {
     		response.sendRedirect(request.getContextPath() + "/");	
 		} else {
 			String errorString = null;
-			List<AulesModulars> list = new ArrayList<AulesModulars>();			
-			list = AulesModularsCore.getAulesModulars(conn);
+			String referencia = request.getParameter("ref");
+			AulesModulars aula = new AulesModulars();			
+			aula = AulesModularsCore.getAulaModular(conn, referencia);
 
 			// Store info in request attribute, before forward to views
 			request.setAttribute("errorString", errorString);
-			request.setAttribute("aulesModularsList", list);
+			request.setAttribute("aulaModular", aula);
 			
 			request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari,"AulesModulars"));
 			// Forward to /WEB-INF/views/homeView.jsp
 			// (Users can not access directly into JSP pages placed in WEB-INF)
 			RequestDispatcher dispatcher = this.getServletContext()
-					.getRequestDispatcher("/WEB-INF/views/aulesmodulars/aulesModularsListView.jsp");
+					.getRequestDispatcher("/WEB-INF/views/aulesmodulars/editAulaModularView.jsp");
 
 			dispatcher.forward(request, response);
-		}
+		}  
 	}
 
 	/**

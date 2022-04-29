@@ -323,12 +323,13 @@ public class EmpresaCore {
 	 public static Empresa findEmpresa(Connection conn, String cif) {
 		 String sql = "SELECT " + SQL_CAMPS 
 				 	+ " FROM public.tbl_empreses"
-				 	+ " WHERE cif=?";
+				 	+ " WHERE cif=? OR cif = ?";
 	 
 		 PreparedStatement pstm;
 		try {
 			pstm = conn.prepareStatement(sql);
-			pstm.setString(1, cif);	 
+			pstm.setString(1, cif);
+			pstm.setString(2, cif.replace("ES", ""));
 		     ResultSet rs = pstm.executeQuery();	 
 		     if (rs.next()) {
 		    	 return initEmpresa(conn, rs);

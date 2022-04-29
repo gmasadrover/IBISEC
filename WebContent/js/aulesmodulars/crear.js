@@ -7,42 +7,25 @@ $(document).ready(function() {
 			$('#import').val('');
 		}
 	});		
+	
+	//Expedient original
 	$('#centresList option[value="' + $('#idCentreActual').val() + '"]').attr('selected', 'selected');
 	if ($('#idCentreActual').val() != '' && $('#idCentreActual').val() != '-1') {	
-		if ($('#idCentreActual').val() == 'procediment') {	
-			$('.proveidor').addClass('hidden');
-			searchProcediments();
-		} else {
-			searchIncidencies($('#idCentreActual').val());
-		}		
+		searchIncidencies($('#idCentreActual').val());
+			
 	} 
 	if ($('#idActuacio').val() != "-1") {
-		if ($('#idActuacio').val().indexOf("PRO-") !== -1) {
-			
-		} else {
-			searchExpedients($('#idActuacio').val());    	
-		}		
+		searchExpedients($('#idActuacio').val());  
 	}
 		
-	$('#llistaEmpreses option[value="' + $('#nifProveidor').val().replace('ES', '') + '"]').attr('selected', 'selected');	
-	$('#usuarisList option[value="' + $('#idUsuariInforme').val() + '"]').attr('selected', 'selected');	
-	$('#tipusCertificacio option[value="' + $('#tipusCert').val() + '"]').attr('selected', 'selected');	
-
 	$('#centresList').on('change', function(){
-		$('.proveidor').removeClass('hidden');
 		$('#incidencies').html('');	
 		$('#expedients').html('');	
-		$('#procediments').html('');
-		if ($(this).val() != '-1') {	
-			if ($(this).val() == 'procediment') {	
-				$('.proveidor').addClass('hidden');
-				searchProcediments();
-			} else {
-				searchIncidencies($(this).val());
-			}			
-		} else {
+		if ($(this).val() != '-1') {
+			searchIncidencies($(this).val());			
 		}
 	});
+	
 	$('.selectpicker').selectpicker('refresh');	
 });
 
@@ -97,44 +80,6 @@ function searchIncidencies(idCentre) {
 	
 }
 
-function searchProcediments() {
-	var optionDefault = '';	
-	var html = '';
-	$('#procediments').append('<div class="loader"></div>');
-	$.ajax({
-        type: "POST",
-        url: "LlistatProcediments",
-        dataType: "json",
-        //if received a response from the server
-        success: function( data, textStatus, jqXHR) {
-            //our country code was correct so we have some information to display
-             if(data.success){
-            	html += '<div class="form-group procediments">';
-            	html += '	<label class="col-xs-3 control-label">Procediment</label>';
-            	html += ' 	<div class="col-xs-3">';   
-            	html += '     	<select class="form-control selectpicker" name="procedimentsList" data-live-search="true" data-size="5" id="procedimentsList">';
-            	html += '		</select>';
-            	html += '	</div>';
-            	html += '</div>';
-            	$('#procediments').append(html);            	
-        		$.each(data.llistatProcediments, function( key, data ) {
-        			var demanda = data.objecteDemanda;
-        			if (demanda == null) demanda = '';
-        			$('#procedimentsList').append('<option value=' + data.referencia + '>' + data.numAutos + '-' + demanda + '</option>');
-        		});     
-        		$('#procedimentsList option[value="' + $('#idInforme').val() + '"]').attr('selected', 'selected');
-        		$('.selectpicker').selectpicker('refresh');   
-        		$('#procediments .loader').remove();        		
-             }                 
-        },        
-        //If there was no resonse from the server
-        error: function(jqXHR, textStatus, errorThrown){
-             console.log("Something really bad happened " + jqXHR.responseText);
-        }  
-    });
-	
-}
-
 function searchExpedients(idActuacio) {
 	var optionDefault = '';	
 	var html = '';
@@ -163,15 +108,7 @@ function searchExpedients(idActuacio) {
         			$('#expedientsList').append('<option data-idactuacio="' + data.actuacio.referencia + '" data-idinf="' + data.idInf + '" data-objecte="' + data.propostaInformeSeleccionada.objecte + '" data-total="' + data.propostaInformeSeleccionada.plic + '" data-pagat="' + data.totalFacturat + '" value=' + data.idInf + '>' + refExt + '-' + data.propostaInformeSeleccionada.objecte + '</option>');
         		});     
         		$('#expedientsList option[value="' + $('#idInforme').val() + '"]').attr('selected', 'selected');
-        		$('.selectpicker').selectpicker('refresh');      
-        		$('#expedientsList').on('change', function () {
-        			$('.infoExpedient').html('');
-        			$('.infoExpedient').append('<h3>Resum expedient</h3>');
-        			$('.infoExpedient').append('<span>' + $('#expedientsList option:selected').data('objecte') + '</span></br>');
-        			$('.infoExpedient').append('<span>Total: ' + $('#expedientsList option:selected').data('total') + '€</span></br>');
-        			$('.infoExpedient').append('<span>Pagat: ' + $('#expedientsList option:selected').data('pagat') + '€</span></br>');
-        			$('.infoExpedient').append('<span><a href="actuacionsDetalls?ref=' + $('#expedientsList option:selected').data('idactuacio') + '&exp=' + $('#expedientsList option:selected').data('idinf') + '" target="_blank">Anar a l\'actuació</a></span>');
-        		});
+        		$('.selectpicker').selectpicker('refresh');
              }    
              $('#expedients .loader').remove();
         },        
