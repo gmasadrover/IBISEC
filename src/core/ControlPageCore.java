@@ -112,7 +112,6 @@ public class ControlPageCore {
 				menu.append("    	</li>");
 			}	*/		
 			if (UsuariCore.hasPermision(conn, usuari, SectionPage.modificarPersonal)) {
-				//System.out.println("Entra: " + usuari.getIdUsuari());
 				menu.append("		<li>");
 				menu.append("       	<a href='usuarisList' class='loadingButton'  data-msg='Carregant usuaris...'>Usuaris</a>");
 				menu.append("    	</li>");

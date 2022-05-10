@@ -397,8 +397,7 @@ public class ExpedientCore {
 			importMajor = ConfiguracioCore.getConfiguracio(conn).getImportSubministramentMajor();
 		} else if(informe.getPropostaInformeSeleccionada().getTipusObra().equals("conveni")) {
 			tipus = "Conveni";			
-		}		
-				
+		}			
 		if (tipus.equals("Conveni")) {
 			contracte = "conveni";
 			yearInString = yearInString.substring(2,4);
@@ -424,7 +423,7 @@ public class ExpedientCore {
 		if (tipus.equals("Conveni")) {
 			sql = "SELECT expcontratacio"
 					+ " FROM public.tbl_expedient"
-					+ " WHERE tipus == 'conveni' expcontratacio like '" + tipus + "%/" + yearInString + "%'"
+					+ " WHERE tipus = 'conveni' AND expcontratacio like '" + tipus + "%/" + yearInString + "%'"
 					+ " ORDER BY expcontratacio DESC LIMIT 1;";	 
 		}
 		

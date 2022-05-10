@@ -22,7 +22,7 @@
   </error-page>
   <context-param>
     <param-name>datakey</param-name>
-    <param-value>220412_0745</param-value>
+    <param-value>220503_0745</param-value>
   </context-param>
   <context-param>
     <param-name>idUsuariPersonal</param-name>
@@ -34,20 +34,20 @@
   </context-param>
   <context-param>
     <param-name>pageName</param-name>
-    <param-value>Intranet IBISEC</param-value>
+    <param-value>Intranet Test</param-value>
   </context-param>
   <context-param>
     <param-name>entorn</param-name>
-    <param-value>IBISEC</param-value>
+    <param-value>proves</param-value>
   </context-param>
   <env-entry>
     <env-entry-name>hostName</env-entry-name>
     <env-entry-type>java.lang.String</env-entry-type>
-    <env-entry-value>10.215.26.87</env-entry-value>
+    <env-entry-value>10.215.26.93</env-entry-value>
   </env-entry>
   <env-entry>
     <env-entry-name>dbName</env-entry-name>
     <env-entry-type>java.lang.String</env-entry-type>
-    <env-entry-value>IBISEC</env-entry-value>
+    <env-entry-value>proves</env-entry-value>
   </env-entry>
 </web-app>

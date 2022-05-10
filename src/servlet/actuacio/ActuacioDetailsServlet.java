@@ -76,22 +76,14 @@ public class ActuacioDetailsServlet extends HttpServlet {
 	       boolean canModificarPersonal = false;
 	       boolean canCreateFeina = false;
 	       boolean isIBISEC = true;
-	       //System.out.println("1. //" + java.time.LocalTime.now());
 		   actuacio = ActuacioCore.findActuacio(conn, referencia);
-		   //System.out.println("2. //" + java.time.LocalTime.now());
 		   if (actuacio.getCentre() != null && actuacio.getCentre().getIdCentre() != null && actuacio.getCentre().getIdCentre().equals("9999PERSO") && !UsuariCore.hasPermision(conn, usuari, SectionPage.personal)) response.sendRedirect(request.getContextPath() + "/");
 		   actuacio.setSeguiment(ActuacioCore.isSeguimentActuacio(conn, referencia, usuari.getIdUsuari()));
-		   //System.out.println("3. //" + java.time.LocalTime.now());
 		   incidencia = IncidenciaCore.findIncidencia(conn, actuacio.getIdIncidencia());
-		   //System.out.println("4. //" + java.time.LocalTime.now());
 		   tasques = TascaCore.findTasquesActuacio(conn, referencia, false); 
-		   //System.out.println("5. //" + java.time.LocalTime.now());
 		   informes = InformeCore.getInformesActuacio(conn, referencia, true);
-		   //System.out.println("6. //" + java.time.LocalTime.now());	
 		   entrades = RegistreCore.searchEntradesIncidencia(conn, incidencia.getIdIncidencia(), incidencia.getIdCentre());
-		   //System.out.println("7. //" + java.time.LocalTime.now());
 		   sortides = RegistreCore.searchSortidesIncidencia(conn, incidencia.getIdIncidencia(), incidencia.getIdCentre());
-		   //System.out.println("8. //" + java.time.LocalTime.now());
 		   rutaActuacio += incidencia.getIdIncidencia() + "/Actuacio";
 		   canModificarActuacio = UsuariCore.hasPermision(conn, usuari, SectionPage.actuacio_modificar);
 		   isIBISEC = !usuari.getRol().toUpperCase().contains("CONSELLERIA");
@@ -105,8 +97,7 @@ public class ActuacioDetailsServlet extends HttpServlet {
 		   canModificarGarantia = UsuariCore.hasPermision(conn, usuari, SectionPage.expedient_modificar);
 		   canModificarInstalacions = usuari.getDepartament().equals("instalacions") || usuari.getRol().contains("ADMIN");
 		   canModificarPersonal = usuari.getRol().contains("CAP") || usuari.getRol().contains("ADMIN");
-		   //System.out.println("9. //" + java.time.LocalTime.now());
-	       // Store info in request attribute, before forward to views
+
 	       request.setAttribute("errorString", errorString);
 	       request.setAttribute("view", view);
 	       request.setAttribute("informeSeleccionat", informeSeleccionat);

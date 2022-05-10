@@ -135,10 +135,6 @@ public class TascaListServlet extends HttpServlet {
 	        request.setAttribute("filterWithClosed", "on".equals(filterWithClosed));
 		    request.setAttribute("menu", ControlPageCore.renderMenu(conn, usuari, "Tasques"));
 		
-		   /* request.setAttribute("infoLog", "IP remote: " + request.getRemoteAddr() + "</br>remote host: " + request.getRemoteHost());
-		    System.out.println("IP remote: " + request.getRemoteAddr());
-		    System.out.println("remote host: " + request.getRemoteHost()); */
-	       
 		    // Forward to /WEB-INF/views/productListView.jsp
 	        RequestDispatcher dispatcher = request.getServletContext()
 					.getRequestDispatcher("/WEB-INF/views/tasca/tascaListView.jsp");

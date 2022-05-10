@@ -42,7 +42,6 @@ public class DoEditAulaModularServlet extends HttpServlet {
 	    String idInforme = request.getParameter("idInforme");
 	    Double importPrevist = Double.parseDouble(request.getParameter("import"));
 	    String tancar = request.getParameter("eliminar");
-	    System.out.println("--"  + tancar);
 	    if (tancar != null) {
 	    	AulesModularsCore.anularAulaModula(conn, idInforme);
 	    } else {

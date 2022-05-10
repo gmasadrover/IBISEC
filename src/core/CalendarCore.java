@@ -67,7 +67,7 @@ public class CalendarCore {
 		ResultSet rs;		
 		sql = "SELECT setmana"
 				+ " FROM public.tbl_vehicles"
-				+ " WHERE setmana = ? AND dia = ? AND hora >= ? AND hora <= ? AND year = ? AND vehicle = ? LIMIT 1";			
+				+ " WHERE setmana = ? AND dia = ? AND hora >= ? AND hora < ? AND year = ? AND vehicle = ? LIMIT 1";			
 		try {
 			pstm = conn.prepareStatement(sql);
 			pstm.setInt(1, setmana);	
@@ -78,7 +78,6 @@ public class CalendarCore {
 			pstm.setInt(5, year);
 			pstm.setString(6, element);
 			rs = pstm.executeQuery();
-			System.out.println("1.-" + pstm.toString());
 			if (rs.next()) potReservar = false;	
 			if (controlarMesDunaSetmana && idUsuari != 36) { // Maria Mateu pot reservar sempre
 				sql = "SELECT setmana"
@@ -96,7 +95,6 @@ public class CalendarCore {
 				pstm.setInt(3, idUsuari);
 				if (element.contains("sala")) pstm.setString(4, element);
 				rs = pstm.executeQuery();
-				System.out.println("2.-" + pstm.toString());
 				if (rs.next()) potReservar = false;
 			}
 		} catch (SQLException e) {
@@ -195,7 +193,6 @@ public class CalendarCore {
 			if (year > -1) pstm.setInt(4, year);
 			if (element != null) pstm.setString(5, element);
 			ResultSet rs = pstm.executeQuery();
-			System.out.println(pstm.toString());
 			Reserva reserva = new ReservaElements().new Reserva();
 			while (rs.next()) {			
 				reserva = new ReservaElements().new Reserva();

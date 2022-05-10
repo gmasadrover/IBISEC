@@ -65,7 +65,6 @@ public class doAddReservaSalaServlet extends HttpServlet {
 	   	response.sendRedirect(request.getContextPath() + "/CalendariSala" + error);
 	   
 	  	// If error, forward to Edit page.
-	   	
 	
 	}
 

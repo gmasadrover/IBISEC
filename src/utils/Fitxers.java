@@ -314,6 +314,7 @@ public class Fitxers {
 		BouncyCastleProvider provider = new BouncyCastleProvider();
 		Security.addProvider(provider);
 		if (ficheros == null) {			
+		
 		} else {
 			try {
 				for (int x=0;x<ficheros.length;x++) {					
@@ -396,7 +397,6 @@ public class Fitxers {
 					fitxer.setRuta(ruta + "/" + ficheros[x].getName());						
 					//fitxer.setData(Files.getLastModifiedTime(ficheros[x].toPath()));
 					arxius.add(fitxer);
-					//System.out.println(ruta + "/" + ficheros[x].getName());
 				}				
 			}
 		}
@@ -451,9 +451,6 @@ public class Fitxers {
 	}
 	
 	public static PdfPKCS7 verifySignature(AcroFields fields, String name) {
-		//System.out.println("name: " + name);
-		//System.out.println("Signature covers whole document: " + fields.signatureCoversWholeDocument(name));
-		//System.out.println("Document revision: " + fields.getRevision(name) + " of " + fields.getTotalRevisions());
 		try {
 			PdfPKCS7 pkcs7 = fields.verifySignature(name);   
 			 return pkcs7;
@@ -464,49 +461,24 @@ public class Fitxers {
 	
 	
 	public static SignaturePermissions inspectSignature(AcroFields fields, String name, SignaturePermissions perms, Fitxer fitxer) {
-		List<FieldPosition> fps = fields.getFieldPositions(name);
-		if (fps != null && fps.size() > 0) {
-			FieldPosition fp = fps.get(0);
-			Rectangle pos = fp.position;
-			if (pos.getWidth() == 0 || pos.getHeight() == 0) {
-				//System.out.println("Invisible signature");
-			}
-			else {
-				//System.out.println(String.format("Field on page %s; llx: %s, lly: %s, urx: %s; ury: %s",
-					//fp.page, pos.getLeft(), pos.getBottom(), pos.getRight(), pos.getTop()));
-			}
-		}
- 
 		PdfPKCS7 pkcs7 = verifySignature(fields, name);
-		//System.out.println("Digest algorithm: " + pkcs7.getHashAlgorithm());
-		//System.out.println("Encryption algorithm: " + pkcs7.getEncryptionAlgorithm());
-		//System.out.println("Filter subtype: " + pkcs7.getFilterSubtype());
+		
 		if (pkcs7 != null) {
 			X509Certificate cert = (X509Certificate) pkcs7.getSigningCertificate();		
 			Fitxer.infoFirma info = fitxer.new infoFirma();
 			info.setNomFirmant(CertificateInfo.getSubjectFields(cert).getField("CN"));		
-			//if (pkcs7.getSignName() != null) System.out.println("Alternative name of the signer: " + pkcs7.getSignName());
+			
 			SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy HH:mm");		
 			info.setDataFirma(date_format.format(pkcs7.getSignDate().getTime()));
-			/*if (pkcs7.getTimeStampDate() != null) {
-				System.out.println("TimeStamp: " + date_format.format(pkcs7.getTimeStampDate().getTime()));
-				TimeStampToken ts = pkcs7.getTimeStampToken();
-				System.out.println("TimeStamp service: " + ts.getTimeStampInfo().getTsa());
-				System.out.println("Timestamp verified? " + pkcs7.verifyTimestampImprint());
-			}*/
-			//System.out.println("Location: " + pkcs7.getLocation());
-			//System.out.println("Reason: " + pkcs7.getReason());
+			
+			
 			PdfDictionary sigDict = fields.getSignatureDictionary(name);
 			PdfString contact = sigDict.getAsString(PdfName.CONTACTINFO);
 			if (contact != null)
 			perms = new SignaturePermissions(sigDict, perms);
-			//System.out.println("Signature type: " + (perms.isCertification() ? "certification" : "approval"));
-			//System.out.println("Filling out fields allowed: " + perms.isFillInAllowed());
-			//System.out.println("Adding annotations allowed: " + perms.isAnnotationsAllowed());
-			
-			fitxer.addFirmesList(info);
-		}
 		
+			fitxer.addFirmesList(info);
+		}		
         return perms;
 	}
 	
@@ -530,23 +502,20 @@ public class Fitxers {
 	}
 	
 	public static void guardarRegistreFitxer(Connection conn, String nomdocument, String ruta, int idUsuari) {
-		 if (idUsuari != 4) { //Silvia Sanz
-			 String sqlInsert = "INSERT INTO public.tbl_registredocuments(idregistre, usuari, data, nomdocument, dataeliminacio, usuarieliminacio, rutadocument)"
-			 			+ " VALUES (?, ?, localtimestamp, ?, null, null, ?);";	 
-			 PreparedStatement pstmInsert = null; 			 
-			 try {
-				pstmInsert = conn.prepareStatement(sqlInsert);
-				 pstmInsert.setInt(1, getIdRegistreDocument(conn));
-				 pstmInsert.setInt(2, idUsuari);
-				 pstmInsert.setString(3, nomdocument);		
-				 pstmInsert.setString(4, ruta);		
-				 pstmInsert.executeUpdate();	
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}	
-			
-		 }
+		 String sqlInsert = "INSERT INTO public.tbl_registredocuments(idregistre, usuari, data, nomdocument, dataeliminacio, usuarieliminacio, rutadocument)"
+		 			+ " VALUES (?, ?, localtimestamp, ?, null, null, ?);";	 
+		 PreparedStatement pstmInsert = null; 			 
+		 try {
+			pstmInsert = conn.prepareStatement(sqlInsert);
+			 pstmInsert.setInt(1, getIdRegistreDocument(conn));
+			 pstmInsert.setInt(2, idUsuari);
+			 pstmInsert.setString(3, nomdocument);		
+			 pstmInsert.setString(4, ruta);		
+			 pstmInsert.executeUpdate();	
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}					
 	}
 	
 	public static void marcarDocumentEliminat(Connection conn, int idUsuari, String ruta) {

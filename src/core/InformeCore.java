@@ -34,7 +34,6 @@ import utils.Fitxers.Fitxer.infoFirma;
 public class InformeCore {
 	
 	private static InformeActuacio initInforme(Connection conn, ResultSet rs, boolean ambDocuments) {
-		//System.out.println("5.1. //" + java.time.LocalTime.now());
 		InformeActuacio informe = new InformeActuacio();
 		try {
 			informe.setIdInf(rs.getString("idinf"));
@@ -42,15 +41,13 @@ public class InformeCore {
 			informe.setIdTasca(rs.getInt("idtasca"));
 			informe.setIdIncidencia(rs.getString("idincidencia"));
 			informe.setActuacio(ActuacioCore.findActuacio(conn, rs.getString("idactuacio")));	
-			//System.out.println("5.2. //" + java.time.LocalTime.now());
 			User usuari = UsuariCore.findUsuariByID(conn, rs.getInt("usucre"));
 			informe.setUsuari(usuari);
 			informe.setDataCreacio(rs.getTimestamp("datacre"));
 			informe.setLlistaPropostes(getPropostesInforme(conn, rs.getString("idinf")));
-			//System.out.println("5.3. //" + java.time.LocalTime.now());
 			informe.setPropostaInformeSeleccionada(getPropostaSeleccionada(conn, rs.getString("idinf")));
 	
-			//System.out.println("5.4. //" + java.time.LocalTime.now());
+			
 			informe.setAssignacioCredit(CreditCore.getPartidaInforme(conn, rs.getString("idinf")));	
 			informe.setComentariPartida(CreditCore.getComentariPartida(conn, rs.getString("idinf")));
 			informe.setUsuariCapValidacio(UsuariCore.findUsuariByID(conn, rs.getInt("usucapvalidacio")));
@@ -60,18 +57,13 @@ public class InformeCore {
 			informe.setDataAprovacio(rs.getTimestamp("dataaprovacio"));
 			informe.setNotes(rs.getString("notes"));
 			informe.setLlistaOfertes(OfertaCore.findOfertes(conn, rs.getString("idinf")));
-			//System.out.println("5.5. //" + java.time.LocalTime.now());
 			informe.setOfertaSeleccionada(OfertaCore.findOfertaSeleccionada(conn, rs.getString("idinf")));
-			//System.out.println("5.6. //" + java.time.LocalTime.now());
 			informe.setLlistaFactures(FacturaCore.getFacturesInforme(conn, rs.getString("idinf")));
-			//System.out.println("5.7. //" + java.time.LocalTime.now());
 			informe.setLlistaCertificacions(FacturaCore.getCertificacionsInforme(conn, rs.getString("idinf")));
-			//System.out.println("5.8. //" + java.time.LocalTime.now()); 
 			informe.setDataRebujada(rs.getTimestamp("datapartidarebujada"));
 			informe.setPartidaRebutjadaMotiu(rs.getString("motiupartidarebujada"));
 			informe.setTipo(rs.getString("tipo"));
 			informe.setExpcontratacio(ExpedientCore.findExpedient(conn, rs.getString("expcontratacio")));
-			//System.out.println("5.9. //" + java.time.LocalTime.now());
 			informe.setDataPD(rs.getTimestamp("datapd"));
 			informe.setTipoPD(rs.getString("tipopd"));			
 			informe.setLlistaModificacions(getTotesMoficacionsInforme(conn, rs.getString("idinf")));
@@ -92,7 +84,6 @@ public class InformeCore {
 			informe.setDataPublicacioDGTresoreria(rs.getDate("publicaciodgtresoreria"));
 			informe.setPersonal(getPersonalAssociat(conn, rs.getString("idinf")));
 			if (ambDocuments) {
-				//System.out.println("5.10. //" + java.time.LocalTime.now());
 				informe.setInformesPrevis(getInformesPrevis(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
 				informe.setPropostaActuacio(getPropostaActuacio(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
 				informe.setVistiplauPropostaActuacio(getVisiplauPropostaActuacio(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
@@ -129,7 +120,6 @@ public class InformeCore {
 				
 				informe.setDocumentMedicioGeneral(getDocumentMedicioGeneralSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
 				informe.setDocumentConvocatoriaRecepcio(getDocumentConvocatoriaRecepcioSignat(conn, rs.getString("idincidencia"), rs.getString("idactuacio"), rs.getString("idinf")));
-				//System.out.println("5.11. //" + java.time.LocalTime.now());
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -272,7 +262,6 @@ public class InformeCore {
 		
 		PreparedStatement pstm;
 		try {
-			pstm = conn.prepareStatement(sql);
 			pstm = conn.prepareStatement(sql);
 			pstm.setString(1, proposta.getObjecte());
 			pstm.setString(2, proposta.getTipusObra());

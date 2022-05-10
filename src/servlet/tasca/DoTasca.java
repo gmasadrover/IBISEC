@@ -145,9 +145,13 @@ public class DoTasca extends HttpServlet {
 				    if (modificar == null && (informe.getExpcontratacio() == null || informe.getExpcontratacio().getExpContratacio().equals("-1"))) {
 	   					
 	   					String nouCodi = "";
-		   				nouCodi = ExpedientCore.crearExpedient(conn, informe, false, "", idTecnic);	   				
-		   				informe.setExpcontratacio(ExpedientCore.findExpedient(conn, nouCodi));			  
-		   				
+		   				nouCodi = ExpedientCore.crearExpedient(conn, informe, false, "", idTecnic);	  
+		   				informe.setExpcontratacio(ExpedientCore.findExpedient(conn, nouCodi));
+		   				if (tipusObra.equals("conveni")) {
+		   					proposta = informe.getPropostaInformeSeleccionada();
+		   					proposta.setTipusObra("obr");
+		   					InformeCore.modificarProposta(conn, proposta);
+		   				}
 	   				}
 				    if (informe.getAssignacioCredit() == null || informe.getAssignacioCredit().size() == 0 || informe.getAssignacioCredit().get(0).getPartida() == null || informe.getAssignacioCredit().get(0).getPartida().getCodi().isEmpty()) {
 				    	if (!TascaCore.existTascaReservaCredit(conn, informe.getIdInf())) { // no existeix tasca creada
@@ -482,9 +486,7 @@ public class DoTasca extends HttpServlet {
 				 				if (informe.getTotalCertificat() > informe.getOfertaSeleccionada().getPlic() + informe.getTotalModificacions()) {
 				 					//Excés d'amidaments.
 				 					Double totalExces = (informe.getTotalCertificat()) - (informe.getOfertaSeleccionada().getPlic() + informe.getTotalModificacions());
-				 					//System.out.println("total certificat " + informe.getTotalCertificat());
-				 					//System.out.println("total oferta " + informe.getOfertaSeleccionada().getPlic());
-				 					//System.out.println("total modificacions " + informe.getTotalModificacions());
+
 				 					PropostaInforme proposta = informe.new PropostaInforme();
 				 			  		proposta.setTipusObra(informe.getPropostaInformeSeleccionada().getTipusObra());
 				 			  		proposta.setLlicencia(false);
