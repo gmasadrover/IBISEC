@@ -11,7 +11,7 @@ import java.util.Date;
 import bean.User;
 
 public class GestioDron {
-	public static void reservar(Connection conn, int idUsuari, Date peticio, String motiu) {
+	public static int reservar(Connection conn, int idUsuari, Date peticio, String motiu) {
 		String sql = "INSERT INTO public.tbl_dron(idreserva, peticio, usuari, motiu, datapeticio)"
 				+ "VALUES (?,?,?,?,localtimestamp)";
  
@@ -23,6 +23,39 @@ public class GestioDron {
 			pstm.setDate(2, new java.sql.Date(peticio.getTime()));
 			pstm.setInt(3, idUsuari);
 			pstm.setString(4, motiu);			
+			pstm.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return newCode;
+	}
+	
+	public static void aprovarReserva(Connection conn, int idPeticio) {
+		String sql = "UPDATE public.tbl_dron"
+				+ "	SET autoritzada = true"
+				+ "	WHERE idreserva = ?";
+ 
+		PreparedStatement pstm;
+		try {
+			pstm = conn.prepareStatement(sql);
+			pstm.setInt(1, idPeticio);		
+			pstm.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void rebutjarReserva(Connection conn, int idPeticio) {
+		String sql = "UPDATE public.tbl_dron"
+				+ "	SET autoritzada = false"
+				+ "	WHERE idreserva = ?";
+ 
+		PreparedStatement pstm;
+		try {
+			pstm = conn.prepareStatement(sql);
+			pstm.setInt(1, idPeticio);		
 			pstm.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

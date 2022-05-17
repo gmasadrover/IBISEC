@@ -266,7 +266,20 @@ public class BastanteosCore {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+	}
+	
+	public static void eliminarBastanteo(Connection conn, String ref) {
+		String sql = "DELETE FROM public.tbl_bastanteos"
+				+ " WHERE ref = ?;";
+		PreparedStatement pstm;
+		try {
+			pstm = conn.prepareStatement(sql);
+			pstm.setString(1, ref);
+			pstm.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static void modificarEscritura(Connection conn, Escritura escritura, String ref) {

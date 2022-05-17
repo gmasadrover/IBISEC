@@ -54,6 +54,7 @@ public class UpdateConfiguracio extends HttpServlet {
 		int idUsuariRedaccioContracte = Integer.parseInt(multipartParams.getParametres().get("idUsuariRedaccioContracte"));	
 		int idUsuariActualitzarEmpresa = Integer.parseInt(multipartParams.getParametres().get("idUsuariActualitzarEmpresa"));	
 		int idUsuariLlicencies = Integer.parseInt(multipartParams.getParametres().get("idUsuariLlicencies")); 
+		int idUsuariDron = Integer.parseInt(multipartParams.getParametres().get("idUsuariDron")); 
 	   	Configuracio novaConfiguracio = new Configuracio(); 
 	    String errorString = null;
 	    novaConfiguracio.setImportObraMajor(importObraMajor);
@@ -67,6 +68,7 @@ public class UpdateConfiguracio extends HttpServlet {
 		novaConfiguracio.setIdUsuariRedaccioContracte(idUsuariRedaccioContracte);
 		novaConfiguracio.setIdUsuariActualitzarEmpresa(idUsuariActualitzarEmpresa);
 		novaConfiguracio.setIdUsuariLlicencies(idUsuariLlicencies);
+		novaConfiguracio.setIdUsuariDron(idUsuariDron);
 		
 		
 		ConfiguracioCore.updateConfiguracio(conn, novaConfiguracio);

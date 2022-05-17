@@ -67,12 +67,7 @@
 						<div><a href="obrirTasca?idtasca=${tasca.idTasca}" class="btn btn-success">Obrir</a></div>	
 					</c:if>	
 					</div>
-					<div class="col-md-2">
-				        <c:if test="${canBorrarTasca}">
-				            <div><a href="eliminarTasca?idtasca=${tasca.idTasca}" class="btn btn-danger">Borrar</a></div>
-				        </c:if>	
-				    </div>			       	
-	                <div class="col-md-2">	
+					 <div class="col-md-2">	
 	                	<div class="checkbox">
 	                        <label>
 	                          	<input id="seguiment" data-idtasca="${tasca.idTasca}" data-idusuari="${idUsuariLogg}" data-seguir="${!tasca.seguiment}" type="checkbox" ${tasca.seguiment ? 'checked' : ''}> Seguir tasca
@@ -94,7 +89,7 @@
                			<p style="color: red;">${errorString}</p>
                		</div>
                	</div>
-	            <c:if test="${tasca.tipus!='vacances' && tasca.tipus!='judicial' && tasca.tipus!='pagamentJudicial'  && tasca.tipus!='partidaJudicial' && tasca.tipus!='factura' && tasca.tipus!='reservaDron'}">					
+	            <c:if test="${tasca.idActuacio != '-1' && tasca.tipus!='vacances' && tasca.tipus!='judicial' && tasca.tipus!='pagamentJudicial'  && tasca.tipus!='partidaJudicial' && tasca.tipus!='factura' && tasca.tipus!='reservaDron'}">					
 					<div class="row">					
 		                <div class="col-md-12">	  
 		                	<jsp:include page="../actuacio/include/_resumActuacio.jsp"></jsp:include>		                	

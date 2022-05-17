@@ -152,7 +152,7 @@
 						    	<c:if test="${primera}"><c:set var="primera" value="false" scope="request"/></c:if> 
 						    </c:if>	
 						     <c:if test="${reservaDronList.size() > 0}">
-						    	<li class="${primera ? 'active' : ''}"><a data-toggle="tab" href="#notificacios">Reserva Dron<span class="notif">${reservaDronList.size()}</span></a></li>
+						    	<li class="${primera ? 'active' : ''}"><a data-toggle="tab" href="#reservaDron">Reserva Dron<span class="notif">${reservaDronList.size()}</span></a></li>
 						    	<c:if test="${primera}"><c:set var="primera" value="false" scope="request"/></c:if> 
 						    </c:if>
 						    <c:if test="${notificacionsList.size() > 0}">
@@ -325,7 +325,7 @@
 						  		</div>
 						  	</c:if>
 						  	<c:if test="${reservaDronList.size() > 0}"> 				  		
-						  		<div id="notificacios" class="tab-pane fade ${primera ? 'in active' : ''}">
+						  		<div id="reservaDron" class="tab-pane fade ${primera ? 'in active' : ''}">
 						  			<div class="col-md-12 bordertab">
 						  				<c:set var="tasquesList" value="${reservaDronList}" scope="request"/>
 						  				<jsp:include page="include/_tasquesList.jsp"></jsp:include>

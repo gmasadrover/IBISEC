@@ -40,20 +40,26 @@ public class DoEditBastanteoServlet extends HttpServlet {
 		Connection conn = MyUtils.getStoredConnection(request);
        	Fitxers.formParameters multipartParams = new Fitxers.formParameters();
 		multipartParams = Fitxers.getParamsFromMultipartForm(request);
-       	
+		String actualitzar = multipartParams.getParametres().get("actualitzar");
+		String eliminar = multipartParams.getParametres().get("eliminar");
        	String ref = multipartParams.getParametres().get("referencia");
        	Bastanteo bastanteo = new Bastanteo();
        	String errorString = null;
        	SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
        	try {
-			bastanteo.setRef(ref);
-			if (multipartParams.getParametres().get("dataBastanteo") != null && ! multipartParams.getParametres().get("dataBastanteo").isEmpty()) {
-				bastanteo.setDatabastanteo(formatter.parse(multipartParams.getParametres().get("dataBastanteo")));
-			}
-			bastanteo.setEmpresa(EmpresaCore.findEmpresa(conn, multipartParams.getParametres().get("llistaEmpreses")));
-			bastanteo.setPersonaFacultada(multipartParams.getParametres().get("personaFacultada"));
-			bastanteo.setCarrec(multipartParams.getParametres().get("carrec"));
-			BastanteosCore.modificarBastanteo(conn, bastanteo);
+       		if (actualitzar != null) {
+       			bastanteo.setRef(ref);
+    			if (multipartParams.getParametres().get("dataBastanteo") != null && ! multipartParams.getParametres().get("dataBastanteo").isEmpty()) {
+    				bastanteo.setDatabastanteo(formatter.parse(multipartParams.getParametres().get("dataBastanteo")));
+    			}
+    			bastanteo.setEmpresa(EmpresaCore.findEmpresa(conn, multipartParams.getParametres().get("llistaEmpreses")));
+    			bastanteo.setPersonaFacultada(multipartParams.getParametres().get("personaFacultada"));
+    			bastanteo.setCarrec(multipartParams.getParametres().get("carrec"));
+    			BastanteosCore.modificarBastanteo(conn, bastanteo);
+       		} else {
+       			BastanteosCore.eliminarBastanteo(conn, ref);
+       		}
+			
 		} catch (ParseException e) {
 			errorString = e.toString();
 		}
@@ -72,7 +78,11 @@ public class DoEditBastanteoServlet extends HttpServlet {
 		// If everything nice.
 		// Redirect to the product listing page.            
 		else {
-           response.sendRedirect(request.getContextPath() + "/bastanteo?ref=" + ref);
+			if (actualitzar != null) {
+				response.sendRedirect(request.getContextPath() + "/bastanteo?ref=" + ref);
+			}else{
+				response.sendRedirect(request.getContextPath() + "/empresa?cif=" + multipartParams.getParametres().get("llistaEmpreses"));
+			}
 		}
 	}
 

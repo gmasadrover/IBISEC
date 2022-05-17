@@ -54,10 +54,10 @@ public class DoAddReservaDronServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 	    
-	    GestioDron.reservar(conn, idUsuari, peticio, motiu);
+	    int idReserva = GestioDron.reservar(conn, idUsuari, peticio, motiu);
 
 		String assumpte = "Sol·licitud reserva Dron";
-		TascaCore.novaTasca(conn, "reservaDron", 1, UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari(), "-1", "-1", motiu, assumpte, "-1", null, request.getRemoteAddr(), "automatic");
+		TascaCore.novaTasca(conn, "reservaDron", 1, UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari(), "-1", "-1", motiu, assumpte, String.valueOf(idReserva), null, request.getRemoteAddr(), "automatic");
 	   	
 	   	// Store infomation to request attribute, before forward to views.
 	   	request.setAttribute("errorString", errorString);

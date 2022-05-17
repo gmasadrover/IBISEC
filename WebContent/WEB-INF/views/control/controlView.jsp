@@ -141,6 +141,17 @@
 				                </select>	
 							</div>
 						</div>
+						<div class="form-group">
+							<div class="col-md-3">
+								<label>Usuari dron</label>
+                                <input type="hidden" id="idUsuariDronPrevi" value="${configuracioActual.idUsuariDron}" >	
+                                <select class="form-control selectpicker" data-live-search="true" data-size="6" name="idUsuariDron" id="idUsuariDron">													            	 										            	 	
+				                	<c:forEach items="${llistaUsuaris}" var="usuari">
+				                		<option value="${usuari.idUsuari}">${usuari.getNomCompletReal()}</option>
+				                	</c:forEach>					                                	
+				                </select>	
+							</div>
+						</div>
 						<div class="col-md-4">												        		
 				    		<div class="row">
 				        		<div class="col-md-12">															        																						 				

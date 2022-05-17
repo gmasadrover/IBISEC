@@ -10,7 +10,7 @@ import bean.Configuracio;
 public class ConfiguracioCore {
 	
 	static final String SQL_CAMPS = "importobramajor, importserveimajor, importsubministrament, rutabasedocumentacio, usuarirecercapresuposts, usuarifactures, usuaricertificacions, usuariordreinici,"
-								+ " usuariredacciocontracte, usuariactualitzarempresa, usuarillicencies";
+								+ " usuariredacciocontracte, usuariactualitzarempresa, usuarillicencies, usuaridron";
 	
 	public static Configuracio getConfiguracio(Connection conn) {
 		Configuracio configuracioActual = new Configuracio();
@@ -32,6 +32,7 @@ public class ConfiguracioCore {
 				configuracioActual.setIdUsuariRedaccioContracte(rs.getInt("usuariredacciocontracte"));
 				configuracioActual.setIdUsuariActualitzarEmpresa(rs.getInt("usuariactualitzarempresa"));
 				configuracioActual.setIdUsuariLlicencies(rs.getInt("usuarillicencies"));
+				configuracioActual.setIdUsuariDron(rs.getInt("usuaridron"));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -44,7 +45,7 @@ public class ConfiguracioCore {
 	public static void updateConfiguracio(Connection conn, Configuracio novaConfiguracio) {
 		String sql = "UPDATE public.tbl_configuracio"
 				+ " SET importobramajor=?, importserveimajor=?, importsubministrament=?, rutabasedocumentacio=?, usuarirecercapresuposts=?, usuarifactures=?, usuaricertificacions=?, usuariordreinici=?,"
-				+ " 	usuariredacciocontracte=?, usuariactualitzarempresa=?, usuarillicencies=?,"
+				+ " 	usuariredacciocontracte=?, usuariactualitzarempresa=?, usuarillicencies=?, usuaridron=?, "
 				+ "		datamodificacio=localtimestamp";
 		PreparedStatement pstm;
 		try {
@@ -60,6 +61,8 @@ public class ConfiguracioCore {
 			pstm.setInt(9, novaConfiguracio.getIdUsuariRedaccioContracte());
 			pstm.setInt(10, novaConfiguracio.getIdUsuariActualitzarEmpresa());
 			pstm.setInt(11, novaConfiguracio.getIdUsuariLlicencies());
+			pstm.setInt(12, novaConfiguracio.getIdUsuariDron());
+			System.out.println(pstm.toString());
 			pstm.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

@@ -196,11 +196,11 @@ public class TascaCore {
 				} else if (rs.getString("tipus").equals("firmaContracte")) {
 					contractesFirmaList.add(initTasca(conn, rs, false)); // 15
 				} else if (rs.getString("tipus").equals("notificacio")) {
-					notificacionsList.add(initTasca(conn, rs, false)); // 17
+					notificacionsList.add(initTasca(conn, rs, false)); // 16
 				} else if (rs.getString("tipus").equals("reservaDron")) {
 					reservaDronList.add(initTasca(conn, rs, false)); // 17
 				}else {
-					altresList.add(initTasca(conn, rs, false)); // 16
+					altresList.add(initTasca(conn, rs, false)); // 18
 				}
 			}
 		} catch (SQLException e) {
@@ -224,9 +224,9 @@ public class TascaCore {
         list.add(revisarCertificacioList); // 13
         list.add(contractesList);  // 14
         list.add(contractesFirmaList);  // 15 
-        list.add(altresList);  // 16 
-        list.add(notificacionsList);  // 17 
-        list.add(reservaDronList); // 18
+        list.add(notificacionsList);  // 16 
+        list.add(reservaDronList);  // 17 
+        list.add(altresList); // 18
 	  	return list;
     }
 	
@@ -911,35 +911,6 @@ public class TascaCore {
 			pstm = conn.prepareStatement(sql);	 
 			pstm.setInt(1, idTasca);
 			pstm.executeUpdate();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	 
-		
-	}
-	
-	public static void eliminarTasca(Connection conn, int idTasca) {
-		String sql = "DELETE FROM public.tbl_tasques"
-				+ " WHERE idtasca=?;";
-		PreparedStatement pstm;
-		try {
-			pstm = conn.prepareStatement(sql);
-			pstm = conn.prepareStatement(sql);	 
-			pstm.setInt(1, idTasca);
-			pstm.executeUpdate();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	 
-		
-		
-		sql = "DELETE FROM public.tbl_historial"
-				+ " WHERE idtasca=?;";
-		try {
-			pstm = conn.prepareStatement(sql);
-			pstm = conn.prepareStatement(sql);	 
-			pstm.setInt(1, idTasca);
-			pstm.executeUpdate();	
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

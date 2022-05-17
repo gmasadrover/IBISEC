@@ -14,6 +14,7 @@ public class Configuracio {
 	private int idUsuariRedaccioContracte;	
 	private int idUsuariActualitzarEmpresa;	
 	private int idUsuariLlicencies;	
+	private int idUsuariDron;
 	
 	public Configuracio() {
 		
@@ -120,6 +121,14 @@ public class Configuracio {
 
 	public void setIdUsuariLlicencies(int idUsuariLlicencies) {
 		this.idUsuariLlicencies = idUsuariLlicencies;
+	}
+
+	public int getIdUsuariDron() {
+		return idUsuariDron;
+	}
+
+	public void setIdUsuariDron(int idUsuariDron) {
+		this.idUsuariDron = idUsuariDron;
 	}
 	
 }

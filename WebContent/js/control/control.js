@@ -6,6 +6,7 @@ $(document).ready(function() {
 	$('#idUsuariRedaccioContracte').selectpicker('val', $('#idUsuariRedaccioContractePrevi').val());
 	$('#idUsuariActualitzarEmpresa').selectpicker('val', $('#idUsuariActualitzarEmpresaPrevi').val());
 	$('#idUsuariLlicencies').selectpicker('val', $('#idUsuariLlicenciesPrevi').val());
+	$('#idUsuariDron').selectpicker('val', $('#idUsuariDronPrevi').val());
 	
 	$('.selectpicker').selectpicker('refresh');
 });

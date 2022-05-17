@@ -130,7 +130,12 @@
 	                	<div class="row">
 	                		<div class="form-group">
 						        <div class="col-xs-offset-9 col-xs-9">
-						            <input type="submit" class="btn btn-primary" value="Actualitzar validació">							            
+						            <input type="submit" class="btn btn-primary" name="actualitzar" value="Actualitzar validació">							            
+						        </div>
+						    </div> 
+						    <div class="form-group">
+						        <div class="col-xs-offset-9 col-xs-9">
+						            <input type="submit" class="btn btn-danger" name="eliminar" value="Eliminar">							            
 						        </div>
 						    </div> 
 	                	</div>

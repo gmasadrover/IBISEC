@@ -126,9 +126,10 @@ public class TascaListServlet extends HttpServlet {
 	        request.setAttribute("revisarCertificacioList", list.get(13)); // 13
 	        request.setAttribute("contractesList", list.get(14)); // 14
 	        request.setAttribute("contractesFirmaList", list.get(15)); // 15
-	        request.setAttribute("altresList", list.get(16));  // 16	 
-	        request.setAttribute("notificacionsList", list.get(17));  // 17	 
-	        request.setAttribute("reservaDronList", list.get(18));  // 18	 
+	        request.setAttribute("notificacionsList", list.get(16));  // 16 
+	        request.setAttribute("reservaDronList", list.get(17));  // 17	 
+	        request.setAttribute("altresList", list.get(18));  // 18	 
+	        
 	        request.setAttribute("seguimentList", listSeguiment);
 	        request.setAttribute("seguimentActuacionsList", seguimentActuacionsList);
 	        request.setAttribute("usuarisSeleccionats", usuarisSeleccionats);

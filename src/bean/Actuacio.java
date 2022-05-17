@@ -9,7 +9,12 @@ import java.util.List;
 import utils.Fitxers;
 
 public class Actuacio {
-	 public class Feina {
+	
+	/** 
+     * Classe heretada de la BD antiga. S'apuntaven ordres/instruccions. Actualement no s'utilitza
+     *  
+     */
+	public class Feina {
 		 private String idFeina;
 		 private String nomRemitent;
 		 private String nomDestinatari;
@@ -77,7 +82,7 @@ public class Actuacio {
 		}
 	 }
 	
-	 public class ArxiusAdjunts {
+	public class ArxiusAdjunts {
 		 private List<Fitxers.Fitxer> arxiusRegistre = new ArrayList<Fitxers.Fitxer>();
 		 private List<Fitxers.Fitxer> arxiusAltres = new ArrayList<Fitxers.Fitxer>();
 		 public ArxiusAdjunts() {
