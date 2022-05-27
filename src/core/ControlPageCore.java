@@ -350,6 +350,15 @@ public class ControlPageCore {
 			active = "";
 			collapse = "";
 		}	
+		//Utilitats
+		/*if (UsuariCore.hasPermision(conn, usuari, SectionPage.manuals)) {			
+			if (seccio.equals("Manuals")) active = "active"; 
+			menu.append("<li class='" + active + "'>");
+			menu.append("	<a href='utilitats'  class='loadingButton'  data-msg='Carregant Utilitats...'><i class='fa fa-fw fa-info'></i> Utilitats</a>");
+			menu.append("</li>");
+			active = "";
+			collapse = "";
+		}	*/
 		return menu.toString();
 	}
 	

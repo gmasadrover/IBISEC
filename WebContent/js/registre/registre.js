@@ -134,6 +134,7 @@ function searchIncidencies(idCentre) {
     });
 }
 function searchExpedients(idActuacio, idCentre) {
+	$('#seleccionarInforme').append('<div class="loader"></div>');
 	var optionDefault = '';	
 	var html = '';
 	$.ajax({
@@ -156,9 +157,10 @@ function searchExpedients(idActuacio, idCentre) {
             	$('#expedients').append(html);
         		$.each(data.llistatExpedients, function( key, data ) {
         			var refExt = '';
-        			if (data.expcontratacio.expContratacio != '-1') refExt = ' EXP ' + data.expcontratacio.expContratacio + ' ';
-        			$('#expedientsList' + idCentre).append('<option data-idactuacio="' + data.actuacio.referencia + '" data-idinf="' + data.idInf + '" data-objecte="' + data.propostaInformeSeleccionada.objecte + '" data-total="' + data.ofertasSeleccionada.plic + '" data-pagat="' + data.totalFacturat + '" value=' + data.idInf + '>' + refExt + '-' + data.propostaInformeSeleccionada.objecte + '</option>');
-        		});     
+        			if (data.actuacio.refExt != '-1') refExt = ' EXP ' + data.actuacio.refExt + ' ';
+        			$('#expedientsList' + idCentre).append('<option data-idactuacio="' + data.actuacio.referencia + '" data-idinf="' + data.idInf + '" data-objecte="' + data.propostaInformeSeleccionada.objecte + '" data-total="' + data.propostaInformeSeleccionada.plic + '" data-pagat="' + data.totalFacturat + '" value=' + data.idInf + '>' + refExt + '-' + data.propostaInformeSeleccionada.objecte + '</option>');
+        		});   
+        		$('#seleccionarInforme .loader').remove();
         		$('.selectpicker').selectpicker('refresh');   
              } 
         },        

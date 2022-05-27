@@ -114,7 +114,7 @@ public class DoEditModificacioInformeServlet extends HttpServlet {
 	  		}
 	  		 		
 	  		
-	  		
+	  		boolean aprovarModificacio = false;
 	  		//Modificar modificació	  		
 	  		InformeCore.modificarModificacioInforme(conn, idModificacio, proposta, ofertaProposta, Usuari, tipusIncidencia);
 	  		if (!tipusIncidencia.equals("penalitzacio")) {
@@ -131,6 +131,7 @@ public class DoEditModificacioInformeServlet extends HttpServlet {
 	  		}
 	  		if (multipartParams.getFitxersByName().get("resfinal") != null) {
 	  			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("resfinal"), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", idInforme, idModificacio.split("#")[0], "Resolució Final", Usuari.getIdUsuari());
+	  			aprovarModificacio = true;
 	  		}
 	  		if (multipartParams.getFitxersByName().get("informe") != null) {
 	  			InformeCore.saveInformeModificacio(conn, informe.getIdIncidencia(), informe.getActuacio().getReferencia(), idInforme, idModificacio.split("#")[0], multipartParams.getFitxersByName().get("informe"), Usuari.getIdUsuari());
@@ -143,11 +144,15 @@ public class DoEditModificacioInformeServlet extends HttpServlet {
 	  		}
 	  		if (multipartParams.getFitxersByName().get("autoritzacioDespesa") != null) {
 	  			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("autoritzacioDespesa"), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", idInforme, idModificacio.split("#")[0], "Autorització Despesa modificació", Usuari.getIdUsuari());
-		  		OfertaCore.aprovarOferta(conn, idModificacio, Usuari.getIdUsuari());
-		  		CreditCore.assignar(conn, idModificacio, informeModificacio.getOfertaSeleccionada().getPlic());
+		  		aprovarModificacio = true;
 	  		}	
 	  		if (multipartParams.getFitxersByName().get("contracte") != null) {
 	  			Fitxers.guardarFitxer(conn, multipartParams.getFitxersByName().get("contracte"), informe.getIdIncidencia(), informe.getActuacio().getReferencia(), "", "", idInforme, idModificacio.split("#")[0], "Contracte", Usuari.getIdUsuari());
+	  		}
+	  		
+	  		if (aprovarModificacio) {
+	  			OfertaCore.aprovarOferta(conn, idModificacio, Usuari.getIdUsuari());
+		  		CreditCore.assignar(conn, idModificacio, informeModificacio.getOfertaSeleccionada().getPlic());
 	  		}
 	  		/*;*/
 		} catch (ParseException e) {

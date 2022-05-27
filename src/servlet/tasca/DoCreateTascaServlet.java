@@ -109,7 +109,8 @@ public class DoCreateTascaServlet extends HttpServlet {
 		    actuacio.setCentre(CentreCore.findCentre(conn, idCentre, false));
 		    actuacio.setIdIncidencia(incidencia.getIdIncidencia());
 		    actuacio.setIdUsuariCreacio(idUsuari);
-		    idActuacio =  ActuacioCore.novaActuacio(conn, actuacio);   				
+		    idActuacio =  ActuacioCore.novaActuacio(conn, actuacio);   	
+		    actuacio.setReferencia(idActuacio);
 			
 		    InformeActuacio informe = new InformeActuacio();
 		    informe.setIdTasca(idTasca);
