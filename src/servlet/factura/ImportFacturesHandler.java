@@ -35,6 +35,8 @@ import bean.Factura;
 import bean.User;
 import core.ConfiguracioCore;
 import core.FacturaCore;
+import core.TascaCore;
+import core.UsuariCore;
 import utils.Fitxers;
 import utils.MyUtils;
 import utils.Fitxers.Fitxer;
@@ -175,6 +177,8 @@ public class ImportFacturesHandler extends HttpServlet {
             	}    			
     		}
         }
+    	
+    	TascaCore.novaTasca(conn, "generica", ConfiguracioCore.getConfiguracio(conn).getIdUsuariFactures(), UsuariCore.findUsuarisByRol(conn, "GERENT,CAP").get(0).getIdUsuari(), "-1", "-1", "Noves factures", "Noves factures", null, null, request.getRemoteAddr(), "automatic");
         RequestDispatcher dispatcher = this.getServletContext().getRequestDispatcher("/importarFactures");
         dispatcher.forward(request, response);
 	}
