@@ -268,7 +268,7 @@ public class DoTasca extends HttpServlet {
 				    	String tipus = "";				    	
 					    informe = InformeCore.getInformePrevi(conn, idInforme, false);
 					   	int usuariTasca = -1;			   	
-		   				if (("obr".equals(informe.getPropostaInformeSeleccionada().getTipusObra()) && informe.getPropostaInformeSeleccionada().getPbase() > 50000) || (!"obr".equals(informe.getPropostaInformeSeleccionada().getTipusObra()) && informe.getPropostaInformeSeleccionada().getPbase() > 18000)) { //Contracte d'obres major   					
+		   				if (("obr".equals(informe.getPropostaInformeSeleccionada().getTipusObra()) && informe.getPropostaInformeSeleccionada().getPbase() > ConfiguracioCore.getConfiguracio(conn).getImportObraMajor()) || (!"obr".equals(informe.getPropostaInformeSeleccionada().getTipusObra()) && informe.getPropostaInformeSeleccionada().getPbase() > ConfiguracioCore.getConfiguracio(conn).getImportServeiMajor())) { //Contracte d'obres major   					
 		   					usuariTasca = UsuariCore.finCap(conn, "juridica").getIdUsuari();
 		   					tipus = "liciMajor";	   					
 		   				}else{ //Contracte d'obres menor

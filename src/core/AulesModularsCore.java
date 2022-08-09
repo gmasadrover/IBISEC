@@ -147,9 +147,10 @@ public class AulesModularsCore {
 			String expedient = aula.getInforme().getExpcontratacio().getExpContratacio();
 			if (expedient.equals("-1")) expedient = aula.getInforme().getIdInf();
 			darreraFactura = getDarreraFacturaRegulacio(conn, aula.getNoAutoritzada().getIdInf(), aula.getInforme().getExpcontratacio().getExpContratacio());
-		} else {
-			darreraFactura = getDarreraFactura(conn, aula.getInforme().getIdInf());
 		}
+		
+		darreraFactura += getDarreraFactura(conn, aula.getInforme().getIdInf());
+		
 		return darreraFactura;
 	}
 

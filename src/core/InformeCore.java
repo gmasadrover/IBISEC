@@ -979,7 +979,7 @@ public class InformeCore {
 					+ " FROM public.tbl_informeactuacio i LEFT JOIN public.tbl_actuacio a ON i.idinf = a.id"
 					+ " 	LEFT JOIN public.tbl_propostesinforme p ON i.idinf = p.idinf"
 					+ " 	LEFT JOIN public.tbl_empresaoferta o ON i.idinf = o.idinforme"
-					+ " WHERE i.idactuacio = ? AND ((p.seleccionada = true AND o.seleccionada = true) OR (i.estat = 'anulat'))"
+					+ " WHERE i.idactuacio = ? AND ((p.seleccionada = true AND o.seleccionada = true) OR (i.estat IN ('anulat','previs')))"
 					+ " ORDER BY i.idinf DESC;";		 
 		
 		 PreparedStatement pstm;
@@ -1193,16 +1193,15 @@ public class InformeCore {
 	public static List<InformeActuacio> getInformesPrevisioLlicencia(Connection conn) {
 		List<InformeActuacio> informes = new ArrayList<InformeActuacio>();
 		String sql = "SELECT l.codi AS codi, i.idinf AS idinf, i.idactuacio AS idactuacio, i.expcontratacio AS expcontratacio, c.nom AS nomcentre,"
-					 + "		c.localitat AS localitatcentre, c.municipi As municipicentre, p.tipusllicencia AS tipus, i.estat AS estat, l.taxa AS taxa, l.datapagadataxa AS datapagadataxa, l.ico AS ico, l.datapagadaico AS datapagadaico"
-					 + "	FROM public.tbl_informeactuacio i" 
-					 + "		LEFT JOIN public.tbl_expedient e ON i.expcontratacio = e.expcontratacio"
-					 + "		LEFT JOIN public.tbl_propostesinforme p ON i.idinf = p.idinf"	
-					 + "		LEFT JOIN public.tbl_llicencia l ON i.idinf = l.expcontratacio"	
-					 + "		LEFT JOIN public.tbl_actuacio a ON i.idactuacio = a.id"
-					 + "		LEFT JOIN public.tbl_centres c ON a.idcentre = c.codi"
-					 + "	WHERE i.estat NOT IN ('acabat', 'garantia')" 
-					 + "		AND  ((l.codi IS NULL AND e.anulat=FALSE AND p.seleccionada = true AND p.tipusobra='obr' AND p.tipusllicencia = 'comun')" 
-					 + "		OR (l.codi IS NOT NULL AND ((l.taxa > 0 AND l.datapagadataxa IS NULL) OR (l.ico > 0 AND l.datapagadaico IS NULL)))) ";
+					+ " 	c.localitat AS localitatcentre, c.municipi As municipicentre, p.tipusllicencia AS tipus, i.estat AS estat, l.taxa AS taxa, l.datapagadataxa AS datapagadataxa, l.ico AS ico, l.datapagadaico AS datapagadaico"
+					+ " FROM public.tbl_propostesinforme p"
+					+ " 	LEFT JOIN public.tbl_informeactuacio i ON i.idinf = p.idinf"
+					+ "		LEFT JOIN public.tbl_llicencia l ON i.idinf = l.expcontratacio"
+					+ "		LEFT JOIN public.tbl_actuacio a ON i.idactuacio = a.id"
+					+ "		LEFT JOIN public.tbl_centres c ON a.idcentre = c.codi"
+					+ " WHERE (i.estat = 'previs' AND tipusobra = 'obr' AND p.seleccionada = true AND llicencia = true AND a.datatancament IS NULL)" 
+					+ "		OR (i.estat NOT IN ('anulat', 'acabat', 'garantia') AND tipusobra = 'obr' AND p.seleccionada = true AND llicencia = true AND a.datatancament IS NULL AND (((l.taxa > 0 AND l.datapagadataxa IS NULL) OR (l.ico > 0 AND l.datapagadaico IS NULL)) OR (l.codi IS NULL)))"
+					+ " ORDER BY i.idinf";
 	 
 	
 		PreparedStatement pstm;
@@ -1231,13 +1230,10 @@ public class InformeCore {
 				informe.setPropostaInformeSeleccionada(getPropostaSeleccionada(conn, rs.getString("idinf")));
 				llicencia = new Llicencia();
 				llicencia.setTipus(rs.getString("tipus"));
-				//llicencia.setPeticio(rs.getTimestamp("datasolicitud"));
-				//llicencia.setConcesio(rs.getTimestamp("dataconcesio"));
 				llicencia.setPagamentTaxa(rs.getTimestamp("datapagadataxa"));
 				llicencia.setTaxa(rs.getDouble("taxa"));
 				llicencia.setIco(rs.getDouble("ico"));
 				llicencia.setPagamentICO(rs.getTimestamp("datapagadaico"));
-				//llicencia.setIdPartida(rs.getString("idpartida"));
 				informe.setLlicencia(llicencia);
 				informes.add(informe);			
 			}
@@ -3050,6 +3046,8 @@ public class InformeCore {
 					usuari = UsuariCore.findUsuariByID(conn, rs.getInt("idusuari"));
 				}
 				
+			} else {
+				usuari = UsuariCore.finCap(conn, "obres");
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

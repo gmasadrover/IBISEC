@@ -439,64 +439,54 @@ public class LlicenciaCore {
 	
 	public static void actualitzarPartida(Connection conn, Llicencia llicencia, double valor, InformeActuacio informe) {	
 		if (valor > 0) {
-			if (informe.getAssignacioCredit() != null  && informe.getAssignacioCredit().size()>0 && informe.getAssignacioCredit().get(0).getPartida() != null) {
-				if (llicencia.getIdPartida() == null || llicencia.getIdPartida().isEmpty()) {
-					String sql = "INSERT INTO public.tbl_assignacionscredit(idassignacio, idactuacio, idinf, reserva, assignacio, idpartida, valorpa, valorpd)"
-								+ " VALUES (?, ?, ?, true, true, ?, ?, ?);";
-					PreparedStatement pstm;
-					try {
-						pstm = conn.prepareStatement(sql);
-						pstm.setString(1, llicencia.getCodi());
-						pstm.setString(2, informe.getActuacio().getReferencia());
-						pstm.setString(3, llicencia.getCodi());
-						Partida partida = new Partida();
-						if (informe.getAssignacioCredit() != null && informe.getAssignacioCredit().get(0).getPartida() != null) {
-							partida = CreditCore.getPartida(conn, informe.getAssignacioCredit().get(0).getPartida().getCodi());
-							if (partida.getEstat()) {
-								if (partida.getPartidaPerAsignar() >= valor) {
-									pstm.setString(4, informe.getAssignacioCredit().get(0).getPartida().getCodi());
-								} else {
-									
-								}
-							} else {
-								partida = CreditCore.getPartidaDefecte(conn);
-								if (partida.getPartidaPerAsignar() >= valor) {
-									pstm.setString(4, partida.getCodi());
-								} else {
-									
-								}							
-							}						
+			if (llicencia.getIdPartida() == null || llicencia.getIdPartida().isEmpty()) {
+				String sql = "INSERT INTO public.tbl_assignacionscredit(idassignacio, idactuacio, idinf, reserva, assignacio, idpartida, valorpa, valorpd)"
+							+ " VALUES (?, ?, ?, true, true, ?, ?, ?);";
+				PreparedStatement pstm;
+				try {
+					pstm = conn.prepareStatement(sql);
+					pstm.setString(1, llicencia.getCodi());
+					pstm.setString(2, informe.getActuacio().getReferencia());
+					pstm.setString(3, llicencia.getCodi());
+					Partida partida = new Partida();
+					if (!informe.getAssignacioCredit().isEmpty() && informe.getAssignacioCredit().get(0).getPartida() != null) {
+						partida = CreditCore.getPartida(conn, informe.getAssignacioCredit().get(0).getPartida().getCodi());
+						if (partida.getEstat()) {
+							if (partida.getPartidaPerAsignar() >= valor) {
+								pstm.setString(4, informe.getAssignacioCredit().get(0).getPartida().getCodi());
+							}
 						} else {
 							partida = CreditCore.getPartidaDefecte(conn);
-							pstm.setString(4, partida.getCodi());
-						}			
-						pstm.setDouble(5, valor);
-						pstm.setDouble(6, valor);
-						pstm.executeUpdate();
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}	
-					
-				} else {
-					String sql = "UPDATE public.tbl_assignacionscredit"
-								+ " SET valorpa=?, valorpd=?"
-								+ " WHERE idassignacio = ?;";
-					PreparedStatement pstm;
-					try {
-						pstm = conn.prepareStatement(sql);
-						pstm.setDouble(1, valor);
-						pstm.setDouble(2, valor);
-						pstm.setString(3, llicencia.getCodi());
-						pstm.executeUpdate();
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}	
-					
-				}
+							if (partida.getPartidaPerAsignar() >= valor) {
+								pstm.setString(4, partida.getCodi());
+							}
+						}
+					} else {
+						partida = CreditCore.getPartidaDefecte(conn);
+						pstm.setString(4, partida.getCodi());
+					}			
+					pstm.setDouble(5, valor);
+					pstm.setDouble(6, valor);
+					pstm.executeUpdate();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
 			} else {
-				// assignar partida manual?
+				String sql = "UPDATE public.tbl_assignacionscredit"
+							+ " SET valorpa=?, valorpd=?"
+							+ " WHERE idassignacio = ?;";
+				PreparedStatement pstm;
+				try {
+					pstm = conn.prepareStatement(sql);
+					pstm.setDouble(1, valor);
+					pstm.setDouble(2, valor);
+					pstm.setString(3, llicencia.getCodi());
+					pstm.executeUpdate();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
 			}
 		}		
 	}

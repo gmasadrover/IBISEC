@@ -687,7 +687,6 @@ public class EmpresaCore {
 			pstm = conn.prepareStatement(sql);
 			 pstm.setString(1, cif);
 			 pstm.setString(2, dniAdministrador);
-			 System.out.println(pstm.toString());
 			 ResultSet rs = pstm.executeQuery();
 			 if (rs.next()) {
 				 administrador = new Empresa().new Administrador();

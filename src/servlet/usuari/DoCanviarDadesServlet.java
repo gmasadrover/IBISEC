@@ -115,6 +115,14 @@ public class DoCanviarDadesServlet extends HttpServlet {
 		  			rols += ",DADESBANC";
 		  		}
 		  	}
+		  	if ("on".equals(request.getParameter("MANUAL"))) {
+		  		if (primer) {
+		  			primer = false;
+		  			rols = "MANUAL";
+		  		} else {
+		  			rols += ",MANUAL";
+		  		}
+		  	}
 		 
 		  	usuariModificat.setRol(rols);
 		  	int idUsuari = Integer.parseInt(request.getParameter("idUsuari"));

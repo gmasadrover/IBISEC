@@ -270,8 +270,27 @@ public class UsuariCore {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
+		}	
+	}
+	
+	public static void activarDesactivarUsuari(Connection conn, int idUsuari, boolean isActiu) {
+		String sql = "UPDATE public.tbl_usuaris"
+				+ " SET actiu=?"
+			  	+ " WHERE idusuari=?";		 
+		PreparedStatement pstm;
+		try {
+			pstm = conn.prepareStatement(sql);
+			if (isActiu) {
+				pstm.setBoolean(1, false);
+			} else {
+				pstm.setBoolean(1, true);
+			}
+			pstm.setInt(2, idUsuari);
+			pstm.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 	}
 	
 	public static void darrerAcces(Connection conn, int idUsuari) {

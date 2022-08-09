@@ -608,6 +608,7 @@ public class FacturaCore {
 				factura.setNombreFactura(rs.getString("nombrefactura"));
 				factura.setDataEntrada(rs.getTimestamp("dataentrada"));
 				factura.setUsuariConformador(UsuariCore.findUsuariByID(conn, rs.getInt("usuconformador")));
+				factura.setDataEnviatConformador(rs.getTimestamp("dataenviatconformador"));
 				factura.setDataConformacio(rs.getTimestamp("dataconformador"));
 				factura.setDataDescarregadaConformada(rs.getTimestamp("datadescarregadafactura"));
 				factura.setNotes(rs.getString("notesfactura"));

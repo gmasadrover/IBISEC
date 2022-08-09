@@ -62,7 +62,6 @@ public class ConfiguracioCore {
 			pstm.setInt(10, novaConfiguracio.getIdUsuariActualitzarEmpresa());
 			pstm.setInt(11, novaConfiguracio.getIdUsuariLlicencies());
 			pstm.setInt(12, novaConfiguracio.getIdUsuariDron());
-			System.out.println(pstm.toString());
 			pstm.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
