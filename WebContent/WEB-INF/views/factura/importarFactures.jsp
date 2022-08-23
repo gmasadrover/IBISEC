@@ -74,6 +74,8 @@
 	                                        <th>Proveïdor</th>
 	                                        <th>Nom proveïdor</th>
 	                                        <th>Usuari Conformador</th>
+	                                        <th>Data enviat a conformar No Format</th>
+	                                        <th>Data enviat a conformar</th>
 	                                        <th>Data Conformació No Format</th>
 	                                        <th>Data Conformació</th>
 	                                        <th>Data Descarregada No Format</th>
@@ -110,6 +112,8 @@
 								            	<td>${factura.idProveidor}</td>
 								            	<td>${factura.nomProveidor}</td>
 								            	<td>${factura.usuariConformador.getNomCompletReal()}</td>
+								            	<td>${factura.dataEnviatConformador}</td>
+								            	<td>${factura.getDataEnviatConformadorString()}</td>
 								            	<td>${factura.dataConformacio}</td>
 								            	<td>${factura.getDataConformacioString()}</td>
 								            	<td>${factura.getDataDescarregadaConformada()}</td>

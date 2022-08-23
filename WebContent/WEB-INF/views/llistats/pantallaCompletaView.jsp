@@ -9,27 +9,12 @@
 <html lang="${language}"  style="height:100%">  
 <head>
 	<jsp:include page="../_header.jsp"></jsp:include>	
-	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDjjjVKq3Fyvi6XiH-Mu8veFBD49iEQJLY"></script>
+	
 </head>	
 <body class="fullbody" style="height:100%">	 				
-	<div class="col-md-12" style="height:100%">
-			<input type="hidden" id="filterWithOutDate" value="${filterWithOutDate}">
-			<input type="hidden" id="dataInici" value="${dataInici}">
-			<input type="hidden" id="dataFi" value="${dataFi}">
-			<input type="hidden" id="filterWithOutDateExec" value="${filterWithOutDateExec}">
-			<input type="hidden" id="dataIniciExec" value="${dataIniciExec}">
-			<input type="hidden" id="dataFiExec" value="${dataFiExec}">
-			<input type="hidden" id="estatList" value="${estatFilter}">
-			<input type="hidden" id="tipusList" value="${tipusFilter}">
-      		<div class="informacioCentres hidden">
-      			<c:forEach items="${centresList}" var="centre" >
-      				<c:if test="${centre.lat > 0 && centre.lng > 0}">
-      					<input data-idcentre="${centre.idCentre}" data-lat="${centre.lat}" data-lng="${centre.lng}" value="${centre.nom}">
-      				</c:if>
-      			</c:forEach>
-      		</div>         
-		<div id="map" style="width:100%; height:100%"></div>
-	</div>
+	
+	
+	<div style="width: 100%"><iframe width="100%" height="600" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.google.com/maps/d/u/0/viewer?mid=1XpLCSAVHzsmN_dMqZaspN5b9BjGTL0RJ&ll=39.62891945151308%2C2.9168108523184477&z=10"><a href="https://www.gps.ie/car-satnav-gps/">Sat Navs</a></iframe></div>
      <jsp:include page="../_footer.jsp"></jsp:include>
     <script src="js/llistats/llistatComplet.js?<%=application.getInitParameter("datakey")%>"></script>   
     <!-- /#wrapper -->

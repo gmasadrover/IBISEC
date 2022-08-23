@@ -46,8 +46,7 @@ public class InformeCore {
 			informe.setDataCreacio(rs.getTimestamp("datacre"));
 			informe.setLlistaPropostes(getPropostesInforme(conn, rs.getString("idinf")));
 			informe.setPropostaInformeSeleccionada(getPropostaSeleccionada(conn, rs.getString("idinf")));
-	
-			
+						
 			informe.setAssignacioCredit(CreditCore.getPartidaInforme(conn, rs.getString("idinf")));	
 			informe.setComentariPartida(CreditCore.getComentariPartida(conn, rs.getString("idinf")));
 			informe.setUsuariCapValidacio(UsuariCore.findUsuariByID(conn, rs.getInt("usucapvalidacio")));
@@ -1563,6 +1562,7 @@ public class InformeCore {
 				informe.setEstat(rs.getString("estat"));
 				informe.setOrganismeDependencia(rs.getString("organismedependencia"));
 				informe.setCessioCredit(rs.getBoolean("cessiocredit"));
+				informe.setResponsableContracte(getResponsableContracte(conn, rs.getString("idinf")));
 				actuacio = new Actuacio();
 				actuacio.setReferencia(rs.getString("idactuacio"));
 				actuacio.setDescripcio(rs.getString("descripcioact"));

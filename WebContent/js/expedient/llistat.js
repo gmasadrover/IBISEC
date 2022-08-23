@@ -73,6 +73,7 @@ $(document).ready(function() {
     		{"bVisible": false},
     		{"bVisible": false, "iDataSort": 28},
     		{"bVisible": false},
+    		null,
     		null
 		]
 	});

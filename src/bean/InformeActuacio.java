@@ -388,6 +388,7 @@ public class InformeActuacio {
 	private List<IncidenciaGarantia> llistaIncidenciesGarantia;
 	private PropostaInforme propostaInformeSeleccionada;
 	private User usuari;
+	private User responsableContracte;
 	private Date dataCreacio;
 	private String partidaRebutjadaMotiu;
 	private Date dataRebujada;
@@ -1657,5 +1658,13 @@ public class InformeActuacio {
 
 	public void setInformeAntic(boolean isInformeAntic) {
 		this.informeAntic = isInformeAntic;
+	}
+
+	public User getResponsableContracte() {
+		return responsableContracte;
+	}
+
+	public void setResponsableContracte(User responsableContracte) {
+		this.responsableContracte = responsableContracte;
 	}	
 }

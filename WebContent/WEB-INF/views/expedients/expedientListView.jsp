@@ -143,6 +143,7 @@
                                         <th>Fi garantia</th>
                                         <th>Liquidació</th>
                                         <th>Liquidació</th>
+                                        <th>Responsable</th>
                                         <th>Estat</th>
                                     </tr>
                                 </thead>
@@ -190,6 +191,7 @@
 							            	<td>${informe.expcontratacio.dataRetornGarantia}</td>
 							            	<td>${informe.expcontratacio.getDataLiquidacioString()}</td>
 							            	<td>${informe.expcontratacio.dataLiquidacio}</td>
+							            	<td>${informe.responsableContracte.getNomComplet()}</td>
 							            	<td>Informe: ${informe.getEstatExpedientFormat()} - Actuacio: ${informe.actuacio.dataTancament}</td>
 							          	</tr>
 							       	</c:forEach>                                	
