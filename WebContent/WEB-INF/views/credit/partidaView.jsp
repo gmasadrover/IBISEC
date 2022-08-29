@@ -130,6 +130,8 @@
 		                                <th>Expedient</th>
 		                                <th>Centre</th>
 		                                <th>Objecte</th>
+		                                <th>Data reserva</th>
+		                                <th>Data reserva</th>
 		                                <th>Data adjudicació</th>
 		                                <th>Data adjudicació</th>
 		                                <th>valor PA</th>
@@ -147,7 +149,9 @@
 						            	<td><a href="actuacionsDetalls?ref=${assignacio.informe.actuacio.referencia}" class="loadingButton"  data-msg="obrint actuació...">${assignacio.informe.actuacio.referencia}</a></td>
 						            	<td>${assignacio.informe.expcontratacio.expContratacio}</td>
 						            	<td>${assignacio.informe.actuacio.centre.getNomComplet()}</td>
-						            	<td>${assignacio.informe.propostaInformeSeleccionada.objecte}</td>						            	
+						            	<td>${assignacio.informe.propostaInformeSeleccionada.objecte}</td>	
+						            	<td>${assignacio.getDatareservaString()}</td>
+						            	<td>${assignacio.datareserva}</td>					            	
 						            	<td>${assignacio.informe.expcontratacio.getDataAdjudicacioString()}</td>
 						            	<td>${assignacio.informe.expcontratacio.dataAdjudicacio}</td>
 						            	<td>${assignacio.getValorPAFormat()}</td>

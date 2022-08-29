@@ -1,6 +1,8 @@
 package bean;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class AssignacioCredit {
@@ -55,6 +57,13 @@ public class AssignacioCredit {
 		return datareserva;
 	}
 
+	public String getDatareservaString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
+		String dataString = "";
+		if (this.datareserva != null) dataString = df.format(this.datareserva);
+		return dataString;
+	}
+	
 	public void setDatareserva(Date datareserva) {
 		this.datareserva = datareserva;
 	}

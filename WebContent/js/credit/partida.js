@@ -41,6 +41,8 @@ $(document).ready(function() {
     		{"iDataSort": 9},
     		{"bVisible": false},
     		{"iDataSort": 11},
+    		{"bVisible": false},
+    		{"iDataSort": 13},
     		{"bVisible": false}
 		]			
 	});

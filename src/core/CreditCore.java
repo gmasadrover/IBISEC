@@ -509,7 +509,7 @@ public class CreditCore {
 	public static List<AssignacioCredit> findAssignacionsPartida(Connection conn, String codi)  {
 		List<AssignacioCredit> assignacionsList = new ArrayList<AssignacioCredit>();
 		
-		String sql = "SELECT a.idassignacio AS idassignacio, a.idactuacio AS idactuacio, a.idinf AS idinf, c.nom AS nomcentre, c.municipi AS municipicentre, c.localitat AS localitatcentre, p.objecte AS objecte,"
+		String sql = "SELECT a.idassignacio AS idassignacio, a.idactuacio AS idactuacio, a.idinf AS idinf, a.datareserva AS datareserva, c.nom AS nomcentre, c.municipi AS municipicentre, c.localitat AS localitatcentre, p.objecte AS objecte,"
 					+ "		e.dataadjudicacio AS dataadjudicacio, i.expcontratacio AS expedient, a.comentari AS comentari, a.valorpa AS valorpa,"
 					+ "		a.valorpd AS valorpd, a.idinforiginal AS idinforiginal, a.idprocediment AS idprocediment, a.idtramit AS idtramit"
 					+ " FROM public.tbl_assignacionscredit a LEFT JOIN public.tbl_propostesinforme p ON a.idinf = p.idinf AND p.seleccionada = true"
@@ -526,6 +526,7 @@ public class CreditCore {
 			while (rs.next()) {			
 				AssignacioCredit assignacio = new AssignacioCredit();
 				assignacio.setIdAssignacio(rs.getString("idassignacio"));
+				assignacio.setDatareserva(rs.getDate("datareserva"));
 				InformeActuacio informe = new InformeActuacio();
 				Actuacio actuacio = new Actuacio();
 				Centre centre = new Centre();

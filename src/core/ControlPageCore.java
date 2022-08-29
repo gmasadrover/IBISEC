@@ -312,11 +312,11 @@ public class ControlPageCore {
 			menu.append("<li class='"+ active + "'>");
 			menu.append("	<a href='javascript:;' data-toggle='collapse' data-target='#creditMenu'><i class='fa fa-fw fa-calculator'></i> Crèdit / Partides<i class='fa fa-fw fa-caret-down'></i></a>");
 			menu.append("	<ul id='creditMenu' class='nav nav-second-level collapse " + collapse + "'>");
-			if (UsuariCore.hasPermision(conn, usuari, SectionPage.partides_list)) {
-				menu.append("		<li>");
-				menu.append("			<a href='despeses' class='loadingButton'  data-msg='Carregant despeses...'>Consulta despeses</a>");
-				menu.append("		</li>");
-			}
+//			if (UsuariCore.hasPermision(conn, usuari, SectionPage.partides_list)) {
+//				menu.append("		<li>");
+//				menu.append("			<a href='despeses' class='loadingButton'  data-msg='Carregant despeses...'>Consulta despeses</a>");
+//				menu.append("		</li>");
+//			}
 			if (UsuariCore.hasPermision(conn, usuari, SectionPage.partides_list)) {
 				menu.append("		<li>");
 				menu.append("			<a href='credit' class='loadingButton'  data-msg='Carregant partides...'>Partides creades</a>");
